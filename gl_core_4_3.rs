@@ -1596,677 +1596,17 @@ pub static MAX_VERTEX_ATTRIB_RELATIVE_OFFSET: GLenum = 0x82D9;
 pub static MAX_VERTEX_ATTRIB_BINDINGS: GLenum = 0x82DA;
 
 
-//////////////////////////////////////////////////////////////////////////////
-//
-// External function pointer types
-//
-//////////////////////////////////////////////////////////////////////////////
-
-pub mod ftypes {
-	use core::libc::*;
-	use types::*;
-	
-	// Version: 1.1
-	pub type CullFace = extern "C" fn(mode: GLenum);
-	pub type FrontFace = extern "C" fn(mode: GLenum);
-	pub type Hint = extern "C" fn(target: GLenum, mode: GLenum);
-	pub type LineWidth = extern "C" fn(width: GLfloat);
-	pub type PointSize = extern "C" fn(size: GLfloat);
-	pub type PolygonMode = extern "C" fn(face: GLenum, mode: GLenum);
-	pub type Scissor = extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei);
-	pub type TexParameterf = extern "C" fn(target: GLenum, pname: GLenum, param: GLfloat);
-	pub type TexParameterfv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat);
-	pub type TexParameteri = extern "C" fn(target: GLenum, pname: GLenum, param: GLint);
-	pub type TexParameteriv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type TexImage1D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type TexImage2D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type DrawBuffer = extern "C" fn(mode: GLenum);
-	pub type Clear = extern "C" fn(mask: GLbitfield);
-	pub type ClearColor = extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat);
-	pub type ClearStencil = extern "C" fn(s: GLint);
-	pub type ClearDepth = extern "C" fn(depth: GLdouble);
-	pub type StencilMask = extern "C" fn(mask: GLuint);
-	pub type ColorMask = extern "C" fn(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean);
-	pub type DepthMask = extern "C" fn(flag: GLboolean);
-	pub type Disable = extern "C" fn(cap: GLenum);
-	pub type Enable = extern "C" fn(cap: GLenum);
-	pub type Finish = extern "C" fn();
-	pub type Flush = extern "C" fn();
-	pub type BlendFunc = extern "C" fn(sfactor: GLenum, dfactor: GLenum);
-	pub type LogicOp = extern "C" fn(opcode: GLenum);
-	pub type StencilFunc = extern "C" fn(func: GLenum, ref_: GLint, mask: GLuint);
-	pub type StencilOp = extern "C" fn(fail: GLenum, zfail: GLenum, zpass: GLenum);
-	pub type DepthFunc = extern "C" fn(func: GLenum);
-	pub type PixelStoref = extern "C" fn(pname: GLenum, param: GLfloat);
-	pub type PixelStorei = extern "C" fn(pname: GLenum, param: GLint);
-	pub type ReadBuffer = extern "C" fn(mode: GLenum);
-	pub type ReadPixels = extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type GetBooleanv = extern "C" fn(pname: GLenum, params: *GLboolean);
-	pub type GetDoublev = extern "C" fn(pname: GLenum, params: *GLdouble);
-	pub type GetError = extern "C" fn() -> GLenum;
-	pub type GetFloatv = extern "C" fn(pname: GLenum, params: *GLfloat);
-	pub type GetIntegerv = extern "C" fn(pname: GLenum, params: *GLint);
-	pub type GetString = extern "C" fn(name: GLenum) -> *GLubyte;
-	pub type GetTexImage = extern "C" fn(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type GetTexParameterfv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat);
-	pub type GetTexParameteriv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type GetTexLevelParameterfv = extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLfloat);
-	pub type GetTexLevelParameteriv = extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLint);
-	pub type IsEnabled = extern "C" fn(cap: GLenum) -> GLboolean;
-	pub type DepthRange = extern "C" fn(near: GLdouble, far: GLdouble);
-	pub type Viewport = extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei);
-	pub type DrawArrays = extern "C" fn(mode: GLenum, first: GLint, count: GLsizei);
-	pub type DrawElements = extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid);
-	pub type GetPointerv = extern "C" fn(pname: GLenum, params: **GLvoid);
-	pub type PolygonOffset = extern "C" fn(factor: GLfloat, units: GLfloat);
-	pub type CopyTexImage1D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint);
-	pub type CopyTexImage2D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint);
-	pub type CopyTexSubImage1D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei);
-	pub type CopyTexSubImage2D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei);
-	pub type TexSubImage1D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type TexSubImage2D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type BindTexture = extern "C" fn(target: GLenum, texture: GLuint);
-	pub type DeleteTextures = extern "C" fn(n: GLsizei, textures: *GLuint);
-	pub type GenTextures = extern "C" fn(n: GLsizei, textures: *GLuint);
-	pub type IsTexture = extern "C" fn(texture: GLuint) -> GLboolean;
-	pub type Indexub = extern "C" fn(c: GLubyte);
-	pub type Indexubv = extern "C" fn(c: *GLubyte);
-	
-	// Version: 1.2
-	pub type BlendColor = extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat);
-	pub type BlendEquation = extern "C" fn(mode: GLenum);
-	pub type DrawRangeElements = extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid);
-	pub type TexImage3D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type TexSubImage3D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid);
-	pub type CopyTexSubImage3D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei);
-	
-	// Version: 1.3
-	pub type ActiveTexture = extern "C" fn(texture: GLenum);
-	pub type SampleCoverage = extern "C" fn(value: GLfloat, invert: GLboolean);
-	pub type CompressedTexImage3D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid);
-	pub type CompressedTexImage2D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid);
-	pub type CompressedTexImage1D = extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid);
-	pub type CompressedTexSubImage3D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid);
-	pub type CompressedTexSubImage2D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid);
-	pub type CompressedTexSubImage1D = extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid);
-	pub type GetCompressedTexImage = extern "C" fn(target: GLenum, level: GLint, img: *GLvoid);
-	
-	// Version: 1.4
-	pub type BlendFuncSeparate = extern "C" fn(sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum);
-	pub type MultiDrawArrays = extern "C" fn(mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei);
-	pub type MultiDrawElements = extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei);
-	pub type PointParameterf = extern "C" fn(pname: GLenum, param: GLfloat);
-	pub type PointParameterfv = extern "C" fn(pname: GLenum, params: *GLfloat);
-	pub type PointParameteri = extern "C" fn(pname: GLenum, param: GLint);
-	pub type PointParameteriv = extern "C" fn(pname: GLenum, params: *GLint);
-	
-	// Version: 1.5
-	pub type GenQueries = extern "C" fn(n: GLsizei, ids: *GLuint);
-	pub type DeleteQueries = extern "C" fn(n: GLsizei, ids: *GLuint);
-	pub type IsQuery = extern "C" fn(id: GLuint) -> GLboolean;
-	pub type BeginQuery = extern "C" fn(target: GLenum, id: GLuint);
-	pub type EndQuery = extern "C" fn(target: GLenum);
-	pub type GetQueryiv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type GetQueryObjectiv = extern "C" fn(id: GLuint, pname: GLenum, params: *GLint);
-	pub type GetQueryObjectuiv = extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint);
-	pub type BindBuffer = extern "C" fn(target: GLenum, buffer: GLuint);
-	pub type DeleteBuffers = extern "C" fn(n: GLsizei, buffers: *GLuint);
-	pub type GenBuffers = extern "C" fn(n: GLsizei, buffers: *GLuint);
-	pub type IsBuffer = extern "C" fn(buffer: GLuint) -> GLboolean;
-	pub type BufferData = extern "C" fn(target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum);
-	pub type BufferSubData = extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid);
-	pub type GetBufferSubData = extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid);
-	pub type MapBuffer = extern "C" fn(target: GLenum, access: GLenum) -> *GLvoid;
-	pub type UnmapBuffer = extern "C" fn(target: GLenum) -> GLboolean;
-	pub type GetBufferParameteriv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type GetBufferPointerv = extern "C" fn(target: GLenum, pname: GLenum, params: **GLvoid);
-	
-	// Version: 2.0
-	pub type BlendEquationSeparate = extern "C" fn(modeRGB: GLenum, modeAlpha: GLenum);
-	pub type DrawBuffers = extern "C" fn(n: GLsizei, bufs: *GLenum);
-	pub type StencilOpSeparate = extern "C" fn(face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum);
-	pub type StencilFuncSeparate = extern "C" fn(face: GLenum, func: GLenum, ref_: GLint, mask: GLuint);
-	pub type StencilMaskSeparate = extern "C" fn(face: GLenum, mask: GLuint);
-	pub type AttachShader = extern "C" fn(program: GLuint, shader: GLuint);
-	pub type BindAttribLocation = extern "C" fn(program: GLuint, index: GLuint, name: *GLchar);
-	pub type CompileShader = extern "C" fn(shader: GLuint);
-	pub type CreateProgram = extern "C" fn() -> GLuint;
-	pub type CreateShader = extern "C" fn(type_: GLenum) -> GLuint;
-	pub type DeleteProgram = extern "C" fn(program: GLuint);
-	pub type DeleteShader = extern "C" fn(shader: GLuint);
-	pub type DetachShader = extern "C" fn(program: GLuint, shader: GLuint);
-	pub type DisableVertexAttribArray = extern "C" fn(index: GLuint);
-	pub type EnableVertexAttribArray = extern "C" fn(index: GLuint);
-	pub type GetActiveAttrib = extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar);
-	pub type GetActiveUniform = extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar);
-	pub type GetAttachedShaders = extern "C" fn(program: GLuint, maxCount: GLsizei, count: *GLsizei, obj: *GLuint);
-	pub type GetAttribLocation = extern "C" fn(program: GLuint, name: *GLchar) -> GLint;
-	pub type GetProgramiv = extern "C" fn(program: GLuint, pname: GLenum, params: *GLint);
-	pub type GetProgramInfoLog = extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar);
-	pub type GetShaderiv = extern "C" fn(shader: GLuint, pname: GLenum, params: *GLint);
-	pub type GetShaderInfoLog = extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar);
-	pub type GetShaderSource = extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, source: *GLchar);
-	pub type GetUniformLocation = extern "C" fn(program: GLuint, name: *GLchar) -> GLint;
-	pub type GetUniformfv = extern "C" fn(program: GLuint, location: GLint, params: *GLfloat);
-	pub type GetUniformiv = extern "C" fn(program: GLuint, location: GLint, params: *GLint);
-	pub type GetVertexAttribdv = extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble);
-	pub type GetVertexAttribfv = extern "C" fn(index: GLuint, pname: GLenum, params: *GLfloat);
-	pub type GetVertexAttribiv = extern "C" fn(index: GLuint, pname: GLenum, params: *GLint);
-	pub type GetVertexAttribPointerv = extern "C" fn(index: GLuint, pname: GLenum, pointer: **GLvoid);
-	pub type IsProgram = extern "C" fn(program: GLuint) -> GLboolean;
-	pub type IsShader = extern "C" fn(shader: GLuint) -> GLboolean;
-	pub type LinkProgram = extern "C" fn(program: GLuint);
-	pub type ShaderSource = extern "C" fn(shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint);
-	pub type UseProgram = extern "C" fn(program: GLuint);
-	pub type Uniform1f = extern "C" fn(location: GLint, v0: GLfloat);
-	pub type Uniform2f = extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat);
-	pub type Uniform3f = extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat);
-	pub type Uniform4f = extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat);
-	pub type Uniform1i = extern "C" fn(location: GLint, v0: GLint);
-	pub type Uniform2i = extern "C" fn(location: GLint, v0: GLint, v1: GLint);
-	pub type Uniform3i = extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint);
-	pub type Uniform4i = extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint);
-	pub type Uniform1fv = extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat);
-	pub type Uniform2fv = extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat);
-	pub type Uniform3fv = extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat);
-	pub type Uniform4fv = extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat);
-	pub type Uniform1iv = extern "C" fn(location: GLint, count: GLsizei, value: *GLint);
-	pub type Uniform2iv = extern "C" fn(location: GLint, count: GLsizei, value: *GLint);
-	pub type Uniform3iv = extern "C" fn(location: GLint, count: GLsizei, value: *GLint);
-	pub type Uniform4iv = extern "C" fn(location: GLint, count: GLsizei, value: *GLint);
-	pub type UniformMatrix2fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type UniformMatrix3fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type UniformMatrix4fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ValidateProgram = extern "C" fn(program: GLuint);
-	pub type VertexAttribPointer = extern "C" fn(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid);
-	
-	// Version: 2.1
-	pub type UniformMatrix2x3fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type UniformMatrix3x2fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type UniformMatrix2x4fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type UniformMatrix4x2fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type UniformMatrix3x4fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type UniformMatrix4x3fv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	
-	// Version: 3.0
-	pub type ColorMaski = extern "C" fn(index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean);
-	pub type GetBooleani_v = extern "C" fn(target: GLenum, index: GLuint, data: *GLboolean);
-	pub type GetIntegeri_v = extern "C" fn(target: GLenum, index: GLuint, data: *GLint);
-	pub type Enablei = extern "C" fn(target: GLenum, index: GLuint);
-	pub type Disablei = extern "C" fn(target: GLenum, index: GLuint);
-	pub type IsEnabledi = extern "C" fn(target: GLenum, index: GLuint) -> GLboolean;
-	pub type BeginTransformFeedback = extern "C" fn(primitiveMode: GLenum);
-	pub type EndTransformFeedback = extern "C" fn();
-	pub type BindBufferRange = extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr);
-	pub type BindBufferBase = extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint);
-	pub type TransformFeedbackVaryings = extern "C" fn(program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum);
-	pub type GetTransformFeedbackVarying = extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLsizei, type_: *GLenum, name: *GLchar);
-	pub type ClampColor = extern "C" fn(target: GLenum, clamp: GLenum);
-	pub type BeginConditionalRender = extern "C" fn(id: GLuint, mode: GLenum);
-	pub type EndConditionalRender = extern "C" fn();
-	pub type VertexAttribIPointer = extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid);
-	pub type GetVertexAttribIiv = extern "C" fn(index: GLuint, pname: GLenum, params: *GLint);
-	pub type GetVertexAttribIuiv = extern "C" fn(index: GLuint, pname: GLenum, params: *GLuint);
-	pub type VertexAttribI1i = extern "C" fn(index: GLuint, x: GLint);
-	pub type VertexAttribI2i = extern "C" fn(index: GLuint, x: GLint, y: GLint);
-	pub type VertexAttribI3i = extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint);
-	pub type VertexAttribI4i = extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint);
-	pub type VertexAttribI1ui = extern "C" fn(index: GLuint, x: GLuint);
-	pub type VertexAttribI2ui = extern "C" fn(index: GLuint, x: GLuint, y: GLuint);
-	pub type VertexAttribI3ui = extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint);
-	pub type VertexAttribI4ui = extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint);
-	pub type VertexAttribI1iv = extern "C" fn(index: GLuint, v: *GLint);
-	pub type VertexAttribI2iv = extern "C" fn(index: GLuint, v: *GLint);
-	pub type VertexAttribI3iv = extern "C" fn(index: GLuint, v: *GLint);
-	pub type VertexAttribI4iv = extern "C" fn(index: GLuint, v: *GLint);
-	pub type VertexAttribI1uiv = extern "C" fn(index: GLuint, v: *GLuint);
-	pub type VertexAttribI2uiv = extern "C" fn(index: GLuint, v: *GLuint);
-	pub type VertexAttribI3uiv = extern "C" fn(index: GLuint, v: *GLuint);
-	pub type VertexAttribI4uiv = extern "C" fn(index: GLuint, v: *GLuint);
-	pub type VertexAttribI4bv = extern "C" fn(index: GLuint, v: *GLbyte);
-	pub type VertexAttribI4sv = extern "C" fn(index: GLuint, v: *GLshort);
-	pub type VertexAttribI4ubv = extern "C" fn(index: GLuint, v: *GLubyte);
-	pub type VertexAttribI4usv = extern "C" fn(index: GLuint, v: *GLushort);
-	pub type GetUniformuiv = extern "C" fn(program: GLuint, location: GLint, params: *GLuint);
-	pub type BindFragDataLocation = extern "C" fn(program: GLuint, color: GLuint, name: *GLchar);
-	pub type GetFragDataLocation = extern "C" fn(program: GLuint, name: *GLchar) -> GLint;
-	pub type Uniform1ui = extern "C" fn(location: GLint, v0: GLuint);
-	pub type Uniform2ui = extern "C" fn(location: GLint, v0: GLuint, v1: GLuint);
-	pub type Uniform3ui = extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint);
-	pub type Uniform4ui = extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint);
-	pub type Uniform1uiv = extern "C" fn(location: GLint, count: GLsizei, value: *GLuint);
-	pub type Uniform2uiv = extern "C" fn(location: GLint, count: GLsizei, value: *GLuint);
-	pub type Uniform3uiv = extern "C" fn(location: GLint, count: GLsizei, value: *GLuint);
-	pub type Uniform4uiv = extern "C" fn(location: GLint, count: GLsizei, value: *GLuint);
-	pub type TexParameterIiv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type TexParameterIuiv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint);
-	pub type GetTexParameterIiv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type GetTexParameterIuiv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint);
-	pub type ClearBufferiv = extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLint);
-	pub type ClearBufferuiv = extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLuint);
-	pub type ClearBufferfv = extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLfloat);
-	pub type ClearBufferfi = extern "C" fn(buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint);
-	pub type GetStringi = extern "C" fn(name: GLenum, index: GLuint) -> *GLubyte;
-	
-	// Core Extension: ARB_vertex_array_object
-	pub type BindVertexArray = extern "C" fn(array: GLuint);
-	pub type DeleteVertexArrays = extern "C" fn(n: GLsizei, arrays: *GLuint);
-	pub type GenVertexArrays = extern "C" fn(n: GLsizei, arrays: *GLuint);
-	pub type IsVertexArray = extern "C" fn(array: GLuint) -> GLboolean;
-	
-	// Core Extension: ARB_map_buffer_range
-	pub type MapBufferRange = extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *GLvoid;
-	pub type FlushMappedBufferRange = extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr);
-	
-	// Core Extension: ARB_framebuffer_object
-	pub type IsRenderbuffer = extern "C" fn(renderbuffer: GLuint) -> GLboolean;
-	pub type BindRenderbuffer = extern "C" fn(target: GLenum, renderbuffer: GLuint);
-	pub type DeleteRenderbuffers = extern "C" fn(n: GLsizei, renderbuffers: *GLuint);
-	pub type GenRenderbuffers = extern "C" fn(n: GLsizei, renderbuffers: *GLuint);
-	pub type RenderbufferStorage = extern "C" fn(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei);
-	pub type GetRenderbufferParameteriv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type IsFramebuffer = extern "C" fn(framebuffer: GLuint) -> GLboolean;
-	pub type BindFramebuffer = extern "C" fn(target: GLenum, framebuffer: GLuint);
-	pub type DeleteFramebuffers = extern "C" fn(n: GLsizei, framebuffers: *GLuint);
-	pub type GenFramebuffers = extern "C" fn(n: GLsizei, framebuffers: *GLuint);
-	pub type CheckFramebufferStatus = extern "C" fn(target: GLenum) -> GLenum;
-	pub type FramebufferTexture1D = extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint);
-	pub type FramebufferTexture2D = extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint);
-	pub type FramebufferTexture3D = extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint);
-	pub type FramebufferRenderbuffer = extern "C" fn(target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint);
-	pub type GetFramebufferAttachmentParameteriv = extern "C" fn(target: GLenum, attachment: GLenum, pname: GLenum, params: *GLint);
-	pub type GenerateMipmap = extern "C" fn(target: GLenum);
-	pub type BlitFramebuffer = extern "C" fn(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum);
-	pub type RenderbufferStorageMultisample = extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei);
-	pub type FramebufferTextureLayer = extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint);
-	
-	// Version: 3.1
-	pub type DrawArraysInstanced = extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei);
-	pub type DrawElementsInstanced = extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei);
-	pub type TexBuffer = extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint);
-	pub type PrimitiveRestartIndex = extern "C" fn(index: GLuint);
-	
-	// Core Extension: ARB_uniform_buffer_object
-	pub type GetUniformIndices = extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformNames: **GLchar, uniformIndices: *GLuint);
-	pub type GetActiveUniformsiv = extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *GLint);
-	pub type GetActiveUniformName = extern "C" fn(program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformName: *GLchar);
-	pub type GetUniformBlockIndex = extern "C" fn(program: GLuint, uniformBlockName: *GLchar) -> GLuint;
-	pub type GetActiveUniformBlockiv = extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *GLint);
-	pub type GetActiveUniformBlockName = extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformBlockName: *GLchar);
-	pub type UniformBlockBinding = extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint);
-	
-	// Core Extension: ARB_copy_buffer
-	pub type CopyBufferSubData = extern "C" fn(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr);
-	
-	// Version: 3.2
-	pub type GetInteger64i_v = extern "C" fn(target: GLenum, index: GLuint, data: *GLint64);
-	pub type GetBufferParameteri64v = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint64);
-	pub type FramebufferTexture = extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint);
-	
-	// Core Extension: ARB_draw_elements_base_vertex
-	pub type DrawElementsBaseVertex = extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint);
-	pub type DrawRangeElementsBaseVertex = extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint);
-	pub type DrawElementsInstancedBaseVertex = extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint);
-	pub type MultiDrawElementsBaseVertex = extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei, basevertex: *GLint);
-	
-	// Core Extension: ARB_provoking_vertex
-	pub type ProvokingVertex = extern "C" fn(mode: GLenum);
-	
-	// Core Extension: ARB_sync
-	pub type FenceSync = extern "C" fn(condition: GLenum, flags: GLbitfield) -> GLsync;
-	pub type IsSync = extern "C" fn(sync: GLsync) -> GLboolean;
-	pub type DeleteSync = extern "C" fn(sync: GLsync);
-	pub type ClientWaitSync = extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum;
-	pub type WaitSync = extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64);
-	pub type GetInteger64v = extern "C" fn(pname: GLenum, params: *GLint64);
-	pub type GetSynciv = extern "C" fn(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *GLsizei, values: *GLint);
-	
-	// Core Extension: ARB_texture_multisample
-	pub type TexImage2DMultisample = extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean);
-	pub type TexImage3DMultisample = extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean);
-	pub type GetMultisamplefv = extern "C" fn(pname: GLenum, index: GLuint, val: *GLfloat);
-	pub type SampleMaski = extern "C" fn(index: GLuint, mask: GLbitfield);
-	
-	// Version: 3.3
-	pub type VertexAttribDivisor = extern "C" fn(index: GLuint, divisor: GLuint);
-	
-	// Core Extension: ARB_timer_query
-	pub type QueryCounter = extern "C" fn(id: GLuint, target: GLenum);
-	pub type GetQueryObjecti64v = extern "C" fn(id: GLuint, pname: GLenum, params: *GLint64);
-	pub type GetQueryObjectui64v = extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint64);
-	
-	// Core Extension: ARB_vertex_type_2_10_10_10_rev
-	pub type VertexP2ui = extern "C" fn(type_: GLenum, value: GLuint);
-	pub type VertexP2uiv = extern "C" fn(type_: GLenum, value: *GLuint);
-	pub type VertexP3ui = extern "C" fn(type_: GLenum, value: GLuint);
-	pub type VertexP3uiv = extern "C" fn(type_: GLenum, value: *GLuint);
-	pub type VertexP4ui = extern "C" fn(type_: GLenum, value: GLuint);
-	pub type VertexP4uiv = extern "C" fn(type_: GLenum, value: *GLuint);
-	pub type TexCoordP1ui = extern "C" fn(type_: GLenum, coords: GLuint);
-	pub type TexCoordP1uiv = extern "C" fn(type_: GLenum, coords: *GLuint);
-	pub type TexCoordP2ui = extern "C" fn(type_: GLenum, coords: GLuint);
-	pub type TexCoordP2uiv = extern "C" fn(type_: GLenum, coords: *GLuint);
-	pub type TexCoordP3ui = extern "C" fn(type_: GLenum, coords: GLuint);
-	pub type TexCoordP3uiv = extern "C" fn(type_: GLenum, coords: *GLuint);
-	pub type TexCoordP4ui = extern "C" fn(type_: GLenum, coords: GLuint);
-	pub type TexCoordP4uiv = extern "C" fn(type_: GLenum, coords: *GLuint);
-	pub type MultiTexCoordP1ui = extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint);
-	pub type MultiTexCoordP1uiv = extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint);
-	pub type MultiTexCoordP2ui = extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint);
-	pub type MultiTexCoordP2uiv = extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint);
-	pub type MultiTexCoordP3ui = extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint);
-	pub type MultiTexCoordP3uiv = extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint);
-	pub type MultiTexCoordP4ui = extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint);
-	pub type MultiTexCoordP4uiv = extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint);
-	pub type NormalP3ui = extern "C" fn(type_: GLenum, coords: GLuint);
-	pub type NormalP3uiv = extern "C" fn(type_: GLenum, coords: *GLuint);
-	pub type ColorP3ui = extern "C" fn(type_: GLenum, color: GLuint);
-	pub type ColorP3uiv = extern "C" fn(type_: GLenum, color: *GLuint);
-	pub type ColorP4ui = extern "C" fn(type_: GLenum, color: GLuint);
-	pub type ColorP4uiv = extern "C" fn(type_: GLenum, color: *GLuint);
-	pub type SecondaryColorP3ui = extern "C" fn(type_: GLenum, color: GLuint);
-	pub type SecondaryColorP3uiv = extern "C" fn(type_: GLenum, color: *GLuint);
-	pub type VertexAttribP1ui = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint);
-	pub type VertexAttribP1uiv = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint);
-	pub type VertexAttribP2ui = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint);
-	pub type VertexAttribP2uiv = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint);
-	pub type VertexAttribP3ui = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint);
-	pub type VertexAttribP3uiv = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint);
-	pub type VertexAttribP4ui = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint);
-	pub type VertexAttribP4uiv = extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint);
-	
-	// Core Extension: ARB_blend_func_extended
-	pub type BindFragDataLocationIndexed = extern "C" fn(program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar);
-	pub type GetFragDataIndex = extern "C" fn(program: GLuint, name: *GLchar) -> GLint;
-	
-	// Core Extension: ARB_sampler_objects
-	pub type GenSamplers = extern "C" fn(count: GLsizei, samplers: *GLuint);
-	pub type DeleteSamplers = extern "C" fn(count: GLsizei, samplers: *GLuint);
-	pub type IsSampler = extern "C" fn(sampler: GLuint) -> GLboolean;
-	pub type BindSampler = extern "C" fn(unit: GLuint, sampler: GLuint);
-	pub type SamplerParameteri = extern "C" fn(sampler: GLuint, pname: GLenum, param: GLint);
-	pub type SamplerParameteriv = extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint);
-	pub type SamplerParameterf = extern "C" fn(sampler: GLuint, pname: GLenum, param: GLfloat);
-	pub type SamplerParameterfv = extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLfloat);
-	pub type SamplerParameterIiv = extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint);
-	pub type SamplerParameterIuiv = extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLuint);
-	pub type GetSamplerParameteriv = extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint);
-	pub type GetSamplerParameterIiv = extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint);
-	pub type GetSamplerParameterfv = extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLfloat);
-	pub type GetSamplerParameterIuiv = extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLuint);
-	
-	// Version: 4.0
-	pub type MinSampleShading = extern "C" fn(value: GLfloat);
-	pub type BlendEquationi = extern "C" fn(buf: GLuint, mode: GLenum);
-	pub type BlendEquationSeparatei = extern "C" fn(buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum);
-	pub type BlendFunci = extern "C" fn(buf: GLuint, src: GLenum, dst: GLenum);
-	pub type BlendFuncSeparatei = extern "C" fn(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum);
-	
-	// Core Extension: ARB_draw_indirect
-	pub type DrawArraysIndirect = extern "C" fn(mode: GLenum, indirect: *GLvoid);
-	pub type DrawElementsIndirect = extern "C" fn(mode: GLenum, type_: GLenum, indirect: *GLvoid);
-	
-	// Core Extension: ARB_gpu_shader_fp64
-	pub type Uniform1d = extern "C" fn(location: GLint, x: GLdouble);
-	pub type Uniform2d = extern "C" fn(location: GLint, x: GLdouble, y: GLdouble);
-	pub type Uniform3d = extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble);
-	pub type Uniform4d = extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble);
-	pub type Uniform1dv = extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble);
-	pub type Uniform2dv = extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble);
-	pub type Uniform3dv = extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble);
-	pub type Uniform4dv = extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble);
-	pub type UniformMatrix2dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix3dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix4dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix2x3dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix2x4dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix3x2dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix3x4dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix4x2dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type UniformMatrix4x3dv = extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type GetUniformdv = extern "C" fn(program: GLuint, location: GLint, params: *GLdouble);
-	
-	// Core Extension: ARB_shader_subroutine
-	pub type GetSubroutineUniformLocation = extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint;
-	pub type GetSubroutineIndex = extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint;
-	pub type GetActiveSubroutineUniformiv = extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *GLint);
-	pub type GetActiveSubroutineUniformName = extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar);
-	pub type GetActiveSubroutineName = extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar);
-	pub type UniformSubroutinesuiv = extern "C" fn(shadertype: GLenum, count: GLsizei, indices: *GLuint);
-	pub type GetUniformSubroutineuiv = extern "C" fn(shadertype: GLenum, location: GLint, params: *GLuint);
-	pub type GetProgramStageiv = extern "C" fn(program: GLuint, shadertype: GLenum, pname: GLenum, values: *GLint);
-	
-	// Core Extension: ARB_tessellation_shader
-	pub type PatchParameteri = extern "C" fn(pname: GLenum, value: GLint);
-	pub type PatchParameterfv = extern "C" fn(pname: GLenum, values: *GLfloat);
-	
-	// Core Extension: ARB_transform_feedback2
-	pub type BindTransformFeedback = extern "C" fn(target: GLenum, id: GLuint);
-	pub type DeleteTransformFeedbacks = extern "C" fn(n: GLsizei, ids: *GLuint);
-	pub type GenTransformFeedbacks = extern "C" fn(n: GLsizei, ids: *GLuint);
-	pub type IsTransformFeedback = extern "C" fn(id: GLuint) -> GLboolean;
-	pub type PauseTransformFeedback = extern "C" fn();
-	pub type ResumeTransformFeedback = extern "C" fn();
-	pub type DrawTransformFeedback = extern "C" fn(mode: GLenum, id: GLuint);
-	
-	// Core Extension: ARB_transform_feedback3
-	pub type DrawTransformFeedbackStream = extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint);
-	pub type BeginQueryIndexed = extern "C" fn(target: GLenum, index: GLuint, id: GLuint);
-	pub type EndQueryIndexed = extern "C" fn(target: GLenum, index: GLuint);
-	pub type GetQueryIndexediv = extern "C" fn(target: GLenum, index: GLuint, pname: GLenum, params: *GLint);
-	
-	// Core Extension: ARB_ES2_compatibility
-	pub type ReleaseShaderCompiler = extern "C" fn();
-	pub type ShaderBinary = extern "C" fn(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei);
-	pub type GetShaderPrecisionFormat = extern "C" fn(shadertype: GLenum, precisiontype: GLenum, range: *GLint, precision: *GLint);
-	pub type DepthRangef = extern "C" fn(n: GLfloat, f: GLfloat);
-	pub type ClearDepthf = extern "C" fn(d: GLfloat);
-	
-	// Core Extension: ARB_get_program_binary
-	pub type GetProgramBinary = extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, binaryFormat: *GLenum, binary: *GLvoid);
-	pub type ProgramBinary = extern "C" fn(program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei);
-	pub type ProgramParameteri = extern "C" fn(program: GLuint, pname: GLenum, value: GLint);
-	
-	// Core Extension: ARB_separate_shader_objects
-	pub type UseProgramStages = extern "C" fn(pipeline: GLuint, stages: GLbitfield, program: GLuint);
-	pub type ActiveShaderProgram = extern "C" fn(pipeline: GLuint, program: GLuint);
-	pub type CreateShaderProgramv = extern "C" fn(type_: GLenum, count: GLsizei, strings: **GLchar) -> GLuint;
-	pub type BindProgramPipeline = extern "C" fn(pipeline: GLuint);
-	pub type DeleteProgramPipelines = extern "C" fn(n: GLsizei, pipelines: *GLuint);
-	pub type GenProgramPipelines = extern "C" fn(n: GLsizei, pipelines: *GLuint);
-	pub type IsProgramPipeline = extern "C" fn(pipeline: GLuint) -> GLboolean;
-	pub type GetProgramPipelineiv = extern "C" fn(pipeline: GLuint, pname: GLenum, params: *GLint);
-	pub type ProgramUniform1i = extern "C" fn(program: GLuint, location: GLint, v0: GLint);
-	pub type ProgramUniform1iv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint);
-	pub type ProgramUniform1f = extern "C" fn(program: GLuint, location: GLint, v0: GLfloat);
-	pub type ProgramUniform1fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat);
-	pub type ProgramUniform1d = extern "C" fn(program: GLuint, location: GLint, v0: GLdouble);
-	pub type ProgramUniform1dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble);
-	pub type ProgramUniform1ui = extern "C" fn(program: GLuint, location: GLint, v0: GLuint);
-	pub type ProgramUniform1uiv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint);
-	pub type ProgramUniform2i = extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint);
-	pub type ProgramUniform2iv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint);
-	pub type ProgramUniform2f = extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat);
-	pub type ProgramUniform2fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat);
-	pub type ProgramUniform2d = extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble);
-	pub type ProgramUniform2dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble);
-	pub type ProgramUniform2ui = extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint);
-	pub type ProgramUniform2uiv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint);
-	pub type ProgramUniform3i = extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint);
-	pub type ProgramUniform3iv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint);
-	pub type ProgramUniform3f = extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat);
-	pub type ProgramUniform3fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat);
-	pub type ProgramUniform3d = extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble);
-	pub type ProgramUniform3dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble);
-	pub type ProgramUniform3ui = extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint);
-	pub type ProgramUniform3uiv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint);
-	pub type ProgramUniform4i = extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint);
-	pub type ProgramUniform4iv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint);
-	pub type ProgramUniform4f = extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat);
-	pub type ProgramUniform4fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat);
-	pub type ProgramUniform4d = extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble);
-	pub type ProgramUniform4dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble);
-	pub type ProgramUniform4ui = extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint);
-	pub type ProgramUniform4uiv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint);
-	pub type ProgramUniformMatrix2fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix3fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix4fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix2dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix3dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix4dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix2x3fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix3x2fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix2x4fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix4x2fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix3x4fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix4x3fv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat);
-	pub type ProgramUniformMatrix2x3dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix3x2dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix2x4dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix4x2dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix3x4dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ProgramUniformMatrix4x3dv = extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble);
-	pub type ValidateProgramPipeline = extern "C" fn(pipeline: GLuint);
-	pub type GetProgramPipelineInfoLog = extern "C" fn(pipeline: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar);
-	
-	// Core Extension: ARB_vertex_attrib_64bit
-	pub type VertexAttribL1d = extern "C" fn(index: GLuint, x: GLdouble);
-	pub type VertexAttribL2d = extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble);
-	pub type VertexAttribL3d = extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble);
-	pub type VertexAttribL4d = extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble);
-	pub type VertexAttribL1dv = extern "C" fn(index: GLuint, v: *GLdouble);
-	pub type VertexAttribL2dv = extern "C" fn(index: GLuint, v: *GLdouble);
-	pub type VertexAttribL3dv = extern "C" fn(index: GLuint, v: *GLdouble);
-	pub type VertexAttribL4dv = extern "C" fn(index: GLuint, v: *GLdouble);
-	pub type VertexAttribLPointer = extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid);
-	pub type GetVertexAttribLdv = extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble);
-	
-	// Core Extension: ARB_viewport_array
-	pub type ViewportArrayv = extern "C" fn(first: GLuint, count: GLsizei, v: *GLfloat);
-	pub type ViewportIndexedf = extern "C" fn(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat);
-	pub type ViewportIndexedfv = extern "C" fn(index: GLuint, v: *GLfloat);
-	pub type ScissorArrayv = extern "C" fn(first: GLuint, count: GLsizei, v: *GLint);
-	pub type ScissorIndexed = extern "C" fn(index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei);
-	pub type ScissorIndexedv = extern "C" fn(index: GLuint, v: *GLint);
-	pub type DepthRangeArrayv = extern "C" fn(first: GLuint, count: GLsizei, v: *GLdouble);
-	pub type DepthRangeIndexed = extern "C" fn(index: GLuint, n: GLdouble, f: GLdouble);
-	pub type GetFloati_v = extern "C" fn(target: GLenum, index: GLuint, data: *GLfloat);
-	pub type GetDoublei_v = extern "C" fn(target: GLenum, index: GLuint, data: *GLdouble);
-	
-	// Core Extension: ARB_base_instance
-	pub type DrawArraysInstancedBaseInstance = extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint);
-	pub type DrawElementsInstancedBaseInstance = extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, baseinstance: GLuint);
-	pub type DrawElementsInstancedBaseVertexBaseInstance = extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint);
-	
-	// Core Extension: ARB_transform_feedback_instanced
-	pub type DrawTransformFeedbackInstanced = extern "C" fn(mode: GLenum, id: GLuint, instancecount: GLsizei);
-	pub type DrawTransformFeedbackStreamInstanced = extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei);
-	
-	// Core Extension: ARB_internalformat_query
-	pub type GetInternalformativ = extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint);
-	
-	// Core Extension: ARB_shader_atomic_counters
-	pub type GetActiveAtomicCounterBufferiv = extern "C" fn(program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *GLint);
-	
-	// Core Extension: ARB_shader_image_load_store
-	pub type BindImageTexture = extern "C" fn(unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum);
-	pub type MemoryBarrier = extern "C" fn(barriers: GLbitfield);
-	
-	// Core Extension: ARB_texture_storage
-	pub type TexStorage1D = extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei);
-	pub type TexStorage2D = extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei);
-	pub type TexStorage3D = extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei);
-	pub type TextureStorage1DEXT = extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei);
-	pub type TextureStorage2DEXT = extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei);
-	pub type TextureStorage3DEXT = extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei);
-	
-	// Core Extension: KHR_debug
-	pub type DebugMessageControl = extern "C" fn(source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean);
-	pub type DebugMessageInsert = extern "C" fn(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar);
-	pub type DebugMessageCallback = extern "C" fn(callback: GLDEBUGPROC, userParam: *GLvoid);
-	pub type GetDebugMessageLog = extern "C" fn(count: GLuint, bufsize: GLsizei, sources: *GLenum, types: *GLenum, ids: *GLuint, severities: *GLenum, lengths: *GLsizei, messageLog: *GLchar) -> GLuint;
-	pub type PushDebugGroup = extern "C" fn(source: GLenum, id: GLuint, length: GLsizei, message: *GLchar);
-	pub type PopDebugGroup = extern "C" fn();
-	pub type ObjectLabel = extern "C" fn(identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar);
-	pub type GetObjectLabel = extern "C" fn(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *GLsizei, label: *GLchar);
-	pub type ObjectPtrLabel = extern "C" fn(ptr: *GLvoid, length: GLsizei, label: *GLchar);
-	pub type GetObjectPtrLabel = extern "C" fn(ptr: *GLvoid, bufSize: GLsizei, length: *GLsizei, label: *GLchar);
-	
-	// Core Extension: ARB_clear_buffer_object
-	pub type ClearBufferData = extern "C" fn(target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid);
-	pub type ClearBufferSubData = extern "C" fn(target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *GLvoid);
-	pub type ClearNamedBufferDataEXT = extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid);
-	pub type ClearNamedBufferSubDataEXT = extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, offset: GLsizeiptr, size: GLsizeiptr, data: *GLvoid);
-	
-	// Core Extension: ARB_compute_shader
-	pub type DispatchCompute = extern "C" fn(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint);
-	pub type DispatchComputeIndirect = extern "C" fn(indirect: GLintptr);
-	
-	// Core Extension: ARB_copy_image
-	pub type CopyImageSubData = extern "C" fn(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei);
-	
-	// Core Extension: ARB_framebuffer_no_attachments
-	pub type FramebufferParameteri = extern "C" fn(target: GLenum, pname: GLenum, param: GLint);
-	pub type GetFramebufferParameteriv = extern "C" fn(target: GLenum, pname: GLenum, params: *GLint);
-	pub type NamedFramebufferParameteriEXT = extern "C" fn(framebuffer: GLuint, pname: GLenum, param: GLint);
-	pub type GetNamedFramebufferParameterivEXT = extern "C" fn(framebuffer: GLuint, pname: GLenum, params: *GLint);
-	
-	// Core Extension: ARB_internalformat_query2
-	pub type GetInternalformati64v = extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint64);
-	
-	// Core Extension: ARB_invalidate_subdata
-	pub type InvalidateTexSubImage = extern "C" fn(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei);
-	pub type InvalidateTexImage = extern "C" fn(texture: GLuint, level: GLint);
-	pub type InvalidateBufferSubData = extern "C" fn(buffer: GLuint, offset: GLintptr, length: GLsizeiptr);
-	pub type InvalidateBufferData = extern "C" fn(buffer: GLuint);
-	pub type InvalidateFramebuffer = extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum);
-	pub type InvalidateSubFramebuffer = extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei);
-	
-	// Core Extension: ARB_multi_draw_indirect
-	pub type MultiDrawArraysIndirect = extern "C" fn(mode: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei);
-	pub type MultiDrawElementsIndirect = extern "C" fn(mode: GLenum, type_: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei);
-	
-	// Core Extension: ARB_program_interface_query
-	pub type GetProgramInterfaceiv = extern "C" fn(program: GLuint, programInterface: GLenum, pname: GLenum, params: *GLint);
-	pub type GetProgramResourceIndex = extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint;
-	pub type GetProgramResourceName = extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *GLsizei, name: *GLchar);
-	pub type GetProgramResourceiv = extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *GLsizei, params: *GLint);
-	pub type GetProgramResourceLocation = extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint;
-	pub type GetProgramResourceLocationIndex = extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint;
-	
-	// Core Extension: ARB_shader_storage_buffer_object
-	pub type ShaderStorageBlockBinding = extern "C" fn(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint);
-	
-	// Core Extension: ARB_texture_buffer_range
-	pub type TexBufferRange = extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr);
-	pub type TextureBufferRangeEXT = extern "C" fn(texture: GLuint, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr);
-	
-	// Core Extension: ARB_texture_storage_multisample
-	pub type TexStorage2DMultisample = extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean);
-	pub type TexStorage3DMultisample = extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean);
-	pub type TextureStorage2DMultisampleEXT = extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean);
-	pub type TextureStorage3DMultisampleEXT = extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean);
-	
-	// Core Extension: ARB_texture_view
-	pub type TextureView = extern "C" fn(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint);
-	
-	// Core Extension: ARB_vertex_attrib_binding
-	pub type BindVertexBuffer = extern "C" fn(bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei);
-	pub type VertexAttribFormat = extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint);
-	pub type VertexAttribIFormat = extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint);
-	pub type VertexAttribLFormat = extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint);
-	pub type VertexAttribBinding = extern "C" fn(attribindex: GLuint, bindingindex: GLuint);
-	pub type VertexBindingDivisor = extern "C" fn(bindingindex: GLuint, divisor: GLuint);
-	pub type VertexArrayBindVertexBufferEXT = extern "C" fn(vaobj: GLuint, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei);
-	pub type VertexArrayVertexAttribFormatEXT = extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint);
-	pub type VertexArrayVertexAttribIFormatEXT = extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint);
-	pub type VertexArrayVertexAttribLFormatEXT = extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint);
-	pub type VertexArrayVertexAttribBindingEXT = extern "C" fn(vaobj: GLuint, attribindex: GLuint, bindingindex: GLuint);
-	pub type VertexArrayVertexBindingDivisorEXT = extern "C" fn(vaobj: GLuint, bindingindex: GLuint, divisor: GLuint);
-	
-}
-
 pub struct FPointer<F> { f: F, is_loaded: bool }
+
+priv impl<F> FPointer<F> {
+    fn load(fn_ptr: *c_void, def: F) -> FPointer<F> {
+        do fn_ptr.to_option().map_default(
+            FPointer { f: def, is_loaded: false }
+        ) |_| {
+            FPointer { f: cast::transmute(fn_ptr), is_loaded: true }
+        }
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -2276,662 +1616,662 @@ pub struct FPointer<F> { f: F, is_loaded: bool }
 
 pub struct GL {
 	// Version: 1.1
-	CullFace: FPointer<ftypes::CullFace>,
-	FrontFace: FPointer<ftypes::FrontFace>,
-	Hint: FPointer<ftypes::Hint>,
-	LineWidth: FPointer<ftypes::LineWidth>,
-	PointSize: FPointer<ftypes::PointSize>,
-	PolygonMode: FPointer<ftypes::PolygonMode>,
-	Scissor: FPointer<ftypes::Scissor>,
-	TexParameterf: FPointer<ftypes::TexParameterf>,
-	TexParameterfv: FPointer<ftypes::TexParameterfv>,
-	TexParameteri: FPointer<ftypes::TexParameteri>,
-	TexParameteriv: FPointer<ftypes::TexParameteriv>,
-	TexImage1D: FPointer<ftypes::TexImage1D>,
-	TexImage2D: FPointer<ftypes::TexImage2D>,
-	DrawBuffer: FPointer<ftypes::DrawBuffer>,
-	Clear: FPointer<ftypes::Clear>,
-	ClearColor: FPointer<ftypes::ClearColor>,
-	ClearStencil: FPointer<ftypes::ClearStencil>,
-	ClearDepth: FPointer<ftypes::ClearDepth>,
-	StencilMask: FPointer<ftypes::StencilMask>,
-	ColorMask: FPointer<ftypes::ColorMask>,
-	DepthMask: FPointer<ftypes::DepthMask>,
-	Disable: FPointer<ftypes::Disable>,
-	Enable: FPointer<ftypes::Enable>,
-	Finish: FPointer<ftypes::Finish>,
-	Flush: FPointer<ftypes::Flush>,
-	BlendFunc: FPointer<ftypes::BlendFunc>,
-	LogicOp: FPointer<ftypes::LogicOp>,
-	StencilFunc: FPointer<ftypes::StencilFunc>,
-	StencilOp: FPointer<ftypes::StencilOp>,
-	DepthFunc: FPointer<ftypes::DepthFunc>,
-	PixelStoref: FPointer<ftypes::PixelStoref>,
-	PixelStorei: FPointer<ftypes::PixelStorei>,
-	ReadBuffer: FPointer<ftypes::ReadBuffer>,
-	ReadPixels: FPointer<ftypes::ReadPixels>,
-	GetBooleanv: FPointer<ftypes::GetBooleanv>,
-	GetDoublev: FPointer<ftypes::GetDoublev>,
-	GetError: FPointer<ftypes::GetError>,
-	GetFloatv: FPointer<ftypes::GetFloatv>,
-	GetIntegerv: FPointer<ftypes::GetIntegerv>,
-	GetString: FPointer<ftypes::GetString>,
-	GetTexImage: FPointer<ftypes::GetTexImage>,
-	GetTexParameterfv: FPointer<ftypes::GetTexParameterfv>,
-	GetTexParameteriv: FPointer<ftypes::GetTexParameteriv>,
-	GetTexLevelParameterfv: FPointer<ftypes::GetTexLevelParameterfv>,
-	GetTexLevelParameteriv: FPointer<ftypes::GetTexLevelParameteriv>,
-	IsEnabled: FPointer<ftypes::IsEnabled>,
-	DepthRange: FPointer<ftypes::DepthRange>,
-	Viewport: FPointer<ftypes::Viewport>,
-	DrawArrays: FPointer<ftypes::DrawArrays>,
-	DrawElements: FPointer<ftypes::DrawElements>,
-	GetPointerv: FPointer<ftypes::GetPointerv>,
-	PolygonOffset: FPointer<ftypes::PolygonOffset>,
-	CopyTexImage1D: FPointer<ftypes::CopyTexImage1D>,
-	CopyTexImage2D: FPointer<ftypes::CopyTexImage2D>,
-	CopyTexSubImage1D: FPointer<ftypes::CopyTexSubImage1D>,
-	CopyTexSubImage2D: FPointer<ftypes::CopyTexSubImage2D>,
-	TexSubImage1D: FPointer<ftypes::TexSubImage1D>,
-	TexSubImage2D: FPointer<ftypes::TexSubImage2D>,
-	BindTexture: FPointer<ftypes::BindTexture>,
-	DeleteTextures: FPointer<ftypes::DeleteTextures>,
-	GenTextures: FPointer<ftypes::GenTextures>,
-	IsTexture: FPointer<ftypes::IsTexture>,
-	Indexub: FPointer<ftypes::Indexub>,
-	Indexubv: FPointer<ftypes::Indexubv>,
+	CullFace: FPointer<extern "C" fn(mode: GLenum) -> void>,
+	FrontFace: FPointer<extern "C" fn(mode: GLenum) -> void>,
+	Hint: FPointer<extern "C" fn(target: GLenum, mode: GLenum) -> void>,
+	LineWidth: FPointer<extern "C" fn(width: GLfloat) -> void>,
+	PointSize: FPointer<extern "C" fn(size: GLfloat) -> void>,
+	PolygonMode: FPointer<extern "C" fn(face: GLenum, mode: GLenum) -> void>,
+	Scissor: FPointer<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> void>,
+	TexParameterf: FPointer<extern "C" fn(target: GLenum, pname: GLenum, param: GLfloat) -> void>,
+	TexParameterfv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat) -> void>,
+	TexParameteri: FPointer<extern "C" fn(target: GLenum, pname: GLenum, param: GLint) -> void>,
+	TexParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	TexImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	TexImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	DrawBuffer: FPointer<extern "C" fn(mode: GLenum) -> void>,
+	Clear: FPointer<extern "C" fn(mask: GLbitfield) -> void>,
+	ClearColor: FPointer<extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) -> void>,
+	ClearStencil: FPointer<extern "C" fn(s: GLint) -> void>,
+	ClearDepth: FPointer<extern "C" fn(depth: GLdouble) -> void>,
+	StencilMask: FPointer<extern "C" fn(mask: GLuint) -> void>,
+	ColorMask: FPointer<extern "C" fn(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean) -> void>,
+	DepthMask: FPointer<extern "C" fn(flag: GLboolean) -> void>,
+	Disable: FPointer<extern "C" fn(cap: GLenum) -> void>,
+	Enable: FPointer<extern "C" fn(cap: GLenum) -> void>,
+	Finish: FPointer<extern "C" fn() -> void>,
+	Flush: FPointer<extern "C" fn() -> void>,
+	BlendFunc: FPointer<extern "C" fn(sfactor: GLenum, dfactor: GLenum) -> void>,
+	LogicOp: FPointer<extern "C" fn(opcode: GLenum) -> void>,
+	StencilFunc: FPointer<extern "C" fn(func: GLenum, ref_: GLint, mask: GLuint) -> void>,
+	StencilOp: FPointer<extern "C" fn(fail: GLenum, zfail: GLenum, zpass: GLenum) -> void>,
+	DepthFunc: FPointer<extern "C" fn(func: GLenum) -> void>,
+	PixelStoref: FPointer<extern "C" fn(pname: GLenum, param: GLfloat) -> void>,
+	PixelStorei: FPointer<extern "C" fn(pname: GLenum, param: GLint) -> void>,
+	ReadBuffer: FPointer<extern "C" fn(mode: GLenum) -> void>,
+	ReadPixels: FPointer<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	GetBooleanv: FPointer<extern "C" fn(pname: GLenum, params: *GLboolean) -> void>,
+	GetDoublev: FPointer<extern "C" fn(pname: GLenum, params: *GLdouble) -> void>,
+	GetError: FPointer<extern "C" fn() -> GLenum>,
+	GetFloatv: FPointer<extern "C" fn(pname: GLenum, params: *GLfloat) -> void>,
+	GetIntegerv: FPointer<extern "C" fn(pname: GLenum, params: *GLint) -> void>,
+	GetString: FPointer<extern "C" fn(name: GLenum) -> const GLubyte *>,
+	GetTexImage: FPointer<extern "C" fn(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	GetTexParameterfv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat) -> void>,
+	GetTexParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	GetTexLevelParameterfv: FPointer<extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLfloat) -> void>,
+	GetTexLevelParameteriv: FPointer<extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLint) -> void>,
+	IsEnabled: FPointer<extern "C" fn(cap: GLenum) -> GLboolean>,
+	DepthRange: FPointer<extern "C" fn(near: GLdouble, far: GLdouble) -> void>,
+	Viewport: FPointer<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> void>,
+	DrawArrays: FPointer<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei) -> void>,
+	DrawElements: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid) -> void>,
+	GetPointerv: FPointer<extern "C" fn(pname: GLenum, params: *GLvoid*) -> void>,
+	PolygonOffset: FPointer<extern "C" fn(factor: GLfloat, units: GLfloat) -> void>,
+	CopyTexImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint) -> void>,
+	CopyTexImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint) -> void>,
+	CopyTexSubImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei) -> void>,
+	CopyTexSubImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> void>,
+	TexSubImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	TexSubImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	BindTexture: FPointer<extern "C" fn(target: GLenum, texture: GLuint) -> void>,
+	DeleteTextures: FPointer<extern "C" fn(n: GLsizei, textures: *GLuint) -> void>,
+	GenTextures: FPointer<extern "C" fn(n: GLsizei, textures: *GLuint) -> void>,
+	IsTexture: FPointer<extern "C" fn(texture: GLuint) -> GLboolean>,
+	Indexub: FPointer<extern "C" fn(c: GLubyte) -> void>,
+	Indexubv: FPointer<extern "C" fn(c: *GLubyte) -> void>,
 	
 	// Version: 1.2
-	BlendColor: FPointer<ftypes::BlendColor>,
-	BlendEquation: FPointer<ftypes::BlendEquation>,
-	DrawRangeElements: FPointer<ftypes::DrawRangeElements>,
-	TexImage3D: FPointer<ftypes::TexImage3D>,
-	TexSubImage3D: FPointer<ftypes::TexSubImage3D>,
-	CopyTexSubImage3D: FPointer<ftypes::CopyTexSubImage3D>,
+	BlendColor: FPointer<extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) -> void>,
+	BlendEquation: FPointer<extern "C" fn(mode: GLenum) -> void>,
+	DrawRangeElements: FPointer<extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid) -> void>,
+	TexImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	TexSubImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) -> void>,
+	CopyTexSubImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> void>,
 	
 	// Version: 1.3
-	ActiveTexture: FPointer<ftypes::ActiveTexture>,
-	SampleCoverage: FPointer<ftypes::SampleCoverage>,
-	CompressedTexImage3D: FPointer<ftypes::CompressedTexImage3D>,
-	CompressedTexImage2D: FPointer<ftypes::CompressedTexImage2D>,
-	CompressedTexImage1D: FPointer<ftypes::CompressedTexImage1D>,
-	CompressedTexSubImage3D: FPointer<ftypes::CompressedTexSubImage3D>,
-	CompressedTexSubImage2D: FPointer<ftypes::CompressedTexSubImage2D>,
-	CompressedTexSubImage1D: FPointer<ftypes::CompressedTexSubImage1D>,
-	GetCompressedTexImage: FPointer<ftypes::GetCompressedTexImage>,
+	ActiveTexture: FPointer<extern "C" fn(texture: GLenum) -> void>,
+	SampleCoverage: FPointer<extern "C" fn(value: GLfloat, invert: GLboolean) -> void>,
+	CompressedTexImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) -> void>,
+	CompressedTexImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) -> void>,
+	CompressedTexImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) -> void>,
+	CompressedTexSubImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) -> void>,
+	CompressedTexSubImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) -> void>,
+	CompressedTexSubImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) -> void>,
+	GetCompressedTexImage: FPointer<extern "C" fn(target: GLenum, level: GLint, img: *GLvoid) -> void>,
 	
 	// Version: 1.4
-	BlendFuncSeparate: FPointer<ftypes::BlendFuncSeparate>,
-	MultiDrawArrays: FPointer<ftypes::MultiDrawArrays>,
-	MultiDrawElements: FPointer<ftypes::MultiDrawElements>,
-	PointParameterf: FPointer<ftypes::PointParameterf>,
-	PointParameterfv: FPointer<ftypes::PointParameterfv>,
-	PointParameteri: FPointer<ftypes::PointParameteri>,
-	PointParameteriv: FPointer<ftypes::PointParameteriv>,
+	BlendFuncSeparate: FPointer<extern "C" fn(sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum) -> void>,
+	MultiDrawArrays: FPointer<extern "C" fn(mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei) -> void>,
+	MultiDrawElements: FPointer<extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: *GLvoid* const, drawcount: GLsizei) -> void>,
+	PointParameterf: FPointer<extern "C" fn(pname: GLenum, param: GLfloat) -> void>,
+	PointParameterfv: FPointer<extern "C" fn(pname: GLenum, params: *GLfloat) -> void>,
+	PointParameteri: FPointer<extern "C" fn(pname: GLenum, param: GLint) -> void>,
+	PointParameteriv: FPointer<extern "C" fn(pname: GLenum, params: *GLint) -> void>,
 	
 	// Version: 1.5
-	GenQueries: FPointer<ftypes::GenQueries>,
-	DeleteQueries: FPointer<ftypes::DeleteQueries>,
-	IsQuery: FPointer<ftypes::IsQuery>,
-	BeginQuery: FPointer<ftypes::BeginQuery>,
-	EndQuery: FPointer<ftypes::EndQuery>,
-	GetQueryiv: FPointer<ftypes::GetQueryiv>,
-	GetQueryObjectiv: FPointer<ftypes::GetQueryObjectiv>,
-	GetQueryObjectuiv: FPointer<ftypes::GetQueryObjectuiv>,
-	BindBuffer: FPointer<ftypes::BindBuffer>,
-	DeleteBuffers: FPointer<ftypes::DeleteBuffers>,
-	GenBuffers: FPointer<ftypes::GenBuffers>,
-	IsBuffer: FPointer<ftypes::IsBuffer>,
-	BufferData: FPointer<ftypes::BufferData>,
-	BufferSubData: FPointer<ftypes::BufferSubData>,
-	GetBufferSubData: FPointer<ftypes::GetBufferSubData>,
-	MapBuffer: FPointer<ftypes::MapBuffer>,
-	UnmapBuffer: FPointer<ftypes::UnmapBuffer>,
-	GetBufferParameteriv: FPointer<ftypes::GetBufferParameteriv>,
-	GetBufferPointerv: FPointer<ftypes::GetBufferPointerv>,
+	GenQueries: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint) -> void>,
+	DeleteQueries: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint) -> void>,
+	IsQuery: FPointer<extern "C" fn(id: GLuint) -> GLboolean>,
+	BeginQuery: FPointer<extern "C" fn(target: GLenum, id: GLuint) -> void>,
+	EndQuery: FPointer<extern "C" fn(target: GLenum) -> void>,
+	GetQueryiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	GetQueryObjectiv: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetQueryObjectuiv: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint) -> void>,
+	BindBuffer: FPointer<extern "C" fn(target: GLenum, buffer: GLuint) -> void>,
+	DeleteBuffers: FPointer<extern "C" fn(n: GLsizei, buffers: *GLuint) -> void>,
+	GenBuffers: FPointer<extern "C" fn(n: GLsizei, buffers: *GLuint) -> void>,
+	IsBuffer: FPointer<extern "C" fn(buffer: GLuint) -> GLboolean>,
+	BufferData: FPointer<extern "C" fn(target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum) -> void>,
+	BufferSubData: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid) -> void>,
+	GetBufferSubData: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid) -> void>,
+	MapBuffer: FPointer<extern "C" fn(target: GLenum, access: GLenum) -> GLvoid*>,
+	UnmapBuffer: FPointer<extern "C" fn(target: GLenum) -> GLboolean>,
+	GetBufferParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	GetBufferPointerv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLvoid*) -> void>,
 	
 	// Version: 2.0
-	BlendEquationSeparate: FPointer<ftypes::BlendEquationSeparate>,
-	DrawBuffers: FPointer<ftypes::DrawBuffers>,
-	StencilOpSeparate: FPointer<ftypes::StencilOpSeparate>,
-	StencilFuncSeparate: FPointer<ftypes::StencilFuncSeparate>,
-	StencilMaskSeparate: FPointer<ftypes::StencilMaskSeparate>,
-	AttachShader: FPointer<ftypes::AttachShader>,
-	BindAttribLocation: FPointer<ftypes::BindAttribLocation>,
-	CompileShader: FPointer<ftypes::CompileShader>,
-	CreateProgram: FPointer<ftypes::CreateProgram>,
-	CreateShader: FPointer<ftypes::CreateShader>,
-	DeleteProgram: FPointer<ftypes::DeleteProgram>,
-	DeleteShader: FPointer<ftypes::DeleteShader>,
-	DetachShader: FPointer<ftypes::DetachShader>,
-	DisableVertexAttribArray: FPointer<ftypes::DisableVertexAttribArray>,
-	EnableVertexAttribArray: FPointer<ftypes::EnableVertexAttribArray>,
-	GetActiveAttrib: FPointer<ftypes::GetActiveAttrib>,
-	GetActiveUniform: FPointer<ftypes::GetActiveUniform>,
-	GetAttachedShaders: FPointer<ftypes::GetAttachedShaders>,
-	GetAttribLocation: FPointer<ftypes::GetAttribLocation>,
-	GetProgramiv: FPointer<ftypes::GetProgramiv>,
-	GetProgramInfoLog: FPointer<ftypes::GetProgramInfoLog>,
-	GetShaderiv: FPointer<ftypes::GetShaderiv>,
-	GetShaderInfoLog: FPointer<ftypes::GetShaderInfoLog>,
-	GetShaderSource: FPointer<ftypes::GetShaderSource>,
-	GetUniformLocation: FPointer<ftypes::GetUniformLocation>,
-	GetUniformfv: FPointer<ftypes::GetUniformfv>,
-	GetUniformiv: FPointer<ftypes::GetUniformiv>,
-	GetVertexAttribdv: FPointer<ftypes::GetVertexAttribdv>,
-	GetVertexAttribfv: FPointer<ftypes::GetVertexAttribfv>,
-	GetVertexAttribiv: FPointer<ftypes::GetVertexAttribiv>,
-	GetVertexAttribPointerv: FPointer<ftypes::GetVertexAttribPointerv>,
-	IsProgram: FPointer<ftypes::IsProgram>,
-	IsShader: FPointer<ftypes::IsShader>,
-	LinkProgram: FPointer<ftypes::LinkProgram>,
-	ShaderSource: FPointer<ftypes::ShaderSource>,
-	UseProgram: FPointer<ftypes::UseProgram>,
-	Uniform1f: FPointer<ftypes::Uniform1f>,
-	Uniform2f: FPointer<ftypes::Uniform2f>,
-	Uniform3f: FPointer<ftypes::Uniform3f>,
-	Uniform4f: FPointer<ftypes::Uniform4f>,
-	Uniform1i: FPointer<ftypes::Uniform1i>,
-	Uniform2i: FPointer<ftypes::Uniform2i>,
-	Uniform3i: FPointer<ftypes::Uniform3i>,
-	Uniform4i: FPointer<ftypes::Uniform4i>,
-	Uniform1fv: FPointer<ftypes::Uniform1fv>,
-	Uniform2fv: FPointer<ftypes::Uniform2fv>,
-	Uniform3fv: FPointer<ftypes::Uniform3fv>,
-	Uniform4fv: FPointer<ftypes::Uniform4fv>,
-	Uniform1iv: FPointer<ftypes::Uniform1iv>,
-	Uniform2iv: FPointer<ftypes::Uniform2iv>,
-	Uniform3iv: FPointer<ftypes::Uniform3iv>,
-	Uniform4iv: FPointer<ftypes::Uniform4iv>,
-	UniformMatrix2fv: FPointer<ftypes::UniformMatrix2fv>,
-	UniformMatrix3fv: FPointer<ftypes::UniformMatrix3fv>,
-	UniformMatrix4fv: FPointer<ftypes::UniformMatrix4fv>,
-	ValidateProgram: FPointer<ftypes::ValidateProgram>,
-	VertexAttribPointer: FPointer<ftypes::VertexAttribPointer>,
+	BlendEquationSeparate: FPointer<extern "C" fn(modeRGB: GLenum, modeAlpha: GLenum) -> void>,
+	DrawBuffers: FPointer<extern "C" fn(n: GLsizei, bufs: *GLenum) -> void>,
+	StencilOpSeparate: FPointer<extern "C" fn(face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum) -> void>,
+	StencilFuncSeparate: FPointer<extern "C" fn(face: GLenum, func: GLenum, ref_: GLint, mask: GLuint) -> void>,
+	StencilMaskSeparate: FPointer<extern "C" fn(face: GLenum, mask: GLuint) -> void>,
+	AttachShader: FPointer<extern "C" fn(program: GLuint, shader: GLuint) -> void>,
+	BindAttribLocation: FPointer<extern "C" fn(program: GLuint, index: GLuint, name: *GLchar) -> void>,
+	CompileShader: FPointer<extern "C" fn(shader: GLuint) -> void>,
+	CreateProgram: FPointer<extern "C" fn() -> GLuint>,
+	CreateShader: FPointer<extern "C" fn(type_: GLenum) -> GLuint>,
+	DeleteProgram: FPointer<extern "C" fn(program: GLuint) -> void>,
+	DeleteShader: FPointer<extern "C" fn(shader: GLuint) -> void>,
+	DetachShader: FPointer<extern "C" fn(program: GLuint, shader: GLuint) -> void>,
+	DisableVertexAttribArray: FPointer<extern "C" fn(index: GLuint) -> void>,
+	EnableVertexAttribArray: FPointer<extern "C" fn(index: GLuint) -> void>,
+	GetActiveAttrib: FPointer<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar) -> void>,
+	GetActiveUniform: FPointer<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar) -> void>,
+	GetAttachedShaders: FPointer<extern "C" fn(program: GLuint, maxCount: GLsizei, count: *GLsizei, obj: *GLuint) -> void>,
+	GetAttribLocation: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
+	GetProgramiv: FPointer<extern "C" fn(program: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetProgramInfoLog: FPointer<extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) -> void>,
+	GetShaderiv: FPointer<extern "C" fn(shader: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetShaderInfoLog: FPointer<extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) -> void>,
+	GetShaderSource: FPointer<extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, source: *GLchar) -> void>,
+	GetUniformLocation: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
+	GetUniformfv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLfloat) -> void>,
+	GetUniformiv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLint) -> void>,
+	GetVertexAttribdv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble) -> void>,
+	GetVertexAttribfv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLfloat) -> void>,
+	GetVertexAttribiv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetVertexAttribPointerv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, pointer: *GLvoid*) -> void>,
+	IsProgram: FPointer<extern "C" fn(program: GLuint) -> GLboolean>,
+	IsShader: FPointer<extern "C" fn(shader: GLuint) -> GLboolean>,
+	LinkProgram: FPointer<extern "C" fn(program: GLuint) -> void>,
+	ShaderSource: FPointer<extern "C" fn(shader: GLuint, count: GLsizei, string: *GLchar* const, length: *GLint) -> void>,
+	UseProgram: FPointer<extern "C" fn(program: GLuint) -> void>,
+	Uniform1f: FPointer<extern "C" fn(location: GLint, v0: GLfloat) -> void>,
+	Uniform2f: FPointer<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat) -> void>,
+	Uniform3f: FPointer<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) -> void>,
+	Uniform4f: FPointer<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) -> void>,
+	Uniform1i: FPointer<extern "C" fn(location: GLint, v0: GLint) -> void>,
+	Uniform2i: FPointer<extern "C" fn(location: GLint, v0: GLint, v1: GLint) -> void>,
+	Uniform3i: FPointer<extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint) -> void>,
+	Uniform4i: FPointer<extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) -> void>,
+	Uniform1fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	Uniform2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	Uniform3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	Uniform4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	Uniform1iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint) -> void>,
+	Uniform2iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint) -> void>,
+	Uniform3iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint) -> void>,
+	Uniform4iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint) -> void>,
+	UniformMatrix2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	UniformMatrix3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	UniformMatrix4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ValidateProgram: FPointer<extern "C" fn(program: GLuint) -> void>,
+	VertexAttribPointer: FPointer<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid) -> void>,
 	
 	// Version: 2.1
-	UniformMatrix2x3fv: FPointer<ftypes::UniformMatrix2x3fv>,
-	UniformMatrix3x2fv: FPointer<ftypes::UniformMatrix3x2fv>,
-	UniformMatrix2x4fv: FPointer<ftypes::UniformMatrix2x4fv>,
-	UniformMatrix4x2fv: FPointer<ftypes::UniformMatrix4x2fv>,
-	UniformMatrix3x4fv: FPointer<ftypes::UniformMatrix3x4fv>,
-	UniformMatrix4x3fv: FPointer<ftypes::UniformMatrix4x3fv>,
+	UniformMatrix2x3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	UniformMatrix3x2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	UniformMatrix2x4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	UniformMatrix4x2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	UniformMatrix3x4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	UniformMatrix4x3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
 	
 	// Version: 3.0
-	ColorMaski: FPointer<ftypes::ColorMaski>,
-	GetBooleani_v: FPointer<ftypes::GetBooleani_v>,
-	GetIntegeri_v: FPointer<ftypes::GetIntegeri_v>,
-	Enablei: FPointer<ftypes::Enablei>,
-	Disablei: FPointer<ftypes::Disablei>,
-	IsEnabledi: FPointer<ftypes::IsEnabledi>,
-	BeginTransformFeedback: FPointer<ftypes::BeginTransformFeedback>,
-	EndTransformFeedback: FPointer<ftypes::EndTransformFeedback>,
-	BindBufferRange: FPointer<ftypes::BindBufferRange>,
-	BindBufferBase: FPointer<ftypes::BindBufferBase>,
-	TransformFeedbackVaryings: FPointer<ftypes::TransformFeedbackVaryings>,
-	GetTransformFeedbackVarying: FPointer<ftypes::GetTransformFeedbackVarying>,
-	ClampColor: FPointer<ftypes::ClampColor>,
-	BeginConditionalRender: FPointer<ftypes::BeginConditionalRender>,
-	EndConditionalRender: FPointer<ftypes::EndConditionalRender>,
-	VertexAttribIPointer: FPointer<ftypes::VertexAttribIPointer>,
-	GetVertexAttribIiv: FPointer<ftypes::GetVertexAttribIiv>,
-	GetVertexAttribIuiv: FPointer<ftypes::GetVertexAttribIuiv>,
-	VertexAttribI1i: FPointer<ftypes::VertexAttribI1i>,
-	VertexAttribI2i: FPointer<ftypes::VertexAttribI2i>,
-	VertexAttribI3i: FPointer<ftypes::VertexAttribI3i>,
-	VertexAttribI4i: FPointer<ftypes::VertexAttribI4i>,
-	VertexAttribI1ui: FPointer<ftypes::VertexAttribI1ui>,
-	VertexAttribI2ui: FPointer<ftypes::VertexAttribI2ui>,
-	VertexAttribI3ui: FPointer<ftypes::VertexAttribI3ui>,
-	VertexAttribI4ui: FPointer<ftypes::VertexAttribI4ui>,
-	VertexAttribI1iv: FPointer<ftypes::VertexAttribI1iv>,
-	VertexAttribI2iv: FPointer<ftypes::VertexAttribI2iv>,
-	VertexAttribI3iv: FPointer<ftypes::VertexAttribI3iv>,
-	VertexAttribI4iv: FPointer<ftypes::VertexAttribI4iv>,
-	VertexAttribI1uiv: FPointer<ftypes::VertexAttribI1uiv>,
-	VertexAttribI2uiv: FPointer<ftypes::VertexAttribI2uiv>,
-	VertexAttribI3uiv: FPointer<ftypes::VertexAttribI3uiv>,
-	VertexAttribI4uiv: FPointer<ftypes::VertexAttribI4uiv>,
-	VertexAttribI4bv: FPointer<ftypes::VertexAttribI4bv>,
-	VertexAttribI4sv: FPointer<ftypes::VertexAttribI4sv>,
-	VertexAttribI4ubv: FPointer<ftypes::VertexAttribI4ubv>,
-	VertexAttribI4usv: FPointer<ftypes::VertexAttribI4usv>,
-	GetUniformuiv: FPointer<ftypes::GetUniformuiv>,
-	BindFragDataLocation: FPointer<ftypes::BindFragDataLocation>,
-	GetFragDataLocation: FPointer<ftypes::GetFragDataLocation>,
-	Uniform1ui: FPointer<ftypes::Uniform1ui>,
-	Uniform2ui: FPointer<ftypes::Uniform2ui>,
-	Uniform3ui: FPointer<ftypes::Uniform3ui>,
-	Uniform4ui: FPointer<ftypes::Uniform4ui>,
-	Uniform1uiv: FPointer<ftypes::Uniform1uiv>,
-	Uniform2uiv: FPointer<ftypes::Uniform2uiv>,
-	Uniform3uiv: FPointer<ftypes::Uniform3uiv>,
-	Uniform4uiv: FPointer<ftypes::Uniform4uiv>,
-	TexParameterIiv: FPointer<ftypes::TexParameterIiv>,
-	TexParameterIuiv: FPointer<ftypes::TexParameterIuiv>,
-	GetTexParameterIiv: FPointer<ftypes::GetTexParameterIiv>,
-	GetTexParameterIuiv: FPointer<ftypes::GetTexParameterIuiv>,
-	ClearBufferiv: FPointer<ftypes::ClearBufferiv>,
-	ClearBufferuiv: FPointer<ftypes::ClearBufferuiv>,
-	ClearBufferfv: FPointer<ftypes::ClearBufferfv>,
-	ClearBufferfi: FPointer<ftypes::ClearBufferfi>,
-	GetStringi: FPointer<ftypes::GetStringi>,
+	ColorMaski: FPointer<extern "C" fn(index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean) -> void>,
+	GetBooleani_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLboolean) -> void>,
+	GetIntegeri_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLint) -> void>,
+	Enablei: FPointer<extern "C" fn(target: GLenum, index: GLuint) -> void>,
+	Disablei: FPointer<extern "C" fn(target: GLenum, index: GLuint) -> void>,
+	IsEnabledi: FPointer<extern "C" fn(target: GLenum, index: GLuint) -> GLboolean>,
+	BeginTransformFeedback: FPointer<extern "C" fn(primitiveMode: GLenum) -> void>,
+	EndTransformFeedback: FPointer<extern "C" fn() -> void>,
+	BindBufferRange: FPointer<extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) -> void>,
+	BindBufferBase: FPointer<extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint) -> void>,
+	TransformFeedbackVaryings: FPointer<extern "C" fn(program: GLuint, count: GLsizei, varyings: *GLchar* const, bufferMode: GLenum) -> void>,
+	GetTransformFeedbackVarying: FPointer<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLsizei, type_: *GLenum, name: *GLchar) -> void>,
+	ClampColor: FPointer<extern "C" fn(target: GLenum, clamp: GLenum) -> void>,
+	BeginConditionalRender: FPointer<extern "C" fn(id: GLuint, mode: GLenum) -> void>,
+	EndConditionalRender: FPointer<extern "C" fn() -> void>,
+	VertexAttribIPointer: FPointer<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) -> void>,
+	GetVertexAttribIiv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetVertexAttribIuiv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLuint) -> void>,
+	VertexAttribI1i: FPointer<extern "C" fn(index: GLuint, x: GLint) -> void>,
+	VertexAttribI2i: FPointer<extern "C" fn(index: GLuint, x: GLint, y: GLint) -> void>,
+	VertexAttribI3i: FPointer<extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint) -> void>,
+	VertexAttribI4i: FPointer<extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint) -> void>,
+	VertexAttribI1ui: FPointer<extern "C" fn(index: GLuint, x: GLuint) -> void>,
+	VertexAttribI2ui: FPointer<extern "C" fn(index: GLuint, x: GLuint, y: GLuint) -> void>,
+	VertexAttribI3ui: FPointer<extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint) -> void>,
+	VertexAttribI4ui: FPointer<extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint) -> void>,
+	VertexAttribI1iv: FPointer<extern "C" fn(index: GLuint, v: *GLint) -> void>,
+	VertexAttribI2iv: FPointer<extern "C" fn(index: GLuint, v: *GLint) -> void>,
+	VertexAttribI3iv: FPointer<extern "C" fn(index: GLuint, v: *GLint) -> void>,
+	VertexAttribI4iv: FPointer<extern "C" fn(index: GLuint, v: *GLint) -> void>,
+	VertexAttribI1uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint) -> void>,
+	VertexAttribI2uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint) -> void>,
+	VertexAttribI3uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint) -> void>,
+	VertexAttribI4uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint) -> void>,
+	VertexAttribI4bv: FPointer<extern "C" fn(index: GLuint, v: *GLbyte) -> void>,
+	VertexAttribI4sv: FPointer<extern "C" fn(index: GLuint, v: *GLshort) -> void>,
+	VertexAttribI4ubv: FPointer<extern "C" fn(index: GLuint, v: *GLubyte) -> void>,
+	VertexAttribI4usv: FPointer<extern "C" fn(index: GLuint, v: *GLushort) -> void>,
+	GetUniformuiv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLuint) -> void>,
+	BindFragDataLocation: FPointer<extern "C" fn(program: GLuint, color: GLuint, name: *GLchar) -> void>,
+	GetFragDataLocation: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
+	Uniform1ui: FPointer<extern "C" fn(location: GLint, v0: GLuint) -> void>,
+	Uniform2ui: FPointer<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint) -> void>,
+	Uniform3ui: FPointer<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) -> void>,
+	Uniform4ui: FPointer<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) -> void>,
+	Uniform1uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	Uniform2uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	Uniform3uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	Uniform4uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	TexParameterIiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	TexParameterIuiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint) -> void>,
+	GetTexParameterIiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	GetTexParameterIuiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint) -> void>,
+	ClearBufferiv: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLint) -> void>,
+	ClearBufferuiv: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLuint) -> void>,
+	ClearBufferfv: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLfloat) -> void>,
+	ClearBufferfi: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint) -> void>,
+	GetStringi: FPointer<extern "C" fn(name: GLenum, index: GLuint) -> const GLubyte *>,
 	
 	// Core Extension: ARB_vertex_array_object
-	BindVertexArray: FPointer<ftypes::BindVertexArray>,
-	DeleteVertexArrays: FPointer<ftypes::DeleteVertexArrays>,
-	GenVertexArrays: FPointer<ftypes::GenVertexArrays>,
-	IsVertexArray: FPointer<ftypes::IsVertexArray>,
+	BindVertexArray: FPointer<extern "C" fn(array: GLuint) -> void>,
+	DeleteVertexArrays: FPointer<extern "C" fn(n: GLsizei, arrays: *GLuint) -> void>,
+	GenVertexArrays: FPointer<extern "C" fn(n: GLsizei, arrays: *GLuint) -> void>,
+	IsVertexArray: FPointer<extern "C" fn(array: GLuint) -> GLboolean>,
 	
 	// Core Extension: ARB_map_buffer_range
-	MapBufferRange: FPointer<ftypes::MapBufferRange>,
-	FlushMappedBufferRange: FPointer<ftypes::FlushMappedBufferRange>,
+	MapBufferRange: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> GLvoid*>,
+	FlushMappedBufferRange: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr) -> void>,
 	
 	// Core Extension: ARB_framebuffer_object
-	IsRenderbuffer: FPointer<ftypes::IsRenderbuffer>,
-	BindRenderbuffer: FPointer<ftypes::BindRenderbuffer>,
-	DeleteRenderbuffers: FPointer<ftypes::DeleteRenderbuffers>,
-	GenRenderbuffers: FPointer<ftypes::GenRenderbuffers>,
-	RenderbufferStorage: FPointer<ftypes::RenderbufferStorage>,
-	GetRenderbufferParameteriv: FPointer<ftypes::GetRenderbufferParameteriv>,
-	IsFramebuffer: FPointer<ftypes::IsFramebuffer>,
-	BindFramebuffer: FPointer<ftypes::BindFramebuffer>,
-	DeleteFramebuffers: FPointer<ftypes::DeleteFramebuffers>,
-	GenFramebuffers: FPointer<ftypes::GenFramebuffers>,
-	CheckFramebufferStatus: FPointer<ftypes::CheckFramebufferStatus>,
-	FramebufferTexture1D: FPointer<ftypes::FramebufferTexture1D>,
-	FramebufferTexture2D: FPointer<ftypes::FramebufferTexture2D>,
-	FramebufferTexture3D: FPointer<ftypes::FramebufferTexture3D>,
-	FramebufferRenderbuffer: FPointer<ftypes::FramebufferRenderbuffer>,
-	GetFramebufferAttachmentParameteriv: FPointer<ftypes::GetFramebufferAttachmentParameteriv>,
-	GenerateMipmap: FPointer<ftypes::GenerateMipmap>,
-	BlitFramebuffer: FPointer<ftypes::BlitFramebuffer>,
-	RenderbufferStorageMultisample: FPointer<ftypes::RenderbufferStorageMultisample>,
-	FramebufferTextureLayer: FPointer<ftypes::FramebufferTextureLayer>,
+	IsRenderbuffer: FPointer<extern "C" fn(renderbuffer: GLuint) -> GLboolean>,
+	BindRenderbuffer: FPointer<extern "C" fn(target: GLenum, renderbuffer: GLuint) -> void>,
+	DeleteRenderbuffers: FPointer<extern "C" fn(n: GLsizei, renderbuffers: *GLuint) -> void>,
+	GenRenderbuffers: FPointer<extern "C" fn(n: GLsizei, renderbuffers: *GLuint) -> void>,
+	RenderbufferStorage: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei) -> void>,
+	GetRenderbufferParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	IsFramebuffer: FPointer<extern "C" fn(framebuffer: GLuint) -> GLboolean>,
+	BindFramebuffer: FPointer<extern "C" fn(target: GLenum, framebuffer: GLuint) -> void>,
+	DeleteFramebuffers: FPointer<extern "C" fn(n: GLsizei, framebuffers: *GLuint) -> void>,
+	GenFramebuffers: FPointer<extern "C" fn(n: GLsizei, framebuffers: *GLuint) -> void>,
+	CheckFramebufferStatus: FPointer<extern "C" fn(target: GLenum) -> GLenum>,
+	FramebufferTexture1D: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) -> void>,
+	FramebufferTexture2D: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) -> void>,
+	FramebufferTexture3D: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint) -> void>,
+	FramebufferRenderbuffer: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint) -> void>,
+	GetFramebufferAttachmentParameteriv: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, pname: GLenum, params: *GLint) -> void>,
+	GenerateMipmap: FPointer<extern "C" fn(target: GLenum) -> void>,
+	BlitFramebuffer: FPointer<extern "C" fn(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum) -> void>,
+	RenderbufferStorageMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) -> void>,
+	FramebufferTextureLayer: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint) -> void>,
 	
 	// Version: 3.1
-	DrawArraysInstanced: FPointer<ftypes::DrawArraysInstanced>,
-	DrawElementsInstanced: FPointer<ftypes::DrawElementsInstanced>,
-	TexBuffer: FPointer<ftypes::TexBuffer>,
-	PrimitiveRestartIndex: FPointer<ftypes::PrimitiveRestartIndex>,
+	DrawArraysInstanced: FPointer<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei) -> void>,
+	DrawElementsInstanced: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei) -> void>,
+	TexBuffer: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint) -> void>,
+	PrimitiveRestartIndex: FPointer<extern "C" fn(index: GLuint) -> void>,
 	
 	// Core Extension: ARB_uniform_buffer_object
-	GetUniformIndices: FPointer<ftypes::GetUniformIndices>,
-	GetActiveUniformsiv: FPointer<ftypes::GetActiveUniformsiv>,
-	GetActiveUniformName: FPointer<ftypes::GetActiveUniformName>,
-	GetUniformBlockIndex: FPointer<ftypes::GetUniformBlockIndex>,
-	GetActiveUniformBlockiv: FPointer<ftypes::GetActiveUniformBlockiv>,
-	GetActiveUniformBlockName: FPointer<ftypes::GetActiveUniformBlockName>,
-	UniformBlockBinding: FPointer<ftypes::UniformBlockBinding>,
+	GetUniformIndices: FPointer<extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformNames: *GLchar* const, uniformIndices: *GLuint) -> void>,
+	GetActiveUniformsiv: FPointer<extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetActiveUniformName: FPointer<extern "C" fn(program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformName: *GLchar) -> void>,
+	GetUniformBlockIndex: FPointer<extern "C" fn(program: GLuint, uniformBlockName: *GLchar) -> GLuint>,
+	GetActiveUniformBlockiv: FPointer<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetActiveUniformBlockName: FPointer<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformBlockName: *GLchar) -> void>,
+	UniformBlockBinding: FPointer<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint) -> void>,
 	
 	// Core Extension: ARB_copy_buffer
-	CopyBufferSubData: FPointer<ftypes::CopyBufferSubData>,
+	CopyBufferSubData: FPointer<extern "C" fn(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr) -> void>,
 	
 	// Version: 3.2
-	GetInteger64i_v: FPointer<ftypes::GetInteger64i_v>,
-	GetBufferParameteri64v: FPointer<ftypes::GetBufferParameteri64v>,
-	FramebufferTexture: FPointer<ftypes::FramebufferTexture>,
+	GetInteger64i_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLint64) -> void>,
+	GetBufferParameteri64v: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint64) -> void>,
+	FramebufferTexture: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint) -> void>,
 	
 	// Core Extension: ARB_draw_elements_base_vertex
-	DrawElementsBaseVertex: FPointer<ftypes::DrawElementsBaseVertex>,
-	DrawRangeElementsBaseVertex: FPointer<ftypes::DrawRangeElementsBaseVertex>,
-	DrawElementsInstancedBaseVertex: FPointer<ftypes::DrawElementsInstancedBaseVertex>,
-	MultiDrawElementsBaseVertex: FPointer<ftypes::MultiDrawElementsBaseVertex>,
+	DrawElementsBaseVertex: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) -> void>,
+	DrawRangeElementsBaseVertex: FPointer<extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) -> void>,
+	DrawElementsInstancedBaseVertex: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint) -> void>,
+	MultiDrawElementsBaseVertex: FPointer<extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: *GLvoid* const, drawcount: GLsizei, basevertex: *GLint) -> void>,
 	
 	// Core Extension: ARB_provoking_vertex
-	ProvokingVertex: FPointer<ftypes::ProvokingVertex>,
+	ProvokingVertex: FPointer<extern "C" fn(mode: GLenum) -> void>,
 	
 	// Core Extension: ARB_sync
-	FenceSync: FPointer<ftypes::FenceSync>,
-	IsSync: FPointer<ftypes::IsSync>,
-	DeleteSync: FPointer<ftypes::DeleteSync>,
-	ClientWaitSync: FPointer<ftypes::ClientWaitSync>,
-	WaitSync: FPointer<ftypes::WaitSync>,
-	GetInteger64v: FPointer<ftypes::GetInteger64v>,
-	GetSynciv: FPointer<ftypes::GetSynciv>,
+	FenceSync: FPointer<extern "C" fn(condition: GLenum, flags: GLbitfield) -> GLsync>,
+	IsSync: FPointer<extern "C" fn(sync: GLsync) -> GLboolean>,
+	DeleteSync: FPointer<extern "C" fn(sync: GLsync) -> void>,
+	ClientWaitSync: FPointer<extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum>,
+	WaitSync: FPointer<extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> void>,
+	GetInteger64v: FPointer<extern "C" fn(pname: GLenum, params: *GLint64) -> void>,
+	GetSynciv: FPointer<extern "C" fn(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *GLsizei, values: *GLint) -> void>,
 	
 	// Core Extension: ARB_texture_multisample
-	TexImage2DMultisample: FPointer<ftypes::TexImage2DMultisample>,
-	TexImage3DMultisample: FPointer<ftypes::TexImage3DMultisample>,
-	GetMultisamplefv: FPointer<ftypes::GetMultisamplefv>,
-	SampleMaski: FPointer<ftypes::SampleMaski>,
+	TexImage2DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) -> void>,
+	TexImage3DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) -> void>,
+	GetMultisamplefv: FPointer<extern "C" fn(pname: GLenum, index: GLuint, val: *GLfloat) -> void>,
+	SampleMaski: FPointer<extern "C" fn(index: GLuint, mask: GLbitfield) -> void>,
 	
 	// Version: 3.3
-	VertexAttribDivisor: FPointer<ftypes::VertexAttribDivisor>,
+	VertexAttribDivisor: FPointer<extern "C" fn(index: GLuint, divisor: GLuint) -> void>,
 	
 	// Core Extension: ARB_timer_query
-	QueryCounter: FPointer<ftypes::QueryCounter>,
-	GetQueryObjecti64v: FPointer<ftypes::GetQueryObjecti64v>,
-	GetQueryObjectui64v: FPointer<ftypes::GetQueryObjectui64v>,
+	QueryCounter: FPointer<extern "C" fn(id: GLuint, target: GLenum) -> void>,
+	GetQueryObjecti64v: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLint64) -> void>,
+	GetQueryObjectui64v: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint64) -> void>,
 	
 	// Core Extension: ARB_vertex_type_2_10_10_10_rev
-	VertexP2ui: FPointer<ftypes::VertexP2ui>,
-	VertexP2uiv: FPointer<ftypes::VertexP2uiv>,
-	VertexP3ui: FPointer<ftypes::VertexP3ui>,
-	VertexP3uiv: FPointer<ftypes::VertexP3uiv>,
-	VertexP4ui: FPointer<ftypes::VertexP4ui>,
-	VertexP4uiv: FPointer<ftypes::VertexP4uiv>,
-	TexCoordP1ui: FPointer<ftypes::TexCoordP1ui>,
-	TexCoordP1uiv: FPointer<ftypes::TexCoordP1uiv>,
-	TexCoordP2ui: FPointer<ftypes::TexCoordP2ui>,
-	TexCoordP2uiv: FPointer<ftypes::TexCoordP2uiv>,
-	TexCoordP3ui: FPointer<ftypes::TexCoordP3ui>,
-	TexCoordP3uiv: FPointer<ftypes::TexCoordP3uiv>,
-	TexCoordP4ui: FPointer<ftypes::TexCoordP4ui>,
-	TexCoordP4uiv: FPointer<ftypes::TexCoordP4uiv>,
-	MultiTexCoordP1ui: FPointer<ftypes::MultiTexCoordP1ui>,
-	MultiTexCoordP1uiv: FPointer<ftypes::MultiTexCoordP1uiv>,
-	MultiTexCoordP2ui: FPointer<ftypes::MultiTexCoordP2ui>,
-	MultiTexCoordP2uiv: FPointer<ftypes::MultiTexCoordP2uiv>,
-	MultiTexCoordP3ui: FPointer<ftypes::MultiTexCoordP3ui>,
-	MultiTexCoordP3uiv: FPointer<ftypes::MultiTexCoordP3uiv>,
-	MultiTexCoordP4ui: FPointer<ftypes::MultiTexCoordP4ui>,
-	MultiTexCoordP4uiv: FPointer<ftypes::MultiTexCoordP4uiv>,
-	NormalP3ui: FPointer<ftypes::NormalP3ui>,
-	NormalP3uiv: FPointer<ftypes::NormalP3uiv>,
-	ColorP3ui: FPointer<ftypes::ColorP3ui>,
-	ColorP3uiv: FPointer<ftypes::ColorP3uiv>,
-	ColorP4ui: FPointer<ftypes::ColorP4ui>,
-	ColorP4uiv: FPointer<ftypes::ColorP4uiv>,
-	SecondaryColorP3ui: FPointer<ftypes::SecondaryColorP3ui>,
-	SecondaryColorP3uiv: FPointer<ftypes::SecondaryColorP3uiv>,
-	VertexAttribP1ui: FPointer<ftypes::VertexAttribP1ui>,
-	VertexAttribP1uiv: FPointer<ftypes::VertexAttribP1uiv>,
-	VertexAttribP2ui: FPointer<ftypes::VertexAttribP2ui>,
-	VertexAttribP2uiv: FPointer<ftypes::VertexAttribP2uiv>,
-	VertexAttribP3ui: FPointer<ftypes::VertexAttribP3ui>,
-	VertexAttribP3uiv: FPointer<ftypes::VertexAttribP3uiv>,
-	VertexAttribP4ui: FPointer<ftypes::VertexAttribP4ui>,
-	VertexAttribP4uiv: FPointer<ftypes::VertexAttribP4uiv>,
+	VertexP2ui: FPointer<extern "C" fn(type_: GLenum, value: GLuint) -> void>,
+	VertexP2uiv: FPointer<extern "C" fn(type_: GLenum, value: *GLuint) -> void>,
+	VertexP3ui: FPointer<extern "C" fn(type_: GLenum, value: GLuint) -> void>,
+	VertexP3uiv: FPointer<extern "C" fn(type_: GLenum, value: *GLuint) -> void>,
+	VertexP4ui: FPointer<extern "C" fn(type_: GLenum, value: GLuint) -> void>,
+	VertexP4uiv: FPointer<extern "C" fn(type_: GLenum, value: *GLuint) -> void>,
+	TexCoordP1ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint) -> void>,
+	TexCoordP1uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint) -> void>,
+	TexCoordP2ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint) -> void>,
+	TexCoordP2uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint) -> void>,
+	TexCoordP3ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint) -> void>,
+	TexCoordP3uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint) -> void>,
+	TexCoordP4ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint) -> void>,
+	TexCoordP4uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint) -> void>,
+	MultiTexCoordP1ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint) -> void>,
+	MultiTexCoordP1uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint) -> void>,
+	MultiTexCoordP2ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint) -> void>,
+	MultiTexCoordP2uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint) -> void>,
+	MultiTexCoordP3ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint) -> void>,
+	MultiTexCoordP3uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint) -> void>,
+	MultiTexCoordP4ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint) -> void>,
+	MultiTexCoordP4uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint) -> void>,
+	NormalP3ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint) -> void>,
+	NormalP3uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint) -> void>,
+	ColorP3ui: FPointer<extern "C" fn(type_: GLenum, color: GLuint) -> void>,
+	ColorP3uiv: FPointer<extern "C" fn(type_: GLenum, color: *GLuint) -> void>,
+	ColorP4ui: FPointer<extern "C" fn(type_: GLenum, color: GLuint) -> void>,
+	ColorP4uiv: FPointer<extern "C" fn(type_: GLenum, color: *GLuint) -> void>,
+	SecondaryColorP3ui: FPointer<extern "C" fn(type_: GLenum, color: GLuint) -> void>,
+	SecondaryColorP3uiv: FPointer<extern "C" fn(type_: GLenum, color: *GLuint) -> void>,
+	VertexAttribP1ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> void>,
+	VertexAttribP1uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) -> void>,
+	VertexAttribP2ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> void>,
+	VertexAttribP2uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) -> void>,
+	VertexAttribP3ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> void>,
+	VertexAttribP3uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) -> void>,
+	VertexAttribP4ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> void>,
+	VertexAttribP4uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) -> void>,
 	
 	// Core Extension: ARB_blend_func_extended
-	BindFragDataLocationIndexed: FPointer<ftypes::BindFragDataLocationIndexed>,
-	GetFragDataIndex: FPointer<ftypes::GetFragDataIndex>,
+	BindFragDataLocationIndexed: FPointer<extern "C" fn(program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar) -> void>,
+	GetFragDataIndex: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
 	
 	// Core Extension: ARB_sampler_objects
-	GenSamplers: FPointer<ftypes::GenSamplers>,
-	DeleteSamplers: FPointer<ftypes::DeleteSamplers>,
-	IsSampler: FPointer<ftypes::IsSampler>,
-	BindSampler: FPointer<ftypes::BindSampler>,
-	SamplerParameteri: FPointer<ftypes::SamplerParameteri>,
-	SamplerParameteriv: FPointer<ftypes::SamplerParameteriv>,
-	SamplerParameterf: FPointer<ftypes::SamplerParameterf>,
-	SamplerParameterfv: FPointer<ftypes::SamplerParameterfv>,
-	SamplerParameterIiv: FPointer<ftypes::SamplerParameterIiv>,
-	SamplerParameterIuiv: FPointer<ftypes::SamplerParameterIuiv>,
-	GetSamplerParameteriv: FPointer<ftypes::GetSamplerParameteriv>,
-	GetSamplerParameterIiv: FPointer<ftypes::GetSamplerParameterIiv>,
-	GetSamplerParameterfv: FPointer<ftypes::GetSamplerParameterfv>,
-	GetSamplerParameterIuiv: FPointer<ftypes::GetSamplerParameterIuiv>,
+	GenSamplers: FPointer<extern "C" fn(count: GLsizei, samplers: *GLuint) -> void>,
+	DeleteSamplers: FPointer<extern "C" fn(count: GLsizei, samplers: *GLuint) -> void>,
+	IsSampler: FPointer<extern "C" fn(sampler: GLuint) -> GLboolean>,
+	BindSampler: FPointer<extern "C" fn(unit: GLuint, sampler: GLuint) -> void>,
+	SamplerParameteri: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: GLint) -> void>,
+	SamplerParameteriv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint) -> void>,
+	SamplerParameterf: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: GLfloat) -> void>,
+	SamplerParameterfv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLfloat) -> void>,
+	SamplerParameterIiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint) -> void>,
+	SamplerParameterIuiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLuint) -> void>,
+	GetSamplerParameteriv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetSamplerParameterIiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint) -> void>,
+	GetSamplerParameterfv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLfloat) -> void>,
+	GetSamplerParameterIuiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLuint) -> void>,
 	
 	// Version: 4.0
-	MinSampleShading: FPointer<ftypes::MinSampleShading>,
-	BlendEquationi: FPointer<ftypes::BlendEquationi>,
-	BlendEquationSeparatei: FPointer<ftypes::BlendEquationSeparatei>,
-	BlendFunci: FPointer<ftypes::BlendFunci>,
-	BlendFuncSeparatei: FPointer<ftypes::BlendFuncSeparatei>,
+	MinSampleShading: FPointer<extern "C" fn(value: GLfloat) -> void>,
+	BlendEquationi: FPointer<extern "C" fn(buf: GLuint, mode: GLenum) -> void>,
+	BlendEquationSeparatei: FPointer<extern "C" fn(buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum) -> void>,
+	BlendFunci: FPointer<extern "C" fn(buf: GLuint, src: GLenum, dst: GLenum) -> void>,
+	BlendFuncSeparatei: FPointer<extern "C" fn(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum) -> void>,
 	
 	// Core Extension: ARB_draw_indirect
-	DrawArraysIndirect: FPointer<ftypes::DrawArraysIndirect>,
-	DrawElementsIndirect: FPointer<ftypes::DrawElementsIndirect>,
+	DrawArraysIndirect: FPointer<extern "C" fn(mode: GLenum, indirect: *GLvoid) -> void>,
+	DrawElementsIndirect: FPointer<extern "C" fn(mode: GLenum, type_: GLenum, indirect: *GLvoid) -> void>,
 	
 	// Core Extension: ARB_gpu_shader_fp64
-	Uniform1d: FPointer<ftypes::Uniform1d>,
-	Uniform2d: FPointer<ftypes::Uniform2d>,
-	Uniform3d: FPointer<ftypes::Uniform3d>,
-	Uniform4d: FPointer<ftypes::Uniform4d>,
-	Uniform1dv: FPointer<ftypes::Uniform1dv>,
-	Uniform2dv: FPointer<ftypes::Uniform2dv>,
-	Uniform3dv: FPointer<ftypes::Uniform3dv>,
-	Uniform4dv: FPointer<ftypes::Uniform4dv>,
-	UniformMatrix2dv: FPointer<ftypes::UniformMatrix2dv>,
-	UniformMatrix3dv: FPointer<ftypes::UniformMatrix3dv>,
-	UniformMatrix4dv: FPointer<ftypes::UniformMatrix4dv>,
-	UniformMatrix2x3dv: FPointer<ftypes::UniformMatrix2x3dv>,
-	UniformMatrix2x4dv: FPointer<ftypes::UniformMatrix2x4dv>,
-	UniformMatrix3x2dv: FPointer<ftypes::UniformMatrix3x2dv>,
-	UniformMatrix3x4dv: FPointer<ftypes::UniformMatrix3x4dv>,
-	UniformMatrix4x2dv: FPointer<ftypes::UniformMatrix4x2dv>,
-	UniformMatrix4x3dv: FPointer<ftypes::UniformMatrix4x3dv>,
-	GetUniformdv: FPointer<ftypes::GetUniformdv>,
+	Uniform1d: FPointer<extern "C" fn(location: GLint, x: GLdouble) -> void>,
+	Uniform2d: FPointer<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble) -> void>,
+	Uniform3d: FPointer<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble) -> void>,
+	Uniform4d: FPointer<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) -> void>,
+	Uniform1dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	Uniform2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	Uniform3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	Uniform4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	UniformMatrix2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix2x3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix2x4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix3x2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix3x4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix4x2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	UniformMatrix4x3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	GetUniformdv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLdouble) -> void>,
 	
 	// Core Extension: ARB_shader_subroutine
-	GetSubroutineUniformLocation: FPointer<ftypes::GetSubroutineUniformLocation>,
-	GetSubroutineIndex: FPointer<ftypes::GetSubroutineIndex>,
-	GetActiveSubroutineUniformiv: FPointer<ftypes::GetActiveSubroutineUniformiv>,
-	GetActiveSubroutineUniformName: FPointer<ftypes::GetActiveSubroutineUniformName>,
-	GetActiveSubroutineName: FPointer<ftypes::GetActiveSubroutineName>,
-	UniformSubroutinesuiv: FPointer<ftypes::UniformSubroutinesuiv>,
-	GetUniformSubroutineuiv: FPointer<ftypes::GetUniformSubroutineuiv>,
-	GetProgramStageiv: FPointer<ftypes::GetProgramStageiv>,
+	GetSubroutineUniformLocation: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint>,
+	GetSubroutineIndex: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint>,
+	GetActiveSubroutineUniformiv: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *GLint) -> void>,
+	GetActiveSubroutineUniformName: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar) -> void>,
+	GetActiveSubroutineName: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar) -> void>,
+	UniformSubroutinesuiv: FPointer<extern "C" fn(shadertype: GLenum, count: GLsizei, indices: *GLuint) -> void>,
+	GetUniformSubroutineuiv: FPointer<extern "C" fn(shadertype: GLenum, location: GLint, params: *GLuint) -> void>,
+	GetProgramStageiv: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, pname: GLenum, values: *GLint) -> void>,
 	
 	// Core Extension: ARB_tessellation_shader
-	PatchParameteri: FPointer<ftypes::PatchParameteri>,
-	PatchParameterfv: FPointer<ftypes::PatchParameterfv>,
+	PatchParameteri: FPointer<extern "C" fn(pname: GLenum, value: GLint) -> void>,
+	PatchParameterfv: FPointer<extern "C" fn(pname: GLenum, values: *GLfloat) -> void>,
 	
 	// Core Extension: ARB_transform_feedback2
-	BindTransformFeedback: FPointer<ftypes::BindTransformFeedback>,
-	DeleteTransformFeedbacks: FPointer<ftypes::DeleteTransformFeedbacks>,
-	GenTransformFeedbacks: FPointer<ftypes::GenTransformFeedbacks>,
-	IsTransformFeedback: FPointer<ftypes::IsTransformFeedback>,
-	PauseTransformFeedback: FPointer<ftypes::PauseTransformFeedback>,
-	ResumeTransformFeedback: FPointer<ftypes::ResumeTransformFeedback>,
-	DrawTransformFeedback: FPointer<ftypes::DrawTransformFeedback>,
+	BindTransformFeedback: FPointer<extern "C" fn(target: GLenum, id: GLuint) -> void>,
+	DeleteTransformFeedbacks: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint) -> void>,
+	GenTransformFeedbacks: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint) -> void>,
+	IsTransformFeedback: FPointer<extern "C" fn(id: GLuint) -> GLboolean>,
+	PauseTransformFeedback: FPointer<extern "C" fn() -> void>,
+	ResumeTransformFeedback: FPointer<extern "C" fn() -> void>,
+	DrawTransformFeedback: FPointer<extern "C" fn(mode: GLenum, id: GLuint) -> void>,
 	
 	// Core Extension: ARB_transform_feedback3
-	DrawTransformFeedbackStream: FPointer<ftypes::DrawTransformFeedbackStream>,
-	BeginQueryIndexed: FPointer<ftypes::BeginQueryIndexed>,
-	EndQueryIndexed: FPointer<ftypes::EndQueryIndexed>,
-	GetQueryIndexediv: FPointer<ftypes::GetQueryIndexediv>,
+	DrawTransformFeedbackStream: FPointer<extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint) -> void>,
+	BeginQueryIndexed: FPointer<extern "C" fn(target: GLenum, index: GLuint, id: GLuint) -> void>,
+	EndQueryIndexed: FPointer<extern "C" fn(target: GLenum, index: GLuint) -> void>,
+	GetQueryIndexediv: FPointer<extern "C" fn(target: GLenum, index: GLuint, pname: GLenum, params: *GLint) -> void>,
 	
 	// Core Extension: ARB_ES2_compatibility
-	ReleaseShaderCompiler: FPointer<ftypes::ReleaseShaderCompiler>,
-	ShaderBinary: FPointer<ftypes::ShaderBinary>,
-	GetShaderPrecisionFormat: FPointer<ftypes::GetShaderPrecisionFormat>,
-	DepthRangef: FPointer<ftypes::DepthRangef>,
-	ClearDepthf: FPointer<ftypes::ClearDepthf>,
+	ReleaseShaderCompiler: FPointer<extern "C" fn() -> void>,
+	ShaderBinary: FPointer<extern "C" fn(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei) -> void>,
+	GetShaderPrecisionFormat: FPointer<extern "C" fn(shadertype: GLenum, precisiontype: GLenum, range: *GLint, precision: *GLint) -> void>,
+	DepthRangef: FPointer<extern "C" fn(n: GLfloat, f: GLfloat) -> void>,
+	ClearDepthf: FPointer<extern "C" fn(d: GLfloat) -> void>,
 	
 	// Core Extension: ARB_get_program_binary
-	GetProgramBinary: FPointer<ftypes::GetProgramBinary>,
-	ProgramBinary: FPointer<ftypes::ProgramBinary>,
-	ProgramParameteri: FPointer<ftypes::ProgramParameteri>,
+	GetProgramBinary: FPointer<extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, binaryFormat: *GLenum, binary: *GLvoid) -> void>,
+	ProgramBinary: FPointer<extern "C" fn(program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei) -> void>,
+	ProgramParameteri: FPointer<extern "C" fn(program: GLuint, pname: GLenum, value: GLint) -> void>,
 	
 	// Core Extension: ARB_separate_shader_objects
-	UseProgramStages: FPointer<ftypes::UseProgramStages>,
-	ActiveShaderProgram: FPointer<ftypes::ActiveShaderProgram>,
-	CreateShaderProgramv: FPointer<ftypes::CreateShaderProgramv>,
-	BindProgramPipeline: FPointer<ftypes::BindProgramPipeline>,
-	DeleteProgramPipelines: FPointer<ftypes::DeleteProgramPipelines>,
-	GenProgramPipelines: FPointer<ftypes::GenProgramPipelines>,
-	IsProgramPipeline: FPointer<ftypes::IsProgramPipeline>,
-	GetProgramPipelineiv: FPointer<ftypes::GetProgramPipelineiv>,
-	ProgramUniform1i: FPointer<ftypes::ProgramUniform1i>,
-	ProgramUniform1iv: FPointer<ftypes::ProgramUniform1iv>,
-	ProgramUniform1f: FPointer<ftypes::ProgramUniform1f>,
-	ProgramUniform1fv: FPointer<ftypes::ProgramUniform1fv>,
-	ProgramUniform1d: FPointer<ftypes::ProgramUniform1d>,
-	ProgramUniform1dv: FPointer<ftypes::ProgramUniform1dv>,
-	ProgramUniform1ui: FPointer<ftypes::ProgramUniform1ui>,
-	ProgramUniform1uiv: FPointer<ftypes::ProgramUniform1uiv>,
-	ProgramUniform2i: FPointer<ftypes::ProgramUniform2i>,
-	ProgramUniform2iv: FPointer<ftypes::ProgramUniform2iv>,
-	ProgramUniform2f: FPointer<ftypes::ProgramUniform2f>,
-	ProgramUniform2fv: FPointer<ftypes::ProgramUniform2fv>,
-	ProgramUniform2d: FPointer<ftypes::ProgramUniform2d>,
-	ProgramUniform2dv: FPointer<ftypes::ProgramUniform2dv>,
-	ProgramUniform2ui: FPointer<ftypes::ProgramUniform2ui>,
-	ProgramUniform2uiv: FPointer<ftypes::ProgramUniform2uiv>,
-	ProgramUniform3i: FPointer<ftypes::ProgramUniform3i>,
-	ProgramUniform3iv: FPointer<ftypes::ProgramUniform3iv>,
-	ProgramUniform3f: FPointer<ftypes::ProgramUniform3f>,
-	ProgramUniform3fv: FPointer<ftypes::ProgramUniform3fv>,
-	ProgramUniform3d: FPointer<ftypes::ProgramUniform3d>,
-	ProgramUniform3dv: FPointer<ftypes::ProgramUniform3dv>,
-	ProgramUniform3ui: FPointer<ftypes::ProgramUniform3ui>,
-	ProgramUniform3uiv: FPointer<ftypes::ProgramUniform3uiv>,
-	ProgramUniform4i: FPointer<ftypes::ProgramUniform4i>,
-	ProgramUniform4iv: FPointer<ftypes::ProgramUniform4iv>,
-	ProgramUniform4f: FPointer<ftypes::ProgramUniform4f>,
-	ProgramUniform4fv: FPointer<ftypes::ProgramUniform4fv>,
-	ProgramUniform4d: FPointer<ftypes::ProgramUniform4d>,
-	ProgramUniform4dv: FPointer<ftypes::ProgramUniform4dv>,
-	ProgramUniform4ui: FPointer<ftypes::ProgramUniform4ui>,
-	ProgramUniform4uiv: FPointer<ftypes::ProgramUniform4uiv>,
-	ProgramUniformMatrix2fv: FPointer<ftypes::ProgramUniformMatrix2fv>,
-	ProgramUniformMatrix3fv: FPointer<ftypes::ProgramUniformMatrix3fv>,
-	ProgramUniformMatrix4fv: FPointer<ftypes::ProgramUniformMatrix4fv>,
-	ProgramUniformMatrix2dv: FPointer<ftypes::ProgramUniformMatrix2dv>,
-	ProgramUniformMatrix3dv: FPointer<ftypes::ProgramUniformMatrix3dv>,
-	ProgramUniformMatrix4dv: FPointer<ftypes::ProgramUniformMatrix4dv>,
-	ProgramUniformMatrix2x3fv: FPointer<ftypes::ProgramUniformMatrix2x3fv>,
-	ProgramUniformMatrix3x2fv: FPointer<ftypes::ProgramUniformMatrix3x2fv>,
-	ProgramUniformMatrix2x4fv: FPointer<ftypes::ProgramUniformMatrix2x4fv>,
-	ProgramUniformMatrix4x2fv: FPointer<ftypes::ProgramUniformMatrix4x2fv>,
-	ProgramUniformMatrix3x4fv: FPointer<ftypes::ProgramUniformMatrix3x4fv>,
-	ProgramUniformMatrix4x3fv: FPointer<ftypes::ProgramUniformMatrix4x3fv>,
-	ProgramUniformMatrix2x3dv: FPointer<ftypes::ProgramUniformMatrix2x3dv>,
-	ProgramUniformMatrix3x2dv: FPointer<ftypes::ProgramUniformMatrix3x2dv>,
-	ProgramUniformMatrix2x4dv: FPointer<ftypes::ProgramUniformMatrix2x4dv>,
-	ProgramUniformMatrix4x2dv: FPointer<ftypes::ProgramUniformMatrix4x2dv>,
-	ProgramUniformMatrix3x4dv: FPointer<ftypes::ProgramUniformMatrix3x4dv>,
-	ProgramUniformMatrix4x3dv: FPointer<ftypes::ProgramUniformMatrix4x3dv>,
-	ValidateProgramPipeline: FPointer<ftypes::ValidateProgramPipeline>,
-	GetProgramPipelineInfoLog: FPointer<ftypes::GetProgramPipelineInfoLog>,
+	UseProgramStages: FPointer<extern "C" fn(pipeline: GLuint, stages: GLbitfield, program: GLuint) -> void>,
+	ActiveShaderProgram: FPointer<extern "C" fn(pipeline: GLuint, program: GLuint) -> void>,
+	CreateShaderProgramv: FPointer<extern "C" fn(type_: GLenum, count: GLsizei, strings: *GLchar* const) -> GLuint>,
+	BindProgramPipeline: FPointer<extern "C" fn(pipeline: GLuint) -> void>,
+	DeleteProgramPipelines: FPointer<extern "C" fn(n: GLsizei, pipelines: *GLuint) -> void>,
+	GenProgramPipelines: FPointer<extern "C" fn(n: GLsizei, pipelines: *GLuint) -> void>,
+	IsProgramPipeline: FPointer<extern "C" fn(pipeline: GLuint) -> GLboolean>,
+	GetProgramPipelineiv: FPointer<extern "C" fn(pipeline: GLuint, pname: GLenum, params: *GLint) -> void>,
+	ProgramUniform1i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint) -> void>,
+	ProgramUniform1iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint) -> void>,
+	ProgramUniform1f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat) -> void>,
+	ProgramUniform1fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	ProgramUniform1d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble) -> void>,
+	ProgramUniform1dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	ProgramUniform1ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint) -> void>,
+	ProgramUniform1uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	ProgramUniform2i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint) -> void>,
+	ProgramUniform2iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint) -> void>,
+	ProgramUniform2f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat) -> void>,
+	ProgramUniform2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	ProgramUniform2d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble) -> void>,
+	ProgramUniform2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	ProgramUniform2ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint) -> void>,
+	ProgramUniform2uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	ProgramUniform3i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint) -> void>,
+	ProgramUniform3iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint) -> void>,
+	ProgramUniform3f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) -> void>,
+	ProgramUniform3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	ProgramUniform3d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble) -> void>,
+	ProgramUniform3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	ProgramUniform3ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) -> void>,
+	ProgramUniform3uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	ProgramUniform4i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) -> void>,
+	ProgramUniform4iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint) -> void>,
+	ProgramUniform4f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) -> void>,
+	ProgramUniform4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) -> void>,
+	ProgramUniform4d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble) -> void>,
+	ProgramUniform4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) -> void>,
+	ProgramUniform4ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) -> void>,
+	ProgramUniform4uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) -> void>,
+	ProgramUniformMatrix2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix2x3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix3x2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix2x4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix4x2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix3x4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix4x3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) -> void>,
+	ProgramUniformMatrix2x3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix3x2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix2x4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix4x2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix3x4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ProgramUniformMatrix4x3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) -> void>,
+	ValidateProgramPipeline: FPointer<extern "C" fn(pipeline: GLuint) -> void>,
+	GetProgramPipelineInfoLog: FPointer<extern "C" fn(pipeline: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) -> void>,
 	
 	// Core Extension: ARB_vertex_attrib_64bit
-	VertexAttribL1d: FPointer<ftypes::VertexAttribL1d>,
-	VertexAttribL2d: FPointer<ftypes::VertexAttribL2d>,
-	VertexAttribL3d: FPointer<ftypes::VertexAttribL3d>,
-	VertexAttribL4d: FPointer<ftypes::VertexAttribL4d>,
-	VertexAttribL1dv: FPointer<ftypes::VertexAttribL1dv>,
-	VertexAttribL2dv: FPointer<ftypes::VertexAttribL2dv>,
-	VertexAttribL3dv: FPointer<ftypes::VertexAttribL3dv>,
-	VertexAttribL4dv: FPointer<ftypes::VertexAttribL4dv>,
-	VertexAttribLPointer: FPointer<ftypes::VertexAttribLPointer>,
-	GetVertexAttribLdv: FPointer<ftypes::GetVertexAttribLdv>,
+	VertexAttribL1d: FPointer<extern "C" fn(index: GLuint, x: GLdouble) -> void>,
+	VertexAttribL2d: FPointer<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble) -> void>,
+	VertexAttribL3d: FPointer<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) -> void>,
+	VertexAttribL4d: FPointer<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) -> void>,
+	VertexAttribL1dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble) -> void>,
+	VertexAttribL2dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble) -> void>,
+	VertexAttribL3dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble) -> void>,
+	VertexAttribL4dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble) -> void>,
+	VertexAttribLPointer: FPointer<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) -> void>,
+	GetVertexAttribLdv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble) -> void>,
 	
 	// Core Extension: ARB_viewport_array
-	ViewportArrayv: FPointer<ftypes::ViewportArrayv>,
-	ViewportIndexedf: FPointer<ftypes::ViewportIndexedf>,
-	ViewportIndexedfv: FPointer<ftypes::ViewportIndexedfv>,
-	ScissorArrayv: FPointer<ftypes::ScissorArrayv>,
-	ScissorIndexed: FPointer<ftypes::ScissorIndexed>,
-	ScissorIndexedv: FPointer<ftypes::ScissorIndexedv>,
-	DepthRangeArrayv: FPointer<ftypes::DepthRangeArrayv>,
-	DepthRangeIndexed: FPointer<ftypes::DepthRangeIndexed>,
-	GetFloati_v: FPointer<ftypes::GetFloati_v>,
-	GetDoublei_v: FPointer<ftypes::GetDoublei_v>,
+	ViewportArrayv: FPointer<extern "C" fn(first: GLuint, count: GLsizei, v: *GLfloat) -> void>,
+	ViewportIndexedf: FPointer<extern "C" fn(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat) -> void>,
+	ViewportIndexedfv: FPointer<extern "C" fn(index: GLuint, v: *GLfloat) -> void>,
+	ScissorArrayv: FPointer<extern "C" fn(first: GLuint, count: GLsizei, v: *GLint) -> void>,
+	ScissorIndexed: FPointer<extern "C" fn(index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei) -> void>,
+	ScissorIndexedv: FPointer<extern "C" fn(index: GLuint, v: *GLint) -> void>,
+	DepthRangeArrayv: FPointer<extern "C" fn(first: GLuint, count: GLsizei, v: *GLdouble) -> void>,
+	DepthRangeIndexed: FPointer<extern "C" fn(index: GLuint, n: GLdouble, f: GLdouble) -> void>,
+	GetFloati_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLfloat) -> void>,
+	GetDoublei_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLdouble) -> void>,
 	
 	// Core Extension: ARB_base_instance
-	DrawArraysInstancedBaseInstance: FPointer<ftypes::DrawArraysInstancedBaseInstance>,
-	DrawElementsInstancedBaseInstance: FPointer<ftypes::DrawElementsInstancedBaseInstance>,
-	DrawElementsInstancedBaseVertexBaseInstance: FPointer<ftypes::DrawElementsInstancedBaseVertexBaseInstance>,
+	DrawArraysInstancedBaseInstance: FPointer<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint) -> void>,
+	DrawElementsInstancedBaseInstance: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *void, instancecount: GLsizei, baseinstance: GLuint) -> void>,
+	DrawElementsInstancedBaseVertexBaseInstance: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *void, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint) -> void>,
 	
 	// Core Extension: ARB_transform_feedback_instanced
-	DrawTransformFeedbackInstanced: FPointer<ftypes::DrawTransformFeedbackInstanced>,
-	DrawTransformFeedbackStreamInstanced: FPointer<ftypes::DrawTransformFeedbackStreamInstanced>,
+	DrawTransformFeedbackInstanced: FPointer<extern "C" fn(mode: GLenum, id: GLuint, instancecount: GLsizei) -> void>,
+	DrawTransformFeedbackStreamInstanced: FPointer<extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei) -> void>,
 	
 	// Core Extension: ARB_internalformat_query
-	GetInternalformativ: FPointer<ftypes::GetInternalformativ>,
+	GetInternalformativ: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint) -> void>,
 	
 	// Core Extension: ARB_shader_atomic_counters
-	GetActiveAtomicCounterBufferiv: FPointer<ftypes::GetActiveAtomicCounterBufferiv>,
+	GetActiveAtomicCounterBufferiv: FPointer<extern "C" fn(program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *GLint) -> void>,
 	
 	// Core Extension: ARB_shader_image_load_store
-	BindImageTexture: FPointer<ftypes::BindImageTexture>,
-	MemoryBarrier: FPointer<ftypes::MemoryBarrier>,
+	BindImageTexture: FPointer<extern "C" fn(unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum) -> void>,
+	MemoryBarrier: FPointer<extern "C" fn(barriers: GLbitfield) -> void>,
 	
 	// Core Extension: ARB_texture_storage
-	TexStorage1D: FPointer<ftypes::TexStorage1D>,
-	TexStorage2D: FPointer<ftypes::TexStorage2D>,
-	TexStorage3D: FPointer<ftypes::TexStorage3D>,
-	TextureStorage1DEXT: FPointer<ftypes::TextureStorage1DEXT>,
-	TextureStorage2DEXT: FPointer<ftypes::TextureStorage2DEXT>,
-	TextureStorage3DEXT: FPointer<ftypes::TextureStorage3DEXT>,
+	TexStorage1D: FPointer<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) -> void>,
+	TexStorage2D: FPointer<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) -> void>,
+	TexStorage3D: FPointer<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) -> void>,
+	TextureStorage1DEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) -> void>,
+	TextureStorage2DEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) -> void>,
+	TextureStorage3DEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) -> void>,
 	
 	// Core Extension: KHR_debug
-	DebugMessageControl: FPointer<ftypes::DebugMessageControl>,
-	DebugMessageInsert: FPointer<ftypes::DebugMessageInsert>,
-	DebugMessageCallback: FPointer<ftypes::DebugMessageCallback>,
-	GetDebugMessageLog: FPointer<ftypes::GetDebugMessageLog>,
-	PushDebugGroup: FPointer<ftypes::PushDebugGroup>,
-	PopDebugGroup: FPointer<ftypes::PopDebugGroup>,
-	ObjectLabel: FPointer<ftypes::ObjectLabel>,
-	GetObjectLabel: FPointer<ftypes::GetObjectLabel>,
-	ObjectPtrLabel: FPointer<ftypes::ObjectPtrLabel>,
-	GetObjectPtrLabel: FPointer<ftypes::GetObjectPtrLabel>,
+	DebugMessageControl: FPointer<extern "C" fn(source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean) -> void>,
+	DebugMessageInsert: FPointer<extern "C" fn(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar) -> void>,
+	DebugMessageCallback: FPointer<extern "C" fn(callback: GLDEBUGPROC, userParam: *void) -> void>,
+	GetDebugMessageLog: FPointer<extern "C" fn(count: GLuint, bufsize: GLsizei, sources: *GLenum, types: *GLenum, ids: *GLuint, severities: *GLenum, lengths: *GLsizei, messageLog: *GLchar) -> GLuint>,
+	PushDebugGroup: FPointer<extern "C" fn(source: GLenum, id: GLuint, length: GLsizei, message: *GLchar) -> void>,
+	PopDebugGroup: FPointer<extern "C" fn() -> void>,
+	ObjectLabel: FPointer<extern "C" fn(identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar) -> void>,
+	GetObjectLabel: FPointer<extern "C" fn(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *GLsizei, label: *GLchar) -> void>,
+	ObjectPtrLabel: FPointer<extern "C" fn(ptr: *void, length: GLsizei, label: *GLchar) -> void>,
+	GetObjectPtrLabel: FPointer<extern "C" fn(ptr: *void, bufSize: GLsizei, length: *GLsizei, label: *GLchar) -> void>,
 	
 	// Core Extension: ARB_clear_buffer_object
-	ClearBufferData: FPointer<ftypes::ClearBufferData>,
-	ClearBufferSubData: FPointer<ftypes::ClearBufferSubData>,
-	ClearNamedBufferDataEXT: FPointer<ftypes::ClearNamedBufferDataEXT>,
-	ClearNamedBufferSubDataEXT: FPointer<ftypes::ClearNamedBufferSubDataEXT>,
+	ClearBufferData: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *void) -> void>,
+	ClearBufferSubData: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *void) -> void>,
+	ClearNamedBufferDataEXT: FPointer<extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, data: *void) -> void>,
+	ClearNamedBufferSubDataEXT: FPointer<extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, offset: GLsizeiptr, size: GLsizeiptr, data: *void) -> void>,
 	
 	// Core Extension: ARB_compute_shader
-	DispatchCompute: FPointer<ftypes::DispatchCompute>,
-	DispatchComputeIndirect: FPointer<ftypes::DispatchComputeIndirect>,
+	DispatchCompute: FPointer<extern "C" fn(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint) -> void>,
+	DispatchComputeIndirect: FPointer<extern "C" fn(indirect: GLintptr) -> void>,
 	
 	// Core Extension: ARB_copy_image
-	CopyImageSubData: FPointer<ftypes::CopyImageSubData>,
+	CopyImageSubData: FPointer<extern "C" fn(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei) -> void>,
 	
 	// Core Extension: ARB_framebuffer_no_attachments
-	FramebufferParameteri: FPointer<ftypes::FramebufferParameteri>,
-	GetFramebufferParameteriv: FPointer<ftypes::GetFramebufferParameteriv>,
-	NamedFramebufferParameteriEXT: FPointer<ftypes::NamedFramebufferParameteriEXT>,
-	GetNamedFramebufferParameterivEXT: FPointer<ftypes::GetNamedFramebufferParameterivEXT>,
+	FramebufferParameteri: FPointer<extern "C" fn(target: GLenum, pname: GLenum, param: GLint) -> void>,
+	GetFramebufferParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint) -> void>,
+	NamedFramebufferParameteriEXT: FPointer<extern "C" fn(framebuffer: GLuint, pname: GLenum, param: GLint) -> void>,
+	GetNamedFramebufferParameterivEXT: FPointer<extern "C" fn(framebuffer: GLuint, pname: GLenum, params: *GLint) -> void>,
 	
 	// Core Extension: ARB_internalformat_query2
-	GetInternalformati64v: FPointer<ftypes::GetInternalformati64v>,
+	GetInternalformati64v: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint64) -> void>,
 	
 	// Core Extension: ARB_invalidate_subdata
-	InvalidateTexSubImage: FPointer<ftypes::InvalidateTexSubImage>,
-	InvalidateTexImage: FPointer<ftypes::InvalidateTexImage>,
-	InvalidateBufferSubData: FPointer<ftypes::InvalidateBufferSubData>,
-	InvalidateBufferData: FPointer<ftypes::InvalidateBufferData>,
-	InvalidateFramebuffer: FPointer<ftypes::InvalidateFramebuffer>,
-	InvalidateSubFramebuffer: FPointer<ftypes::InvalidateSubFramebuffer>,
+	InvalidateTexSubImage: FPointer<extern "C" fn(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei) -> void>,
+	InvalidateTexImage: FPointer<extern "C" fn(texture: GLuint, level: GLint) -> void>,
+	InvalidateBufferSubData: FPointer<extern "C" fn(buffer: GLuint, offset: GLintptr, length: GLsizeiptr) -> void>,
+	InvalidateBufferData: FPointer<extern "C" fn(buffer: GLuint) -> void>,
+	InvalidateFramebuffer: FPointer<extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum) -> void>,
+	InvalidateSubFramebuffer: FPointer<extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> void>,
 	
 	// Core Extension: ARB_multi_draw_indirect
-	MultiDrawArraysIndirect: FPointer<ftypes::MultiDrawArraysIndirect>,
-	MultiDrawElementsIndirect: FPointer<ftypes::MultiDrawElementsIndirect>,
+	MultiDrawArraysIndirect: FPointer<extern "C" fn(mode: GLenum, indirect: *void, drawcount: GLsizei, stride: GLsizei) -> void>,
+	MultiDrawElementsIndirect: FPointer<extern "C" fn(mode: GLenum, type_: GLenum, indirect: *void, drawcount: GLsizei, stride: GLsizei) -> void>,
 	
 	// Core Extension: ARB_program_interface_query
-	GetProgramInterfaceiv: FPointer<ftypes::GetProgramInterfaceiv>,
-	GetProgramResourceIndex: FPointer<ftypes::GetProgramResourceIndex>,
-	GetProgramResourceName: FPointer<ftypes::GetProgramResourceName>,
-	GetProgramResourceiv: FPointer<ftypes::GetProgramResourceiv>,
-	GetProgramResourceLocation: FPointer<ftypes::GetProgramResourceLocation>,
-	GetProgramResourceLocationIndex: FPointer<ftypes::GetProgramResourceLocationIndex>,
+	GetProgramInterfaceiv: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, pname: GLenum, params: *GLint) -> void>,
+	GetProgramResourceIndex: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint>,
+	GetProgramResourceName: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *GLsizei, name: *GLchar) -> void>,
+	GetProgramResourceiv: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *GLsizei, params: *GLint) -> void>,
+	GetProgramResourceLocation: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint>,
+	GetProgramResourceLocationIndex: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint>,
 	
 	// Core Extension: ARB_shader_storage_buffer_object
-	ShaderStorageBlockBinding: FPointer<ftypes::ShaderStorageBlockBinding>,
+	ShaderStorageBlockBinding: FPointer<extern "C" fn(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint) -> void>,
 	
 	// Core Extension: ARB_texture_buffer_range
-	TexBufferRange: FPointer<ftypes::TexBufferRange>,
-	TextureBufferRangeEXT: FPointer<ftypes::TextureBufferRangeEXT>,
+	TexBufferRange: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) -> void>,
+	TextureBufferRangeEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) -> void>,
 	
 	// Core Extension: ARB_texture_storage_multisample
-	TexStorage2DMultisample: FPointer<ftypes::TexStorage2DMultisample>,
-	TexStorage3DMultisample: FPointer<ftypes::TexStorage3DMultisample>,
-	TextureStorage2DMultisampleEXT: FPointer<ftypes::TextureStorage2DMultisampleEXT>,
-	TextureStorage3DMultisampleEXT: FPointer<ftypes::TextureStorage3DMultisampleEXT>,
+	TexStorage2DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) -> void>,
+	TexStorage3DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) -> void>,
+	TextureStorage2DMultisampleEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) -> void>,
+	TextureStorage3DMultisampleEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) -> void>,
 	
 	// Core Extension: ARB_texture_view
-	TextureView: FPointer<ftypes::TextureView>,
+	TextureView: FPointer<extern "C" fn(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint) -> void>,
 	
 	// Core Extension: ARB_vertex_attrib_binding
-	BindVertexBuffer: FPointer<ftypes::BindVertexBuffer>,
-	VertexAttribFormat: FPointer<ftypes::VertexAttribFormat>,
-	VertexAttribIFormat: FPointer<ftypes::VertexAttribIFormat>,
-	VertexAttribLFormat: FPointer<ftypes::VertexAttribLFormat>,
-	VertexAttribBinding: FPointer<ftypes::VertexAttribBinding>,
-	VertexBindingDivisor: FPointer<ftypes::VertexBindingDivisor>,
-	VertexArrayBindVertexBufferEXT: FPointer<ftypes::VertexArrayBindVertexBufferEXT>,
-	VertexArrayVertexAttribFormatEXT: FPointer<ftypes::VertexArrayVertexAttribFormatEXT>,
-	VertexArrayVertexAttribIFormatEXT: FPointer<ftypes::VertexArrayVertexAttribIFormatEXT>,
-	VertexArrayVertexAttribLFormatEXT: FPointer<ftypes::VertexArrayVertexAttribLFormatEXT>,
-	VertexArrayVertexAttribBindingEXT: FPointer<ftypes::VertexArrayVertexAttribBindingEXT>,
-	VertexArrayVertexBindingDivisorEXT: FPointer<ftypes::VertexArrayVertexBindingDivisorEXT>,
+	BindVertexBuffer: FPointer<extern "C" fn(bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) -> void>,
+	VertexAttribFormat: FPointer<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) -> void>,
+	VertexAttribIFormat: FPointer<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> void>,
+	VertexAttribLFormat: FPointer<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> void>,
+	VertexAttribBinding: FPointer<extern "C" fn(attribindex: GLuint, bindingindex: GLuint) -> void>,
+	VertexBindingDivisor: FPointer<extern "C" fn(bindingindex: GLuint, divisor: GLuint) -> void>,
+	VertexArrayBindVertexBufferEXT: FPointer<extern "C" fn(vaobj: GLuint, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) -> void>,
+	VertexArrayVertexAttribFormatEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) -> void>,
+	VertexArrayVertexAttribIFormatEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> void>,
+	VertexArrayVertexAttribLFormatEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> void>,
+	VertexArrayVertexAttribBindingEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, bindingindex: GLuint) -> void>,
+	VertexArrayVertexBindingDivisorEXT: FPointer<extern "C" fn(vaobj: GLuint, bindingindex: GLuint, divisor: GLuint) -> void>,
 	
 }
 
@@ -3610,662 +2950,662 @@ priv mod failing {
 pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) -> ~GL {
 	~GL {
 		// Version: 1.1
-		CullFace: match loadfn("glCullFace") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCullFace, is_loaded: false } },
-		FrontFace: match loadfn("glFrontFace") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFrontFace, is_loaded: false } },
-		Hint: match loadfn("glHint") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glHint, is_loaded: false } },
-		LineWidth: match loadfn("glLineWidth") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glLineWidth, is_loaded: false } },
-		PointSize: match loadfn("glPointSize") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPointSize, is_loaded: false } },
-		PolygonMode: match loadfn("glPolygonMode") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPolygonMode, is_loaded: false } },
-		Scissor: match loadfn("glScissor") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glScissor, is_loaded: false } },
-		TexParameterf: match loadfn("glTexParameterf") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexParameterf, is_loaded: false } },
-		TexParameterfv: match loadfn("glTexParameterfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexParameterfv, is_loaded: false } },
-		TexParameteri: match loadfn("glTexParameteri") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexParameteri, is_loaded: false } },
-		TexParameteriv: match loadfn("glTexParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexParameteriv, is_loaded: false } },
-		TexImage1D: match loadfn("glTexImage1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexImage1D, is_loaded: false } },
-		TexImage2D: match loadfn("glTexImage2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexImage2D, is_loaded: false } },
-		DrawBuffer: match loadfn("glDrawBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawBuffer, is_loaded: false } },
-		Clear: match loadfn("glClear") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClear, is_loaded: false } },
-		ClearColor: match loadfn("glClearColor") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearColor, is_loaded: false } },
-		ClearStencil: match loadfn("glClearStencil") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearStencil, is_loaded: false } },
-		ClearDepth: match loadfn("glClearDepth") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearDepth, is_loaded: false } },
-		StencilMask: match loadfn("glStencilMask") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glStencilMask, is_loaded: false } },
-		ColorMask: match loadfn("glColorMask") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glColorMask, is_loaded: false } },
-		DepthMask: match loadfn("glDepthMask") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDepthMask, is_loaded: false } },
-		Disable: match loadfn("glDisable") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDisable, is_loaded: false } },
-		Enable: match loadfn("glEnable") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glEnable, is_loaded: false } },
-		Finish: match loadfn("glFinish") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFinish, is_loaded: false } },
-		Flush: match loadfn("glFlush") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFlush, is_loaded: false } },
-		BlendFunc: match loadfn("glBlendFunc") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendFunc, is_loaded: false } },
-		LogicOp: match loadfn("glLogicOp") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glLogicOp, is_loaded: false } },
-		StencilFunc: match loadfn("glStencilFunc") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glStencilFunc, is_loaded: false } },
-		StencilOp: match loadfn("glStencilOp") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glStencilOp, is_loaded: false } },
-		DepthFunc: match loadfn("glDepthFunc") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDepthFunc, is_loaded: false } },
-		PixelStoref: match loadfn("glPixelStoref") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPixelStoref, is_loaded: false } },
-		PixelStorei: match loadfn("glPixelStorei") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPixelStorei, is_loaded: false } },
-		ReadBuffer: match loadfn("glReadBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glReadBuffer, is_loaded: false } },
-		ReadPixels: match loadfn("glReadPixels") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glReadPixels, is_loaded: false } },
-		GetBooleanv: match loadfn("glGetBooleanv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetBooleanv, is_loaded: false } },
-		GetDoublev: match loadfn("glGetDoublev") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetDoublev, is_loaded: false } },
-		GetError: match loadfn("glGetError") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetError, is_loaded: false } },
-		GetFloatv: match loadfn("glGetFloatv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetFloatv, is_loaded: false } },
-		GetIntegerv: match loadfn("glGetIntegerv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetIntegerv, is_loaded: false } },
-		GetString: match loadfn("glGetString") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetString, is_loaded: false } },
-		GetTexImage: match loadfn("glGetTexImage") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTexImage, is_loaded: false } },
-		GetTexParameterfv: match loadfn("glGetTexParameterfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTexParameterfv, is_loaded: false } },
-		GetTexParameteriv: match loadfn("glGetTexParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTexParameteriv, is_loaded: false } },
-		GetTexLevelParameterfv: match loadfn("glGetTexLevelParameterfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTexLevelParameterfv, is_loaded: false } },
-		GetTexLevelParameteriv: match loadfn("glGetTexLevelParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTexLevelParameteriv, is_loaded: false } },
-		IsEnabled: match loadfn("glIsEnabled") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsEnabled, is_loaded: false } },
-		DepthRange: match loadfn("glDepthRange") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDepthRange, is_loaded: false } },
-		Viewport: match loadfn("glViewport") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glViewport, is_loaded: false } },
-		DrawArrays: match loadfn("glDrawArrays") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawArrays, is_loaded: false } },
-		DrawElements: match loadfn("glDrawElements") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawElements, is_loaded: false } },
-		GetPointerv: match loadfn("glGetPointerv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetPointerv, is_loaded: false } },
-		PolygonOffset: match loadfn("glPolygonOffset") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPolygonOffset, is_loaded: false } },
-		CopyTexImage1D: match loadfn("glCopyTexImage1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCopyTexImage1D, is_loaded: false } },
-		CopyTexImage2D: match loadfn("glCopyTexImage2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCopyTexImage2D, is_loaded: false } },
-		CopyTexSubImage1D: match loadfn("glCopyTexSubImage1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCopyTexSubImage1D, is_loaded: false } },
-		CopyTexSubImage2D: match loadfn("glCopyTexSubImage2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCopyTexSubImage2D, is_loaded: false } },
-		TexSubImage1D: match loadfn("glTexSubImage1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexSubImage1D, is_loaded: false } },
-		TexSubImage2D: match loadfn("glTexSubImage2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexSubImage2D, is_loaded: false } },
-		BindTexture: match loadfn("glBindTexture") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindTexture, is_loaded: false } },
-		DeleteTextures: match loadfn("glDeleteTextures") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteTextures, is_loaded: false } },
-		GenTextures: match loadfn("glGenTextures") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenTextures, is_loaded: false } },
-		IsTexture: match loadfn("glIsTexture") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsTexture, is_loaded: false } },
-		Indexub: match loadfn("glIndexub") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIndexub, is_loaded: false } },
-		Indexubv: match loadfn("glIndexubv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIndexubv, is_loaded: false } },
+		CullFace: FPointer::load(loadfn("glCullFace"), failing::glCullFace),
+		FrontFace: FPointer::load(loadfn("glFrontFace"), failing::glFrontFace),
+		Hint: FPointer::load(loadfn("glHint"), failing::glHint),
+		LineWidth: FPointer::load(loadfn("glLineWidth"), failing::glLineWidth),
+		PointSize: FPointer::load(loadfn("glPointSize"), failing::glPointSize),
+		PolygonMode: FPointer::load(loadfn("glPolygonMode"), failing::glPolygonMode),
+		Scissor: FPointer::load(loadfn("glScissor"), failing::glScissor),
+		TexParameterf: FPointer::load(loadfn("glTexParameterf"), failing::glTexParameterf),
+		TexParameterfv: FPointer::load(loadfn("glTexParameterfv"), failing::glTexParameterfv),
+		TexParameteri: FPointer::load(loadfn("glTexParameteri"), failing::glTexParameteri),
+		TexParameteriv: FPointer::load(loadfn("glTexParameteriv"), failing::glTexParameteriv),
+		TexImage1D: FPointer::load(loadfn("glTexImage1D"), failing::glTexImage1D),
+		TexImage2D: FPointer::load(loadfn("glTexImage2D"), failing::glTexImage2D),
+		DrawBuffer: FPointer::load(loadfn("glDrawBuffer"), failing::glDrawBuffer),
+		Clear: FPointer::load(loadfn("glClear"), failing::glClear),
+		ClearColor: FPointer::load(loadfn("glClearColor"), failing::glClearColor),
+		ClearStencil: FPointer::load(loadfn("glClearStencil"), failing::glClearStencil),
+		ClearDepth: FPointer::load(loadfn("glClearDepth"), failing::glClearDepth),
+		StencilMask: FPointer::load(loadfn("glStencilMask"), failing::glStencilMask),
+		ColorMask: FPointer::load(loadfn("glColorMask"), failing::glColorMask),
+		DepthMask: FPointer::load(loadfn("glDepthMask"), failing::glDepthMask),
+		Disable: FPointer::load(loadfn("glDisable"), failing::glDisable),
+		Enable: FPointer::load(loadfn("glEnable"), failing::glEnable),
+		Finish: FPointer::load(loadfn("glFinish"), failing::glFinish),
+		Flush: FPointer::load(loadfn("glFlush"), failing::glFlush),
+		BlendFunc: FPointer::load(loadfn("glBlendFunc"), failing::glBlendFunc),
+		LogicOp: FPointer::load(loadfn("glLogicOp"), failing::glLogicOp),
+		StencilFunc: FPointer::load(loadfn("glStencilFunc"), failing::glStencilFunc),
+		StencilOp: FPointer::load(loadfn("glStencilOp"), failing::glStencilOp),
+		DepthFunc: FPointer::load(loadfn("glDepthFunc"), failing::glDepthFunc),
+		PixelStoref: FPointer::load(loadfn("glPixelStoref"), failing::glPixelStoref),
+		PixelStorei: FPointer::load(loadfn("glPixelStorei"), failing::glPixelStorei),
+		ReadBuffer: FPointer::load(loadfn("glReadBuffer"), failing::glReadBuffer),
+		ReadPixels: FPointer::load(loadfn("glReadPixels"), failing::glReadPixels),
+		GetBooleanv: FPointer::load(loadfn("glGetBooleanv"), failing::glGetBooleanv),
+		GetDoublev: FPointer::load(loadfn("glGetDoublev"), failing::glGetDoublev),
+		GetError: FPointer::load(loadfn("glGetError"), failing::glGetError),
+		GetFloatv: FPointer::load(loadfn("glGetFloatv"), failing::glGetFloatv),
+		GetIntegerv: FPointer::load(loadfn("glGetIntegerv"), failing::glGetIntegerv),
+		GetString: FPointer::load(loadfn("glGetString"), failing::glGetString),
+		GetTexImage: FPointer::load(loadfn("glGetTexImage"), failing::glGetTexImage),
+		GetTexParameterfv: FPointer::load(loadfn("glGetTexParameterfv"), failing::glGetTexParameterfv),
+		GetTexParameteriv: FPointer::load(loadfn("glGetTexParameteriv"), failing::glGetTexParameteriv),
+		GetTexLevelParameterfv: FPointer::load(loadfn("glGetTexLevelParameterfv"), failing::glGetTexLevelParameterfv),
+		GetTexLevelParameteriv: FPointer::load(loadfn("glGetTexLevelParameteriv"), failing::glGetTexLevelParameteriv),
+		IsEnabled: FPointer::load(loadfn("glIsEnabled"), failing::glIsEnabled),
+		DepthRange: FPointer::load(loadfn("glDepthRange"), failing::glDepthRange),
+		Viewport: FPointer::load(loadfn("glViewport"), failing::glViewport),
+		DrawArrays: FPointer::load(loadfn("glDrawArrays"), failing::glDrawArrays),
+		DrawElements: FPointer::load(loadfn("glDrawElements"), failing::glDrawElements),
+		GetPointerv: FPointer::load(loadfn("glGetPointerv"), failing::glGetPointerv),
+		PolygonOffset: FPointer::load(loadfn("glPolygonOffset"), failing::glPolygonOffset),
+		CopyTexImage1D: FPointer::load(loadfn("glCopyTexImage1D"), failing::glCopyTexImage1D),
+		CopyTexImage2D: FPointer::load(loadfn("glCopyTexImage2D"), failing::glCopyTexImage2D),
+		CopyTexSubImage1D: FPointer::load(loadfn("glCopyTexSubImage1D"), failing::glCopyTexSubImage1D),
+		CopyTexSubImage2D: FPointer::load(loadfn("glCopyTexSubImage2D"), failing::glCopyTexSubImage2D),
+		TexSubImage1D: FPointer::load(loadfn("glTexSubImage1D"), failing::glTexSubImage1D),
+		TexSubImage2D: FPointer::load(loadfn("glTexSubImage2D"), failing::glTexSubImage2D),
+		BindTexture: FPointer::load(loadfn("glBindTexture"), failing::glBindTexture),
+		DeleteTextures: FPointer::load(loadfn("glDeleteTextures"), failing::glDeleteTextures),
+		GenTextures: FPointer::load(loadfn("glGenTextures"), failing::glGenTextures),
+		IsTexture: FPointer::load(loadfn("glIsTexture"), failing::glIsTexture),
+		Indexub: FPointer::load(loadfn("glIndexub"), failing::glIndexub),
+		Indexubv: FPointer::load(loadfn("glIndexubv"), failing::glIndexubv),
 		
 		// Version: 1.2
-		BlendColor: match loadfn("glBlendColor") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendColor, is_loaded: false } },
-		BlendEquation: match loadfn("glBlendEquation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendEquation, is_loaded: false } },
-		DrawRangeElements: match loadfn("glDrawRangeElements") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawRangeElements, is_loaded: false } },
-		TexImage3D: match loadfn("glTexImage3D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexImage3D, is_loaded: false } },
-		TexSubImage3D: match loadfn("glTexSubImage3D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexSubImage3D, is_loaded: false } },
-		CopyTexSubImage3D: match loadfn("glCopyTexSubImage3D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCopyTexSubImage3D, is_loaded: false } },
+		BlendColor: FPointer::load(loadfn("glBlendColor"), failing::glBlendColor),
+		BlendEquation: FPointer::load(loadfn("glBlendEquation"), failing::glBlendEquation),
+		DrawRangeElements: FPointer::load(loadfn("glDrawRangeElements"), failing::glDrawRangeElements),
+		TexImage3D: FPointer::load(loadfn("glTexImage3D"), failing::glTexImage3D),
+		TexSubImage3D: FPointer::load(loadfn("glTexSubImage3D"), failing::glTexSubImage3D),
+		CopyTexSubImage3D: FPointer::load(loadfn("glCopyTexSubImage3D"), failing::glCopyTexSubImage3D),
 		
 		// Version: 1.3
-		ActiveTexture: match loadfn("glActiveTexture") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glActiveTexture, is_loaded: false } },
-		SampleCoverage: match loadfn("glSampleCoverage") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSampleCoverage, is_loaded: false } },
-		CompressedTexImage3D: match loadfn("glCompressedTexImage3D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCompressedTexImage3D, is_loaded: false } },
-		CompressedTexImage2D: match loadfn("glCompressedTexImage2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCompressedTexImage2D, is_loaded: false } },
-		CompressedTexImage1D: match loadfn("glCompressedTexImage1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCompressedTexImage1D, is_loaded: false } },
-		CompressedTexSubImage3D: match loadfn("glCompressedTexSubImage3D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCompressedTexSubImage3D, is_loaded: false } },
-		CompressedTexSubImage2D: match loadfn("glCompressedTexSubImage2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCompressedTexSubImage2D, is_loaded: false } },
-		CompressedTexSubImage1D: match loadfn("glCompressedTexSubImage1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCompressedTexSubImage1D, is_loaded: false } },
-		GetCompressedTexImage: match loadfn("glGetCompressedTexImage") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetCompressedTexImage, is_loaded: false } },
+		ActiveTexture: FPointer::load(loadfn("glActiveTexture"), failing::glActiveTexture),
+		SampleCoverage: FPointer::load(loadfn("glSampleCoverage"), failing::glSampleCoverage),
+		CompressedTexImage3D: FPointer::load(loadfn("glCompressedTexImage3D"), failing::glCompressedTexImage3D),
+		CompressedTexImage2D: FPointer::load(loadfn("glCompressedTexImage2D"), failing::glCompressedTexImage2D),
+		CompressedTexImage1D: FPointer::load(loadfn("glCompressedTexImage1D"), failing::glCompressedTexImage1D),
+		CompressedTexSubImage3D: FPointer::load(loadfn("glCompressedTexSubImage3D"), failing::glCompressedTexSubImage3D),
+		CompressedTexSubImage2D: FPointer::load(loadfn("glCompressedTexSubImage2D"), failing::glCompressedTexSubImage2D),
+		CompressedTexSubImage1D: FPointer::load(loadfn("glCompressedTexSubImage1D"), failing::glCompressedTexSubImage1D),
+		GetCompressedTexImage: FPointer::load(loadfn("glGetCompressedTexImage"), failing::glGetCompressedTexImage),
 		
 		// Version: 1.4
-		BlendFuncSeparate: match loadfn("glBlendFuncSeparate") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendFuncSeparate, is_loaded: false } },
-		MultiDrawArrays: match loadfn("glMultiDrawArrays") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiDrawArrays, is_loaded: false } },
-		MultiDrawElements: match loadfn("glMultiDrawElements") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiDrawElements, is_loaded: false } },
-		PointParameterf: match loadfn("glPointParameterf") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPointParameterf, is_loaded: false } },
-		PointParameterfv: match loadfn("glPointParameterfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPointParameterfv, is_loaded: false } },
-		PointParameteri: match loadfn("glPointParameteri") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPointParameteri, is_loaded: false } },
-		PointParameteriv: match loadfn("glPointParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPointParameteriv, is_loaded: false } },
+		BlendFuncSeparate: FPointer::load(loadfn("glBlendFuncSeparate"), failing::glBlendFuncSeparate),
+		MultiDrawArrays: FPointer::load(loadfn("glMultiDrawArrays"), failing::glMultiDrawArrays),
+		MultiDrawElements: FPointer::load(loadfn("glMultiDrawElements"), failing::glMultiDrawElements),
+		PointParameterf: FPointer::load(loadfn("glPointParameterf"), failing::glPointParameterf),
+		PointParameterfv: FPointer::load(loadfn("glPointParameterfv"), failing::glPointParameterfv),
+		PointParameteri: FPointer::load(loadfn("glPointParameteri"), failing::glPointParameteri),
+		PointParameteriv: FPointer::load(loadfn("glPointParameteriv"), failing::glPointParameteriv),
 		
 		// Version: 1.5
-		GenQueries: match loadfn("glGenQueries") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenQueries, is_loaded: false } },
-		DeleteQueries: match loadfn("glDeleteQueries") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteQueries, is_loaded: false } },
-		IsQuery: match loadfn("glIsQuery") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsQuery, is_loaded: false } },
-		BeginQuery: match loadfn("glBeginQuery") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBeginQuery, is_loaded: false } },
-		EndQuery: match loadfn("glEndQuery") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glEndQuery, is_loaded: false } },
-		GetQueryiv: match loadfn("glGetQueryiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetQueryiv, is_loaded: false } },
-		GetQueryObjectiv: match loadfn("glGetQueryObjectiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetQueryObjectiv, is_loaded: false } },
-		GetQueryObjectuiv: match loadfn("glGetQueryObjectuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetQueryObjectuiv, is_loaded: false } },
-		BindBuffer: match loadfn("glBindBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindBuffer, is_loaded: false } },
-		DeleteBuffers: match loadfn("glDeleteBuffers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteBuffers, is_loaded: false } },
-		GenBuffers: match loadfn("glGenBuffers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenBuffers, is_loaded: false } },
-		IsBuffer: match loadfn("glIsBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsBuffer, is_loaded: false } },
-		BufferData: match loadfn("glBufferData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBufferData, is_loaded: false } },
-		BufferSubData: match loadfn("glBufferSubData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBufferSubData, is_loaded: false } },
-		GetBufferSubData: match loadfn("glGetBufferSubData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetBufferSubData, is_loaded: false } },
-		MapBuffer: match loadfn("glMapBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMapBuffer, is_loaded: false } },
-		UnmapBuffer: match loadfn("glUnmapBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUnmapBuffer, is_loaded: false } },
-		GetBufferParameteriv: match loadfn("glGetBufferParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetBufferParameteriv, is_loaded: false } },
-		GetBufferPointerv: match loadfn("glGetBufferPointerv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetBufferPointerv, is_loaded: false } },
+		GenQueries: FPointer::load(loadfn("glGenQueries"), failing::glGenQueries),
+		DeleteQueries: FPointer::load(loadfn("glDeleteQueries"), failing::glDeleteQueries),
+		IsQuery: FPointer::load(loadfn("glIsQuery"), failing::glIsQuery),
+		BeginQuery: FPointer::load(loadfn("glBeginQuery"), failing::glBeginQuery),
+		EndQuery: FPointer::load(loadfn("glEndQuery"), failing::glEndQuery),
+		GetQueryiv: FPointer::load(loadfn("glGetQueryiv"), failing::glGetQueryiv),
+		GetQueryObjectiv: FPointer::load(loadfn("glGetQueryObjectiv"), failing::glGetQueryObjectiv),
+		GetQueryObjectuiv: FPointer::load(loadfn("glGetQueryObjectuiv"), failing::glGetQueryObjectuiv),
+		BindBuffer: FPointer::load(loadfn("glBindBuffer"), failing::glBindBuffer),
+		DeleteBuffers: FPointer::load(loadfn("glDeleteBuffers"), failing::glDeleteBuffers),
+		GenBuffers: FPointer::load(loadfn("glGenBuffers"), failing::glGenBuffers),
+		IsBuffer: FPointer::load(loadfn("glIsBuffer"), failing::glIsBuffer),
+		BufferData: FPointer::load(loadfn("glBufferData"), failing::glBufferData),
+		BufferSubData: FPointer::load(loadfn("glBufferSubData"), failing::glBufferSubData),
+		GetBufferSubData: FPointer::load(loadfn("glGetBufferSubData"), failing::glGetBufferSubData),
+		MapBuffer: FPointer::load(loadfn("glMapBuffer"), failing::glMapBuffer),
+		UnmapBuffer: FPointer::load(loadfn("glUnmapBuffer"), failing::glUnmapBuffer),
+		GetBufferParameteriv: FPointer::load(loadfn("glGetBufferParameteriv"), failing::glGetBufferParameteriv),
+		GetBufferPointerv: FPointer::load(loadfn("glGetBufferPointerv"), failing::glGetBufferPointerv),
 		
 		// Version: 2.0
-		BlendEquationSeparate: match loadfn("glBlendEquationSeparate") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendEquationSeparate, is_loaded: false } },
-		DrawBuffers: match loadfn("glDrawBuffers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawBuffers, is_loaded: false } },
-		StencilOpSeparate: match loadfn("glStencilOpSeparate") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glStencilOpSeparate, is_loaded: false } },
-		StencilFuncSeparate: match loadfn("glStencilFuncSeparate") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glStencilFuncSeparate, is_loaded: false } },
-		StencilMaskSeparate: match loadfn("glStencilMaskSeparate") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glStencilMaskSeparate, is_loaded: false } },
-		AttachShader: match loadfn("glAttachShader") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glAttachShader, is_loaded: false } },
-		BindAttribLocation: match loadfn("glBindAttribLocation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindAttribLocation, is_loaded: false } },
-		CompileShader: match loadfn("glCompileShader") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCompileShader, is_loaded: false } },
-		CreateProgram: match loadfn("glCreateProgram") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCreateProgram, is_loaded: false } },
-		CreateShader: match loadfn("glCreateShader") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCreateShader, is_loaded: false } },
-		DeleteProgram: match loadfn("glDeleteProgram") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteProgram, is_loaded: false } },
-		DeleteShader: match loadfn("glDeleteShader") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteShader, is_loaded: false } },
-		DetachShader: match loadfn("glDetachShader") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDetachShader, is_loaded: false } },
-		DisableVertexAttribArray: match loadfn("glDisableVertexAttribArray") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDisableVertexAttribArray, is_loaded: false } },
-		EnableVertexAttribArray: match loadfn("glEnableVertexAttribArray") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glEnableVertexAttribArray, is_loaded: false } },
-		GetActiveAttrib: match loadfn("glGetActiveAttrib") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveAttrib, is_loaded: false } },
-		GetActiveUniform: match loadfn("glGetActiveUniform") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveUniform, is_loaded: false } },
-		GetAttachedShaders: match loadfn("glGetAttachedShaders") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetAttachedShaders, is_loaded: false } },
-		GetAttribLocation: match loadfn("glGetAttribLocation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetAttribLocation, is_loaded: false } },
-		GetProgramiv: match loadfn("glGetProgramiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramiv, is_loaded: false } },
-		GetProgramInfoLog: match loadfn("glGetProgramInfoLog") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramInfoLog, is_loaded: false } },
-		GetShaderiv: match loadfn("glGetShaderiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetShaderiv, is_loaded: false } },
-		GetShaderInfoLog: match loadfn("glGetShaderInfoLog") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetShaderInfoLog, is_loaded: false } },
-		GetShaderSource: match loadfn("glGetShaderSource") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetShaderSource, is_loaded: false } },
-		GetUniformLocation: match loadfn("glGetUniformLocation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformLocation, is_loaded: false } },
-		GetUniformfv: match loadfn("glGetUniformfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformfv, is_loaded: false } },
-		GetUniformiv: match loadfn("glGetUniformiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformiv, is_loaded: false } },
-		GetVertexAttribdv: match loadfn("glGetVertexAttribdv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetVertexAttribdv, is_loaded: false } },
-		GetVertexAttribfv: match loadfn("glGetVertexAttribfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetVertexAttribfv, is_loaded: false } },
-		GetVertexAttribiv: match loadfn("glGetVertexAttribiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetVertexAttribiv, is_loaded: false } },
-		GetVertexAttribPointerv: match loadfn("glGetVertexAttribPointerv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetVertexAttribPointerv, is_loaded: false } },
-		IsProgram: match loadfn("glIsProgram") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsProgram, is_loaded: false } },
-		IsShader: match loadfn("glIsShader") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsShader, is_loaded: false } },
-		LinkProgram: match loadfn("glLinkProgram") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glLinkProgram, is_loaded: false } },
-		ShaderSource: match loadfn("glShaderSource") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glShaderSource, is_loaded: false } },
-		UseProgram: match loadfn("glUseProgram") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUseProgram, is_loaded: false } },
-		Uniform1f: match loadfn("glUniform1f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1f, is_loaded: false } },
-		Uniform2f: match loadfn("glUniform2f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2f, is_loaded: false } },
-		Uniform3f: match loadfn("glUniform3f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3f, is_loaded: false } },
-		Uniform4f: match loadfn("glUniform4f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4f, is_loaded: false } },
-		Uniform1i: match loadfn("glUniform1i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1i, is_loaded: false } },
-		Uniform2i: match loadfn("glUniform2i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2i, is_loaded: false } },
-		Uniform3i: match loadfn("glUniform3i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3i, is_loaded: false } },
-		Uniform4i: match loadfn("glUniform4i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4i, is_loaded: false } },
-		Uniform1fv: match loadfn("glUniform1fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1fv, is_loaded: false } },
-		Uniform2fv: match loadfn("glUniform2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2fv, is_loaded: false } },
-		Uniform3fv: match loadfn("glUniform3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3fv, is_loaded: false } },
-		Uniform4fv: match loadfn("glUniform4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4fv, is_loaded: false } },
-		Uniform1iv: match loadfn("glUniform1iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1iv, is_loaded: false } },
-		Uniform2iv: match loadfn("glUniform2iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2iv, is_loaded: false } },
-		Uniform3iv: match loadfn("glUniform3iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3iv, is_loaded: false } },
-		Uniform4iv: match loadfn("glUniform4iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4iv, is_loaded: false } },
-		UniformMatrix2fv: match loadfn("glUniformMatrix2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix2fv, is_loaded: false } },
-		UniformMatrix3fv: match loadfn("glUniformMatrix3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix3fv, is_loaded: false } },
-		UniformMatrix4fv: match loadfn("glUniformMatrix4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix4fv, is_loaded: false } },
-		ValidateProgram: match loadfn("glValidateProgram") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glValidateProgram, is_loaded: false } },
-		VertexAttribPointer: match loadfn("glVertexAttribPointer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribPointer, is_loaded: false } },
+		BlendEquationSeparate: FPointer::load(loadfn("glBlendEquationSeparate"), failing::glBlendEquationSeparate),
+		DrawBuffers: FPointer::load(loadfn("glDrawBuffers"), failing::glDrawBuffers),
+		StencilOpSeparate: FPointer::load(loadfn("glStencilOpSeparate"), failing::glStencilOpSeparate),
+		StencilFuncSeparate: FPointer::load(loadfn("glStencilFuncSeparate"), failing::glStencilFuncSeparate),
+		StencilMaskSeparate: FPointer::load(loadfn("glStencilMaskSeparate"), failing::glStencilMaskSeparate),
+		AttachShader: FPointer::load(loadfn("glAttachShader"), failing::glAttachShader),
+		BindAttribLocation: FPointer::load(loadfn("glBindAttribLocation"), failing::glBindAttribLocation),
+		CompileShader: FPointer::load(loadfn("glCompileShader"), failing::glCompileShader),
+		CreateProgram: FPointer::load(loadfn("glCreateProgram"), failing::glCreateProgram),
+		CreateShader: FPointer::load(loadfn("glCreateShader"), failing::glCreateShader),
+		DeleteProgram: FPointer::load(loadfn("glDeleteProgram"), failing::glDeleteProgram),
+		DeleteShader: FPointer::load(loadfn("glDeleteShader"), failing::glDeleteShader),
+		DetachShader: FPointer::load(loadfn("glDetachShader"), failing::glDetachShader),
+		DisableVertexAttribArray: FPointer::load(loadfn("glDisableVertexAttribArray"), failing::glDisableVertexAttribArray),
+		EnableVertexAttribArray: FPointer::load(loadfn("glEnableVertexAttribArray"), failing::glEnableVertexAttribArray),
+		GetActiveAttrib: FPointer::load(loadfn("glGetActiveAttrib"), failing::glGetActiveAttrib),
+		GetActiveUniform: FPointer::load(loadfn("glGetActiveUniform"), failing::glGetActiveUniform),
+		GetAttachedShaders: FPointer::load(loadfn("glGetAttachedShaders"), failing::glGetAttachedShaders),
+		GetAttribLocation: FPointer::load(loadfn("glGetAttribLocation"), failing::glGetAttribLocation),
+		GetProgramiv: FPointer::load(loadfn("glGetProgramiv"), failing::glGetProgramiv),
+		GetProgramInfoLog: FPointer::load(loadfn("glGetProgramInfoLog"), failing::glGetProgramInfoLog),
+		GetShaderiv: FPointer::load(loadfn("glGetShaderiv"), failing::glGetShaderiv),
+		GetShaderInfoLog: FPointer::load(loadfn("glGetShaderInfoLog"), failing::glGetShaderInfoLog),
+		GetShaderSource: FPointer::load(loadfn("glGetShaderSource"), failing::glGetShaderSource),
+		GetUniformLocation: FPointer::load(loadfn("glGetUniformLocation"), failing::glGetUniformLocation),
+		GetUniformfv: FPointer::load(loadfn("glGetUniformfv"), failing::glGetUniformfv),
+		GetUniformiv: FPointer::load(loadfn("glGetUniformiv"), failing::glGetUniformiv),
+		GetVertexAttribdv: FPointer::load(loadfn("glGetVertexAttribdv"), failing::glGetVertexAttribdv),
+		GetVertexAttribfv: FPointer::load(loadfn("glGetVertexAttribfv"), failing::glGetVertexAttribfv),
+		GetVertexAttribiv: FPointer::load(loadfn("glGetVertexAttribiv"), failing::glGetVertexAttribiv),
+		GetVertexAttribPointerv: FPointer::load(loadfn("glGetVertexAttribPointerv"), failing::glGetVertexAttribPointerv),
+		IsProgram: FPointer::load(loadfn("glIsProgram"), failing::glIsProgram),
+		IsShader: FPointer::load(loadfn("glIsShader"), failing::glIsShader),
+		LinkProgram: FPointer::load(loadfn("glLinkProgram"), failing::glLinkProgram),
+		ShaderSource: FPointer::load(loadfn("glShaderSource"), failing::glShaderSource),
+		UseProgram: FPointer::load(loadfn("glUseProgram"), failing::glUseProgram),
+		Uniform1f: FPointer::load(loadfn("glUniform1f"), failing::glUniform1f),
+		Uniform2f: FPointer::load(loadfn("glUniform2f"), failing::glUniform2f),
+		Uniform3f: FPointer::load(loadfn("glUniform3f"), failing::glUniform3f),
+		Uniform4f: FPointer::load(loadfn("glUniform4f"), failing::glUniform4f),
+		Uniform1i: FPointer::load(loadfn("glUniform1i"), failing::glUniform1i),
+		Uniform2i: FPointer::load(loadfn("glUniform2i"), failing::glUniform2i),
+		Uniform3i: FPointer::load(loadfn("glUniform3i"), failing::glUniform3i),
+		Uniform4i: FPointer::load(loadfn("glUniform4i"), failing::glUniform4i),
+		Uniform1fv: FPointer::load(loadfn("glUniform1fv"), failing::glUniform1fv),
+		Uniform2fv: FPointer::load(loadfn("glUniform2fv"), failing::glUniform2fv),
+		Uniform3fv: FPointer::load(loadfn("glUniform3fv"), failing::glUniform3fv),
+		Uniform4fv: FPointer::load(loadfn("glUniform4fv"), failing::glUniform4fv),
+		Uniform1iv: FPointer::load(loadfn("glUniform1iv"), failing::glUniform1iv),
+		Uniform2iv: FPointer::load(loadfn("glUniform2iv"), failing::glUniform2iv),
+		Uniform3iv: FPointer::load(loadfn("glUniform3iv"), failing::glUniform3iv),
+		Uniform4iv: FPointer::load(loadfn("glUniform4iv"), failing::glUniform4iv),
+		UniformMatrix2fv: FPointer::load(loadfn("glUniformMatrix2fv"), failing::glUniformMatrix2fv),
+		UniformMatrix3fv: FPointer::load(loadfn("glUniformMatrix3fv"), failing::glUniformMatrix3fv),
+		UniformMatrix4fv: FPointer::load(loadfn("glUniformMatrix4fv"), failing::glUniformMatrix4fv),
+		ValidateProgram: FPointer::load(loadfn("glValidateProgram"), failing::glValidateProgram),
+		VertexAttribPointer: FPointer::load(loadfn("glVertexAttribPointer"), failing::glVertexAttribPointer),
 		
 		// Version: 2.1
-		UniformMatrix2x3fv: match loadfn("glUniformMatrix2x3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix2x3fv, is_loaded: false } },
-		UniformMatrix3x2fv: match loadfn("glUniformMatrix3x2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix3x2fv, is_loaded: false } },
-		UniformMatrix2x4fv: match loadfn("glUniformMatrix2x4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix2x4fv, is_loaded: false } },
-		UniformMatrix4x2fv: match loadfn("glUniformMatrix4x2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix4x2fv, is_loaded: false } },
-		UniformMatrix3x4fv: match loadfn("glUniformMatrix3x4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix3x4fv, is_loaded: false } },
-		UniformMatrix4x3fv: match loadfn("glUniformMatrix4x3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix4x3fv, is_loaded: false } },
+		UniformMatrix2x3fv: FPointer::load(loadfn("glUniformMatrix2x3fv"), failing::glUniformMatrix2x3fv),
+		UniformMatrix3x2fv: FPointer::load(loadfn("glUniformMatrix3x2fv"), failing::glUniformMatrix3x2fv),
+		UniformMatrix2x4fv: FPointer::load(loadfn("glUniformMatrix2x4fv"), failing::glUniformMatrix2x4fv),
+		UniformMatrix4x2fv: FPointer::load(loadfn("glUniformMatrix4x2fv"), failing::glUniformMatrix4x2fv),
+		UniformMatrix3x4fv: FPointer::load(loadfn("glUniformMatrix3x4fv"), failing::glUniformMatrix3x4fv),
+		UniformMatrix4x3fv: FPointer::load(loadfn("glUniformMatrix4x3fv"), failing::glUniformMatrix4x3fv),
 		
 		// Version: 3.0
-		ColorMaski: match loadfn("glColorMaski") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glColorMaski, is_loaded: false } },
-		GetBooleani_v: match loadfn("glGetBooleani_v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetBooleani_v, is_loaded: false } },
-		GetIntegeri_v: match loadfn("glGetIntegeri_v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetIntegeri_v, is_loaded: false } },
-		Enablei: match loadfn("glEnablei") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glEnablei, is_loaded: false } },
-		Disablei: match loadfn("glDisablei") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDisablei, is_loaded: false } },
-		IsEnabledi: match loadfn("glIsEnabledi") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsEnabledi, is_loaded: false } },
-		BeginTransformFeedback: match loadfn("glBeginTransformFeedback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBeginTransformFeedback, is_loaded: false } },
-		EndTransformFeedback: match loadfn("glEndTransformFeedback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glEndTransformFeedback, is_loaded: false } },
-		BindBufferRange: match loadfn("glBindBufferRange") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindBufferRange, is_loaded: false } },
-		BindBufferBase: match loadfn("glBindBufferBase") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindBufferBase, is_loaded: false } },
-		TransformFeedbackVaryings: match loadfn("glTransformFeedbackVaryings") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTransformFeedbackVaryings, is_loaded: false } },
-		GetTransformFeedbackVarying: match loadfn("glGetTransformFeedbackVarying") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTransformFeedbackVarying, is_loaded: false } },
-		ClampColor: match loadfn("glClampColor") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClampColor, is_loaded: false } },
-		BeginConditionalRender: match loadfn("glBeginConditionalRender") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBeginConditionalRender, is_loaded: false } },
-		EndConditionalRender: match loadfn("glEndConditionalRender") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glEndConditionalRender, is_loaded: false } },
-		VertexAttribIPointer: match loadfn("glVertexAttribIPointer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribIPointer, is_loaded: false } },
-		GetVertexAttribIiv: match loadfn("glGetVertexAttribIiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetVertexAttribIiv, is_loaded: false } },
-		GetVertexAttribIuiv: match loadfn("glGetVertexAttribIuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetVertexAttribIuiv, is_loaded: false } },
-		VertexAttribI1i: match loadfn("glVertexAttribI1i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI1i, is_loaded: false } },
-		VertexAttribI2i: match loadfn("glVertexAttribI2i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI2i, is_loaded: false } },
-		VertexAttribI3i: match loadfn("glVertexAttribI3i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI3i, is_loaded: false } },
-		VertexAttribI4i: match loadfn("glVertexAttribI4i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4i, is_loaded: false } },
-		VertexAttribI1ui: match loadfn("glVertexAttribI1ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI1ui, is_loaded: false } },
-		VertexAttribI2ui: match loadfn("glVertexAttribI2ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI2ui, is_loaded: false } },
-		VertexAttribI3ui: match loadfn("glVertexAttribI3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI3ui, is_loaded: false } },
-		VertexAttribI4ui: match loadfn("glVertexAttribI4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4ui, is_loaded: false } },
-		VertexAttribI1iv: match loadfn("glVertexAttribI1iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI1iv, is_loaded: false } },
-		VertexAttribI2iv: match loadfn("glVertexAttribI2iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI2iv, is_loaded: false } },
-		VertexAttribI3iv: match loadfn("glVertexAttribI3iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI3iv, is_loaded: false } },
-		VertexAttribI4iv: match loadfn("glVertexAttribI4iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4iv, is_loaded: false } },
-		VertexAttribI1uiv: match loadfn("glVertexAttribI1uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI1uiv, is_loaded: false } },
-		VertexAttribI2uiv: match loadfn("glVertexAttribI2uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI2uiv, is_loaded: false } },
-		VertexAttribI3uiv: match loadfn("glVertexAttribI3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI3uiv, is_loaded: false } },
-		VertexAttribI4uiv: match loadfn("glVertexAttribI4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4uiv, is_loaded: false } },
-		VertexAttribI4bv: match loadfn("glVertexAttribI4bv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4bv, is_loaded: false } },
-		VertexAttribI4sv: match loadfn("glVertexAttribI4sv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4sv, is_loaded: false } },
-		VertexAttribI4ubv: match loadfn("glVertexAttribI4ubv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4ubv, is_loaded: false } },
-		VertexAttribI4usv: match loadfn("glVertexAttribI4usv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribI4usv, is_loaded: false } },
-		GetUniformuiv: match loadfn("glGetUniformuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformuiv, is_loaded: false } },
-		BindFragDataLocation: match loadfn("glBindFragDataLocation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindFragDataLocation, is_loaded: false } },
-		GetFragDataLocation: match loadfn("glGetFragDataLocation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetFragDataLocation, is_loaded: false } },
-		Uniform1ui: match loadfn("glUniform1ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1ui, is_loaded: false } },
-		Uniform2ui: match loadfn("glUniform2ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2ui, is_loaded: false } },
-		Uniform3ui: match loadfn("glUniform3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3ui, is_loaded: false } },
-		Uniform4ui: match loadfn("glUniform4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4ui, is_loaded: false } },
-		Uniform1uiv: match loadfn("glUniform1uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1uiv, is_loaded: false } },
-		Uniform2uiv: match loadfn("glUniform2uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2uiv, is_loaded: false } },
-		Uniform3uiv: match loadfn("glUniform3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3uiv, is_loaded: false } },
-		Uniform4uiv: match loadfn("glUniform4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4uiv, is_loaded: false } },
-		TexParameterIiv: match loadfn("glTexParameterIiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexParameterIiv, is_loaded: false } },
-		TexParameterIuiv: match loadfn("glTexParameterIuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexParameterIuiv, is_loaded: false } },
-		GetTexParameterIiv: match loadfn("glGetTexParameterIiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTexParameterIiv, is_loaded: false } },
-		GetTexParameterIuiv: match loadfn("glGetTexParameterIuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetTexParameterIuiv, is_loaded: false } },
-		ClearBufferiv: match loadfn("glClearBufferiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearBufferiv, is_loaded: false } },
-		ClearBufferuiv: match loadfn("glClearBufferuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearBufferuiv, is_loaded: false } },
-		ClearBufferfv: match loadfn("glClearBufferfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearBufferfv, is_loaded: false } },
-		ClearBufferfi: match loadfn("glClearBufferfi") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearBufferfi, is_loaded: false } },
-		GetStringi: match loadfn("glGetStringi") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetStringi, is_loaded: false } },
+		ColorMaski: FPointer::load(loadfn("glColorMaski"), failing::glColorMaski),
+		GetBooleani_v: FPointer::load(loadfn("glGetBooleani_v"), failing::glGetBooleani_v),
+		GetIntegeri_v: FPointer::load(loadfn("glGetIntegeri_v"), failing::glGetIntegeri_v),
+		Enablei: FPointer::load(loadfn("glEnablei"), failing::glEnablei),
+		Disablei: FPointer::load(loadfn("glDisablei"), failing::glDisablei),
+		IsEnabledi: FPointer::load(loadfn("glIsEnabledi"), failing::glIsEnabledi),
+		BeginTransformFeedback: FPointer::load(loadfn("glBeginTransformFeedback"), failing::glBeginTransformFeedback),
+		EndTransformFeedback: FPointer::load(loadfn("glEndTransformFeedback"), failing::glEndTransformFeedback),
+		BindBufferRange: FPointer::load(loadfn("glBindBufferRange"), failing::glBindBufferRange),
+		BindBufferBase: FPointer::load(loadfn("glBindBufferBase"), failing::glBindBufferBase),
+		TransformFeedbackVaryings: FPointer::load(loadfn("glTransformFeedbackVaryings"), failing::glTransformFeedbackVaryings),
+		GetTransformFeedbackVarying: FPointer::load(loadfn("glGetTransformFeedbackVarying"), failing::glGetTransformFeedbackVarying),
+		ClampColor: FPointer::load(loadfn("glClampColor"), failing::glClampColor),
+		BeginConditionalRender: FPointer::load(loadfn("glBeginConditionalRender"), failing::glBeginConditionalRender),
+		EndConditionalRender: FPointer::load(loadfn("glEndConditionalRender"), failing::glEndConditionalRender),
+		VertexAttribIPointer: FPointer::load(loadfn("glVertexAttribIPointer"), failing::glVertexAttribIPointer),
+		GetVertexAttribIiv: FPointer::load(loadfn("glGetVertexAttribIiv"), failing::glGetVertexAttribIiv),
+		GetVertexAttribIuiv: FPointer::load(loadfn("glGetVertexAttribIuiv"), failing::glGetVertexAttribIuiv),
+		VertexAttribI1i: FPointer::load(loadfn("glVertexAttribI1i"), failing::glVertexAttribI1i),
+		VertexAttribI2i: FPointer::load(loadfn("glVertexAttribI2i"), failing::glVertexAttribI2i),
+		VertexAttribI3i: FPointer::load(loadfn("glVertexAttribI3i"), failing::glVertexAttribI3i),
+		VertexAttribI4i: FPointer::load(loadfn("glVertexAttribI4i"), failing::glVertexAttribI4i),
+		VertexAttribI1ui: FPointer::load(loadfn("glVertexAttribI1ui"), failing::glVertexAttribI1ui),
+		VertexAttribI2ui: FPointer::load(loadfn("glVertexAttribI2ui"), failing::glVertexAttribI2ui),
+		VertexAttribI3ui: FPointer::load(loadfn("glVertexAttribI3ui"), failing::glVertexAttribI3ui),
+		VertexAttribI4ui: FPointer::load(loadfn("glVertexAttribI4ui"), failing::glVertexAttribI4ui),
+		VertexAttribI1iv: FPointer::load(loadfn("glVertexAttribI1iv"), failing::glVertexAttribI1iv),
+		VertexAttribI2iv: FPointer::load(loadfn("glVertexAttribI2iv"), failing::glVertexAttribI2iv),
+		VertexAttribI3iv: FPointer::load(loadfn("glVertexAttribI3iv"), failing::glVertexAttribI3iv),
+		VertexAttribI4iv: FPointer::load(loadfn("glVertexAttribI4iv"), failing::glVertexAttribI4iv),
+		VertexAttribI1uiv: FPointer::load(loadfn("glVertexAttribI1uiv"), failing::glVertexAttribI1uiv),
+		VertexAttribI2uiv: FPointer::load(loadfn("glVertexAttribI2uiv"), failing::glVertexAttribI2uiv),
+		VertexAttribI3uiv: FPointer::load(loadfn("glVertexAttribI3uiv"), failing::glVertexAttribI3uiv),
+		VertexAttribI4uiv: FPointer::load(loadfn("glVertexAttribI4uiv"), failing::glVertexAttribI4uiv),
+		VertexAttribI4bv: FPointer::load(loadfn("glVertexAttribI4bv"), failing::glVertexAttribI4bv),
+		VertexAttribI4sv: FPointer::load(loadfn("glVertexAttribI4sv"), failing::glVertexAttribI4sv),
+		VertexAttribI4ubv: FPointer::load(loadfn("glVertexAttribI4ubv"), failing::glVertexAttribI4ubv),
+		VertexAttribI4usv: FPointer::load(loadfn("glVertexAttribI4usv"), failing::glVertexAttribI4usv),
+		GetUniformuiv: FPointer::load(loadfn("glGetUniformuiv"), failing::glGetUniformuiv),
+		BindFragDataLocation: FPointer::load(loadfn("glBindFragDataLocation"), failing::glBindFragDataLocation),
+		GetFragDataLocation: FPointer::load(loadfn("glGetFragDataLocation"), failing::glGetFragDataLocation),
+		Uniform1ui: FPointer::load(loadfn("glUniform1ui"), failing::glUniform1ui),
+		Uniform2ui: FPointer::load(loadfn("glUniform2ui"), failing::glUniform2ui),
+		Uniform3ui: FPointer::load(loadfn("glUniform3ui"), failing::glUniform3ui),
+		Uniform4ui: FPointer::load(loadfn("glUniform4ui"), failing::glUniform4ui),
+		Uniform1uiv: FPointer::load(loadfn("glUniform1uiv"), failing::glUniform1uiv),
+		Uniform2uiv: FPointer::load(loadfn("glUniform2uiv"), failing::glUniform2uiv),
+		Uniform3uiv: FPointer::load(loadfn("glUniform3uiv"), failing::glUniform3uiv),
+		Uniform4uiv: FPointer::load(loadfn("glUniform4uiv"), failing::glUniform4uiv),
+		TexParameterIiv: FPointer::load(loadfn("glTexParameterIiv"), failing::glTexParameterIiv),
+		TexParameterIuiv: FPointer::load(loadfn("glTexParameterIuiv"), failing::glTexParameterIuiv),
+		GetTexParameterIiv: FPointer::load(loadfn("glGetTexParameterIiv"), failing::glGetTexParameterIiv),
+		GetTexParameterIuiv: FPointer::load(loadfn("glGetTexParameterIuiv"), failing::glGetTexParameterIuiv),
+		ClearBufferiv: FPointer::load(loadfn("glClearBufferiv"), failing::glClearBufferiv),
+		ClearBufferuiv: FPointer::load(loadfn("glClearBufferuiv"), failing::glClearBufferuiv),
+		ClearBufferfv: FPointer::load(loadfn("glClearBufferfv"), failing::glClearBufferfv),
+		ClearBufferfi: FPointer::load(loadfn("glClearBufferfi"), failing::glClearBufferfi),
+		GetStringi: FPointer::load(loadfn("glGetStringi"), failing::glGetStringi),
 		
 		// Core Extension: ARB_vertex_array_object
-		BindVertexArray: match loadfn("glBindVertexArray") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindVertexArray, is_loaded: false } },
-		DeleteVertexArrays: match loadfn("glDeleteVertexArrays") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteVertexArrays, is_loaded: false } },
-		GenVertexArrays: match loadfn("glGenVertexArrays") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenVertexArrays, is_loaded: false } },
-		IsVertexArray: match loadfn("glIsVertexArray") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsVertexArray, is_loaded: false } },
+		BindVertexArray: FPointer::load(loadfn("glBindVertexArray"), failing::glBindVertexArray),
+		DeleteVertexArrays: FPointer::load(loadfn("glDeleteVertexArrays"), failing::glDeleteVertexArrays),
+		GenVertexArrays: FPointer::load(loadfn("glGenVertexArrays"), failing::glGenVertexArrays),
+		IsVertexArray: FPointer::load(loadfn("glIsVertexArray"), failing::glIsVertexArray),
 		
 		// Core Extension: ARB_map_buffer_range
-		MapBufferRange: match loadfn("glMapBufferRange") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMapBufferRange, is_loaded: false } },
-		FlushMappedBufferRange: match loadfn("glFlushMappedBufferRange") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFlushMappedBufferRange, is_loaded: false } },
+		MapBufferRange: FPointer::load(loadfn("glMapBufferRange"), failing::glMapBufferRange),
+		FlushMappedBufferRange: FPointer::load(loadfn("glFlushMappedBufferRange"), failing::glFlushMappedBufferRange),
 		
 		// Core Extension: ARB_framebuffer_object
-		IsRenderbuffer: match loadfn("glIsRenderbuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsRenderbuffer, is_loaded: false } },
-		BindRenderbuffer: match loadfn("glBindRenderbuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindRenderbuffer, is_loaded: false } },
-		DeleteRenderbuffers: match loadfn("glDeleteRenderbuffers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteRenderbuffers, is_loaded: false } },
-		GenRenderbuffers: match loadfn("glGenRenderbuffers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenRenderbuffers, is_loaded: false } },
-		RenderbufferStorage: match loadfn("glRenderbufferStorage") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glRenderbufferStorage, is_loaded: false } },
-		GetRenderbufferParameteriv: match loadfn("glGetRenderbufferParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetRenderbufferParameteriv, is_loaded: false } },
-		IsFramebuffer: match loadfn("glIsFramebuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsFramebuffer, is_loaded: false } },
-		BindFramebuffer: match loadfn("glBindFramebuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindFramebuffer, is_loaded: false } },
-		DeleteFramebuffers: match loadfn("glDeleteFramebuffers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteFramebuffers, is_loaded: false } },
-		GenFramebuffers: match loadfn("glGenFramebuffers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenFramebuffers, is_loaded: false } },
-		CheckFramebufferStatus: match loadfn("glCheckFramebufferStatus") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCheckFramebufferStatus, is_loaded: false } },
-		FramebufferTexture1D: match loadfn("glFramebufferTexture1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFramebufferTexture1D, is_loaded: false } },
-		FramebufferTexture2D: match loadfn("glFramebufferTexture2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFramebufferTexture2D, is_loaded: false } },
-		FramebufferTexture3D: match loadfn("glFramebufferTexture3D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFramebufferTexture3D, is_loaded: false } },
-		FramebufferRenderbuffer: match loadfn("glFramebufferRenderbuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFramebufferRenderbuffer, is_loaded: false } },
-		GetFramebufferAttachmentParameteriv: match loadfn("glGetFramebufferAttachmentParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetFramebufferAttachmentParameteriv, is_loaded: false } },
-		GenerateMipmap: match loadfn("glGenerateMipmap") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenerateMipmap, is_loaded: false } },
-		BlitFramebuffer: match loadfn("glBlitFramebuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlitFramebuffer, is_loaded: false } },
-		RenderbufferStorageMultisample: match loadfn("glRenderbufferStorageMultisample") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glRenderbufferStorageMultisample, is_loaded: false } },
-		FramebufferTextureLayer: match loadfn("glFramebufferTextureLayer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFramebufferTextureLayer, is_loaded: false } },
+		IsRenderbuffer: FPointer::load(loadfn("glIsRenderbuffer"), failing::glIsRenderbuffer),
+		BindRenderbuffer: FPointer::load(loadfn("glBindRenderbuffer"), failing::glBindRenderbuffer),
+		DeleteRenderbuffers: FPointer::load(loadfn("glDeleteRenderbuffers"), failing::glDeleteRenderbuffers),
+		GenRenderbuffers: FPointer::load(loadfn("glGenRenderbuffers"), failing::glGenRenderbuffers),
+		RenderbufferStorage: FPointer::load(loadfn("glRenderbufferStorage"), failing::glRenderbufferStorage),
+		GetRenderbufferParameteriv: FPointer::load(loadfn("glGetRenderbufferParameteriv"), failing::glGetRenderbufferParameteriv),
+		IsFramebuffer: FPointer::load(loadfn("glIsFramebuffer"), failing::glIsFramebuffer),
+		BindFramebuffer: FPointer::load(loadfn("glBindFramebuffer"), failing::glBindFramebuffer),
+		DeleteFramebuffers: FPointer::load(loadfn("glDeleteFramebuffers"), failing::glDeleteFramebuffers),
+		GenFramebuffers: FPointer::load(loadfn("glGenFramebuffers"), failing::glGenFramebuffers),
+		CheckFramebufferStatus: FPointer::load(loadfn("glCheckFramebufferStatus"), failing::glCheckFramebufferStatus),
+		FramebufferTexture1D: FPointer::load(loadfn("glFramebufferTexture1D"), failing::glFramebufferTexture1D),
+		FramebufferTexture2D: FPointer::load(loadfn("glFramebufferTexture2D"), failing::glFramebufferTexture2D),
+		FramebufferTexture3D: FPointer::load(loadfn("glFramebufferTexture3D"), failing::glFramebufferTexture3D),
+		FramebufferRenderbuffer: FPointer::load(loadfn("glFramebufferRenderbuffer"), failing::glFramebufferRenderbuffer),
+		GetFramebufferAttachmentParameteriv: FPointer::load(loadfn("glGetFramebufferAttachmentParameteriv"), failing::glGetFramebufferAttachmentParameteriv),
+		GenerateMipmap: FPointer::load(loadfn("glGenerateMipmap"), failing::glGenerateMipmap),
+		BlitFramebuffer: FPointer::load(loadfn("glBlitFramebuffer"), failing::glBlitFramebuffer),
+		RenderbufferStorageMultisample: FPointer::load(loadfn("glRenderbufferStorageMultisample"), failing::glRenderbufferStorageMultisample),
+		FramebufferTextureLayer: FPointer::load(loadfn("glFramebufferTextureLayer"), failing::glFramebufferTextureLayer),
 		
 		// Version: 3.1
-		DrawArraysInstanced: match loadfn("glDrawArraysInstanced") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawArraysInstanced, is_loaded: false } },
-		DrawElementsInstanced: match loadfn("glDrawElementsInstanced") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawElementsInstanced, is_loaded: false } },
-		TexBuffer: match loadfn("glTexBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexBuffer, is_loaded: false } },
-		PrimitiveRestartIndex: match loadfn("glPrimitiveRestartIndex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPrimitiveRestartIndex, is_loaded: false } },
+		DrawArraysInstanced: FPointer::load(loadfn("glDrawArraysInstanced"), failing::glDrawArraysInstanced),
+		DrawElementsInstanced: FPointer::load(loadfn("glDrawElementsInstanced"), failing::glDrawElementsInstanced),
+		TexBuffer: FPointer::load(loadfn("glTexBuffer"), failing::glTexBuffer),
+		PrimitiveRestartIndex: FPointer::load(loadfn("glPrimitiveRestartIndex"), failing::glPrimitiveRestartIndex),
 		
 		// Core Extension: ARB_uniform_buffer_object
-		GetUniformIndices: match loadfn("glGetUniformIndices") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformIndices, is_loaded: false } },
-		GetActiveUniformsiv: match loadfn("glGetActiveUniformsiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveUniformsiv, is_loaded: false } },
-		GetActiveUniformName: match loadfn("glGetActiveUniformName") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveUniformName, is_loaded: false } },
-		GetUniformBlockIndex: match loadfn("glGetUniformBlockIndex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformBlockIndex, is_loaded: false } },
-		GetActiveUniformBlockiv: match loadfn("glGetActiveUniformBlockiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveUniformBlockiv, is_loaded: false } },
-		GetActiveUniformBlockName: match loadfn("glGetActiveUniformBlockName") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveUniformBlockName, is_loaded: false } },
-		UniformBlockBinding: match loadfn("glUniformBlockBinding") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformBlockBinding, is_loaded: false } },
+		GetUniformIndices: FPointer::load(loadfn("glGetUniformIndices"), failing::glGetUniformIndices),
+		GetActiveUniformsiv: FPointer::load(loadfn("glGetActiveUniformsiv"), failing::glGetActiveUniformsiv),
+		GetActiveUniformName: FPointer::load(loadfn("glGetActiveUniformName"), failing::glGetActiveUniformName),
+		GetUniformBlockIndex: FPointer::load(loadfn("glGetUniformBlockIndex"), failing::glGetUniformBlockIndex),
+		GetActiveUniformBlockiv: FPointer::load(loadfn("glGetActiveUniformBlockiv"), failing::glGetActiveUniformBlockiv),
+		GetActiveUniformBlockName: FPointer::load(loadfn("glGetActiveUniformBlockName"), failing::glGetActiveUniformBlockName),
+		UniformBlockBinding: FPointer::load(loadfn("glUniformBlockBinding"), failing::glUniformBlockBinding),
 		
 		// Core Extension: ARB_copy_buffer
-		CopyBufferSubData: match loadfn("glCopyBufferSubData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCopyBufferSubData, is_loaded: false } },
+		CopyBufferSubData: FPointer::load(loadfn("glCopyBufferSubData"), failing::glCopyBufferSubData),
 		
 		// Version: 3.2
-		GetInteger64i_v: match loadfn("glGetInteger64i_v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetInteger64i_v, is_loaded: false } },
-		GetBufferParameteri64v: match loadfn("glGetBufferParameteri64v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetBufferParameteri64v, is_loaded: false } },
-		FramebufferTexture: match loadfn("glFramebufferTexture") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFramebufferTexture, is_loaded: false } },
+		GetInteger64i_v: FPointer::load(loadfn("glGetInteger64i_v"), failing::glGetInteger64i_v),
+		GetBufferParameteri64v: FPointer::load(loadfn("glGetBufferParameteri64v"), failing::glGetBufferParameteri64v),
+		FramebufferTexture: FPointer::load(loadfn("glFramebufferTexture"), failing::glFramebufferTexture),
 		
 		// Core Extension: ARB_draw_elements_base_vertex
-		DrawElementsBaseVertex: match loadfn("glDrawElementsBaseVertex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawElementsBaseVertex, is_loaded: false } },
-		DrawRangeElementsBaseVertex: match loadfn("glDrawRangeElementsBaseVertex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawRangeElementsBaseVertex, is_loaded: false } },
-		DrawElementsInstancedBaseVertex: match loadfn("glDrawElementsInstancedBaseVertex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawElementsInstancedBaseVertex, is_loaded: false } },
-		MultiDrawElementsBaseVertex: match loadfn("glMultiDrawElementsBaseVertex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiDrawElementsBaseVertex, is_loaded: false } },
+		DrawElementsBaseVertex: FPointer::load(loadfn("glDrawElementsBaseVertex"), failing::glDrawElementsBaseVertex),
+		DrawRangeElementsBaseVertex: FPointer::load(loadfn("glDrawRangeElementsBaseVertex"), failing::glDrawRangeElementsBaseVertex),
+		DrawElementsInstancedBaseVertex: FPointer::load(loadfn("glDrawElementsInstancedBaseVertex"), failing::glDrawElementsInstancedBaseVertex),
+		MultiDrawElementsBaseVertex: FPointer::load(loadfn("glMultiDrawElementsBaseVertex"), failing::glMultiDrawElementsBaseVertex),
 		
 		// Core Extension: ARB_provoking_vertex
-		ProvokingVertex: match loadfn("glProvokingVertex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProvokingVertex, is_loaded: false } },
+		ProvokingVertex: FPointer::load(loadfn("glProvokingVertex"), failing::glProvokingVertex),
 		
 		// Core Extension: ARB_sync
-		FenceSync: match loadfn("glFenceSync") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFenceSync, is_loaded: false } },
-		IsSync: match loadfn("glIsSync") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsSync, is_loaded: false } },
-		DeleteSync: match loadfn("glDeleteSync") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteSync, is_loaded: false } },
-		ClientWaitSync: match loadfn("glClientWaitSync") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClientWaitSync, is_loaded: false } },
-		WaitSync: match loadfn("glWaitSync") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glWaitSync, is_loaded: false } },
-		GetInteger64v: match loadfn("glGetInteger64v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetInteger64v, is_loaded: false } },
-		GetSynciv: match loadfn("glGetSynciv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetSynciv, is_loaded: false } },
+		FenceSync: FPointer::load(loadfn("glFenceSync"), failing::glFenceSync),
+		IsSync: FPointer::load(loadfn("glIsSync"), failing::glIsSync),
+		DeleteSync: FPointer::load(loadfn("glDeleteSync"), failing::glDeleteSync),
+		ClientWaitSync: FPointer::load(loadfn("glClientWaitSync"), failing::glClientWaitSync),
+		WaitSync: FPointer::load(loadfn("glWaitSync"), failing::glWaitSync),
+		GetInteger64v: FPointer::load(loadfn("glGetInteger64v"), failing::glGetInteger64v),
+		GetSynciv: FPointer::load(loadfn("glGetSynciv"), failing::glGetSynciv),
 		
 		// Core Extension: ARB_texture_multisample
-		TexImage2DMultisample: match loadfn("glTexImage2DMultisample") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexImage2DMultisample, is_loaded: false } },
-		TexImage3DMultisample: match loadfn("glTexImage3DMultisample") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexImage3DMultisample, is_loaded: false } },
-		GetMultisamplefv: match loadfn("glGetMultisamplefv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetMultisamplefv, is_loaded: false } },
-		SampleMaski: match loadfn("glSampleMaski") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSampleMaski, is_loaded: false } },
+		TexImage2DMultisample: FPointer::load(loadfn("glTexImage2DMultisample"), failing::glTexImage2DMultisample),
+		TexImage3DMultisample: FPointer::load(loadfn("glTexImage3DMultisample"), failing::glTexImage3DMultisample),
+		GetMultisamplefv: FPointer::load(loadfn("glGetMultisamplefv"), failing::glGetMultisamplefv),
+		SampleMaski: FPointer::load(loadfn("glSampleMaski"), failing::glSampleMaski),
 		
 		// Version: 3.3
-		VertexAttribDivisor: match loadfn("glVertexAttribDivisor") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribDivisor, is_loaded: false } },
+		VertexAttribDivisor: FPointer::load(loadfn("glVertexAttribDivisor"), failing::glVertexAttribDivisor),
 		
 		// Core Extension: ARB_timer_query
-		QueryCounter: match loadfn("glQueryCounter") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glQueryCounter, is_loaded: false } },
-		GetQueryObjecti64v: match loadfn("glGetQueryObjecti64v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetQueryObjecti64v, is_loaded: false } },
-		GetQueryObjectui64v: match loadfn("glGetQueryObjectui64v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetQueryObjectui64v, is_loaded: false } },
+		QueryCounter: FPointer::load(loadfn("glQueryCounter"), failing::glQueryCounter),
+		GetQueryObjecti64v: FPointer::load(loadfn("glGetQueryObjecti64v"), failing::glGetQueryObjecti64v),
+		GetQueryObjectui64v: FPointer::load(loadfn("glGetQueryObjectui64v"), failing::glGetQueryObjectui64v),
 		
 		// Core Extension: ARB_vertex_type_2_10_10_10_rev
-		VertexP2ui: match loadfn("glVertexP2ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexP2ui, is_loaded: false } },
-		VertexP2uiv: match loadfn("glVertexP2uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexP2uiv, is_loaded: false } },
-		VertexP3ui: match loadfn("glVertexP3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexP3ui, is_loaded: false } },
-		VertexP3uiv: match loadfn("glVertexP3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexP3uiv, is_loaded: false } },
-		VertexP4ui: match loadfn("glVertexP4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexP4ui, is_loaded: false } },
-		VertexP4uiv: match loadfn("glVertexP4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexP4uiv, is_loaded: false } },
-		TexCoordP1ui: match loadfn("glTexCoordP1ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP1ui, is_loaded: false } },
-		TexCoordP1uiv: match loadfn("glTexCoordP1uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP1uiv, is_loaded: false } },
-		TexCoordP2ui: match loadfn("glTexCoordP2ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP2ui, is_loaded: false } },
-		TexCoordP2uiv: match loadfn("glTexCoordP2uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP2uiv, is_loaded: false } },
-		TexCoordP3ui: match loadfn("glTexCoordP3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP3ui, is_loaded: false } },
-		TexCoordP3uiv: match loadfn("glTexCoordP3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP3uiv, is_loaded: false } },
-		TexCoordP4ui: match loadfn("glTexCoordP4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP4ui, is_loaded: false } },
-		TexCoordP4uiv: match loadfn("glTexCoordP4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexCoordP4uiv, is_loaded: false } },
-		MultiTexCoordP1ui: match loadfn("glMultiTexCoordP1ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP1ui, is_loaded: false } },
-		MultiTexCoordP1uiv: match loadfn("glMultiTexCoordP1uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP1uiv, is_loaded: false } },
-		MultiTexCoordP2ui: match loadfn("glMultiTexCoordP2ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP2ui, is_loaded: false } },
-		MultiTexCoordP2uiv: match loadfn("glMultiTexCoordP2uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP2uiv, is_loaded: false } },
-		MultiTexCoordP3ui: match loadfn("glMultiTexCoordP3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP3ui, is_loaded: false } },
-		MultiTexCoordP3uiv: match loadfn("glMultiTexCoordP3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP3uiv, is_loaded: false } },
-		MultiTexCoordP4ui: match loadfn("glMultiTexCoordP4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP4ui, is_loaded: false } },
-		MultiTexCoordP4uiv: match loadfn("glMultiTexCoordP4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiTexCoordP4uiv, is_loaded: false } },
-		NormalP3ui: match loadfn("glNormalP3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glNormalP3ui, is_loaded: false } },
-		NormalP3uiv: match loadfn("glNormalP3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glNormalP3uiv, is_loaded: false } },
-		ColorP3ui: match loadfn("glColorP3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glColorP3ui, is_loaded: false } },
-		ColorP3uiv: match loadfn("glColorP3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glColorP3uiv, is_loaded: false } },
-		ColorP4ui: match loadfn("glColorP4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glColorP4ui, is_loaded: false } },
-		ColorP4uiv: match loadfn("glColorP4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glColorP4uiv, is_loaded: false } },
-		SecondaryColorP3ui: match loadfn("glSecondaryColorP3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSecondaryColorP3ui, is_loaded: false } },
-		SecondaryColorP3uiv: match loadfn("glSecondaryColorP3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSecondaryColorP3uiv, is_loaded: false } },
-		VertexAttribP1ui: match loadfn("glVertexAttribP1ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP1ui, is_loaded: false } },
-		VertexAttribP1uiv: match loadfn("glVertexAttribP1uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP1uiv, is_loaded: false } },
-		VertexAttribP2ui: match loadfn("glVertexAttribP2ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP2ui, is_loaded: false } },
-		VertexAttribP2uiv: match loadfn("glVertexAttribP2uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP2uiv, is_loaded: false } },
-		VertexAttribP3ui: match loadfn("glVertexAttribP3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP3ui, is_loaded: false } },
-		VertexAttribP3uiv: match loadfn("glVertexAttribP3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP3uiv, is_loaded: false } },
-		VertexAttribP4ui: match loadfn("glVertexAttribP4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP4ui, is_loaded: false } },
-		VertexAttribP4uiv: match loadfn("glVertexAttribP4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribP4uiv, is_loaded: false } },
+		VertexP2ui: FPointer::load(loadfn("glVertexP2ui"), failing::glVertexP2ui),
+		VertexP2uiv: FPointer::load(loadfn("glVertexP2uiv"), failing::glVertexP2uiv),
+		VertexP3ui: FPointer::load(loadfn("glVertexP3ui"), failing::glVertexP3ui),
+		VertexP3uiv: FPointer::load(loadfn("glVertexP3uiv"), failing::glVertexP3uiv),
+		VertexP4ui: FPointer::load(loadfn("glVertexP4ui"), failing::glVertexP4ui),
+		VertexP4uiv: FPointer::load(loadfn("glVertexP4uiv"), failing::glVertexP4uiv),
+		TexCoordP1ui: FPointer::load(loadfn("glTexCoordP1ui"), failing::glTexCoordP1ui),
+		TexCoordP1uiv: FPointer::load(loadfn("glTexCoordP1uiv"), failing::glTexCoordP1uiv),
+		TexCoordP2ui: FPointer::load(loadfn("glTexCoordP2ui"), failing::glTexCoordP2ui),
+		TexCoordP2uiv: FPointer::load(loadfn("glTexCoordP2uiv"), failing::glTexCoordP2uiv),
+		TexCoordP3ui: FPointer::load(loadfn("glTexCoordP3ui"), failing::glTexCoordP3ui),
+		TexCoordP3uiv: FPointer::load(loadfn("glTexCoordP3uiv"), failing::glTexCoordP3uiv),
+		TexCoordP4ui: FPointer::load(loadfn("glTexCoordP4ui"), failing::glTexCoordP4ui),
+		TexCoordP4uiv: FPointer::load(loadfn("glTexCoordP4uiv"), failing::glTexCoordP4uiv),
+		MultiTexCoordP1ui: FPointer::load(loadfn("glMultiTexCoordP1ui"), failing::glMultiTexCoordP1ui),
+		MultiTexCoordP1uiv: FPointer::load(loadfn("glMultiTexCoordP1uiv"), failing::glMultiTexCoordP1uiv),
+		MultiTexCoordP2ui: FPointer::load(loadfn("glMultiTexCoordP2ui"), failing::glMultiTexCoordP2ui),
+		MultiTexCoordP2uiv: FPointer::load(loadfn("glMultiTexCoordP2uiv"), failing::glMultiTexCoordP2uiv),
+		MultiTexCoordP3ui: FPointer::load(loadfn("glMultiTexCoordP3ui"), failing::glMultiTexCoordP3ui),
+		MultiTexCoordP3uiv: FPointer::load(loadfn("glMultiTexCoordP3uiv"), failing::glMultiTexCoordP3uiv),
+		MultiTexCoordP4ui: FPointer::load(loadfn("glMultiTexCoordP4ui"), failing::glMultiTexCoordP4ui),
+		MultiTexCoordP4uiv: FPointer::load(loadfn("glMultiTexCoordP4uiv"), failing::glMultiTexCoordP4uiv),
+		NormalP3ui: FPointer::load(loadfn("glNormalP3ui"), failing::glNormalP3ui),
+		NormalP3uiv: FPointer::load(loadfn("glNormalP3uiv"), failing::glNormalP3uiv),
+		ColorP3ui: FPointer::load(loadfn("glColorP3ui"), failing::glColorP3ui),
+		ColorP3uiv: FPointer::load(loadfn("glColorP3uiv"), failing::glColorP3uiv),
+		ColorP4ui: FPointer::load(loadfn("glColorP4ui"), failing::glColorP4ui),
+		ColorP4uiv: FPointer::load(loadfn("glColorP4uiv"), failing::glColorP4uiv),
+		SecondaryColorP3ui: FPointer::load(loadfn("glSecondaryColorP3ui"), failing::glSecondaryColorP3ui),
+		SecondaryColorP3uiv: FPointer::load(loadfn("glSecondaryColorP3uiv"), failing::glSecondaryColorP3uiv),
+		VertexAttribP1ui: FPointer::load(loadfn("glVertexAttribP1ui"), failing::glVertexAttribP1ui),
+		VertexAttribP1uiv: FPointer::load(loadfn("glVertexAttribP1uiv"), failing::glVertexAttribP1uiv),
+		VertexAttribP2ui: FPointer::load(loadfn("glVertexAttribP2ui"), failing::glVertexAttribP2ui),
+		VertexAttribP2uiv: FPointer::load(loadfn("glVertexAttribP2uiv"), failing::glVertexAttribP2uiv),
+		VertexAttribP3ui: FPointer::load(loadfn("glVertexAttribP3ui"), failing::glVertexAttribP3ui),
+		VertexAttribP3uiv: FPointer::load(loadfn("glVertexAttribP3uiv"), failing::glVertexAttribP3uiv),
+		VertexAttribP4ui: FPointer::load(loadfn("glVertexAttribP4ui"), failing::glVertexAttribP4ui),
+		VertexAttribP4uiv: FPointer::load(loadfn("glVertexAttribP4uiv"), failing::glVertexAttribP4uiv),
 		
 		// Core Extension: ARB_blend_func_extended
-		BindFragDataLocationIndexed: match loadfn("glBindFragDataLocationIndexed") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindFragDataLocationIndexed, is_loaded: false } },
-		GetFragDataIndex: match loadfn("glGetFragDataIndex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetFragDataIndex, is_loaded: false } },
+		BindFragDataLocationIndexed: FPointer::load(loadfn("glBindFragDataLocationIndexed"), failing::glBindFragDataLocationIndexed),
+		GetFragDataIndex: FPointer::load(loadfn("glGetFragDataIndex"), failing::glGetFragDataIndex),
 		
 		// Core Extension: ARB_sampler_objects
-		GenSamplers: match loadfn("glGenSamplers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenSamplers, is_loaded: false } },
-		DeleteSamplers: match loadfn("glDeleteSamplers") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteSamplers, is_loaded: false } },
-		IsSampler: match loadfn("glIsSampler") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsSampler, is_loaded: false } },
-		BindSampler: match loadfn("glBindSampler") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindSampler, is_loaded: false } },
-		SamplerParameteri: match loadfn("glSamplerParameteri") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSamplerParameteri, is_loaded: false } },
-		SamplerParameteriv: match loadfn("glSamplerParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSamplerParameteriv, is_loaded: false } },
-		SamplerParameterf: match loadfn("glSamplerParameterf") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSamplerParameterf, is_loaded: false } },
-		SamplerParameterfv: match loadfn("glSamplerParameterfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSamplerParameterfv, is_loaded: false } },
-		SamplerParameterIiv: match loadfn("glSamplerParameterIiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSamplerParameterIiv, is_loaded: false } },
-		SamplerParameterIuiv: match loadfn("glSamplerParameterIuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glSamplerParameterIuiv, is_loaded: false } },
-		GetSamplerParameteriv: match loadfn("glGetSamplerParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetSamplerParameteriv, is_loaded: false } },
-		GetSamplerParameterIiv: match loadfn("glGetSamplerParameterIiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetSamplerParameterIiv, is_loaded: false } },
-		GetSamplerParameterfv: match loadfn("glGetSamplerParameterfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetSamplerParameterfv, is_loaded: false } },
-		GetSamplerParameterIuiv: match loadfn("glGetSamplerParameterIuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetSamplerParameterIuiv, is_loaded: false } },
+		GenSamplers: FPointer::load(loadfn("glGenSamplers"), failing::glGenSamplers),
+		DeleteSamplers: FPointer::load(loadfn("glDeleteSamplers"), failing::glDeleteSamplers),
+		IsSampler: FPointer::load(loadfn("glIsSampler"), failing::glIsSampler),
+		BindSampler: FPointer::load(loadfn("glBindSampler"), failing::glBindSampler),
+		SamplerParameteri: FPointer::load(loadfn("glSamplerParameteri"), failing::glSamplerParameteri),
+		SamplerParameteriv: FPointer::load(loadfn("glSamplerParameteriv"), failing::glSamplerParameteriv),
+		SamplerParameterf: FPointer::load(loadfn("glSamplerParameterf"), failing::glSamplerParameterf),
+		SamplerParameterfv: FPointer::load(loadfn("glSamplerParameterfv"), failing::glSamplerParameterfv),
+		SamplerParameterIiv: FPointer::load(loadfn("glSamplerParameterIiv"), failing::glSamplerParameterIiv),
+		SamplerParameterIuiv: FPointer::load(loadfn("glSamplerParameterIuiv"), failing::glSamplerParameterIuiv),
+		GetSamplerParameteriv: FPointer::load(loadfn("glGetSamplerParameteriv"), failing::glGetSamplerParameteriv),
+		GetSamplerParameterIiv: FPointer::load(loadfn("glGetSamplerParameterIiv"), failing::glGetSamplerParameterIiv),
+		GetSamplerParameterfv: FPointer::load(loadfn("glGetSamplerParameterfv"), failing::glGetSamplerParameterfv),
+		GetSamplerParameterIuiv: FPointer::load(loadfn("glGetSamplerParameterIuiv"), failing::glGetSamplerParameterIuiv),
 		
 		// Version: 4.0
-		MinSampleShading: match loadfn("glMinSampleShading") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMinSampleShading, is_loaded: false } },
-		BlendEquationi: match loadfn("glBlendEquationi") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendEquationi, is_loaded: false } },
-		BlendEquationSeparatei: match loadfn("glBlendEquationSeparatei") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendEquationSeparatei, is_loaded: false } },
-		BlendFunci: match loadfn("glBlendFunci") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendFunci, is_loaded: false } },
-		BlendFuncSeparatei: match loadfn("glBlendFuncSeparatei") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBlendFuncSeparatei, is_loaded: false } },
+		MinSampleShading: FPointer::load(loadfn("glMinSampleShading"), failing::glMinSampleShading),
+		BlendEquationi: FPointer::load(loadfn("glBlendEquationi"), failing::glBlendEquationi),
+		BlendEquationSeparatei: FPointer::load(loadfn("glBlendEquationSeparatei"), failing::glBlendEquationSeparatei),
+		BlendFunci: FPointer::load(loadfn("glBlendFunci"), failing::glBlendFunci),
+		BlendFuncSeparatei: FPointer::load(loadfn("glBlendFuncSeparatei"), failing::glBlendFuncSeparatei),
 		
 		// Core Extension: ARB_draw_indirect
-		DrawArraysIndirect: match loadfn("glDrawArraysIndirect") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawArraysIndirect, is_loaded: false } },
-		DrawElementsIndirect: match loadfn("glDrawElementsIndirect") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawElementsIndirect, is_loaded: false } },
+		DrawArraysIndirect: FPointer::load(loadfn("glDrawArraysIndirect"), failing::glDrawArraysIndirect),
+		DrawElementsIndirect: FPointer::load(loadfn("glDrawElementsIndirect"), failing::glDrawElementsIndirect),
 		
 		// Core Extension: ARB_gpu_shader_fp64
-		Uniform1d: match loadfn("glUniform1d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1d, is_loaded: false } },
-		Uniform2d: match loadfn("glUniform2d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2d, is_loaded: false } },
-		Uniform3d: match loadfn("glUniform3d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3d, is_loaded: false } },
-		Uniform4d: match loadfn("glUniform4d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4d, is_loaded: false } },
-		Uniform1dv: match loadfn("glUniform1dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform1dv, is_loaded: false } },
-		Uniform2dv: match loadfn("glUniform2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform2dv, is_loaded: false } },
-		Uniform3dv: match loadfn("glUniform3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform3dv, is_loaded: false } },
-		Uniform4dv: match loadfn("glUniform4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniform4dv, is_loaded: false } },
-		UniformMatrix2dv: match loadfn("glUniformMatrix2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix2dv, is_loaded: false } },
-		UniformMatrix3dv: match loadfn("glUniformMatrix3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix3dv, is_loaded: false } },
-		UniformMatrix4dv: match loadfn("glUniformMatrix4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix4dv, is_loaded: false } },
-		UniformMatrix2x3dv: match loadfn("glUniformMatrix2x3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix2x3dv, is_loaded: false } },
-		UniformMatrix2x4dv: match loadfn("glUniformMatrix2x4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix2x4dv, is_loaded: false } },
-		UniformMatrix3x2dv: match loadfn("glUniformMatrix3x2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix3x2dv, is_loaded: false } },
-		UniformMatrix3x4dv: match loadfn("glUniformMatrix3x4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix3x4dv, is_loaded: false } },
-		UniformMatrix4x2dv: match loadfn("glUniformMatrix4x2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix4x2dv, is_loaded: false } },
-		UniformMatrix4x3dv: match loadfn("glUniformMatrix4x3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformMatrix4x3dv, is_loaded: false } },
-		GetUniformdv: match loadfn("glGetUniformdv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformdv, is_loaded: false } },
+		Uniform1d: FPointer::load(loadfn("glUniform1d"), failing::glUniform1d),
+		Uniform2d: FPointer::load(loadfn("glUniform2d"), failing::glUniform2d),
+		Uniform3d: FPointer::load(loadfn("glUniform3d"), failing::glUniform3d),
+		Uniform4d: FPointer::load(loadfn("glUniform4d"), failing::glUniform4d),
+		Uniform1dv: FPointer::load(loadfn("glUniform1dv"), failing::glUniform1dv),
+		Uniform2dv: FPointer::load(loadfn("glUniform2dv"), failing::glUniform2dv),
+		Uniform3dv: FPointer::load(loadfn("glUniform3dv"), failing::glUniform3dv),
+		Uniform4dv: FPointer::load(loadfn("glUniform4dv"), failing::glUniform4dv),
+		UniformMatrix2dv: FPointer::load(loadfn("glUniformMatrix2dv"), failing::glUniformMatrix2dv),
+		UniformMatrix3dv: FPointer::load(loadfn("glUniformMatrix3dv"), failing::glUniformMatrix3dv),
+		UniformMatrix4dv: FPointer::load(loadfn("glUniformMatrix4dv"), failing::glUniformMatrix4dv),
+		UniformMatrix2x3dv: FPointer::load(loadfn("glUniformMatrix2x3dv"), failing::glUniformMatrix2x3dv),
+		UniformMatrix2x4dv: FPointer::load(loadfn("glUniformMatrix2x4dv"), failing::glUniformMatrix2x4dv),
+		UniformMatrix3x2dv: FPointer::load(loadfn("glUniformMatrix3x2dv"), failing::glUniformMatrix3x2dv),
+		UniformMatrix3x4dv: FPointer::load(loadfn("glUniformMatrix3x4dv"), failing::glUniformMatrix3x4dv),
+		UniformMatrix4x2dv: FPointer::load(loadfn("glUniformMatrix4x2dv"), failing::glUniformMatrix4x2dv),
+		UniformMatrix4x3dv: FPointer::load(loadfn("glUniformMatrix4x3dv"), failing::glUniformMatrix4x3dv),
+		GetUniformdv: FPointer::load(loadfn("glGetUniformdv"), failing::glGetUniformdv),
 		
 		// Core Extension: ARB_shader_subroutine
-		GetSubroutineUniformLocation: match loadfn("glGetSubroutineUniformLocation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetSubroutineUniformLocation, is_loaded: false } },
-		GetSubroutineIndex: match loadfn("glGetSubroutineIndex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetSubroutineIndex, is_loaded: false } },
-		GetActiveSubroutineUniformiv: match loadfn("glGetActiveSubroutineUniformiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveSubroutineUniformiv, is_loaded: false } },
-		GetActiveSubroutineUniformName: match loadfn("glGetActiveSubroutineUniformName") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveSubroutineUniformName, is_loaded: false } },
-		GetActiveSubroutineName: match loadfn("glGetActiveSubroutineName") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveSubroutineName, is_loaded: false } },
-		UniformSubroutinesuiv: match loadfn("glUniformSubroutinesuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUniformSubroutinesuiv, is_loaded: false } },
-		GetUniformSubroutineuiv: match loadfn("glGetUniformSubroutineuiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetUniformSubroutineuiv, is_loaded: false } },
-		GetProgramStageiv: match loadfn("glGetProgramStageiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramStageiv, is_loaded: false } },
+		GetSubroutineUniformLocation: FPointer::load(loadfn("glGetSubroutineUniformLocation"), failing::glGetSubroutineUniformLocation),
+		GetSubroutineIndex: FPointer::load(loadfn("glGetSubroutineIndex"), failing::glGetSubroutineIndex),
+		GetActiveSubroutineUniformiv: FPointer::load(loadfn("glGetActiveSubroutineUniformiv"), failing::glGetActiveSubroutineUniformiv),
+		GetActiveSubroutineUniformName: FPointer::load(loadfn("glGetActiveSubroutineUniformName"), failing::glGetActiveSubroutineUniformName),
+		GetActiveSubroutineName: FPointer::load(loadfn("glGetActiveSubroutineName"), failing::glGetActiveSubroutineName),
+		UniformSubroutinesuiv: FPointer::load(loadfn("glUniformSubroutinesuiv"), failing::glUniformSubroutinesuiv),
+		GetUniformSubroutineuiv: FPointer::load(loadfn("glGetUniformSubroutineuiv"), failing::glGetUniformSubroutineuiv),
+		GetProgramStageiv: FPointer::load(loadfn("glGetProgramStageiv"), failing::glGetProgramStageiv),
 		
 		// Core Extension: ARB_tessellation_shader
-		PatchParameteri: match loadfn("glPatchParameteri") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPatchParameteri, is_loaded: false } },
-		PatchParameterfv: match loadfn("glPatchParameterfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPatchParameterfv, is_loaded: false } },
+		PatchParameteri: FPointer::load(loadfn("glPatchParameteri"), failing::glPatchParameteri),
+		PatchParameterfv: FPointer::load(loadfn("glPatchParameterfv"), failing::glPatchParameterfv),
 		
 		// Core Extension: ARB_transform_feedback2
-		BindTransformFeedback: match loadfn("glBindTransformFeedback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindTransformFeedback, is_loaded: false } },
-		DeleteTransformFeedbacks: match loadfn("glDeleteTransformFeedbacks") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteTransformFeedbacks, is_loaded: false } },
-		GenTransformFeedbacks: match loadfn("glGenTransformFeedbacks") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenTransformFeedbacks, is_loaded: false } },
-		IsTransformFeedback: match loadfn("glIsTransformFeedback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsTransformFeedback, is_loaded: false } },
-		PauseTransformFeedback: match loadfn("glPauseTransformFeedback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPauseTransformFeedback, is_loaded: false } },
-		ResumeTransformFeedback: match loadfn("glResumeTransformFeedback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glResumeTransformFeedback, is_loaded: false } },
-		DrawTransformFeedback: match loadfn("glDrawTransformFeedback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawTransformFeedback, is_loaded: false } },
+		BindTransformFeedback: FPointer::load(loadfn("glBindTransformFeedback"), failing::glBindTransformFeedback),
+		DeleteTransformFeedbacks: FPointer::load(loadfn("glDeleteTransformFeedbacks"), failing::glDeleteTransformFeedbacks),
+		GenTransformFeedbacks: FPointer::load(loadfn("glGenTransformFeedbacks"), failing::glGenTransformFeedbacks),
+		IsTransformFeedback: FPointer::load(loadfn("glIsTransformFeedback"), failing::glIsTransformFeedback),
+		PauseTransformFeedback: FPointer::load(loadfn("glPauseTransformFeedback"), failing::glPauseTransformFeedback),
+		ResumeTransformFeedback: FPointer::load(loadfn("glResumeTransformFeedback"), failing::glResumeTransformFeedback),
+		DrawTransformFeedback: FPointer::load(loadfn("glDrawTransformFeedback"), failing::glDrawTransformFeedback),
 		
 		// Core Extension: ARB_transform_feedback3
-		DrawTransformFeedbackStream: match loadfn("glDrawTransformFeedbackStream") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawTransformFeedbackStream, is_loaded: false } },
-		BeginQueryIndexed: match loadfn("glBeginQueryIndexed") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBeginQueryIndexed, is_loaded: false } },
-		EndQueryIndexed: match loadfn("glEndQueryIndexed") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glEndQueryIndexed, is_loaded: false } },
-		GetQueryIndexediv: match loadfn("glGetQueryIndexediv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetQueryIndexediv, is_loaded: false } },
+		DrawTransformFeedbackStream: FPointer::load(loadfn("glDrawTransformFeedbackStream"), failing::glDrawTransformFeedbackStream),
+		BeginQueryIndexed: FPointer::load(loadfn("glBeginQueryIndexed"), failing::glBeginQueryIndexed),
+		EndQueryIndexed: FPointer::load(loadfn("glEndQueryIndexed"), failing::glEndQueryIndexed),
+		GetQueryIndexediv: FPointer::load(loadfn("glGetQueryIndexediv"), failing::glGetQueryIndexediv),
 		
 		// Core Extension: ARB_ES2_compatibility
-		ReleaseShaderCompiler: match loadfn("glReleaseShaderCompiler") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glReleaseShaderCompiler, is_loaded: false } },
-		ShaderBinary: match loadfn("glShaderBinary") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glShaderBinary, is_loaded: false } },
-		GetShaderPrecisionFormat: match loadfn("glGetShaderPrecisionFormat") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetShaderPrecisionFormat, is_loaded: false } },
-		DepthRangef: match loadfn("glDepthRangef") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDepthRangef, is_loaded: false } },
-		ClearDepthf: match loadfn("glClearDepthf") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearDepthf, is_loaded: false } },
+		ReleaseShaderCompiler: FPointer::load(loadfn("glReleaseShaderCompiler"), failing::glReleaseShaderCompiler),
+		ShaderBinary: FPointer::load(loadfn("glShaderBinary"), failing::glShaderBinary),
+		GetShaderPrecisionFormat: FPointer::load(loadfn("glGetShaderPrecisionFormat"), failing::glGetShaderPrecisionFormat),
+		DepthRangef: FPointer::load(loadfn("glDepthRangef"), failing::glDepthRangef),
+		ClearDepthf: FPointer::load(loadfn("glClearDepthf"), failing::glClearDepthf),
 		
 		// Core Extension: ARB_get_program_binary
-		GetProgramBinary: match loadfn("glGetProgramBinary") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramBinary, is_loaded: false } },
-		ProgramBinary: match loadfn("glProgramBinary") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramBinary, is_loaded: false } },
-		ProgramParameteri: match loadfn("glProgramParameteri") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramParameteri, is_loaded: false } },
+		GetProgramBinary: FPointer::load(loadfn("glGetProgramBinary"), failing::glGetProgramBinary),
+		ProgramBinary: FPointer::load(loadfn("glProgramBinary"), failing::glProgramBinary),
+		ProgramParameteri: FPointer::load(loadfn("glProgramParameteri"), failing::glProgramParameteri),
 		
 		// Core Extension: ARB_separate_shader_objects
-		UseProgramStages: match loadfn("glUseProgramStages") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glUseProgramStages, is_loaded: false } },
-		ActiveShaderProgram: match loadfn("glActiveShaderProgram") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glActiveShaderProgram, is_loaded: false } },
-		CreateShaderProgramv: match loadfn("glCreateShaderProgramv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCreateShaderProgramv, is_loaded: false } },
-		BindProgramPipeline: match loadfn("glBindProgramPipeline") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindProgramPipeline, is_loaded: false } },
-		DeleteProgramPipelines: match loadfn("glDeleteProgramPipelines") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDeleteProgramPipelines, is_loaded: false } },
-		GenProgramPipelines: match loadfn("glGenProgramPipelines") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGenProgramPipelines, is_loaded: false } },
-		IsProgramPipeline: match loadfn("glIsProgramPipeline") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glIsProgramPipeline, is_loaded: false } },
-		GetProgramPipelineiv: match loadfn("glGetProgramPipelineiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramPipelineiv, is_loaded: false } },
-		ProgramUniform1i: match loadfn("glProgramUniform1i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1i, is_loaded: false } },
-		ProgramUniform1iv: match loadfn("glProgramUniform1iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1iv, is_loaded: false } },
-		ProgramUniform1f: match loadfn("glProgramUniform1f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1f, is_loaded: false } },
-		ProgramUniform1fv: match loadfn("glProgramUniform1fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1fv, is_loaded: false } },
-		ProgramUniform1d: match loadfn("glProgramUniform1d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1d, is_loaded: false } },
-		ProgramUniform1dv: match loadfn("glProgramUniform1dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1dv, is_loaded: false } },
-		ProgramUniform1ui: match loadfn("glProgramUniform1ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1ui, is_loaded: false } },
-		ProgramUniform1uiv: match loadfn("glProgramUniform1uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform1uiv, is_loaded: false } },
-		ProgramUniform2i: match loadfn("glProgramUniform2i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2i, is_loaded: false } },
-		ProgramUniform2iv: match loadfn("glProgramUniform2iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2iv, is_loaded: false } },
-		ProgramUniform2f: match loadfn("glProgramUniform2f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2f, is_loaded: false } },
-		ProgramUniform2fv: match loadfn("glProgramUniform2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2fv, is_loaded: false } },
-		ProgramUniform2d: match loadfn("glProgramUniform2d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2d, is_loaded: false } },
-		ProgramUniform2dv: match loadfn("glProgramUniform2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2dv, is_loaded: false } },
-		ProgramUniform2ui: match loadfn("glProgramUniform2ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2ui, is_loaded: false } },
-		ProgramUniform2uiv: match loadfn("glProgramUniform2uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform2uiv, is_loaded: false } },
-		ProgramUniform3i: match loadfn("glProgramUniform3i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3i, is_loaded: false } },
-		ProgramUniform3iv: match loadfn("glProgramUniform3iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3iv, is_loaded: false } },
-		ProgramUniform3f: match loadfn("glProgramUniform3f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3f, is_loaded: false } },
-		ProgramUniform3fv: match loadfn("glProgramUniform3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3fv, is_loaded: false } },
-		ProgramUniform3d: match loadfn("glProgramUniform3d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3d, is_loaded: false } },
-		ProgramUniform3dv: match loadfn("glProgramUniform3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3dv, is_loaded: false } },
-		ProgramUniform3ui: match loadfn("glProgramUniform3ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3ui, is_loaded: false } },
-		ProgramUniform3uiv: match loadfn("glProgramUniform3uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform3uiv, is_loaded: false } },
-		ProgramUniform4i: match loadfn("glProgramUniform4i") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4i, is_loaded: false } },
-		ProgramUniform4iv: match loadfn("glProgramUniform4iv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4iv, is_loaded: false } },
-		ProgramUniform4f: match loadfn("glProgramUniform4f") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4f, is_loaded: false } },
-		ProgramUniform4fv: match loadfn("glProgramUniform4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4fv, is_loaded: false } },
-		ProgramUniform4d: match loadfn("glProgramUniform4d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4d, is_loaded: false } },
-		ProgramUniform4dv: match loadfn("glProgramUniform4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4dv, is_loaded: false } },
-		ProgramUniform4ui: match loadfn("glProgramUniform4ui") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4ui, is_loaded: false } },
-		ProgramUniform4uiv: match loadfn("glProgramUniform4uiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniform4uiv, is_loaded: false } },
-		ProgramUniformMatrix2fv: match loadfn("glProgramUniformMatrix2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix2fv, is_loaded: false } },
-		ProgramUniformMatrix3fv: match loadfn("glProgramUniformMatrix3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix3fv, is_loaded: false } },
-		ProgramUniformMatrix4fv: match loadfn("glProgramUniformMatrix4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix4fv, is_loaded: false } },
-		ProgramUniformMatrix2dv: match loadfn("glProgramUniformMatrix2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix2dv, is_loaded: false } },
-		ProgramUniformMatrix3dv: match loadfn("glProgramUniformMatrix3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix3dv, is_loaded: false } },
-		ProgramUniformMatrix4dv: match loadfn("glProgramUniformMatrix4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix4dv, is_loaded: false } },
-		ProgramUniformMatrix2x3fv: match loadfn("glProgramUniformMatrix2x3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix2x3fv, is_loaded: false } },
-		ProgramUniformMatrix3x2fv: match loadfn("glProgramUniformMatrix3x2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix3x2fv, is_loaded: false } },
-		ProgramUniformMatrix2x4fv: match loadfn("glProgramUniformMatrix2x4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix2x4fv, is_loaded: false } },
-		ProgramUniformMatrix4x2fv: match loadfn("glProgramUniformMatrix4x2fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix4x2fv, is_loaded: false } },
-		ProgramUniformMatrix3x4fv: match loadfn("glProgramUniformMatrix3x4fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix3x4fv, is_loaded: false } },
-		ProgramUniformMatrix4x3fv: match loadfn("glProgramUniformMatrix4x3fv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix4x3fv, is_loaded: false } },
-		ProgramUniformMatrix2x3dv: match loadfn("glProgramUniformMatrix2x3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix2x3dv, is_loaded: false } },
-		ProgramUniformMatrix3x2dv: match loadfn("glProgramUniformMatrix3x2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix3x2dv, is_loaded: false } },
-		ProgramUniformMatrix2x4dv: match loadfn("glProgramUniformMatrix2x4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix2x4dv, is_loaded: false } },
-		ProgramUniformMatrix4x2dv: match loadfn("glProgramUniformMatrix4x2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix4x2dv, is_loaded: false } },
-		ProgramUniformMatrix3x4dv: match loadfn("glProgramUniformMatrix3x4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix3x4dv, is_loaded: false } },
-		ProgramUniformMatrix4x3dv: match loadfn("glProgramUniformMatrix4x3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glProgramUniformMatrix4x3dv, is_loaded: false } },
-		ValidateProgramPipeline: match loadfn("glValidateProgramPipeline") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glValidateProgramPipeline, is_loaded: false } },
-		GetProgramPipelineInfoLog: match loadfn("glGetProgramPipelineInfoLog") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramPipelineInfoLog, is_loaded: false } },
+		UseProgramStages: FPointer::load(loadfn("glUseProgramStages"), failing::glUseProgramStages),
+		ActiveShaderProgram: FPointer::load(loadfn("glActiveShaderProgram"), failing::glActiveShaderProgram),
+		CreateShaderProgramv: FPointer::load(loadfn("glCreateShaderProgramv"), failing::glCreateShaderProgramv),
+		BindProgramPipeline: FPointer::load(loadfn("glBindProgramPipeline"), failing::glBindProgramPipeline),
+		DeleteProgramPipelines: FPointer::load(loadfn("glDeleteProgramPipelines"), failing::glDeleteProgramPipelines),
+		GenProgramPipelines: FPointer::load(loadfn("glGenProgramPipelines"), failing::glGenProgramPipelines),
+		IsProgramPipeline: FPointer::load(loadfn("glIsProgramPipeline"), failing::glIsProgramPipeline),
+		GetProgramPipelineiv: FPointer::load(loadfn("glGetProgramPipelineiv"), failing::glGetProgramPipelineiv),
+		ProgramUniform1i: FPointer::load(loadfn("glProgramUniform1i"), failing::glProgramUniform1i),
+		ProgramUniform1iv: FPointer::load(loadfn("glProgramUniform1iv"), failing::glProgramUniform1iv),
+		ProgramUniform1f: FPointer::load(loadfn("glProgramUniform1f"), failing::glProgramUniform1f),
+		ProgramUniform1fv: FPointer::load(loadfn("glProgramUniform1fv"), failing::glProgramUniform1fv),
+		ProgramUniform1d: FPointer::load(loadfn("glProgramUniform1d"), failing::glProgramUniform1d),
+		ProgramUniform1dv: FPointer::load(loadfn("glProgramUniform1dv"), failing::glProgramUniform1dv),
+		ProgramUniform1ui: FPointer::load(loadfn("glProgramUniform1ui"), failing::glProgramUniform1ui),
+		ProgramUniform1uiv: FPointer::load(loadfn("glProgramUniform1uiv"), failing::glProgramUniform1uiv),
+		ProgramUniform2i: FPointer::load(loadfn("glProgramUniform2i"), failing::glProgramUniform2i),
+		ProgramUniform2iv: FPointer::load(loadfn("glProgramUniform2iv"), failing::glProgramUniform2iv),
+		ProgramUniform2f: FPointer::load(loadfn("glProgramUniform2f"), failing::glProgramUniform2f),
+		ProgramUniform2fv: FPointer::load(loadfn("glProgramUniform2fv"), failing::glProgramUniform2fv),
+		ProgramUniform2d: FPointer::load(loadfn("glProgramUniform2d"), failing::glProgramUniform2d),
+		ProgramUniform2dv: FPointer::load(loadfn("glProgramUniform2dv"), failing::glProgramUniform2dv),
+		ProgramUniform2ui: FPointer::load(loadfn("glProgramUniform2ui"), failing::glProgramUniform2ui),
+		ProgramUniform2uiv: FPointer::load(loadfn("glProgramUniform2uiv"), failing::glProgramUniform2uiv),
+		ProgramUniform3i: FPointer::load(loadfn("glProgramUniform3i"), failing::glProgramUniform3i),
+		ProgramUniform3iv: FPointer::load(loadfn("glProgramUniform3iv"), failing::glProgramUniform3iv),
+		ProgramUniform3f: FPointer::load(loadfn("glProgramUniform3f"), failing::glProgramUniform3f),
+		ProgramUniform3fv: FPointer::load(loadfn("glProgramUniform3fv"), failing::glProgramUniform3fv),
+		ProgramUniform3d: FPointer::load(loadfn("glProgramUniform3d"), failing::glProgramUniform3d),
+		ProgramUniform3dv: FPointer::load(loadfn("glProgramUniform3dv"), failing::glProgramUniform3dv),
+		ProgramUniform3ui: FPointer::load(loadfn("glProgramUniform3ui"), failing::glProgramUniform3ui),
+		ProgramUniform3uiv: FPointer::load(loadfn("glProgramUniform3uiv"), failing::glProgramUniform3uiv),
+		ProgramUniform4i: FPointer::load(loadfn("glProgramUniform4i"), failing::glProgramUniform4i),
+		ProgramUniform4iv: FPointer::load(loadfn("glProgramUniform4iv"), failing::glProgramUniform4iv),
+		ProgramUniform4f: FPointer::load(loadfn("glProgramUniform4f"), failing::glProgramUniform4f),
+		ProgramUniform4fv: FPointer::load(loadfn("glProgramUniform4fv"), failing::glProgramUniform4fv),
+		ProgramUniform4d: FPointer::load(loadfn("glProgramUniform4d"), failing::glProgramUniform4d),
+		ProgramUniform4dv: FPointer::load(loadfn("glProgramUniform4dv"), failing::glProgramUniform4dv),
+		ProgramUniform4ui: FPointer::load(loadfn("glProgramUniform4ui"), failing::glProgramUniform4ui),
+		ProgramUniform4uiv: FPointer::load(loadfn("glProgramUniform4uiv"), failing::glProgramUniform4uiv),
+		ProgramUniformMatrix2fv: FPointer::load(loadfn("glProgramUniformMatrix2fv"), failing::glProgramUniformMatrix2fv),
+		ProgramUniformMatrix3fv: FPointer::load(loadfn("glProgramUniformMatrix3fv"), failing::glProgramUniformMatrix3fv),
+		ProgramUniformMatrix4fv: FPointer::load(loadfn("glProgramUniformMatrix4fv"), failing::glProgramUniformMatrix4fv),
+		ProgramUniformMatrix2dv: FPointer::load(loadfn("glProgramUniformMatrix2dv"), failing::glProgramUniformMatrix2dv),
+		ProgramUniformMatrix3dv: FPointer::load(loadfn("glProgramUniformMatrix3dv"), failing::glProgramUniformMatrix3dv),
+		ProgramUniformMatrix4dv: FPointer::load(loadfn("glProgramUniformMatrix4dv"), failing::glProgramUniformMatrix4dv),
+		ProgramUniformMatrix2x3fv: FPointer::load(loadfn("glProgramUniformMatrix2x3fv"), failing::glProgramUniformMatrix2x3fv),
+		ProgramUniformMatrix3x2fv: FPointer::load(loadfn("glProgramUniformMatrix3x2fv"), failing::glProgramUniformMatrix3x2fv),
+		ProgramUniformMatrix2x4fv: FPointer::load(loadfn("glProgramUniformMatrix2x4fv"), failing::glProgramUniformMatrix2x4fv),
+		ProgramUniformMatrix4x2fv: FPointer::load(loadfn("glProgramUniformMatrix4x2fv"), failing::glProgramUniformMatrix4x2fv),
+		ProgramUniformMatrix3x4fv: FPointer::load(loadfn("glProgramUniformMatrix3x4fv"), failing::glProgramUniformMatrix3x4fv),
+		ProgramUniformMatrix4x3fv: FPointer::load(loadfn("glProgramUniformMatrix4x3fv"), failing::glProgramUniformMatrix4x3fv),
+		ProgramUniformMatrix2x3dv: FPointer::load(loadfn("glProgramUniformMatrix2x3dv"), failing::glProgramUniformMatrix2x3dv),
+		ProgramUniformMatrix3x2dv: FPointer::load(loadfn("glProgramUniformMatrix3x2dv"), failing::glProgramUniformMatrix3x2dv),
+		ProgramUniformMatrix2x4dv: FPointer::load(loadfn("glProgramUniformMatrix2x4dv"), failing::glProgramUniformMatrix2x4dv),
+		ProgramUniformMatrix4x2dv: FPointer::load(loadfn("glProgramUniformMatrix4x2dv"), failing::glProgramUniformMatrix4x2dv),
+		ProgramUniformMatrix3x4dv: FPointer::load(loadfn("glProgramUniformMatrix3x4dv"), failing::glProgramUniformMatrix3x4dv),
+		ProgramUniformMatrix4x3dv: FPointer::load(loadfn("glProgramUniformMatrix4x3dv"), failing::glProgramUniformMatrix4x3dv),
+		ValidateProgramPipeline: FPointer::load(loadfn("glValidateProgramPipeline"), failing::glValidateProgramPipeline),
+		GetProgramPipelineInfoLog: FPointer::load(loadfn("glGetProgramPipelineInfoLog"), failing::glGetProgramPipelineInfoLog),
 		
 		// Core Extension: ARB_vertex_attrib_64bit
-		VertexAttribL1d: match loadfn("glVertexAttribL1d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL1d, is_loaded: false } },
-		VertexAttribL2d: match loadfn("glVertexAttribL2d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL2d, is_loaded: false } },
-		VertexAttribL3d: match loadfn("glVertexAttribL3d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL3d, is_loaded: false } },
-		VertexAttribL4d: match loadfn("glVertexAttribL4d") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL4d, is_loaded: false } },
-		VertexAttribL1dv: match loadfn("glVertexAttribL1dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL1dv, is_loaded: false } },
-		VertexAttribL2dv: match loadfn("glVertexAttribL2dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL2dv, is_loaded: false } },
-		VertexAttribL3dv: match loadfn("glVertexAttribL3dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL3dv, is_loaded: false } },
-		VertexAttribL4dv: match loadfn("glVertexAttribL4dv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribL4dv, is_loaded: false } },
-		VertexAttribLPointer: match loadfn("glVertexAttribLPointer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribLPointer, is_loaded: false } },
-		GetVertexAttribLdv: match loadfn("glGetVertexAttribLdv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetVertexAttribLdv, is_loaded: false } },
+		VertexAttribL1d: FPointer::load(loadfn("glVertexAttribL1d"), failing::glVertexAttribL1d),
+		VertexAttribL2d: FPointer::load(loadfn("glVertexAttribL2d"), failing::glVertexAttribL2d),
+		VertexAttribL3d: FPointer::load(loadfn("glVertexAttribL3d"), failing::glVertexAttribL3d),
+		VertexAttribL4d: FPointer::load(loadfn("glVertexAttribL4d"), failing::glVertexAttribL4d),
+		VertexAttribL1dv: FPointer::load(loadfn("glVertexAttribL1dv"), failing::glVertexAttribL1dv),
+		VertexAttribL2dv: FPointer::load(loadfn("glVertexAttribL2dv"), failing::glVertexAttribL2dv),
+		VertexAttribL3dv: FPointer::load(loadfn("glVertexAttribL3dv"), failing::glVertexAttribL3dv),
+		VertexAttribL4dv: FPointer::load(loadfn("glVertexAttribL4dv"), failing::glVertexAttribL4dv),
+		VertexAttribLPointer: FPointer::load(loadfn("glVertexAttribLPointer"), failing::glVertexAttribLPointer),
+		GetVertexAttribLdv: FPointer::load(loadfn("glGetVertexAttribLdv"), failing::glGetVertexAttribLdv),
 		
 		// Core Extension: ARB_viewport_array
-		ViewportArrayv: match loadfn("glViewportArrayv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glViewportArrayv, is_loaded: false } },
-		ViewportIndexedf: match loadfn("glViewportIndexedf") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glViewportIndexedf, is_loaded: false } },
-		ViewportIndexedfv: match loadfn("glViewportIndexedfv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glViewportIndexedfv, is_loaded: false } },
-		ScissorArrayv: match loadfn("glScissorArrayv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glScissorArrayv, is_loaded: false } },
-		ScissorIndexed: match loadfn("glScissorIndexed") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glScissorIndexed, is_loaded: false } },
-		ScissorIndexedv: match loadfn("glScissorIndexedv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glScissorIndexedv, is_loaded: false } },
-		DepthRangeArrayv: match loadfn("glDepthRangeArrayv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDepthRangeArrayv, is_loaded: false } },
-		DepthRangeIndexed: match loadfn("glDepthRangeIndexed") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDepthRangeIndexed, is_loaded: false } },
-		GetFloati_v: match loadfn("glGetFloati_v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetFloati_v, is_loaded: false } },
-		GetDoublei_v: match loadfn("glGetDoublei_v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetDoublei_v, is_loaded: false } },
+		ViewportArrayv: FPointer::load(loadfn("glViewportArrayv"), failing::glViewportArrayv),
+		ViewportIndexedf: FPointer::load(loadfn("glViewportIndexedf"), failing::glViewportIndexedf),
+		ViewportIndexedfv: FPointer::load(loadfn("glViewportIndexedfv"), failing::glViewportIndexedfv),
+		ScissorArrayv: FPointer::load(loadfn("glScissorArrayv"), failing::glScissorArrayv),
+		ScissorIndexed: FPointer::load(loadfn("glScissorIndexed"), failing::glScissorIndexed),
+		ScissorIndexedv: FPointer::load(loadfn("glScissorIndexedv"), failing::glScissorIndexedv),
+		DepthRangeArrayv: FPointer::load(loadfn("glDepthRangeArrayv"), failing::glDepthRangeArrayv),
+		DepthRangeIndexed: FPointer::load(loadfn("glDepthRangeIndexed"), failing::glDepthRangeIndexed),
+		GetFloati_v: FPointer::load(loadfn("glGetFloati_v"), failing::glGetFloati_v),
+		GetDoublei_v: FPointer::load(loadfn("glGetDoublei_v"), failing::glGetDoublei_v),
 		
 		// Core Extension: ARB_base_instance
-		DrawArraysInstancedBaseInstance: match loadfn("glDrawArraysInstancedBaseInstance") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawArraysInstancedBaseInstance, is_loaded: false } },
-		DrawElementsInstancedBaseInstance: match loadfn("glDrawElementsInstancedBaseInstance") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawElementsInstancedBaseInstance, is_loaded: false } },
-		DrawElementsInstancedBaseVertexBaseInstance: match loadfn("glDrawElementsInstancedBaseVertexBaseInstance") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawElementsInstancedBaseVertexBaseInstance, is_loaded: false } },
+		DrawArraysInstancedBaseInstance: FPointer::load(loadfn("glDrawArraysInstancedBaseInstance"), failing::glDrawArraysInstancedBaseInstance),
+		DrawElementsInstancedBaseInstance: FPointer::load(loadfn("glDrawElementsInstancedBaseInstance"), failing::glDrawElementsInstancedBaseInstance),
+		DrawElementsInstancedBaseVertexBaseInstance: FPointer::load(loadfn("glDrawElementsInstancedBaseVertexBaseInstance"), failing::glDrawElementsInstancedBaseVertexBaseInstance),
 		
 		// Core Extension: ARB_transform_feedback_instanced
-		DrawTransformFeedbackInstanced: match loadfn("glDrawTransformFeedbackInstanced") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawTransformFeedbackInstanced, is_loaded: false } },
-		DrawTransformFeedbackStreamInstanced: match loadfn("glDrawTransformFeedbackStreamInstanced") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDrawTransformFeedbackStreamInstanced, is_loaded: false } },
+		DrawTransformFeedbackInstanced: FPointer::load(loadfn("glDrawTransformFeedbackInstanced"), failing::glDrawTransformFeedbackInstanced),
+		DrawTransformFeedbackStreamInstanced: FPointer::load(loadfn("glDrawTransformFeedbackStreamInstanced"), failing::glDrawTransformFeedbackStreamInstanced),
 		
 		// Core Extension: ARB_internalformat_query
-		GetInternalformativ: match loadfn("glGetInternalformativ") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetInternalformativ, is_loaded: false } },
+		GetInternalformativ: FPointer::load(loadfn("glGetInternalformativ"), failing::glGetInternalformativ),
 		
 		// Core Extension: ARB_shader_atomic_counters
-		GetActiveAtomicCounterBufferiv: match loadfn("glGetActiveAtomicCounterBufferiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetActiveAtomicCounterBufferiv, is_loaded: false } },
+		GetActiveAtomicCounterBufferiv: FPointer::load(loadfn("glGetActiveAtomicCounterBufferiv"), failing::glGetActiveAtomicCounterBufferiv),
 		
 		// Core Extension: ARB_shader_image_load_store
-		BindImageTexture: match loadfn("glBindImageTexture") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindImageTexture, is_loaded: false } },
-		MemoryBarrier: match loadfn("glMemoryBarrier") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMemoryBarrier, is_loaded: false } },
+		BindImageTexture: FPointer::load(loadfn("glBindImageTexture"), failing::glBindImageTexture),
+		MemoryBarrier: FPointer::load(loadfn("glMemoryBarrier"), failing::glMemoryBarrier),
 		
 		// Core Extension: ARB_texture_storage
-		TexStorage1D: match loadfn("glTexStorage1D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexStorage1D, is_loaded: false } },
-		TexStorage2D: match loadfn("glTexStorage2D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexStorage2D, is_loaded: false } },
-		TexStorage3D: match loadfn("glTexStorage3D") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexStorage3D, is_loaded: false } },
-		TextureStorage1DEXT: match loadfn("glTextureStorage1DEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTextureStorage1DEXT, is_loaded: false } },
-		TextureStorage2DEXT: match loadfn("glTextureStorage2DEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTextureStorage2DEXT, is_loaded: false } },
-		TextureStorage3DEXT: match loadfn("glTextureStorage3DEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTextureStorage3DEXT, is_loaded: false } },
+		TexStorage1D: FPointer::load(loadfn("glTexStorage1D"), failing::glTexStorage1D),
+		TexStorage2D: FPointer::load(loadfn("glTexStorage2D"), failing::glTexStorage2D),
+		TexStorage3D: FPointer::load(loadfn("glTexStorage3D"), failing::glTexStorage3D),
+		TextureStorage1DEXT: FPointer::load(loadfn("glTextureStorage1DEXT"), failing::glTextureStorage1DEXT),
+		TextureStorage2DEXT: FPointer::load(loadfn("glTextureStorage2DEXT"), failing::glTextureStorage2DEXT),
+		TextureStorage3DEXT: FPointer::load(loadfn("glTextureStorage3DEXT"), failing::glTextureStorage3DEXT),
 		
 		// Core Extension: KHR_debug
-		DebugMessageControl: match loadfn("glDebugMessageControl") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDebugMessageControl, is_loaded: false } },
-		DebugMessageInsert: match loadfn("glDebugMessageInsert") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDebugMessageInsert, is_loaded: false } },
-		DebugMessageCallback: match loadfn("glDebugMessageCallback") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDebugMessageCallback, is_loaded: false } },
-		GetDebugMessageLog: match loadfn("glGetDebugMessageLog") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetDebugMessageLog, is_loaded: false } },
-		PushDebugGroup: match loadfn("glPushDebugGroup") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPushDebugGroup, is_loaded: false } },
-		PopDebugGroup: match loadfn("glPopDebugGroup") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glPopDebugGroup, is_loaded: false } },
-		ObjectLabel: match loadfn("glObjectLabel") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glObjectLabel, is_loaded: false } },
-		GetObjectLabel: match loadfn("glGetObjectLabel") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetObjectLabel, is_loaded: false } },
-		ObjectPtrLabel: match loadfn("glObjectPtrLabel") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glObjectPtrLabel, is_loaded: false } },
-		GetObjectPtrLabel: match loadfn("glGetObjectPtrLabel") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetObjectPtrLabel, is_loaded: false } },
+		DebugMessageControl: FPointer::load(loadfn("glDebugMessageControl"), failing::glDebugMessageControl),
+		DebugMessageInsert: FPointer::load(loadfn("glDebugMessageInsert"), failing::glDebugMessageInsert),
+		DebugMessageCallback: FPointer::load(loadfn("glDebugMessageCallback"), failing::glDebugMessageCallback),
+		GetDebugMessageLog: FPointer::load(loadfn("glGetDebugMessageLog"), failing::glGetDebugMessageLog),
+		PushDebugGroup: FPointer::load(loadfn("glPushDebugGroup"), failing::glPushDebugGroup),
+		PopDebugGroup: FPointer::load(loadfn("glPopDebugGroup"), failing::glPopDebugGroup),
+		ObjectLabel: FPointer::load(loadfn("glObjectLabel"), failing::glObjectLabel),
+		GetObjectLabel: FPointer::load(loadfn("glGetObjectLabel"), failing::glGetObjectLabel),
+		ObjectPtrLabel: FPointer::load(loadfn("glObjectPtrLabel"), failing::glObjectPtrLabel),
+		GetObjectPtrLabel: FPointer::load(loadfn("glGetObjectPtrLabel"), failing::glGetObjectPtrLabel),
 		
 		// Core Extension: ARB_clear_buffer_object
-		ClearBufferData: match loadfn("glClearBufferData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearBufferData, is_loaded: false } },
-		ClearBufferSubData: match loadfn("glClearBufferSubData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearBufferSubData, is_loaded: false } },
-		ClearNamedBufferDataEXT: match loadfn("glClearNamedBufferDataEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearNamedBufferDataEXT, is_loaded: false } },
-		ClearNamedBufferSubDataEXT: match loadfn("glClearNamedBufferSubDataEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glClearNamedBufferSubDataEXT, is_loaded: false } },
+		ClearBufferData: FPointer::load(loadfn("glClearBufferData"), failing::glClearBufferData),
+		ClearBufferSubData: FPointer::load(loadfn("glClearBufferSubData"), failing::glClearBufferSubData),
+		ClearNamedBufferDataEXT: FPointer::load(loadfn("glClearNamedBufferDataEXT"), failing::glClearNamedBufferDataEXT),
+		ClearNamedBufferSubDataEXT: FPointer::load(loadfn("glClearNamedBufferSubDataEXT"), failing::glClearNamedBufferSubDataEXT),
 		
 		// Core Extension: ARB_compute_shader
-		DispatchCompute: match loadfn("glDispatchCompute") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDispatchCompute, is_loaded: false } },
-		DispatchComputeIndirect: match loadfn("glDispatchComputeIndirect") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glDispatchComputeIndirect, is_loaded: false } },
+		DispatchCompute: FPointer::load(loadfn("glDispatchCompute"), failing::glDispatchCompute),
+		DispatchComputeIndirect: FPointer::load(loadfn("glDispatchComputeIndirect"), failing::glDispatchComputeIndirect),
 		
 		// Core Extension: ARB_copy_image
-		CopyImageSubData: match loadfn("glCopyImageSubData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glCopyImageSubData, is_loaded: false } },
+		CopyImageSubData: FPointer::load(loadfn("glCopyImageSubData"), failing::glCopyImageSubData),
 		
 		// Core Extension: ARB_framebuffer_no_attachments
-		FramebufferParameteri: match loadfn("glFramebufferParameteri") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glFramebufferParameteri, is_loaded: false } },
-		GetFramebufferParameteriv: match loadfn("glGetFramebufferParameteriv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetFramebufferParameteriv, is_loaded: false } },
-		NamedFramebufferParameteriEXT: match loadfn("glNamedFramebufferParameteriEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glNamedFramebufferParameteriEXT, is_loaded: false } },
-		GetNamedFramebufferParameterivEXT: match loadfn("glGetNamedFramebufferParameterivEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetNamedFramebufferParameterivEXT, is_loaded: false } },
+		FramebufferParameteri: FPointer::load(loadfn("glFramebufferParameteri"), failing::glFramebufferParameteri),
+		GetFramebufferParameteriv: FPointer::load(loadfn("glGetFramebufferParameteriv"), failing::glGetFramebufferParameteriv),
+		NamedFramebufferParameteriEXT: FPointer::load(loadfn("glNamedFramebufferParameteriEXT"), failing::glNamedFramebufferParameteriEXT),
+		GetNamedFramebufferParameterivEXT: FPointer::load(loadfn("glGetNamedFramebufferParameterivEXT"), failing::glGetNamedFramebufferParameterivEXT),
 		
 		// Core Extension: ARB_internalformat_query2
-		GetInternalformati64v: match loadfn("glGetInternalformati64v") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetInternalformati64v, is_loaded: false } },
+		GetInternalformati64v: FPointer::load(loadfn("glGetInternalformati64v"), failing::glGetInternalformati64v),
 		
 		// Core Extension: ARB_invalidate_subdata
-		InvalidateTexSubImage: match loadfn("glInvalidateTexSubImage") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glInvalidateTexSubImage, is_loaded: false } },
-		InvalidateTexImage: match loadfn("glInvalidateTexImage") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glInvalidateTexImage, is_loaded: false } },
-		InvalidateBufferSubData: match loadfn("glInvalidateBufferSubData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glInvalidateBufferSubData, is_loaded: false } },
-		InvalidateBufferData: match loadfn("glInvalidateBufferData") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glInvalidateBufferData, is_loaded: false } },
-		InvalidateFramebuffer: match loadfn("glInvalidateFramebuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glInvalidateFramebuffer, is_loaded: false } },
-		InvalidateSubFramebuffer: match loadfn("glInvalidateSubFramebuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glInvalidateSubFramebuffer, is_loaded: false } },
+		InvalidateTexSubImage: FPointer::load(loadfn("glInvalidateTexSubImage"), failing::glInvalidateTexSubImage),
+		InvalidateTexImage: FPointer::load(loadfn("glInvalidateTexImage"), failing::glInvalidateTexImage),
+		InvalidateBufferSubData: FPointer::load(loadfn("glInvalidateBufferSubData"), failing::glInvalidateBufferSubData),
+		InvalidateBufferData: FPointer::load(loadfn("glInvalidateBufferData"), failing::glInvalidateBufferData),
+		InvalidateFramebuffer: FPointer::load(loadfn("glInvalidateFramebuffer"), failing::glInvalidateFramebuffer),
+		InvalidateSubFramebuffer: FPointer::load(loadfn("glInvalidateSubFramebuffer"), failing::glInvalidateSubFramebuffer),
 		
 		// Core Extension: ARB_multi_draw_indirect
-		MultiDrawArraysIndirect: match loadfn("glMultiDrawArraysIndirect") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiDrawArraysIndirect, is_loaded: false } },
-		MultiDrawElementsIndirect: match loadfn("glMultiDrawElementsIndirect") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glMultiDrawElementsIndirect, is_loaded: false } },
+		MultiDrawArraysIndirect: FPointer::load(loadfn("glMultiDrawArraysIndirect"), failing::glMultiDrawArraysIndirect),
+		MultiDrawElementsIndirect: FPointer::load(loadfn("glMultiDrawElementsIndirect"), failing::glMultiDrawElementsIndirect),
 		
 		// Core Extension: ARB_program_interface_query
-		GetProgramInterfaceiv: match loadfn("glGetProgramInterfaceiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramInterfaceiv, is_loaded: false } },
-		GetProgramResourceIndex: match loadfn("glGetProgramResourceIndex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramResourceIndex, is_loaded: false } },
-		GetProgramResourceName: match loadfn("glGetProgramResourceName") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramResourceName, is_loaded: false } },
-		GetProgramResourceiv: match loadfn("glGetProgramResourceiv") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramResourceiv, is_loaded: false } },
-		GetProgramResourceLocation: match loadfn("glGetProgramResourceLocation") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramResourceLocation, is_loaded: false } },
-		GetProgramResourceLocationIndex: match loadfn("glGetProgramResourceLocationIndex") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glGetProgramResourceLocationIndex, is_loaded: false } },
+		GetProgramInterfaceiv: FPointer::load(loadfn("glGetProgramInterfaceiv"), failing::glGetProgramInterfaceiv),
+		GetProgramResourceIndex: FPointer::load(loadfn("glGetProgramResourceIndex"), failing::glGetProgramResourceIndex),
+		GetProgramResourceName: FPointer::load(loadfn("glGetProgramResourceName"), failing::glGetProgramResourceName),
+		GetProgramResourceiv: FPointer::load(loadfn("glGetProgramResourceiv"), failing::glGetProgramResourceiv),
+		GetProgramResourceLocation: FPointer::load(loadfn("glGetProgramResourceLocation"), failing::glGetProgramResourceLocation),
+		GetProgramResourceLocationIndex: FPointer::load(loadfn("glGetProgramResourceLocationIndex"), failing::glGetProgramResourceLocationIndex),
 		
 		// Core Extension: ARB_shader_storage_buffer_object
-		ShaderStorageBlockBinding: match loadfn("glShaderStorageBlockBinding") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glShaderStorageBlockBinding, is_loaded: false } },
+		ShaderStorageBlockBinding: FPointer::load(loadfn("glShaderStorageBlockBinding"), failing::glShaderStorageBlockBinding),
 		
 		// Core Extension: ARB_texture_buffer_range
-		TexBufferRange: match loadfn("glTexBufferRange") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexBufferRange, is_loaded: false } },
-		TextureBufferRangeEXT: match loadfn("glTextureBufferRangeEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTextureBufferRangeEXT, is_loaded: false } },
+		TexBufferRange: FPointer::load(loadfn("glTexBufferRange"), failing::glTexBufferRange),
+		TextureBufferRangeEXT: FPointer::load(loadfn("glTextureBufferRangeEXT"), failing::glTextureBufferRangeEXT),
 		
 		// Core Extension: ARB_texture_storage_multisample
-		TexStorage2DMultisample: match loadfn("glTexStorage2DMultisample") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexStorage2DMultisample, is_loaded: false } },
-		TexStorage3DMultisample: match loadfn("glTexStorage3DMultisample") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTexStorage3DMultisample, is_loaded: false } },
-		TextureStorage2DMultisampleEXT: match loadfn("glTextureStorage2DMultisampleEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTextureStorage2DMultisampleEXT, is_loaded: false } },
-		TextureStorage3DMultisampleEXT: match loadfn("glTextureStorage3DMultisampleEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTextureStorage3DMultisampleEXT, is_loaded: false } },
+		TexStorage2DMultisample: FPointer::load(loadfn("glTexStorage2DMultisample"), failing::glTexStorage2DMultisample),
+		TexStorage3DMultisample: FPointer::load(loadfn("glTexStorage3DMultisample"), failing::glTexStorage3DMultisample),
+		TextureStorage2DMultisampleEXT: FPointer::load(loadfn("glTextureStorage2DMultisampleEXT"), failing::glTextureStorage2DMultisampleEXT),
+		TextureStorage3DMultisampleEXT: FPointer::load(loadfn("glTextureStorage3DMultisampleEXT"), failing::glTextureStorage3DMultisampleEXT),
 		
 		// Core Extension: ARB_texture_view
-		TextureView: match loadfn("glTextureView") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glTextureView, is_loaded: false } },
+		TextureView: FPointer::load(loadfn("glTextureView"), failing::glTextureView),
 		
 		// Core Extension: ARB_vertex_attrib_binding
-		BindVertexBuffer: match loadfn("glBindVertexBuffer") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glBindVertexBuffer, is_loaded: false } },
-		VertexAttribFormat: match loadfn("glVertexAttribFormat") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribFormat, is_loaded: false } },
-		VertexAttribIFormat: match loadfn("glVertexAttribIFormat") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribIFormat, is_loaded: false } },
-		VertexAttribLFormat: match loadfn("glVertexAttribLFormat") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribLFormat, is_loaded: false } },
-		VertexAttribBinding: match loadfn("glVertexAttribBinding") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexAttribBinding, is_loaded: false } },
-		VertexBindingDivisor: match loadfn("glVertexBindingDivisor") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexBindingDivisor, is_loaded: false } },
-		VertexArrayBindVertexBufferEXT: match loadfn("glVertexArrayBindVertexBufferEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexArrayBindVertexBufferEXT, is_loaded: false } },
-		VertexArrayVertexAttribFormatEXT: match loadfn("glVertexArrayVertexAttribFormatEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexArrayVertexAttribFormatEXT, is_loaded: false } },
-		VertexArrayVertexAttribIFormatEXT: match loadfn("glVertexArrayVertexAttribIFormatEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexArrayVertexAttribIFormatEXT, is_loaded: false } },
-		VertexArrayVertexAttribLFormatEXT: match loadfn("glVertexArrayVertexAttribLFormatEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexArrayVertexAttribLFormatEXT, is_loaded: false } },
-		VertexArrayVertexAttribBindingEXT: match loadfn("glVertexArrayVertexAttribBindingEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexArrayVertexAttribBindingEXT, is_loaded: false } },
-		VertexArrayVertexBindingDivisorEXT: match loadfn("glVertexArrayVertexBindingDivisorEXT") { f if !f.is_null() => FPointer { f: unsafe { cast::transmute(f) }, is_loaded: true }, _ => FPointer { f: failing::glVertexArrayVertexBindingDivisorEXT, is_loaded: false } },
+		BindVertexBuffer: FPointer::load(loadfn("glBindVertexBuffer"), failing::glBindVertexBuffer),
+		VertexAttribFormat: FPointer::load(loadfn("glVertexAttribFormat"), failing::glVertexAttribFormat),
+		VertexAttribIFormat: FPointer::load(loadfn("glVertexAttribIFormat"), failing::glVertexAttribIFormat),
+		VertexAttribLFormat: FPointer::load(loadfn("glVertexAttribLFormat"), failing::glVertexAttribLFormat),
+		VertexAttribBinding: FPointer::load(loadfn("glVertexAttribBinding"), failing::glVertexAttribBinding),
+		VertexBindingDivisor: FPointer::load(loadfn("glVertexBindingDivisor"), failing::glVertexBindingDivisor),
+		VertexArrayBindVertexBufferEXT: FPointer::load(loadfn("glVertexArrayBindVertexBufferEXT"), failing::glVertexArrayBindVertexBufferEXT),
+		VertexArrayVertexAttribFormatEXT: FPointer::load(loadfn("glVertexArrayVertexAttribFormatEXT"), failing::glVertexArrayVertexAttribFormatEXT),
+		VertexArrayVertexAttribIFormatEXT: FPointer::load(loadfn("glVertexArrayVertexAttribIFormatEXT"), failing::glVertexArrayVertexAttribIFormatEXT),
+		VertexArrayVertexAttribLFormatEXT: FPointer::load(loadfn("glVertexArrayVertexAttribLFormatEXT"), failing::glVertexArrayVertexAttribLFormatEXT),
+		VertexArrayVertexAttribBindingEXT: FPointer::load(loadfn("glVertexArrayVertexAttribBindingEXT"), failing::glVertexArrayVertexAttribBindingEXT),
+		VertexArrayVertexBindingDivisorEXT: FPointer::load(loadfn("glVertexArrayVertexBindingDivisorEXT"), failing::glVertexArrayVertexBindingDivisorEXT),
 		
 	}
 }
