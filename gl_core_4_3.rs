@@ -3,7 +3,7 @@
 #[comment = "OpenGL bindings for the Rust programming language."];
 #[crate_type = "lib"];
 
-use core::libc::*;
+use std::libc::*;
 use types::*;
 
 
@@ -15,7 +15,7 @@ use types::*;
 
 pub mod types {
 	// Common types from OpenGL 1.1
-	use core::libc::*;
+	use std::libc::*;
 	
 	pub type GLenum = c_uint;
 	pub type GLboolean = c_uchar;
@@ -1596,14 +1596,14 @@ pub static MAX_VERTEX_ATTRIB_RELATIVE_OFFSET: GLenum = 0x82D9;
 pub static MAX_VERTEX_ATTRIB_BINDINGS: GLenum = 0x82DA;
 
 
-pub struct FPointer<F> { f: F, is_loaded: bool }
+pub struct FnPtr<F> { f: F, is_loaded: bool }
 
-priv impl<F> FPointer<F> {
-    fn load(fn_ptr: *c_void, def: F) -> FPointer<F> {
-        do fn_ptr.to_option().map_default(
-            FPointer { f: def, is_loaded: false }
-        ) |_| {
-            FPointer { f: cast::transmute(fn_ptr), is_loaded: true }
+impl<F> FnPtr<F> {
+    priv fn new(ptr: *c_void, failing_fn: F) -> FnPtr<F> {
+        if !ptr.is_null() {
+            FnPtr { f: unsafe { cast::transmute(ptr) }, is_loaded: true }
+        } else {
+            FnPtr { f: failing_fn, is_loaded: false }
         }
     }
 }
@@ -1616,667 +1616,667 @@ priv impl<F> FPointer<F> {
 
 pub struct GL {
 	// Version: 1.1
-	CullFace: FPointer<extern "C" fn(mode: GLenum)>,
-	FrontFace: FPointer<extern "C" fn(mode: GLenum)>,
-	Hint: FPointer<extern "C" fn(target: GLenum, mode: GLenum)>,
-	LineWidth: FPointer<extern "C" fn(width: GLfloat)>,
-	PointSize: FPointer<extern "C" fn(size: GLfloat)>,
-	PolygonMode: FPointer<extern "C" fn(face: GLenum, mode: GLenum)>,
-	Scissor: FPointer<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
-	TexParameterf: FPointer<extern "C" fn(target: GLenum, pname: GLenum, param: GLfloat)>,
-	TexParameterfv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat)>,
-	TexParameteri: FPointer<extern "C" fn(target: GLenum, pname: GLenum, param: GLint)>,
-	TexParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	TexImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	TexImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	DrawBuffer: FPointer<extern "C" fn(mode: GLenum)>,
-	Clear: FPointer<extern "C" fn(mask: GLbitfield)>,
-	ClearColor: FPointer<extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat)>,
-	ClearStencil: FPointer<extern "C" fn(s: GLint)>,
-	ClearDepth: FPointer<extern "C" fn(depth: GLdouble)>,
-	StencilMask: FPointer<extern "C" fn(mask: GLuint)>,
-	ColorMask: FPointer<extern "C" fn(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean)>,
-	DepthMask: FPointer<extern "C" fn(flag: GLboolean)>,
-	Disable: FPointer<extern "C" fn(cap: GLenum)>,
-	Enable: FPointer<extern "C" fn(cap: GLenum)>,
-	Finish: FPointer<extern "C" fn()>,
-	Flush: FPointer<extern "C" fn()>,
-	BlendFunc: FPointer<extern "C" fn(sfactor: GLenum, dfactor: GLenum)>,
-	LogicOp: FPointer<extern "C" fn(opcode: GLenum)>,
-	StencilFunc: FPointer<extern "C" fn(func: GLenum, ref_: GLint, mask: GLuint)>,
-	StencilOp: FPointer<extern "C" fn(fail: GLenum, zfail: GLenum, zpass: GLenum)>,
-	DepthFunc: FPointer<extern "C" fn(func: GLenum)>,
-	PixelStoref: FPointer<extern "C" fn(pname: GLenum, param: GLfloat)>,
-	PixelStorei: FPointer<extern "C" fn(pname: GLenum, param: GLint)>,
-	ReadBuffer: FPointer<extern "C" fn(mode: GLenum)>,
-	ReadPixels: FPointer<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	GetBooleanv: FPointer<extern "C" fn(pname: GLenum, params: *GLboolean)>,
-	GetDoublev: FPointer<extern "C" fn(pname: GLenum, params: *GLdouble)>,
-	GetError: FPointer<extern "C" fn() -> GLenum>,
-	GetFloatv: FPointer<extern "C" fn(pname: GLenum, params: *GLfloat)>,
-	GetIntegerv: FPointer<extern "C" fn(pname: GLenum, params: *GLint)>,
-	GetString: FPointer<extern "C" fn(name: GLenum) -> *GLubyte>,
-	GetTexImage: FPointer<extern "C" fn(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	GetTexParameterfv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat)>,
-	GetTexParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	GetTexLevelParameterfv: FPointer<extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLfloat)>,
-	GetTexLevelParameteriv: FPointer<extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLint)>,
-	IsEnabled: FPointer<extern "C" fn(cap: GLenum) -> GLboolean>,
-	DepthRange: FPointer<extern "C" fn(near: GLdouble, far: GLdouble)>,
-	Viewport: FPointer<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
-	DrawArrays: FPointer<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei)>,
-	DrawElements: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid)>,
-	GetPointerv: FPointer<extern "C" fn(pname: GLenum, params: **GLvoid)>,
-	PolygonOffset: FPointer<extern "C" fn(factor: GLfloat, units: GLfloat)>,
-	CopyTexImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint)>,
-	CopyTexImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint)>,
-	CopyTexSubImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei)>,
-	CopyTexSubImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
-	TexSubImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	TexSubImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	BindTexture: FPointer<extern "C" fn(target: GLenum, texture: GLuint)>,
-	DeleteTextures: FPointer<extern "C" fn(n: GLsizei, textures: *GLuint)>,
-	GenTextures: FPointer<extern "C" fn(n: GLsizei, textures: *GLuint)>,
-	IsTexture: FPointer<extern "C" fn(texture: GLuint) -> GLboolean>,
-	Indexub: FPointer<extern "C" fn(c: GLubyte)>,
-	Indexubv: FPointer<extern "C" fn(c: *GLubyte)>,
+	CullFace: FnPtr<extern "C" fn(mode: GLenum)>,
+	FrontFace: FnPtr<extern "C" fn(mode: GLenum)>,
+	Hint: FnPtr<extern "C" fn(target: GLenum, mode: GLenum)>,
+	LineWidth: FnPtr<extern "C" fn(width: GLfloat)>,
+	PointSize: FnPtr<extern "C" fn(size: GLfloat)>,
+	PolygonMode: FnPtr<extern "C" fn(face: GLenum, mode: GLenum)>,
+	Scissor: FnPtr<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
+	TexParameterf: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, param: GLfloat)>,
+	TexParameterfv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat)>,
+	TexParameteri: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, param: GLint)>,
+	TexParameteriv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	TexImage1D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	TexImage2D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	DrawBuffer: FnPtr<extern "C" fn(mode: GLenum)>,
+	Clear: FnPtr<extern "C" fn(mask: GLbitfield)>,
+	ClearColor: FnPtr<extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat)>,
+	ClearStencil: FnPtr<extern "C" fn(s: GLint)>,
+	ClearDepth: FnPtr<extern "C" fn(depth: GLdouble)>,
+	StencilMask: FnPtr<extern "C" fn(mask: GLuint)>,
+	ColorMask: FnPtr<extern "C" fn(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean)>,
+	DepthMask: FnPtr<extern "C" fn(flag: GLboolean)>,
+	Disable: FnPtr<extern "C" fn(cap: GLenum)>,
+	Enable: FnPtr<extern "C" fn(cap: GLenum)>,
+	Finish: FnPtr<extern "C" fn()>,
+	Flush: FnPtr<extern "C" fn()>,
+	BlendFunc: FnPtr<extern "C" fn(sfactor: GLenum, dfactor: GLenum)>,
+	LogicOp: FnPtr<extern "C" fn(opcode: GLenum)>,
+	StencilFunc: FnPtr<extern "C" fn(func: GLenum, ref_: GLint, mask: GLuint)>,
+	StencilOp: FnPtr<extern "C" fn(fail: GLenum, zfail: GLenum, zpass: GLenum)>,
+	DepthFunc: FnPtr<extern "C" fn(func: GLenum)>,
+	PixelStoref: FnPtr<extern "C" fn(pname: GLenum, param: GLfloat)>,
+	PixelStorei: FnPtr<extern "C" fn(pname: GLenum, param: GLint)>,
+	ReadBuffer: FnPtr<extern "C" fn(mode: GLenum)>,
+	ReadPixels: FnPtr<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	GetBooleanv: FnPtr<extern "C" fn(pname: GLenum, params: *GLboolean)>,
+	GetDoublev: FnPtr<extern "C" fn(pname: GLenum, params: *GLdouble)>,
+	GetError: FnPtr<extern "C" fn() -> GLenum>,
+	GetFloatv: FnPtr<extern "C" fn(pname: GLenum, params: *GLfloat)>,
+	GetIntegerv: FnPtr<extern "C" fn(pname: GLenum, params: *GLint)>,
+	GetString: FnPtr<extern "C" fn(name: GLenum) -> *GLubyte>,
+	GetTexImage: FnPtr<extern "C" fn(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	GetTexParameterfv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLfloat)>,
+	GetTexParameteriv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	GetTexLevelParameterfv: FnPtr<extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLfloat)>,
+	GetTexLevelParameteriv: FnPtr<extern "C" fn(target: GLenum, level: GLint, pname: GLenum, params: *GLint)>,
+	IsEnabled: FnPtr<extern "C" fn(cap: GLenum) -> GLboolean>,
+	DepthRange: FnPtr<extern "C" fn(near: GLdouble, far: GLdouble)>,
+	Viewport: FnPtr<extern "C" fn(x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
+	DrawArrays: FnPtr<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei)>,
+	DrawElements: FnPtr<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid)>,
+	GetPointerv: FnPtr<extern "C" fn(pname: GLenum, params: **GLvoid)>,
+	PolygonOffset: FnPtr<extern "C" fn(factor: GLfloat, units: GLfloat)>,
+	CopyTexImage1D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint)>,
+	CopyTexImage2D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint)>,
+	CopyTexSubImage1D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei)>,
+	CopyTexSubImage2D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
+	TexSubImage1D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	TexSubImage2D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	BindTexture: FnPtr<extern "C" fn(target: GLenum, texture: GLuint)>,
+	DeleteTextures: FnPtr<extern "C" fn(n: GLsizei, textures: *GLuint)>,
+	GenTextures: FnPtr<extern "C" fn(n: GLsizei, textures: *GLuint)>,
+	IsTexture: FnPtr<extern "C" fn(texture: GLuint) -> GLboolean>,
+	Indexub: FnPtr<extern "C" fn(c: GLubyte)>,
+	Indexubv: FnPtr<extern "C" fn(c: *GLubyte)>,
 	
 	// Version: 1.2
-	BlendColor: FPointer<extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat)>,
-	BlendEquation: FPointer<extern "C" fn(mode: GLenum)>,
-	DrawRangeElements: FPointer<extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid)>,
-	TexImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	TexSubImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
-	CopyTexSubImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
+	BlendColor: FnPtr<extern "C" fn(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat)>,
+	BlendEquation: FnPtr<extern "C" fn(mode: GLenum)>,
+	DrawRangeElements: FnPtr<extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid)>,
+	TexImage3D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	TexSubImage3D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid)>,
+	CopyTexSubImage3D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
 	
 	// Version: 1.3
-	ActiveTexture: FPointer<extern "C" fn(texture: GLenum)>,
-	SampleCoverage: FPointer<extern "C" fn(value: GLfloat, invert: GLboolean)>,
-	CompressedTexImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid)>,
-	CompressedTexImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid)>,
-	CompressedTexImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid)>,
-	CompressedTexSubImage3D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid)>,
-	CompressedTexSubImage2D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid)>,
-	CompressedTexSubImage1D: FPointer<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid)>,
-	GetCompressedTexImage: FPointer<extern "C" fn(target: GLenum, level: GLint, img: *GLvoid)>,
+	ActiveTexture: FnPtr<extern "C" fn(texture: GLenum)>,
+	SampleCoverage: FnPtr<extern "C" fn(value: GLfloat, invert: GLboolean)>,
+	CompressedTexImage3D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid)>,
+	CompressedTexImage2D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid)>,
+	CompressedTexImage1D: FnPtr<extern "C" fn(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid)>,
+	CompressedTexSubImage3D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid)>,
+	CompressedTexSubImage2D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid)>,
+	CompressedTexSubImage1D: FnPtr<extern "C" fn(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid)>,
+	GetCompressedTexImage: FnPtr<extern "C" fn(target: GLenum, level: GLint, img: *GLvoid)>,
 	
 	// Version: 1.4
-	BlendFuncSeparate: FPointer<extern "C" fn(sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum)>,
-	MultiDrawArrays: FPointer<extern "C" fn(mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei)>,
-	MultiDrawElements: FPointer<extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei)>,
-	PointParameterf: FPointer<extern "C" fn(pname: GLenum, param: GLfloat)>,
-	PointParameterfv: FPointer<extern "C" fn(pname: GLenum, params: *GLfloat)>,
-	PointParameteri: FPointer<extern "C" fn(pname: GLenum, param: GLint)>,
-	PointParameteriv: FPointer<extern "C" fn(pname: GLenum, params: *GLint)>,
+	BlendFuncSeparate: FnPtr<extern "C" fn(sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum)>,
+	MultiDrawArrays: FnPtr<extern "C" fn(mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei)>,
+	MultiDrawElements: FnPtr<extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei)>,
+	PointParameterf: FnPtr<extern "C" fn(pname: GLenum, param: GLfloat)>,
+	PointParameterfv: FnPtr<extern "C" fn(pname: GLenum, params: *GLfloat)>,
+	PointParameteri: FnPtr<extern "C" fn(pname: GLenum, param: GLint)>,
+	PointParameteriv: FnPtr<extern "C" fn(pname: GLenum, params: *GLint)>,
 	
 	// Version: 1.5
-	GenQueries: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint)>,
-	DeleteQueries: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint)>,
-	IsQuery: FPointer<extern "C" fn(id: GLuint) -> GLboolean>,
-	BeginQuery: FPointer<extern "C" fn(target: GLenum, id: GLuint)>,
-	EndQuery: FPointer<extern "C" fn(target: GLenum)>,
-	GetQueryiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	GetQueryObjectiv: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLint)>,
-	GetQueryObjectuiv: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint)>,
-	BindBuffer: FPointer<extern "C" fn(target: GLenum, buffer: GLuint)>,
-	DeleteBuffers: FPointer<extern "C" fn(n: GLsizei, buffers: *GLuint)>,
-	GenBuffers: FPointer<extern "C" fn(n: GLsizei, buffers: *GLuint)>,
-	IsBuffer: FPointer<extern "C" fn(buffer: GLuint) -> GLboolean>,
-	BufferData: FPointer<extern "C" fn(target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum)>,
-	BufferSubData: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid)>,
-	GetBufferSubData: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid)>,
-	MapBuffer: FPointer<extern "C" fn(target: GLenum, access: GLenum) -> *GLvoid>,
-	UnmapBuffer: FPointer<extern "C" fn(target: GLenum) -> GLboolean>,
-	GetBufferParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	GetBufferPointerv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: **GLvoid)>,
+	GenQueries: FnPtr<extern "C" fn(n: GLsizei, ids: *GLuint)>,
+	DeleteQueries: FnPtr<extern "C" fn(n: GLsizei, ids: *GLuint)>,
+	IsQuery: FnPtr<extern "C" fn(id: GLuint) -> GLboolean>,
+	BeginQuery: FnPtr<extern "C" fn(target: GLenum, id: GLuint)>,
+	EndQuery: FnPtr<extern "C" fn(target: GLenum)>,
+	GetQueryiv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	GetQueryObjectiv: FnPtr<extern "C" fn(id: GLuint, pname: GLenum, params: *GLint)>,
+	GetQueryObjectuiv: FnPtr<extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint)>,
+	BindBuffer: FnPtr<extern "C" fn(target: GLenum, buffer: GLuint)>,
+	DeleteBuffers: FnPtr<extern "C" fn(n: GLsizei, buffers: *GLuint)>,
+	GenBuffers: FnPtr<extern "C" fn(n: GLsizei, buffers: *GLuint)>,
+	IsBuffer: FnPtr<extern "C" fn(buffer: GLuint) -> GLboolean>,
+	BufferData: FnPtr<extern "C" fn(target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum)>,
+	BufferSubData: FnPtr<extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid)>,
+	GetBufferSubData: FnPtr<extern "C" fn(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid)>,
+	MapBuffer: FnPtr<extern "C" fn(target: GLenum, access: GLenum) -> *GLvoid>,
+	UnmapBuffer: FnPtr<extern "C" fn(target: GLenum) -> GLboolean>,
+	GetBufferParameteriv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	GetBufferPointerv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: **GLvoid)>,
 	
 	// Version: 2.0
-	BlendEquationSeparate: FPointer<extern "C" fn(modeRGB: GLenum, modeAlpha: GLenum)>,
-	DrawBuffers: FPointer<extern "C" fn(n: GLsizei, bufs: *GLenum)>,
-	StencilOpSeparate: FPointer<extern "C" fn(face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum)>,
-	StencilFuncSeparate: FPointer<extern "C" fn(face: GLenum, func: GLenum, ref_: GLint, mask: GLuint)>,
-	StencilMaskSeparate: FPointer<extern "C" fn(face: GLenum, mask: GLuint)>,
-	AttachShader: FPointer<extern "C" fn(program: GLuint, shader: GLuint)>,
-	BindAttribLocation: FPointer<extern "C" fn(program: GLuint, index: GLuint, name: *GLchar)>,
-	CompileShader: FPointer<extern "C" fn(shader: GLuint)>,
-	CreateProgram: FPointer<extern "C" fn() -> GLuint>,
-	CreateShader: FPointer<extern "C" fn(type_: GLenum) -> GLuint>,
-	DeleteProgram: FPointer<extern "C" fn(program: GLuint)>,
-	DeleteShader: FPointer<extern "C" fn(shader: GLuint)>,
-	DetachShader: FPointer<extern "C" fn(program: GLuint, shader: GLuint)>,
-	DisableVertexAttribArray: FPointer<extern "C" fn(index: GLuint)>,
-	EnableVertexAttribArray: FPointer<extern "C" fn(index: GLuint)>,
-	GetActiveAttrib: FPointer<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar)>,
-	GetActiveUniform: FPointer<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar)>,
-	GetAttachedShaders: FPointer<extern "C" fn(program: GLuint, maxCount: GLsizei, count: *GLsizei, obj: *GLuint)>,
-	GetAttribLocation: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
-	GetProgramiv: FPointer<extern "C" fn(program: GLuint, pname: GLenum, params: *GLint)>,
-	GetProgramInfoLog: FPointer<extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar)>,
-	GetShaderiv: FPointer<extern "C" fn(shader: GLuint, pname: GLenum, params: *GLint)>,
-	GetShaderInfoLog: FPointer<extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar)>,
-	GetShaderSource: FPointer<extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, source: *GLchar)>,
-	GetUniformLocation: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
-	GetUniformfv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLfloat)>,
-	GetUniformiv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLint)>,
-	GetVertexAttribdv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble)>,
-	GetVertexAttribfv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLfloat)>,
-	GetVertexAttribiv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLint)>,
-	GetVertexAttribPointerv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, pointer: **GLvoid)>,
-	IsProgram: FPointer<extern "C" fn(program: GLuint) -> GLboolean>,
-	IsShader: FPointer<extern "C" fn(shader: GLuint) -> GLboolean>,
-	LinkProgram: FPointer<extern "C" fn(program: GLuint)>,
-	ShaderSource: FPointer<extern "C" fn(shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint)>,
-	UseProgram: FPointer<extern "C" fn(program: GLuint)>,
-	Uniform1f: FPointer<extern "C" fn(location: GLint, v0: GLfloat)>,
-	Uniform2f: FPointer<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat)>,
-	Uniform3f: FPointer<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat)>,
-	Uniform4f: FPointer<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat)>,
-	Uniform1i: FPointer<extern "C" fn(location: GLint, v0: GLint)>,
-	Uniform2i: FPointer<extern "C" fn(location: GLint, v0: GLint, v1: GLint)>,
-	Uniform3i: FPointer<extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint)>,
-	Uniform4i: FPointer<extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint)>,
-	Uniform1fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
-	Uniform2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
-	Uniform3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
-	Uniform4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
-	Uniform1iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
-	Uniform2iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
-	Uniform3iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
-	Uniform4iv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
-	UniformMatrix2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	UniformMatrix3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	UniformMatrix4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ValidateProgram: FPointer<extern "C" fn(program: GLuint)>,
-	VertexAttribPointer: FPointer<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid)>,
+	BlendEquationSeparate: FnPtr<extern "C" fn(modeRGB: GLenum, modeAlpha: GLenum)>,
+	DrawBuffers: FnPtr<extern "C" fn(n: GLsizei, bufs: *GLenum)>,
+	StencilOpSeparate: FnPtr<extern "C" fn(face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum)>,
+	StencilFuncSeparate: FnPtr<extern "C" fn(face: GLenum, func: GLenum, ref_: GLint, mask: GLuint)>,
+	StencilMaskSeparate: FnPtr<extern "C" fn(face: GLenum, mask: GLuint)>,
+	AttachShader: FnPtr<extern "C" fn(program: GLuint, shader: GLuint)>,
+	BindAttribLocation: FnPtr<extern "C" fn(program: GLuint, index: GLuint, name: *GLchar)>,
+	CompileShader: FnPtr<extern "C" fn(shader: GLuint)>,
+	CreateProgram: FnPtr<extern "C" fn() -> GLuint>,
+	CreateShader: FnPtr<extern "C" fn(type_: GLenum) -> GLuint>,
+	DeleteProgram: FnPtr<extern "C" fn(program: GLuint)>,
+	DeleteShader: FnPtr<extern "C" fn(shader: GLuint)>,
+	DetachShader: FnPtr<extern "C" fn(program: GLuint, shader: GLuint)>,
+	DisableVertexAttribArray: FnPtr<extern "C" fn(index: GLuint)>,
+	EnableVertexAttribArray: FnPtr<extern "C" fn(index: GLuint)>,
+	GetActiveAttrib: FnPtr<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar)>,
+	GetActiveUniform: FnPtr<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar)>,
+	GetAttachedShaders: FnPtr<extern "C" fn(program: GLuint, maxCount: GLsizei, count: *GLsizei, obj: *GLuint)>,
+	GetAttribLocation: FnPtr<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
+	GetProgramiv: FnPtr<extern "C" fn(program: GLuint, pname: GLenum, params: *GLint)>,
+	GetProgramInfoLog: FnPtr<extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar)>,
+	GetShaderiv: FnPtr<extern "C" fn(shader: GLuint, pname: GLenum, params: *GLint)>,
+	GetShaderInfoLog: FnPtr<extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar)>,
+	GetShaderSource: FnPtr<extern "C" fn(shader: GLuint, bufSize: GLsizei, length: *GLsizei, source: *GLchar)>,
+	GetUniformLocation: FnPtr<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
+	GetUniformfv: FnPtr<extern "C" fn(program: GLuint, location: GLint, params: *GLfloat)>,
+	GetUniformiv: FnPtr<extern "C" fn(program: GLuint, location: GLint, params: *GLint)>,
+	GetVertexAttribdv: FnPtr<extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble)>,
+	GetVertexAttribfv: FnPtr<extern "C" fn(index: GLuint, pname: GLenum, params: *GLfloat)>,
+	GetVertexAttribiv: FnPtr<extern "C" fn(index: GLuint, pname: GLenum, params: *GLint)>,
+	GetVertexAttribPointerv: FnPtr<extern "C" fn(index: GLuint, pname: GLenum, pointer: **GLvoid)>,
+	IsProgram: FnPtr<extern "C" fn(program: GLuint) -> GLboolean>,
+	IsShader: FnPtr<extern "C" fn(shader: GLuint) -> GLboolean>,
+	LinkProgram: FnPtr<extern "C" fn(program: GLuint)>,
+	ShaderSource: FnPtr<extern "C" fn(shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint)>,
+	UseProgram: FnPtr<extern "C" fn(program: GLuint)>,
+	Uniform1f: FnPtr<extern "C" fn(location: GLint, v0: GLfloat)>,
+	Uniform2f: FnPtr<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat)>,
+	Uniform3f: FnPtr<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat)>,
+	Uniform4f: FnPtr<extern "C" fn(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat)>,
+	Uniform1i: FnPtr<extern "C" fn(location: GLint, v0: GLint)>,
+	Uniform2i: FnPtr<extern "C" fn(location: GLint, v0: GLint, v1: GLint)>,
+	Uniform3i: FnPtr<extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint)>,
+	Uniform4i: FnPtr<extern "C" fn(location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint)>,
+	Uniform1fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
+	Uniform2fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
+	Uniform3fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
+	Uniform4fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLfloat)>,
+	Uniform1iv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
+	Uniform2iv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
+	Uniform3iv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
+	Uniform4iv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLint)>,
+	UniformMatrix2fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix3fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix4fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ValidateProgram: FnPtr<extern "C" fn(program: GLuint)>,
+	VertexAttribPointer: FnPtr<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid)>,
 	
 	// Version: 2.1
-	UniformMatrix2x3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	UniformMatrix3x2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	UniformMatrix2x4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	UniformMatrix4x2fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	UniformMatrix3x4fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	UniformMatrix4x3fv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix2x3fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix3x2fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix2x4fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix4x2fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix3x4fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	UniformMatrix4x3fv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
 	
 	// Version: 3.0
-	ColorMaski: FPointer<extern "C" fn(index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean)>,
-	GetBooleani_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLboolean)>,
-	GetIntegeri_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLint)>,
-	Enablei: FPointer<extern "C" fn(target: GLenum, index: GLuint)>,
-	Disablei: FPointer<extern "C" fn(target: GLenum, index: GLuint)>,
-	IsEnabledi: FPointer<extern "C" fn(target: GLenum, index: GLuint) -> GLboolean>,
-	BeginTransformFeedback: FPointer<extern "C" fn(primitiveMode: GLenum)>,
-	EndTransformFeedback: FPointer<extern "C" fn()>,
-	BindBufferRange: FPointer<extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr)>,
-	BindBufferBase: FPointer<extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint)>,
-	TransformFeedbackVaryings: FPointer<extern "C" fn(program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum)>,
-	GetTransformFeedbackVarying: FPointer<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLsizei, type_: *GLenum, name: *GLchar)>,
-	ClampColor: FPointer<extern "C" fn(target: GLenum, clamp: GLenum)>,
-	BeginConditionalRender: FPointer<extern "C" fn(id: GLuint, mode: GLenum)>,
-	EndConditionalRender: FPointer<extern "C" fn()>,
-	VertexAttribIPointer: FPointer<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid)>,
-	GetVertexAttribIiv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLint)>,
-	GetVertexAttribIuiv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLuint)>,
-	VertexAttribI1i: FPointer<extern "C" fn(index: GLuint, x: GLint)>,
-	VertexAttribI2i: FPointer<extern "C" fn(index: GLuint, x: GLint, y: GLint)>,
-	VertexAttribI3i: FPointer<extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint)>,
-	VertexAttribI4i: FPointer<extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint)>,
-	VertexAttribI1ui: FPointer<extern "C" fn(index: GLuint, x: GLuint)>,
-	VertexAttribI2ui: FPointer<extern "C" fn(index: GLuint, x: GLuint, y: GLuint)>,
-	VertexAttribI3ui: FPointer<extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint)>,
-	VertexAttribI4ui: FPointer<extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint)>,
-	VertexAttribI1iv: FPointer<extern "C" fn(index: GLuint, v: *GLint)>,
-	VertexAttribI2iv: FPointer<extern "C" fn(index: GLuint, v: *GLint)>,
-	VertexAttribI3iv: FPointer<extern "C" fn(index: GLuint, v: *GLint)>,
-	VertexAttribI4iv: FPointer<extern "C" fn(index: GLuint, v: *GLint)>,
-	VertexAttribI1uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint)>,
-	VertexAttribI2uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint)>,
-	VertexAttribI3uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint)>,
-	VertexAttribI4uiv: FPointer<extern "C" fn(index: GLuint, v: *GLuint)>,
-	VertexAttribI4bv: FPointer<extern "C" fn(index: GLuint, v: *GLbyte)>,
-	VertexAttribI4sv: FPointer<extern "C" fn(index: GLuint, v: *GLshort)>,
-	VertexAttribI4ubv: FPointer<extern "C" fn(index: GLuint, v: *GLubyte)>,
-	VertexAttribI4usv: FPointer<extern "C" fn(index: GLuint, v: *GLushort)>,
-	GetUniformuiv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLuint)>,
-	BindFragDataLocation: FPointer<extern "C" fn(program: GLuint, color: GLuint, name: *GLchar)>,
-	GetFragDataLocation: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
-	Uniform1ui: FPointer<extern "C" fn(location: GLint, v0: GLuint)>,
-	Uniform2ui: FPointer<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint)>,
-	Uniform3ui: FPointer<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint)>,
-	Uniform4ui: FPointer<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint)>,
-	Uniform1uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
-	Uniform2uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
-	Uniform3uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
-	Uniform4uiv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
-	TexParameterIiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	TexParameterIuiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint)>,
-	GetTexParameterIiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	GetTexParameterIuiv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint)>,
-	ClearBufferiv: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLint)>,
-	ClearBufferuiv: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLuint)>,
-	ClearBufferfv: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLfloat)>,
-	ClearBufferfi: FPointer<extern "C" fn(buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint)>,
-	GetStringi: FPointer<extern "C" fn(name: GLenum, index: GLuint) -> *GLubyte>,
+	ColorMaski: FnPtr<extern "C" fn(index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean)>,
+	GetBooleani_v: FnPtr<extern "C" fn(target: GLenum, index: GLuint, data: *GLboolean)>,
+	GetIntegeri_v: FnPtr<extern "C" fn(target: GLenum, index: GLuint, data: *GLint)>,
+	Enablei: FnPtr<extern "C" fn(target: GLenum, index: GLuint)>,
+	Disablei: FnPtr<extern "C" fn(target: GLenum, index: GLuint)>,
+	IsEnabledi: FnPtr<extern "C" fn(target: GLenum, index: GLuint) -> GLboolean>,
+	BeginTransformFeedback: FnPtr<extern "C" fn(primitiveMode: GLenum)>,
+	EndTransformFeedback: FnPtr<extern "C" fn()>,
+	BindBufferRange: FnPtr<extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr)>,
+	BindBufferBase: FnPtr<extern "C" fn(target: GLenum, index: GLuint, buffer: GLuint)>,
+	TransformFeedbackVaryings: FnPtr<extern "C" fn(program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum)>,
+	GetTransformFeedbackVarying: FnPtr<extern "C" fn(program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLsizei, type_: *GLenum, name: *GLchar)>,
+	ClampColor: FnPtr<extern "C" fn(target: GLenum, clamp: GLenum)>,
+	BeginConditionalRender: FnPtr<extern "C" fn(id: GLuint, mode: GLenum)>,
+	EndConditionalRender: FnPtr<extern "C" fn()>,
+	VertexAttribIPointer: FnPtr<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid)>,
+	GetVertexAttribIiv: FnPtr<extern "C" fn(index: GLuint, pname: GLenum, params: *GLint)>,
+	GetVertexAttribIuiv: FnPtr<extern "C" fn(index: GLuint, pname: GLenum, params: *GLuint)>,
+	VertexAttribI1i: FnPtr<extern "C" fn(index: GLuint, x: GLint)>,
+	VertexAttribI2i: FnPtr<extern "C" fn(index: GLuint, x: GLint, y: GLint)>,
+	VertexAttribI3i: FnPtr<extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint)>,
+	VertexAttribI4i: FnPtr<extern "C" fn(index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint)>,
+	VertexAttribI1ui: FnPtr<extern "C" fn(index: GLuint, x: GLuint)>,
+	VertexAttribI2ui: FnPtr<extern "C" fn(index: GLuint, x: GLuint, y: GLuint)>,
+	VertexAttribI3ui: FnPtr<extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint)>,
+	VertexAttribI4ui: FnPtr<extern "C" fn(index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint)>,
+	VertexAttribI1iv: FnPtr<extern "C" fn(index: GLuint, v: *GLint)>,
+	VertexAttribI2iv: FnPtr<extern "C" fn(index: GLuint, v: *GLint)>,
+	VertexAttribI3iv: FnPtr<extern "C" fn(index: GLuint, v: *GLint)>,
+	VertexAttribI4iv: FnPtr<extern "C" fn(index: GLuint, v: *GLint)>,
+	VertexAttribI1uiv: FnPtr<extern "C" fn(index: GLuint, v: *GLuint)>,
+	VertexAttribI2uiv: FnPtr<extern "C" fn(index: GLuint, v: *GLuint)>,
+	VertexAttribI3uiv: FnPtr<extern "C" fn(index: GLuint, v: *GLuint)>,
+	VertexAttribI4uiv: FnPtr<extern "C" fn(index: GLuint, v: *GLuint)>,
+	VertexAttribI4bv: FnPtr<extern "C" fn(index: GLuint, v: *GLbyte)>,
+	VertexAttribI4sv: FnPtr<extern "C" fn(index: GLuint, v: *GLshort)>,
+	VertexAttribI4ubv: FnPtr<extern "C" fn(index: GLuint, v: *GLubyte)>,
+	VertexAttribI4usv: FnPtr<extern "C" fn(index: GLuint, v: *GLushort)>,
+	GetUniformuiv: FnPtr<extern "C" fn(program: GLuint, location: GLint, params: *GLuint)>,
+	BindFragDataLocation: FnPtr<extern "C" fn(program: GLuint, color: GLuint, name: *GLchar)>,
+	GetFragDataLocation: FnPtr<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
+	Uniform1ui: FnPtr<extern "C" fn(location: GLint, v0: GLuint)>,
+	Uniform2ui: FnPtr<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint)>,
+	Uniform3ui: FnPtr<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint)>,
+	Uniform4ui: FnPtr<extern "C" fn(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint)>,
+	Uniform1uiv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
+	Uniform2uiv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
+	Uniform3uiv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
+	Uniform4uiv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLuint)>,
+	TexParameterIiv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	TexParameterIuiv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint)>,
+	GetTexParameterIiv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	GetTexParameterIuiv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLuint)>,
+	ClearBufferiv: FnPtr<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLint)>,
+	ClearBufferuiv: FnPtr<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLuint)>,
+	ClearBufferfv: FnPtr<extern "C" fn(buffer: GLenum, drawbuffer: GLint, value: *GLfloat)>,
+	ClearBufferfi: FnPtr<extern "C" fn(buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint)>,
+	GetStringi: FnPtr<extern "C" fn(name: GLenum, index: GLuint) -> *GLubyte>,
 	
 	// Core Extension: ARB_vertex_array_object
-	BindVertexArray: FPointer<extern "C" fn(array: GLuint)>,
-	DeleteVertexArrays: FPointer<extern "C" fn(n: GLsizei, arrays: *GLuint)>,
-	GenVertexArrays: FPointer<extern "C" fn(n: GLsizei, arrays: *GLuint)>,
-	IsVertexArray: FPointer<extern "C" fn(array: GLuint) -> GLboolean>,
+	BindVertexArray: FnPtr<extern "C" fn(array: GLuint)>,
+	DeleteVertexArrays: FnPtr<extern "C" fn(n: GLsizei, arrays: *GLuint)>,
+	GenVertexArrays: FnPtr<extern "C" fn(n: GLsizei, arrays: *GLuint)>,
+	IsVertexArray: FnPtr<extern "C" fn(array: GLuint) -> GLboolean>,
 	
 	// Core Extension: ARB_map_buffer_range
-	MapBufferRange: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *GLvoid>,
-	FlushMappedBufferRange: FPointer<extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr)>,
+	MapBufferRange: FnPtr<extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *GLvoid>,
+	FlushMappedBufferRange: FnPtr<extern "C" fn(target: GLenum, offset: GLintptr, length: GLsizeiptr)>,
 	
 	// Core Extension: ARB_framebuffer_object
-	IsRenderbuffer: FPointer<extern "C" fn(renderbuffer: GLuint) -> GLboolean>,
-	BindRenderbuffer: FPointer<extern "C" fn(target: GLenum, renderbuffer: GLuint)>,
-	DeleteRenderbuffers: FPointer<extern "C" fn(n: GLsizei, renderbuffers: *GLuint)>,
-	GenRenderbuffers: FPointer<extern "C" fn(n: GLsizei, renderbuffers: *GLuint)>,
-	RenderbufferStorage: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
-	GetRenderbufferParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	IsFramebuffer: FPointer<extern "C" fn(framebuffer: GLuint) -> GLboolean>,
-	BindFramebuffer: FPointer<extern "C" fn(target: GLenum, framebuffer: GLuint)>,
-	DeleteFramebuffers: FPointer<extern "C" fn(n: GLsizei, framebuffers: *GLuint)>,
-	GenFramebuffers: FPointer<extern "C" fn(n: GLsizei, framebuffers: *GLuint)>,
-	CheckFramebufferStatus: FPointer<extern "C" fn(target: GLenum) -> GLenum>,
-	FramebufferTexture1D: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint)>,
-	FramebufferTexture2D: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint)>,
-	FramebufferTexture3D: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint)>,
-	FramebufferRenderbuffer: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint)>,
-	GetFramebufferAttachmentParameteriv: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, pname: GLenum, params: *GLint)>,
-	GenerateMipmap: FPointer<extern "C" fn(target: GLenum)>,
-	BlitFramebuffer: FPointer<extern "C" fn(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum)>,
-	RenderbufferStorageMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
-	FramebufferTextureLayer: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint)>,
+	IsRenderbuffer: FnPtr<extern "C" fn(renderbuffer: GLuint) -> GLboolean>,
+	BindRenderbuffer: FnPtr<extern "C" fn(target: GLenum, renderbuffer: GLuint)>,
+	DeleteRenderbuffers: FnPtr<extern "C" fn(n: GLsizei, renderbuffers: *GLuint)>,
+	GenRenderbuffers: FnPtr<extern "C" fn(n: GLsizei, renderbuffers: *GLuint)>,
+	RenderbufferStorage: FnPtr<extern "C" fn(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
+	GetRenderbufferParameteriv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	IsFramebuffer: FnPtr<extern "C" fn(framebuffer: GLuint) -> GLboolean>,
+	BindFramebuffer: FnPtr<extern "C" fn(target: GLenum, framebuffer: GLuint)>,
+	DeleteFramebuffers: FnPtr<extern "C" fn(n: GLsizei, framebuffers: *GLuint)>,
+	GenFramebuffers: FnPtr<extern "C" fn(n: GLsizei, framebuffers: *GLuint)>,
+	CheckFramebufferStatus: FnPtr<extern "C" fn(target: GLenum) -> GLenum>,
+	FramebufferTexture1D: FnPtr<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint)>,
+	FramebufferTexture2D: FnPtr<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint)>,
+	FramebufferTexture3D: FnPtr<extern "C" fn(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint)>,
+	FramebufferRenderbuffer: FnPtr<extern "C" fn(target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint)>,
+	GetFramebufferAttachmentParameteriv: FnPtr<extern "C" fn(target: GLenum, attachment: GLenum, pname: GLenum, params: *GLint)>,
+	GenerateMipmap: FnPtr<extern "C" fn(target: GLenum)>,
+	BlitFramebuffer: FnPtr<extern "C" fn(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum)>,
+	RenderbufferStorageMultisample: FnPtr<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
+	FramebufferTextureLayer: FnPtr<extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint)>,
 	
 	// Version: 3.1
-	DrawArraysInstanced: FPointer<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei)>,
-	DrawElementsInstanced: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei)>,
-	TexBuffer: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint)>,
-	PrimitiveRestartIndex: FPointer<extern "C" fn(index: GLuint)>,
+	DrawArraysInstanced: FnPtr<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei)>,
+	DrawElementsInstanced: FnPtr<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei)>,
+	TexBuffer: FnPtr<extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint)>,
+	PrimitiveRestartIndex: FnPtr<extern "C" fn(index: GLuint)>,
 	
 	// Core Extension: ARB_uniform_buffer_object
-	GetUniformIndices: FPointer<extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformNames: **GLchar, uniformIndices: *GLuint)>,
-	GetActiveUniformsiv: FPointer<extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *GLint)>,
-	GetActiveUniformName: FPointer<extern "C" fn(program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformName: *GLchar)>,
-	GetUniformBlockIndex: FPointer<extern "C" fn(program: GLuint, uniformBlockName: *GLchar) -> GLuint>,
-	GetActiveUniformBlockiv: FPointer<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *GLint)>,
-	GetActiveUniformBlockName: FPointer<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformBlockName: *GLchar)>,
-	UniformBlockBinding: FPointer<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint)>,
+	GetUniformIndices: FnPtr<extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformNames: **GLchar, uniformIndices: *GLuint)>,
+	GetActiveUniformsiv: FnPtr<extern "C" fn(program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *GLint)>,
+	GetActiveUniformName: FnPtr<extern "C" fn(program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformName: *GLchar)>,
+	GetUniformBlockIndex: FnPtr<extern "C" fn(program: GLuint, uniformBlockName: *GLchar) -> GLuint>,
+	GetActiveUniformBlockiv: FnPtr<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *GLint)>,
+	GetActiveUniformBlockName: FnPtr<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformBlockName: *GLchar)>,
+	UniformBlockBinding: FnPtr<extern "C" fn(program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint)>,
 	
 	// Core Extension: ARB_copy_buffer
-	CopyBufferSubData: FPointer<extern "C" fn(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr)>,
+	CopyBufferSubData: FnPtr<extern "C" fn(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr)>,
 	
 	// Version: 3.2
-	GetInteger64i_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLint64)>,
-	GetBufferParameteri64v: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint64)>,
-	FramebufferTexture: FPointer<extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint)>,
+	GetInteger64i_v: FnPtr<extern "C" fn(target: GLenum, index: GLuint, data: *GLint64)>,
+	GetBufferParameteri64v: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint64)>,
+	FramebufferTexture: FnPtr<extern "C" fn(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint)>,
 	
 	// Core Extension: ARB_draw_elements_base_vertex
-	DrawElementsBaseVertex: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint)>,
-	DrawRangeElementsBaseVertex: FPointer<extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint)>,
-	DrawElementsInstancedBaseVertex: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint)>,
-	MultiDrawElementsBaseVertex: FPointer<extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei, basevertex: *GLint)>,
+	DrawElementsBaseVertex: FnPtr<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint)>,
+	DrawRangeElementsBaseVertex: FnPtr<extern "C" fn(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint)>,
+	DrawElementsInstancedBaseVertex: FnPtr<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint)>,
+	MultiDrawElementsBaseVertex: FnPtr<extern "C" fn(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei, basevertex: *GLint)>,
 	
 	// Core Extension: ARB_provoking_vertex
-	ProvokingVertex: FPointer<extern "C" fn(mode: GLenum)>,
+	ProvokingVertex: FnPtr<extern "C" fn(mode: GLenum)>,
 	
 	// Core Extension: ARB_sync
-	FenceSync: FPointer<extern "C" fn(condition: GLenum, flags: GLbitfield) -> GLsync>,
-	IsSync: FPointer<extern "C" fn(sync: GLsync) -> GLboolean>,
-	DeleteSync: FPointer<extern "C" fn(sync: GLsync)>,
-	ClientWaitSync: FPointer<extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum>,
-	WaitSync: FPointer<extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64)>,
-	GetInteger64v: FPointer<extern "C" fn(pname: GLenum, params: *GLint64)>,
-	GetSynciv: FPointer<extern "C" fn(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *GLsizei, values: *GLint)>,
+	FenceSync: FnPtr<extern "C" fn(condition: GLenum, flags: GLbitfield) -> GLsync>,
+	IsSync: FnPtr<extern "C" fn(sync: GLsync) -> GLboolean>,
+	DeleteSync: FnPtr<extern "C" fn(sync: GLsync)>,
+	ClientWaitSync: FnPtr<extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum>,
+	WaitSync: FnPtr<extern "C" fn(sync: GLsync, flags: GLbitfield, timeout: GLuint64)>,
+	GetInteger64v: FnPtr<extern "C" fn(pname: GLenum, params: *GLint64)>,
+	GetSynciv: FnPtr<extern "C" fn(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *GLsizei, values: *GLint)>,
 	
 	// Core Extension: ARB_texture_multisample
-	TexImage2DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean)>,
-	TexImage3DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean)>,
-	GetMultisamplefv: FPointer<extern "C" fn(pname: GLenum, index: GLuint, val: *GLfloat)>,
-	SampleMaski: FPointer<extern "C" fn(index: GLuint, mask: GLbitfield)>,
+	TexImage2DMultisample: FnPtr<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean)>,
+	TexImage3DMultisample: FnPtr<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean)>,
+	GetMultisamplefv: FnPtr<extern "C" fn(pname: GLenum, index: GLuint, val: *GLfloat)>,
+	SampleMaski: FnPtr<extern "C" fn(index: GLuint, mask: GLbitfield)>,
 	
 	// Version: 3.3
-	VertexAttribDivisor: FPointer<extern "C" fn(index: GLuint, divisor: GLuint)>,
+	VertexAttribDivisor: FnPtr<extern "C" fn(index: GLuint, divisor: GLuint)>,
 	
 	// Core Extension: ARB_timer_query
-	QueryCounter: FPointer<extern "C" fn(id: GLuint, target: GLenum)>,
-	GetQueryObjecti64v: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLint64)>,
-	GetQueryObjectui64v: FPointer<extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint64)>,
+	QueryCounter: FnPtr<extern "C" fn(id: GLuint, target: GLenum)>,
+	GetQueryObjecti64v: FnPtr<extern "C" fn(id: GLuint, pname: GLenum, params: *GLint64)>,
+	GetQueryObjectui64v: FnPtr<extern "C" fn(id: GLuint, pname: GLenum, params: *GLuint64)>,
 	
 	// Core Extension: ARB_vertex_type_2_10_10_10_rev
-	VertexP2ui: FPointer<extern "C" fn(type_: GLenum, value: GLuint)>,
-	VertexP2uiv: FPointer<extern "C" fn(type_: GLenum, value: *GLuint)>,
-	VertexP3ui: FPointer<extern "C" fn(type_: GLenum, value: GLuint)>,
-	VertexP3uiv: FPointer<extern "C" fn(type_: GLenum, value: *GLuint)>,
-	VertexP4ui: FPointer<extern "C" fn(type_: GLenum, value: GLuint)>,
-	VertexP4uiv: FPointer<extern "C" fn(type_: GLenum, value: *GLuint)>,
-	TexCoordP1ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint)>,
-	TexCoordP1uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint)>,
-	TexCoordP2ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint)>,
-	TexCoordP2uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint)>,
-	TexCoordP3ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint)>,
-	TexCoordP3uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint)>,
-	TexCoordP4ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint)>,
-	TexCoordP4uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint)>,
-	MultiTexCoordP1ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
-	MultiTexCoordP1uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
-	MultiTexCoordP2ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
-	MultiTexCoordP2uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
-	MultiTexCoordP3ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
-	MultiTexCoordP3uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
-	MultiTexCoordP4ui: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
-	MultiTexCoordP4uiv: FPointer<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
-	NormalP3ui: FPointer<extern "C" fn(type_: GLenum, coords: GLuint)>,
-	NormalP3uiv: FPointer<extern "C" fn(type_: GLenum, coords: *GLuint)>,
-	ColorP3ui: FPointer<extern "C" fn(type_: GLenum, color: GLuint)>,
-	ColorP3uiv: FPointer<extern "C" fn(type_: GLenum, color: *GLuint)>,
-	ColorP4ui: FPointer<extern "C" fn(type_: GLenum, color: GLuint)>,
-	ColorP4uiv: FPointer<extern "C" fn(type_: GLenum, color: *GLuint)>,
-	SecondaryColorP3ui: FPointer<extern "C" fn(type_: GLenum, color: GLuint)>,
-	SecondaryColorP3uiv: FPointer<extern "C" fn(type_: GLenum, color: *GLuint)>,
-	VertexAttribP1ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
-	VertexAttribP1uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
-	VertexAttribP2ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
-	VertexAttribP2uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
-	VertexAttribP3ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
-	VertexAttribP3uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
-	VertexAttribP4ui: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
-	VertexAttribP4uiv: FPointer<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
+	VertexP2ui: FnPtr<extern "C" fn(type_: GLenum, value: GLuint)>,
+	VertexP2uiv: FnPtr<extern "C" fn(type_: GLenum, value: *GLuint)>,
+	VertexP3ui: FnPtr<extern "C" fn(type_: GLenum, value: GLuint)>,
+	VertexP3uiv: FnPtr<extern "C" fn(type_: GLenum, value: *GLuint)>,
+	VertexP4ui: FnPtr<extern "C" fn(type_: GLenum, value: GLuint)>,
+	VertexP4uiv: FnPtr<extern "C" fn(type_: GLenum, value: *GLuint)>,
+	TexCoordP1ui: FnPtr<extern "C" fn(type_: GLenum, coords: GLuint)>,
+	TexCoordP1uiv: FnPtr<extern "C" fn(type_: GLenum, coords: *GLuint)>,
+	TexCoordP2ui: FnPtr<extern "C" fn(type_: GLenum, coords: GLuint)>,
+	TexCoordP2uiv: FnPtr<extern "C" fn(type_: GLenum, coords: *GLuint)>,
+	TexCoordP3ui: FnPtr<extern "C" fn(type_: GLenum, coords: GLuint)>,
+	TexCoordP3uiv: FnPtr<extern "C" fn(type_: GLenum, coords: *GLuint)>,
+	TexCoordP4ui: FnPtr<extern "C" fn(type_: GLenum, coords: GLuint)>,
+	TexCoordP4uiv: FnPtr<extern "C" fn(type_: GLenum, coords: *GLuint)>,
+	MultiTexCoordP1ui: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
+	MultiTexCoordP1uiv: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
+	MultiTexCoordP2ui: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
+	MultiTexCoordP2uiv: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
+	MultiTexCoordP3ui: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
+	MultiTexCoordP3uiv: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
+	MultiTexCoordP4ui: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: GLuint)>,
+	MultiTexCoordP4uiv: FnPtr<extern "C" fn(texture: GLenum, type_: GLenum, coords: *GLuint)>,
+	NormalP3ui: FnPtr<extern "C" fn(type_: GLenum, coords: GLuint)>,
+	NormalP3uiv: FnPtr<extern "C" fn(type_: GLenum, coords: *GLuint)>,
+	ColorP3ui: FnPtr<extern "C" fn(type_: GLenum, color: GLuint)>,
+	ColorP3uiv: FnPtr<extern "C" fn(type_: GLenum, color: *GLuint)>,
+	ColorP4ui: FnPtr<extern "C" fn(type_: GLenum, color: GLuint)>,
+	ColorP4uiv: FnPtr<extern "C" fn(type_: GLenum, color: *GLuint)>,
+	SecondaryColorP3ui: FnPtr<extern "C" fn(type_: GLenum, color: GLuint)>,
+	SecondaryColorP3uiv: FnPtr<extern "C" fn(type_: GLenum, color: *GLuint)>,
+	VertexAttribP1ui: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
+	VertexAttribP1uiv: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
+	VertexAttribP2ui: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
+	VertexAttribP2uiv: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
+	VertexAttribP3ui: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
+	VertexAttribP3uiv: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
+	VertexAttribP4ui: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint)>,
+	VertexAttribP4uiv: FnPtr<extern "C" fn(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint)>,
 	
 	// Core Extension: ARB_blend_func_extended
-	BindFragDataLocationIndexed: FPointer<extern "C" fn(program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar)>,
-	GetFragDataIndex: FPointer<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
+	BindFragDataLocationIndexed: FnPtr<extern "C" fn(program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar)>,
+	GetFragDataIndex: FnPtr<extern "C" fn(program: GLuint, name: *GLchar) -> GLint>,
 	
 	// Core Extension: ARB_sampler_objects
-	GenSamplers: FPointer<extern "C" fn(count: GLsizei, samplers: *GLuint)>,
-	DeleteSamplers: FPointer<extern "C" fn(count: GLsizei, samplers: *GLuint)>,
-	IsSampler: FPointer<extern "C" fn(sampler: GLuint) -> GLboolean>,
-	BindSampler: FPointer<extern "C" fn(unit: GLuint, sampler: GLuint)>,
-	SamplerParameteri: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: GLint)>,
-	SamplerParameteriv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint)>,
-	SamplerParameterf: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: GLfloat)>,
-	SamplerParameterfv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLfloat)>,
-	SamplerParameterIiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint)>,
-	SamplerParameterIuiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLuint)>,
-	GetSamplerParameteriv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint)>,
-	GetSamplerParameterIiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint)>,
-	GetSamplerParameterfv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLfloat)>,
-	GetSamplerParameterIuiv: FPointer<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLuint)>,
+	GenSamplers: FnPtr<extern "C" fn(count: GLsizei, samplers: *GLuint)>,
+	DeleteSamplers: FnPtr<extern "C" fn(count: GLsizei, samplers: *GLuint)>,
+	IsSampler: FnPtr<extern "C" fn(sampler: GLuint) -> GLboolean>,
+	BindSampler: FnPtr<extern "C" fn(unit: GLuint, sampler: GLuint)>,
+	SamplerParameteri: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, param: GLint)>,
+	SamplerParameteriv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint)>,
+	SamplerParameterf: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, param: GLfloat)>,
+	SamplerParameterfv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLfloat)>,
+	SamplerParameterIiv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLint)>,
+	SamplerParameterIuiv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, param: *GLuint)>,
+	GetSamplerParameteriv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint)>,
+	GetSamplerParameterIiv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLint)>,
+	GetSamplerParameterfv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLfloat)>,
+	GetSamplerParameterIuiv: FnPtr<extern "C" fn(sampler: GLuint, pname: GLenum, params: *GLuint)>,
 	
 	// Version: 4.0
-	MinSampleShading: FPointer<extern "C" fn(value: GLfloat)>,
-	BlendEquationi: FPointer<extern "C" fn(buf: GLuint, mode: GLenum)>,
-	BlendEquationSeparatei: FPointer<extern "C" fn(buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum)>,
-	BlendFunci: FPointer<extern "C" fn(buf: GLuint, src: GLenum, dst: GLenum)>,
-	BlendFuncSeparatei: FPointer<extern "C" fn(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum)>,
+	MinSampleShading: FnPtr<extern "C" fn(value: GLfloat)>,
+	BlendEquationi: FnPtr<extern "C" fn(buf: GLuint, mode: GLenum)>,
+	BlendEquationSeparatei: FnPtr<extern "C" fn(buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum)>,
+	BlendFunci: FnPtr<extern "C" fn(buf: GLuint, src: GLenum, dst: GLenum)>,
+	BlendFuncSeparatei: FnPtr<extern "C" fn(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum)>,
 	
 	// Core Extension: ARB_draw_indirect
-	DrawArraysIndirect: FPointer<extern "C" fn(mode: GLenum, indirect: *GLvoid)>,
-	DrawElementsIndirect: FPointer<extern "C" fn(mode: GLenum, type_: GLenum, indirect: *GLvoid)>,
+	DrawArraysIndirect: FnPtr<extern "C" fn(mode: GLenum, indirect: *GLvoid)>,
+	DrawElementsIndirect: FnPtr<extern "C" fn(mode: GLenum, type_: GLenum, indirect: *GLvoid)>,
 	
 	// Core Extension: ARB_gpu_shader_fp64
-	Uniform1d: FPointer<extern "C" fn(location: GLint, x: GLdouble)>,
-	Uniform2d: FPointer<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble)>,
-	Uniform3d: FPointer<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble)>,
-	Uniform4d: FPointer<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble)>,
-	Uniform1dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
-	Uniform2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
-	Uniform3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
-	Uniform4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
-	UniformMatrix2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix2x3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix2x4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix3x2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix3x4dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix4x2dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	UniformMatrix4x3dv: FPointer<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	GetUniformdv: FPointer<extern "C" fn(program: GLuint, location: GLint, params: *GLdouble)>,
+	Uniform1d: FnPtr<extern "C" fn(location: GLint, x: GLdouble)>,
+	Uniform2d: FnPtr<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble)>,
+	Uniform3d: FnPtr<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble)>,
+	Uniform4d: FnPtr<extern "C" fn(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble)>,
+	Uniform1dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
+	Uniform2dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
+	Uniform3dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
+	Uniform4dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, value: *GLdouble)>,
+	UniformMatrix2dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix3dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix4dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix2x3dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix2x4dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix3x2dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix3x4dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix4x2dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	UniformMatrix4x3dv: FnPtr<extern "C" fn(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	GetUniformdv: FnPtr<extern "C" fn(program: GLuint, location: GLint, params: *GLdouble)>,
 	
 	// Core Extension: ARB_shader_subroutine
-	GetSubroutineUniformLocation: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint>,
-	GetSubroutineIndex: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint>,
-	GetActiveSubroutineUniformiv: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *GLint)>,
-	GetActiveSubroutineUniformName: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar)>,
-	GetActiveSubroutineName: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar)>,
-	UniformSubroutinesuiv: FPointer<extern "C" fn(shadertype: GLenum, count: GLsizei, indices: *GLuint)>,
-	GetUniformSubroutineuiv: FPointer<extern "C" fn(shadertype: GLenum, location: GLint, params: *GLuint)>,
-	GetProgramStageiv: FPointer<extern "C" fn(program: GLuint, shadertype: GLenum, pname: GLenum, values: *GLint)>,
+	GetSubroutineUniformLocation: FnPtr<extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint>,
+	GetSubroutineIndex: FnPtr<extern "C" fn(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint>,
+	GetActiveSubroutineUniformiv: FnPtr<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *GLint)>,
+	GetActiveSubroutineUniformName: FnPtr<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar)>,
+	GetActiveSubroutineName: FnPtr<extern "C" fn(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar)>,
+	UniformSubroutinesuiv: FnPtr<extern "C" fn(shadertype: GLenum, count: GLsizei, indices: *GLuint)>,
+	GetUniformSubroutineuiv: FnPtr<extern "C" fn(shadertype: GLenum, location: GLint, params: *GLuint)>,
+	GetProgramStageiv: FnPtr<extern "C" fn(program: GLuint, shadertype: GLenum, pname: GLenum, values: *GLint)>,
 	
 	// Core Extension: ARB_tessellation_shader
-	PatchParameteri: FPointer<extern "C" fn(pname: GLenum, value: GLint)>,
-	PatchParameterfv: FPointer<extern "C" fn(pname: GLenum, values: *GLfloat)>,
+	PatchParameteri: FnPtr<extern "C" fn(pname: GLenum, value: GLint)>,
+	PatchParameterfv: FnPtr<extern "C" fn(pname: GLenum, values: *GLfloat)>,
 	
 	// Core Extension: ARB_transform_feedback2
-	BindTransformFeedback: FPointer<extern "C" fn(target: GLenum, id: GLuint)>,
-	DeleteTransformFeedbacks: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint)>,
-	GenTransformFeedbacks: FPointer<extern "C" fn(n: GLsizei, ids: *GLuint)>,
-	IsTransformFeedback: FPointer<extern "C" fn(id: GLuint) -> GLboolean>,
-	PauseTransformFeedback: FPointer<extern "C" fn()>,
-	ResumeTransformFeedback: FPointer<extern "C" fn()>,
-	DrawTransformFeedback: FPointer<extern "C" fn(mode: GLenum, id: GLuint)>,
+	BindTransformFeedback: FnPtr<extern "C" fn(target: GLenum, id: GLuint)>,
+	DeleteTransformFeedbacks: FnPtr<extern "C" fn(n: GLsizei, ids: *GLuint)>,
+	GenTransformFeedbacks: FnPtr<extern "C" fn(n: GLsizei, ids: *GLuint)>,
+	IsTransformFeedback: FnPtr<extern "C" fn(id: GLuint) -> GLboolean>,
+	PauseTransformFeedback: FnPtr<extern "C" fn()>,
+	ResumeTransformFeedback: FnPtr<extern "C" fn()>,
+	DrawTransformFeedback: FnPtr<extern "C" fn(mode: GLenum, id: GLuint)>,
 	
 	// Core Extension: ARB_transform_feedback3
-	DrawTransformFeedbackStream: FPointer<extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint)>,
-	BeginQueryIndexed: FPointer<extern "C" fn(target: GLenum, index: GLuint, id: GLuint)>,
-	EndQueryIndexed: FPointer<extern "C" fn(target: GLenum, index: GLuint)>,
-	GetQueryIndexediv: FPointer<extern "C" fn(target: GLenum, index: GLuint, pname: GLenum, params: *GLint)>,
+	DrawTransformFeedbackStream: FnPtr<extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint)>,
+	BeginQueryIndexed: FnPtr<extern "C" fn(target: GLenum, index: GLuint, id: GLuint)>,
+	EndQueryIndexed: FnPtr<extern "C" fn(target: GLenum, index: GLuint)>,
+	GetQueryIndexediv: FnPtr<extern "C" fn(target: GLenum, index: GLuint, pname: GLenum, params: *GLint)>,
 	
 	// Core Extension: ARB_ES2_compatibility
-	ReleaseShaderCompiler: FPointer<extern "C" fn()>,
-	ShaderBinary: FPointer<extern "C" fn(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei)>,
-	GetShaderPrecisionFormat: FPointer<extern "C" fn(shadertype: GLenum, precisiontype: GLenum, range: *GLint, precision: *GLint)>,
-	DepthRangef: FPointer<extern "C" fn(n: GLfloat, f: GLfloat)>,
-	ClearDepthf: FPointer<extern "C" fn(d: GLfloat)>,
+	ReleaseShaderCompiler: FnPtr<extern "C" fn()>,
+	ShaderBinary: FnPtr<extern "C" fn(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei)>,
+	GetShaderPrecisionFormat: FnPtr<extern "C" fn(shadertype: GLenum, precisiontype: GLenum, range: *GLint, precision: *GLint)>,
+	DepthRangef: FnPtr<extern "C" fn(n: GLfloat, f: GLfloat)>,
+	ClearDepthf: FnPtr<extern "C" fn(d: GLfloat)>,
 	
 	// Core Extension: ARB_get_program_binary
-	GetProgramBinary: FPointer<extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, binaryFormat: *GLenum, binary: *GLvoid)>,
-	ProgramBinary: FPointer<extern "C" fn(program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei)>,
-	ProgramParameteri: FPointer<extern "C" fn(program: GLuint, pname: GLenum, value: GLint)>,
+	GetProgramBinary: FnPtr<extern "C" fn(program: GLuint, bufSize: GLsizei, length: *GLsizei, binaryFormat: *GLenum, binary: *GLvoid)>,
+	ProgramBinary: FnPtr<extern "C" fn(program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei)>,
+	ProgramParameteri: FnPtr<extern "C" fn(program: GLuint, pname: GLenum, value: GLint)>,
 	
 	// Core Extension: ARB_separate_shader_objects
-	UseProgramStages: FPointer<extern "C" fn(pipeline: GLuint, stages: GLbitfield, program: GLuint)>,
-	ActiveShaderProgram: FPointer<extern "C" fn(pipeline: GLuint, program: GLuint)>,
-	CreateShaderProgramv: FPointer<extern "C" fn(type_: GLenum, count: GLsizei, strings: **GLchar) -> GLuint>,
-	BindProgramPipeline: FPointer<extern "C" fn(pipeline: GLuint)>,
-	DeleteProgramPipelines: FPointer<extern "C" fn(n: GLsizei, pipelines: *GLuint)>,
-	GenProgramPipelines: FPointer<extern "C" fn(n: GLsizei, pipelines: *GLuint)>,
-	IsProgramPipeline: FPointer<extern "C" fn(pipeline: GLuint) -> GLboolean>,
-	GetProgramPipelineiv: FPointer<extern "C" fn(pipeline: GLuint, pname: GLenum, params: *GLint)>,
-	ProgramUniform1i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint)>,
-	ProgramUniform1iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
-	ProgramUniform1f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat)>,
-	ProgramUniform1fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
-	ProgramUniform1d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble)>,
-	ProgramUniform1dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
-	ProgramUniform1ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint)>,
-	ProgramUniform1uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
-	ProgramUniform2i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint)>,
-	ProgramUniform2iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
-	ProgramUniform2f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat)>,
-	ProgramUniform2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
-	ProgramUniform2d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble)>,
-	ProgramUniform2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
-	ProgramUniform2ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint)>,
-	ProgramUniform2uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
-	ProgramUniform3i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint)>,
-	ProgramUniform3iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
-	ProgramUniform3f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat)>,
-	ProgramUniform3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
-	ProgramUniform3d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble)>,
-	ProgramUniform3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
-	ProgramUniform3ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint)>,
-	ProgramUniform3uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
-	ProgramUniform4i: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint)>,
-	ProgramUniform4iv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
-	ProgramUniform4f: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat)>,
-	ProgramUniform4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
-	ProgramUniform4d: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble)>,
-	ProgramUniform4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
-	ProgramUniform4ui: FPointer<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint)>,
-	ProgramUniform4uiv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
-	ProgramUniformMatrix2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix2x3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix3x2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix2x4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix4x2fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix3x4fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix4x3fv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
-	ProgramUniformMatrix2x3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix3x2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix2x4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix4x2dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix3x4dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ProgramUniformMatrix4x3dv: FPointer<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
-	ValidateProgramPipeline: FPointer<extern "C" fn(pipeline: GLuint)>,
-	GetProgramPipelineInfoLog: FPointer<extern "C" fn(pipeline: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar)>,
+	UseProgramStages: FnPtr<extern "C" fn(pipeline: GLuint, stages: GLbitfield, program: GLuint)>,
+	ActiveShaderProgram: FnPtr<extern "C" fn(pipeline: GLuint, program: GLuint)>,
+	CreateShaderProgramv: FnPtr<extern "C" fn(type_: GLenum, count: GLsizei, strings: **GLchar) -> GLuint>,
+	BindProgramPipeline: FnPtr<extern "C" fn(pipeline: GLuint)>,
+	DeleteProgramPipelines: FnPtr<extern "C" fn(n: GLsizei, pipelines: *GLuint)>,
+	GenProgramPipelines: FnPtr<extern "C" fn(n: GLsizei, pipelines: *GLuint)>,
+	IsProgramPipeline: FnPtr<extern "C" fn(pipeline: GLuint) -> GLboolean>,
+	GetProgramPipelineiv: FnPtr<extern "C" fn(pipeline: GLuint, pname: GLenum, params: *GLint)>,
+	ProgramUniform1i: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLint)>,
+	ProgramUniform1iv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
+	ProgramUniform1f: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat)>,
+	ProgramUniform1fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
+	ProgramUniform1d: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble)>,
+	ProgramUniform1dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
+	ProgramUniform1ui: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLuint)>,
+	ProgramUniform1uiv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
+	ProgramUniform2i: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint)>,
+	ProgramUniform2iv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
+	ProgramUniform2f: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat)>,
+	ProgramUniform2fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
+	ProgramUniform2d: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble)>,
+	ProgramUniform2dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
+	ProgramUniform2ui: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint)>,
+	ProgramUniform2uiv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
+	ProgramUniform3i: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint)>,
+	ProgramUniform3iv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
+	ProgramUniform3f: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat)>,
+	ProgramUniform3fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
+	ProgramUniform3d: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble)>,
+	ProgramUniform3dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
+	ProgramUniform3ui: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint)>,
+	ProgramUniform3uiv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
+	ProgramUniform4i: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint)>,
+	ProgramUniform4iv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLint)>,
+	ProgramUniform4f: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat)>,
+	ProgramUniform4fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat)>,
+	ProgramUniform4d: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble)>,
+	ProgramUniform4dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble)>,
+	ProgramUniform4ui: FnPtr<extern "C" fn(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint)>,
+	ProgramUniform4uiv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, value: *GLuint)>,
+	ProgramUniformMatrix2fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix3fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix4fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix2dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix3dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix4dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix2x3fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix3x2fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix2x4fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix4x2fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix3x4fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix4x3fv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat)>,
+	ProgramUniformMatrix2x3dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix3x2dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix2x4dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix4x2dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix3x4dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ProgramUniformMatrix4x3dv: FnPtr<extern "C" fn(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble)>,
+	ValidateProgramPipeline: FnPtr<extern "C" fn(pipeline: GLuint)>,
+	GetProgramPipelineInfoLog: FnPtr<extern "C" fn(pipeline: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar)>,
 	
 	// Core Extension: ARB_vertex_attrib_64bit
-	VertexAttribL1d: FPointer<extern "C" fn(index: GLuint, x: GLdouble)>,
-	VertexAttribL2d: FPointer<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble)>,
-	VertexAttribL3d: FPointer<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble)>,
-	VertexAttribL4d: FPointer<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble)>,
-	VertexAttribL1dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble)>,
-	VertexAttribL2dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble)>,
-	VertexAttribL3dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble)>,
-	VertexAttribL4dv: FPointer<extern "C" fn(index: GLuint, v: *GLdouble)>,
-	VertexAttribLPointer: FPointer<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid)>,
-	GetVertexAttribLdv: FPointer<extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble)>,
+	VertexAttribL1d: FnPtr<extern "C" fn(index: GLuint, x: GLdouble)>,
+	VertexAttribL2d: FnPtr<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble)>,
+	VertexAttribL3d: FnPtr<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble)>,
+	VertexAttribL4d: FnPtr<extern "C" fn(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble)>,
+	VertexAttribL1dv: FnPtr<extern "C" fn(index: GLuint, v: *GLdouble)>,
+	VertexAttribL2dv: FnPtr<extern "C" fn(index: GLuint, v: *GLdouble)>,
+	VertexAttribL3dv: FnPtr<extern "C" fn(index: GLuint, v: *GLdouble)>,
+	VertexAttribL4dv: FnPtr<extern "C" fn(index: GLuint, v: *GLdouble)>,
+	VertexAttribLPointer: FnPtr<extern "C" fn(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid)>,
+	GetVertexAttribLdv: FnPtr<extern "C" fn(index: GLuint, pname: GLenum, params: *GLdouble)>,
 	
 	// Core Extension: ARB_viewport_array
-	ViewportArrayv: FPointer<extern "C" fn(first: GLuint, count: GLsizei, v: *GLfloat)>,
-	ViewportIndexedf: FPointer<extern "C" fn(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat)>,
-	ViewportIndexedfv: FPointer<extern "C" fn(index: GLuint, v: *GLfloat)>,
-	ScissorArrayv: FPointer<extern "C" fn(first: GLuint, count: GLsizei, v: *GLint)>,
-	ScissorIndexed: FPointer<extern "C" fn(index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei)>,
-	ScissorIndexedv: FPointer<extern "C" fn(index: GLuint, v: *GLint)>,
-	DepthRangeArrayv: FPointer<extern "C" fn(first: GLuint, count: GLsizei, v: *GLdouble)>,
-	DepthRangeIndexed: FPointer<extern "C" fn(index: GLuint, n: GLdouble, f: GLdouble)>,
-	GetFloati_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLfloat)>,
-	GetDoublei_v: FPointer<extern "C" fn(target: GLenum, index: GLuint, data: *GLdouble)>,
+	ViewportArrayv: FnPtr<extern "C" fn(first: GLuint, count: GLsizei, v: *GLfloat)>,
+	ViewportIndexedf: FnPtr<extern "C" fn(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat)>,
+	ViewportIndexedfv: FnPtr<extern "C" fn(index: GLuint, v: *GLfloat)>,
+	ScissorArrayv: FnPtr<extern "C" fn(first: GLuint, count: GLsizei, v: *GLint)>,
+	ScissorIndexed: FnPtr<extern "C" fn(index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei)>,
+	ScissorIndexedv: FnPtr<extern "C" fn(index: GLuint, v: *GLint)>,
+	DepthRangeArrayv: FnPtr<extern "C" fn(first: GLuint, count: GLsizei, v: *GLdouble)>,
+	DepthRangeIndexed: FnPtr<extern "C" fn(index: GLuint, n: GLdouble, f: GLdouble)>,
+	GetFloati_v: FnPtr<extern "C" fn(target: GLenum, index: GLuint, data: *GLfloat)>,
+	GetDoublei_v: FnPtr<extern "C" fn(target: GLenum, index: GLuint, data: *GLdouble)>,
 	
 	// Core Extension: ARB_base_instance
-	DrawArraysInstancedBaseInstance: FPointer<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint)>,
-	DrawElementsInstancedBaseInstance: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, baseinstance: GLuint)>,
-	DrawElementsInstancedBaseVertexBaseInstance: FPointer<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint)>,
+	DrawArraysInstancedBaseInstance: FnPtr<extern "C" fn(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint)>,
+	DrawElementsInstancedBaseInstance: FnPtr<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, baseinstance: GLuint)>,
+	DrawElementsInstancedBaseVertexBaseInstance: FnPtr<extern "C" fn(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint)>,
 	
 	// Core Extension: ARB_transform_feedback_instanced
-	DrawTransformFeedbackInstanced: FPointer<extern "C" fn(mode: GLenum, id: GLuint, instancecount: GLsizei)>,
-	DrawTransformFeedbackStreamInstanced: FPointer<extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei)>,
+	DrawTransformFeedbackInstanced: FnPtr<extern "C" fn(mode: GLenum, id: GLuint, instancecount: GLsizei)>,
+	DrawTransformFeedbackStreamInstanced: FnPtr<extern "C" fn(mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei)>,
 	
 	// Core Extension: ARB_internalformat_query
-	GetInternalformativ: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint)>,
+	GetInternalformativ: FnPtr<extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint)>,
 	
 	// Core Extension: ARB_shader_atomic_counters
-	GetActiveAtomicCounterBufferiv: FPointer<extern "C" fn(program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *GLint)>,
+	GetActiveAtomicCounterBufferiv: FnPtr<extern "C" fn(program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *GLint)>,
 	
 	// Core Extension: ARB_shader_image_load_store
-	BindImageTexture: FPointer<extern "C" fn(unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum)>,
-	MemoryBarrier: FPointer<extern "C" fn(barriers: GLbitfield)>,
+	BindImageTexture: FnPtr<extern "C" fn(unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum)>,
+	MemoryBarrier: FnPtr<extern "C" fn(barriers: GLbitfield)>,
 	
 	// Core Extension: ARB_texture_storage
-	TexStorage1D: FPointer<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei)>,
-	TexStorage2D: FPointer<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
-	TexStorage3D: FPointer<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei)>,
-	TextureStorage1DEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei)>,
-	TextureStorage2DEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
-	TextureStorage3DEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei)>,
+	TexStorage1D: FnPtr<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei)>,
+	TexStorage2D: FnPtr<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
+	TexStorage3D: FnPtr<extern "C" fn(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei)>,
+	TextureStorage1DEXT: FnPtr<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei)>,
+	TextureStorage2DEXT: FnPtr<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei)>,
+	TextureStorage3DEXT: FnPtr<extern "C" fn(texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei)>,
 	
 	// Core Extension: KHR_debug
-	DebugMessageControl: FPointer<extern "C" fn(source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean)>,
-	DebugMessageInsert: FPointer<extern "C" fn(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar)>,
-	DebugMessageCallback: FPointer<extern "C" fn(callback: GLDEBUGPROC, userParam: *GLvoid)>,
-	GetDebugMessageLog: FPointer<extern "C" fn(count: GLuint, bufsize: GLsizei, sources: *GLenum, types: *GLenum, ids: *GLuint, severities: *GLenum, lengths: *GLsizei, messageLog: *GLchar) -> GLuint>,
-	PushDebugGroup: FPointer<extern "C" fn(source: GLenum, id: GLuint, length: GLsizei, message: *GLchar)>,
-	PopDebugGroup: FPointer<extern "C" fn()>,
-	ObjectLabel: FPointer<extern "C" fn(identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar)>,
-	GetObjectLabel: FPointer<extern "C" fn(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *GLsizei, label: *GLchar)>,
-	ObjectPtrLabel: FPointer<extern "C" fn(ptr: *GLvoid, length: GLsizei, label: *GLchar)>,
-	GetObjectPtrLabel: FPointer<extern "C" fn(ptr: *GLvoid, bufSize: GLsizei, length: *GLsizei, label: *GLchar)>,
+	DebugMessageControl: FnPtr<extern "C" fn(source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean)>,
+	DebugMessageInsert: FnPtr<extern "C" fn(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar)>,
+	DebugMessageCallback: FnPtr<extern "C" fn(callback: GLDEBUGPROC, userParam: *GLvoid)>,
+	GetDebugMessageLog: FnPtr<extern "C" fn(count: GLuint, bufsize: GLsizei, sources: *GLenum, types: *GLenum, ids: *GLuint, severities: *GLenum, lengths: *GLsizei, messageLog: *GLchar) -> GLuint>,
+	PushDebugGroup: FnPtr<extern "C" fn(source: GLenum, id: GLuint, length: GLsizei, message: *GLchar)>,
+	PopDebugGroup: FnPtr<extern "C" fn()>,
+	ObjectLabel: FnPtr<extern "C" fn(identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar)>,
+	GetObjectLabel: FnPtr<extern "C" fn(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *GLsizei, label: *GLchar)>,
+	ObjectPtrLabel: FnPtr<extern "C" fn(ptr: *GLvoid, length: GLsizei, label: *GLchar)>,
+	GetObjectPtrLabel: FnPtr<extern "C" fn(ptr: *GLvoid, bufSize: GLsizei, length: *GLsizei, label: *GLchar)>,
 	
 	// Core Extension: ARB_clear_buffer_object
-	ClearBufferData: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid)>,
-	ClearBufferSubData: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *GLvoid)>,
-	ClearNamedBufferDataEXT: FPointer<extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid)>,
-	ClearNamedBufferSubDataEXT: FPointer<extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, offset: GLsizeiptr, size: GLsizeiptr, data: *GLvoid)>,
+	ClearBufferData: FnPtr<extern "C" fn(target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid)>,
+	ClearBufferSubData: FnPtr<extern "C" fn(target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *GLvoid)>,
+	ClearNamedBufferDataEXT: FnPtr<extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid)>,
+	ClearNamedBufferSubDataEXT: FnPtr<extern "C" fn(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, offset: GLsizeiptr, size: GLsizeiptr, data: *GLvoid)>,
 	
 	// Core Extension: ARB_compute_shader
-	DispatchCompute: FPointer<extern "C" fn(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint)>,
-	DispatchComputeIndirect: FPointer<extern "C" fn(indirect: GLintptr)>,
+	DispatchCompute: FnPtr<extern "C" fn(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint)>,
+	DispatchComputeIndirect: FnPtr<extern "C" fn(indirect: GLintptr)>,
 	
 	// Core Extension: ARB_copy_image
-	CopyImageSubData: FPointer<extern "C" fn(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei)>,
+	CopyImageSubData: FnPtr<extern "C" fn(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei)>,
 	
 	// Core Extension: ARB_framebuffer_no_attachments
-	FramebufferParameteri: FPointer<extern "C" fn(target: GLenum, pname: GLenum, param: GLint)>,
-	GetFramebufferParameteriv: FPointer<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
-	NamedFramebufferParameteriEXT: FPointer<extern "C" fn(framebuffer: GLuint, pname: GLenum, param: GLint)>,
-	GetNamedFramebufferParameterivEXT: FPointer<extern "C" fn(framebuffer: GLuint, pname: GLenum, params: *GLint)>,
+	FramebufferParameteri: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, param: GLint)>,
+	GetFramebufferParameteriv: FnPtr<extern "C" fn(target: GLenum, pname: GLenum, params: *GLint)>,
+	NamedFramebufferParameteriEXT: FnPtr<extern "C" fn(framebuffer: GLuint, pname: GLenum, param: GLint)>,
+	GetNamedFramebufferParameterivEXT: FnPtr<extern "C" fn(framebuffer: GLuint, pname: GLenum, params: *GLint)>,
 	
 	// Core Extension: ARB_internalformat_query2
-	GetInternalformati64v: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint64)>,
+	GetInternalformati64v: FnPtr<extern "C" fn(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint64)>,
 	
 	// Core Extension: ARB_invalidate_subdata
-	InvalidateTexSubImage: FPointer<extern "C" fn(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei)>,
-	InvalidateTexImage: FPointer<extern "C" fn(texture: GLuint, level: GLint)>,
-	InvalidateBufferSubData: FPointer<extern "C" fn(buffer: GLuint, offset: GLintptr, length: GLsizeiptr)>,
-	InvalidateBufferData: FPointer<extern "C" fn(buffer: GLuint)>,
-	InvalidateFramebuffer: FPointer<extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum)>,
-	InvalidateSubFramebuffer: FPointer<extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
+	InvalidateTexSubImage: FnPtr<extern "C" fn(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei)>,
+	InvalidateTexImage: FnPtr<extern "C" fn(texture: GLuint, level: GLint)>,
+	InvalidateBufferSubData: FnPtr<extern "C" fn(buffer: GLuint, offset: GLintptr, length: GLsizeiptr)>,
+	InvalidateBufferData: FnPtr<extern "C" fn(buffer: GLuint)>,
+	InvalidateFramebuffer: FnPtr<extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum)>,
+	InvalidateSubFramebuffer: FnPtr<extern "C" fn(target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei)>,
 	
 	// Core Extension: ARB_multi_draw_indirect
-	MultiDrawArraysIndirect: FPointer<extern "C" fn(mode: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei)>,
-	MultiDrawElementsIndirect: FPointer<extern "C" fn(mode: GLenum, type_: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei)>,
+	MultiDrawArraysIndirect: FnPtr<extern "C" fn(mode: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei)>,
+	MultiDrawElementsIndirect: FnPtr<extern "C" fn(mode: GLenum, type_: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei)>,
 	
 	// Core Extension: ARB_program_interface_query
-	GetProgramInterfaceiv: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, pname: GLenum, params: *GLint)>,
-	GetProgramResourceIndex: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint>,
-	GetProgramResourceName: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *GLsizei, name: *GLchar)>,
-	GetProgramResourceiv: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *GLsizei, params: *GLint)>,
-	GetProgramResourceLocation: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint>,
-	GetProgramResourceLocationIndex: FPointer<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint>,
+	GetProgramInterfaceiv: FnPtr<extern "C" fn(program: GLuint, programInterface: GLenum, pname: GLenum, params: *GLint)>,
+	GetProgramResourceIndex: FnPtr<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint>,
+	GetProgramResourceName: FnPtr<extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *GLsizei, name: *GLchar)>,
+	GetProgramResourceiv: FnPtr<extern "C" fn(program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *GLsizei, params: *GLint)>,
+	GetProgramResourceLocation: FnPtr<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint>,
+	GetProgramResourceLocationIndex: FnPtr<extern "C" fn(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint>,
 	
 	// Core Extension: ARB_shader_storage_buffer_object
-	ShaderStorageBlockBinding: FPointer<extern "C" fn(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint)>,
+	ShaderStorageBlockBinding: FnPtr<extern "C" fn(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint)>,
 	
 	// Core Extension: ARB_texture_buffer_range
-	TexBufferRange: FPointer<extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr)>,
-	TextureBufferRangeEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr)>,
+	TexBufferRange: FnPtr<extern "C" fn(target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr)>,
+	TextureBufferRangeEXT: FnPtr<extern "C" fn(texture: GLuint, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr)>,
 	
 	// Core Extension: ARB_texture_storage_multisample
-	TexStorage2DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean)>,
-	TexStorage3DMultisample: FPointer<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean)>,
-	TextureStorage2DMultisampleEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean)>,
-	TextureStorage3DMultisampleEXT: FPointer<extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean)>,
+	TexStorage2DMultisample: FnPtr<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean)>,
+	TexStorage3DMultisample: FnPtr<extern "C" fn(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean)>,
+	TextureStorage2DMultisampleEXT: FnPtr<extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean)>,
+	TextureStorage3DMultisampleEXT: FnPtr<extern "C" fn(texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean)>,
 	
 	// Core Extension: ARB_texture_view
-	TextureView: FPointer<extern "C" fn(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint)>,
+	TextureView: FnPtr<extern "C" fn(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint)>,
 	
 	// Core Extension: ARB_vertex_attrib_binding
-	BindVertexBuffer: FPointer<extern "C" fn(bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei)>,
-	VertexAttribFormat: FPointer<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint)>,
-	VertexAttribIFormat: FPointer<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
-	VertexAttribLFormat: FPointer<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
-	VertexAttribBinding: FPointer<extern "C" fn(attribindex: GLuint, bindingindex: GLuint)>,
-	VertexBindingDivisor: FPointer<extern "C" fn(bindingindex: GLuint, divisor: GLuint)>,
-	VertexArrayBindVertexBufferEXT: FPointer<extern "C" fn(vaobj: GLuint, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei)>,
-	VertexArrayVertexAttribFormatEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint)>,
-	VertexArrayVertexAttribIFormatEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
-	VertexArrayVertexAttribLFormatEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
-	VertexArrayVertexAttribBindingEXT: FPointer<extern "C" fn(vaobj: GLuint, attribindex: GLuint, bindingindex: GLuint)>,
-	VertexArrayVertexBindingDivisorEXT: FPointer<extern "C" fn(vaobj: GLuint, bindingindex: GLuint, divisor: GLuint)>,
+	BindVertexBuffer: FnPtr<extern "C" fn(bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei)>,
+	VertexAttribFormat: FnPtr<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint)>,
+	VertexAttribIFormat: FnPtr<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
+	VertexAttribLFormat: FnPtr<extern "C" fn(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
+	VertexAttribBinding: FnPtr<extern "C" fn(attribindex: GLuint, bindingindex: GLuint)>,
+	VertexBindingDivisor: FnPtr<extern "C" fn(bindingindex: GLuint, divisor: GLuint)>,
+	VertexArrayBindVertexBufferEXT: FnPtr<extern "C" fn(vaobj: GLuint, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei)>,
+	VertexArrayVertexAttribFormatEXT: FnPtr<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint)>,
+	VertexArrayVertexAttribIFormatEXT: FnPtr<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
+	VertexArrayVertexAttribLFormatEXT: FnPtr<extern "C" fn(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint)>,
+	VertexArrayVertexAttribBindingEXT: FnPtr<extern "C" fn(vaobj: GLuint, attribindex: GLuint, bindingindex: GLuint)>,
+	VertexArrayVertexBindingDivisorEXT: FnPtr<extern "C" fn(vaobj: GLuint, bindingindex: GLuint, divisor: GLuint)>,
 	
 }
 
 priv mod failing {
-	use core::libc::*;
+	use std::libc::*;
 	use types::*;
 	
 	// Version: 1.1
@@ -2950,662 +2950,662 @@ priv mod failing {
 pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) -> ~GL {
 	~GL {
 		// Version: 1.1
-		CullFace: FPointer::load(loadfn("glCullFace"), failing::glCullFace),
-		FrontFace: FPointer::load(loadfn("glFrontFace"), failing::glFrontFace),
-		Hint: FPointer::load(loadfn("glHint"), failing::glHint),
-		LineWidth: FPointer::load(loadfn("glLineWidth"), failing::glLineWidth),
-		PointSize: FPointer::load(loadfn("glPointSize"), failing::glPointSize),
-		PolygonMode: FPointer::load(loadfn("glPolygonMode"), failing::glPolygonMode),
-		Scissor: FPointer::load(loadfn("glScissor"), failing::glScissor),
-		TexParameterf: FPointer::load(loadfn("glTexParameterf"), failing::glTexParameterf),
-		TexParameterfv: FPointer::load(loadfn("glTexParameterfv"), failing::glTexParameterfv),
-		TexParameteri: FPointer::load(loadfn("glTexParameteri"), failing::glTexParameteri),
-		TexParameteriv: FPointer::load(loadfn("glTexParameteriv"), failing::glTexParameteriv),
-		TexImage1D: FPointer::load(loadfn("glTexImage1D"), failing::glTexImage1D),
-		TexImage2D: FPointer::load(loadfn("glTexImage2D"), failing::glTexImage2D),
-		DrawBuffer: FPointer::load(loadfn("glDrawBuffer"), failing::glDrawBuffer),
-		Clear: FPointer::load(loadfn("glClear"), failing::glClear),
-		ClearColor: FPointer::load(loadfn("glClearColor"), failing::glClearColor),
-		ClearStencil: FPointer::load(loadfn("glClearStencil"), failing::glClearStencil),
-		ClearDepth: FPointer::load(loadfn("glClearDepth"), failing::glClearDepth),
-		StencilMask: FPointer::load(loadfn("glStencilMask"), failing::glStencilMask),
-		ColorMask: FPointer::load(loadfn("glColorMask"), failing::glColorMask),
-		DepthMask: FPointer::load(loadfn("glDepthMask"), failing::glDepthMask),
-		Disable: FPointer::load(loadfn("glDisable"), failing::glDisable),
-		Enable: FPointer::load(loadfn("glEnable"), failing::glEnable),
-		Finish: FPointer::load(loadfn("glFinish"), failing::glFinish),
-		Flush: FPointer::load(loadfn("glFlush"), failing::glFlush),
-		BlendFunc: FPointer::load(loadfn("glBlendFunc"), failing::glBlendFunc),
-		LogicOp: FPointer::load(loadfn("glLogicOp"), failing::glLogicOp),
-		StencilFunc: FPointer::load(loadfn("glStencilFunc"), failing::glStencilFunc),
-		StencilOp: FPointer::load(loadfn("glStencilOp"), failing::glStencilOp),
-		DepthFunc: FPointer::load(loadfn("glDepthFunc"), failing::glDepthFunc),
-		PixelStoref: FPointer::load(loadfn("glPixelStoref"), failing::glPixelStoref),
-		PixelStorei: FPointer::load(loadfn("glPixelStorei"), failing::glPixelStorei),
-		ReadBuffer: FPointer::load(loadfn("glReadBuffer"), failing::glReadBuffer),
-		ReadPixels: FPointer::load(loadfn("glReadPixels"), failing::glReadPixels),
-		GetBooleanv: FPointer::load(loadfn("glGetBooleanv"), failing::glGetBooleanv),
-		GetDoublev: FPointer::load(loadfn("glGetDoublev"), failing::glGetDoublev),
-		GetError: FPointer::load(loadfn("glGetError"), failing::glGetError),
-		GetFloatv: FPointer::load(loadfn("glGetFloatv"), failing::glGetFloatv),
-		GetIntegerv: FPointer::load(loadfn("glGetIntegerv"), failing::glGetIntegerv),
-		GetString: FPointer::load(loadfn("glGetString"), failing::glGetString),
-		GetTexImage: FPointer::load(loadfn("glGetTexImage"), failing::glGetTexImage),
-		GetTexParameterfv: FPointer::load(loadfn("glGetTexParameterfv"), failing::glGetTexParameterfv),
-		GetTexParameteriv: FPointer::load(loadfn("glGetTexParameteriv"), failing::glGetTexParameteriv),
-		GetTexLevelParameterfv: FPointer::load(loadfn("glGetTexLevelParameterfv"), failing::glGetTexLevelParameterfv),
-		GetTexLevelParameteriv: FPointer::load(loadfn("glGetTexLevelParameteriv"), failing::glGetTexLevelParameteriv),
-		IsEnabled: FPointer::load(loadfn("glIsEnabled"), failing::glIsEnabled),
-		DepthRange: FPointer::load(loadfn("glDepthRange"), failing::glDepthRange),
-		Viewport: FPointer::load(loadfn("glViewport"), failing::glViewport),
-		DrawArrays: FPointer::load(loadfn("glDrawArrays"), failing::glDrawArrays),
-		DrawElements: FPointer::load(loadfn("glDrawElements"), failing::glDrawElements),
-		GetPointerv: FPointer::load(loadfn("glGetPointerv"), failing::glGetPointerv),
-		PolygonOffset: FPointer::load(loadfn("glPolygonOffset"), failing::glPolygonOffset),
-		CopyTexImage1D: FPointer::load(loadfn("glCopyTexImage1D"), failing::glCopyTexImage1D),
-		CopyTexImage2D: FPointer::load(loadfn("glCopyTexImage2D"), failing::glCopyTexImage2D),
-		CopyTexSubImage1D: FPointer::load(loadfn("glCopyTexSubImage1D"), failing::glCopyTexSubImage1D),
-		CopyTexSubImage2D: FPointer::load(loadfn("glCopyTexSubImage2D"), failing::glCopyTexSubImage2D),
-		TexSubImage1D: FPointer::load(loadfn("glTexSubImage1D"), failing::glTexSubImage1D),
-		TexSubImage2D: FPointer::load(loadfn("glTexSubImage2D"), failing::glTexSubImage2D),
-		BindTexture: FPointer::load(loadfn("glBindTexture"), failing::glBindTexture),
-		DeleteTextures: FPointer::load(loadfn("glDeleteTextures"), failing::glDeleteTextures),
-		GenTextures: FPointer::load(loadfn("glGenTextures"), failing::glGenTextures),
-		IsTexture: FPointer::load(loadfn("glIsTexture"), failing::glIsTexture),
-		Indexub: FPointer::load(loadfn("glIndexub"), failing::glIndexub),
-		Indexubv: FPointer::load(loadfn("glIndexubv"), failing::glIndexubv),
+		CullFace: FnPtr::new(loadfn("glCullFace"), failing::glCullFace),
+		FrontFace: FnPtr::new(loadfn("glFrontFace"), failing::glFrontFace),
+		Hint: FnPtr::new(loadfn("glHint"), failing::glHint),
+		LineWidth: FnPtr::new(loadfn("glLineWidth"), failing::glLineWidth),
+		PointSize: FnPtr::new(loadfn("glPointSize"), failing::glPointSize),
+		PolygonMode: FnPtr::new(loadfn("glPolygonMode"), failing::glPolygonMode),
+		Scissor: FnPtr::new(loadfn("glScissor"), failing::glScissor),
+		TexParameterf: FnPtr::new(loadfn("glTexParameterf"), failing::glTexParameterf),
+		TexParameterfv: FnPtr::new(loadfn("glTexParameterfv"), failing::glTexParameterfv),
+		TexParameteri: FnPtr::new(loadfn("glTexParameteri"), failing::glTexParameteri),
+		TexParameteriv: FnPtr::new(loadfn("glTexParameteriv"), failing::glTexParameteriv),
+		TexImage1D: FnPtr::new(loadfn("glTexImage1D"), failing::glTexImage1D),
+		TexImage2D: FnPtr::new(loadfn("glTexImage2D"), failing::glTexImage2D),
+		DrawBuffer: FnPtr::new(loadfn("glDrawBuffer"), failing::glDrawBuffer),
+		Clear: FnPtr::new(loadfn("glClear"), failing::glClear),
+		ClearColor: FnPtr::new(loadfn("glClearColor"), failing::glClearColor),
+		ClearStencil: FnPtr::new(loadfn("glClearStencil"), failing::glClearStencil),
+		ClearDepth: FnPtr::new(loadfn("glClearDepth"), failing::glClearDepth),
+		StencilMask: FnPtr::new(loadfn("glStencilMask"), failing::glStencilMask),
+		ColorMask: FnPtr::new(loadfn("glColorMask"), failing::glColorMask),
+		DepthMask: FnPtr::new(loadfn("glDepthMask"), failing::glDepthMask),
+		Disable: FnPtr::new(loadfn("glDisable"), failing::glDisable),
+		Enable: FnPtr::new(loadfn("glEnable"), failing::glEnable),
+		Finish: FnPtr::new(loadfn("glFinish"), failing::glFinish),
+		Flush: FnPtr::new(loadfn("glFlush"), failing::glFlush),
+		BlendFunc: FnPtr::new(loadfn("glBlendFunc"), failing::glBlendFunc),
+		LogicOp: FnPtr::new(loadfn("glLogicOp"), failing::glLogicOp),
+		StencilFunc: FnPtr::new(loadfn("glStencilFunc"), failing::glStencilFunc),
+		StencilOp: FnPtr::new(loadfn("glStencilOp"), failing::glStencilOp),
+		DepthFunc: FnPtr::new(loadfn("glDepthFunc"), failing::glDepthFunc),
+		PixelStoref: FnPtr::new(loadfn("glPixelStoref"), failing::glPixelStoref),
+		PixelStorei: FnPtr::new(loadfn("glPixelStorei"), failing::glPixelStorei),
+		ReadBuffer: FnPtr::new(loadfn("glReadBuffer"), failing::glReadBuffer),
+		ReadPixels: FnPtr::new(loadfn("glReadPixels"), failing::glReadPixels),
+		GetBooleanv: FnPtr::new(loadfn("glGetBooleanv"), failing::glGetBooleanv),
+		GetDoublev: FnPtr::new(loadfn("glGetDoublev"), failing::glGetDoublev),
+		GetError: FnPtr::new(loadfn("glGetError"), failing::glGetError),
+		GetFloatv: FnPtr::new(loadfn("glGetFloatv"), failing::glGetFloatv),
+		GetIntegerv: FnPtr::new(loadfn("glGetIntegerv"), failing::glGetIntegerv),
+		GetString: FnPtr::new(loadfn("glGetString"), failing::glGetString),
+		GetTexImage: FnPtr::new(loadfn("glGetTexImage"), failing::glGetTexImage),
+		GetTexParameterfv: FnPtr::new(loadfn("glGetTexParameterfv"), failing::glGetTexParameterfv),
+		GetTexParameteriv: FnPtr::new(loadfn("glGetTexParameteriv"), failing::glGetTexParameteriv),
+		GetTexLevelParameterfv: FnPtr::new(loadfn("glGetTexLevelParameterfv"), failing::glGetTexLevelParameterfv),
+		GetTexLevelParameteriv: FnPtr::new(loadfn("glGetTexLevelParameteriv"), failing::glGetTexLevelParameteriv),
+		IsEnabled: FnPtr::new(loadfn("glIsEnabled"), failing::glIsEnabled),
+		DepthRange: FnPtr::new(loadfn("glDepthRange"), failing::glDepthRange),
+		Viewport: FnPtr::new(loadfn("glViewport"), failing::glViewport),
+		DrawArrays: FnPtr::new(loadfn("glDrawArrays"), failing::glDrawArrays),
+		DrawElements: FnPtr::new(loadfn("glDrawElements"), failing::glDrawElements),
+		GetPointerv: FnPtr::new(loadfn("glGetPointerv"), failing::glGetPointerv),
+		PolygonOffset: FnPtr::new(loadfn("glPolygonOffset"), failing::glPolygonOffset),
+		CopyTexImage1D: FnPtr::new(loadfn("glCopyTexImage1D"), failing::glCopyTexImage1D),
+		CopyTexImage2D: FnPtr::new(loadfn("glCopyTexImage2D"), failing::glCopyTexImage2D),
+		CopyTexSubImage1D: FnPtr::new(loadfn("glCopyTexSubImage1D"), failing::glCopyTexSubImage1D),
+		CopyTexSubImage2D: FnPtr::new(loadfn("glCopyTexSubImage2D"), failing::glCopyTexSubImage2D),
+		TexSubImage1D: FnPtr::new(loadfn("glTexSubImage1D"), failing::glTexSubImage1D),
+		TexSubImage2D: FnPtr::new(loadfn("glTexSubImage2D"), failing::glTexSubImage2D),
+		BindTexture: FnPtr::new(loadfn("glBindTexture"), failing::glBindTexture),
+		DeleteTextures: FnPtr::new(loadfn("glDeleteTextures"), failing::glDeleteTextures),
+		GenTextures: FnPtr::new(loadfn("glGenTextures"), failing::glGenTextures),
+		IsTexture: FnPtr::new(loadfn("glIsTexture"), failing::glIsTexture),
+		Indexub: FnPtr::new(loadfn("glIndexub"), failing::glIndexub),
+		Indexubv: FnPtr::new(loadfn("glIndexubv"), failing::glIndexubv),
 		
 		// Version: 1.2
-		BlendColor: FPointer::load(loadfn("glBlendColor"), failing::glBlendColor),
-		BlendEquation: FPointer::load(loadfn("glBlendEquation"), failing::glBlendEquation),
-		DrawRangeElements: FPointer::load(loadfn("glDrawRangeElements"), failing::glDrawRangeElements),
-		TexImage3D: FPointer::load(loadfn("glTexImage3D"), failing::glTexImage3D),
-		TexSubImage3D: FPointer::load(loadfn("glTexSubImage3D"), failing::glTexSubImage3D),
-		CopyTexSubImage3D: FPointer::load(loadfn("glCopyTexSubImage3D"), failing::glCopyTexSubImage3D),
+		BlendColor: FnPtr::new(loadfn("glBlendColor"), failing::glBlendColor),
+		BlendEquation: FnPtr::new(loadfn("glBlendEquation"), failing::glBlendEquation),
+		DrawRangeElements: FnPtr::new(loadfn("glDrawRangeElements"), failing::glDrawRangeElements),
+		TexImage3D: FnPtr::new(loadfn("glTexImage3D"), failing::glTexImage3D),
+		TexSubImage3D: FnPtr::new(loadfn("glTexSubImage3D"), failing::glTexSubImage3D),
+		CopyTexSubImage3D: FnPtr::new(loadfn("glCopyTexSubImage3D"), failing::glCopyTexSubImage3D),
 		
 		// Version: 1.3
-		ActiveTexture: FPointer::load(loadfn("glActiveTexture"), failing::glActiveTexture),
-		SampleCoverage: FPointer::load(loadfn("glSampleCoverage"), failing::glSampleCoverage),
-		CompressedTexImage3D: FPointer::load(loadfn("glCompressedTexImage3D"), failing::glCompressedTexImage3D),
-		CompressedTexImage2D: FPointer::load(loadfn("glCompressedTexImage2D"), failing::glCompressedTexImage2D),
-		CompressedTexImage1D: FPointer::load(loadfn("glCompressedTexImage1D"), failing::glCompressedTexImage1D),
-		CompressedTexSubImage3D: FPointer::load(loadfn("glCompressedTexSubImage3D"), failing::glCompressedTexSubImage3D),
-		CompressedTexSubImage2D: FPointer::load(loadfn("glCompressedTexSubImage2D"), failing::glCompressedTexSubImage2D),
-		CompressedTexSubImage1D: FPointer::load(loadfn("glCompressedTexSubImage1D"), failing::glCompressedTexSubImage1D),
-		GetCompressedTexImage: FPointer::load(loadfn("glGetCompressedTexImage"), failing::glGetCompressedTexImage),
+		ActiveTexture: FnPtr::new(loadfn("glActiveTexture"), failing::glActiveTexture),
+		SampleCoverage: FnPtr::new(loadfn("glSampleCoverage"), failing::glSampleCoverage),
+		CompressedTexImage3D: FnPtr::new(loadfn("glCompressedTexImage3D"), failing::glCompressedTexImage3D),
+		CompressedTexImage2D: FnPtr::new(loadfn("glCompressedTexImage2D"), failing::glCompressedTexImage2D),
+		CompressedTexImage1D: FnPtr::new(loadfn("glCompressedTexImage1D"), failing::glCompressedTexImage1D),
+		CompressedTexSubImage3D: FnPtr::new(loadfn("glCompressedTexSubImage3D"), failing::glCompressedTexSubImage3D),
+		CompressedTexSubImage2D: FnPtr::new(loadfn("glCompressedTexSubImage2D"), failing::glCompressedTexSubImage2D),
+		CompressedTexSubImage1D: FnPtr::new(loadfn("glCompressedTexSubImage1D"), failing::glCompressedTexSubImage1D),
+		GetCompressedTexImage: FnPtr::new(loadfn("glGetCompressedTexImage"), failing::glGetCompressedTexImage),
 		
 		// Version: 1.4
-		BlendFuncSeparate: FPointer::load(loadfn("glBlendFuncSeparate"), failing::glBlendFuncSeparate),
-		MultiDrawArrays: FPointer::load(loadfn("glMultiDrawArrays"), failing::glMultiDrawArrays),
-		MultiDrawElements: FPointer::load(loadfn("glMultiDrawElements"), failing::glMultiDrawElements),
-		PointParameterf: FPointer::load(loadfn("glPointParameterf"), failing::glPointParameterf),
-		PointParameterfv: FPointer::load(loadfn("glPointParameterfv"), failing::glPointParameterfv),
-		PointParameteri: FPointer::load(loadfn("glPointParameteri"), failing::glPointParameteri),
-		PointParameteriv: FPointer::load(loadfn("glPointParameteriv"), failing::glPointParameteriv),
+		BlendFuncSeparate: FnPtr::new(loadfn("glBlendFuncSeparate"), failing::glBlendFuncSeparate),
+		MultiDrawArrays: FnPtr::new(loadfn("glMultiDrawArrays"), failing::glMultiDrawArrays),
+		MultiDrawElements: FnPtr::new(loadfn("glMultiDrawElements"), failing::glMultiDrawElements),
+		PointParameterf: FnPtr::new(loadfn("glPointParameterf"), failing::glPointParameterf),
+		PointParameterfv: FnPtr::new(loadfn("glPointParameterfv"), failing::glPointParameterfv),
+		PointParameteri: FnPtr::new(loadfn("glPointParameteri"), failing::glPointParameteri),
+		PointParameteriv: FnPtr::new(loadfn("glPointParameteriv"), failing::glPointParameteriv),
 		
 		// Version: 1.5
-		GenQueries: FPointer::load(loadfn("glGenQueries"), failing::glGenQueries),
-		DeleteQueries: FPointer::load(loadfn("glDeleteQueries"), failing::glDeleteQueries),
-		IsQuery: FPointer::load(loadfn("glIsQuery"), failing::glIsQuery),
-		BeginQuery: FPointer::load(loadfn("glBeginQuery"), failing::glBeginQuery),
-		EndQuery: FPointer::load(loadfn("glEndQuery"), failing::glEndQuery),
-		GetQueryiv: FPointer::load(loadfn("glGetQueryiv"), failing::glGetQueryiv),
-		GetQueryObjectiv: FPointer::load(loadfn("glGetQueryObjectiv"), failing::glGetQueryObjectiv),
-		GetQueryObjectuiv: FPointer::load(loadfn("glGetQueryObjectuiv"), failing::glGetQueryObjectuiv),
-		BindBuffer: FPointer::load(loadfn("glBindBuffer"), failing::glBindBuffer),
-		DeleteBuffers: FPointer::load(loadfn("glDeleteBuffers"), failing::glDeleteBuffers),
-		GenBuffers: FPointer::load(loadfn("glGenBuffers"), failing::glGenBuffers),
-		IsBuffer: FPointer::load(loadfn("glIsBuffer"), failing::glIsBuffer),
-		BufferData: FPointer::load(loadfn("glBufferData"), failing::glBufferData),
-		BufferSubData: FPointer::load(loadfn("glBufferSubData"), failing::glBufferSubData),
-		GetBufferSubData: FPointer::load(loadfn("glGetBufferSubData"), failing::glGetBufferSubData),
-		MapBuffer: FPointer::load(loadfn("glMapBuffer"), failing::glMapBuffer),
-		UnmapBuffer: FPointer::load(loadfn("glUnmapBuffer"), failing::glUnmapBuffer),
-		GetBufferParameteriv: FPointer::load(loadfn("glGetBufferParameteriv"), failing::glGetBufferParameteriv),
-		GetBufferPointerv: FPointer::load(loadfn("glGetBufferPointerv"), failing::glGetBufferPointerv),
+		GenQueries: FnPtr::new(loadfn("glGenQueries"), failing::glGenQueries),
+		DeleteQueries: FnPtr::new(loadfn("glDeleteQueries"), failing::glDeleteQueries),
+		IsQuery: FnPtr::new(loadfn("glIsQuery"), failing::glIsQuery),
+		BeginQuery: FnPtr::new(loadfn("glBeginQuery"), failing::glBeginQuery),
+		EndQuery: FnPtr::new(loadfn("glEndQuery"), failing::glEndQuery),
+		GetQueryiv: FnPtr::new(loadfn("glGetQueryiv"), failing::glGetQueryiv),
+		GetQueryObjectiv: FnPtr::new(loadfn("glGetQueryObjectiv"), failing::glGetQueryObjectiv),
+		GetQueryObjectuiv: FnPtr::new(loadfn("glGetQueryObjectuiv"), failing::glGetQueryObjectuiv),
+		BindBuffer: FnPtr::new(loadfn("glBindBuffer"), failing::glBindBuffer),
+		DeleteBuffers: FnPtr::new(loadfn("glDeleteBuffers"), failing::glDeleteBuffers),
+		GenBuffers: FnPtr::new(loadfn("glGenBuffers"), failing::glGenBuffers),
+		IsBuffer: FnPtr::new(loadfn("glIsBuffer"), failing::glIsBuffer),
+		BufferData: FnPtr::new(loadfn("glBufferData"), failing::glBufferData),
+		BufferSubData: FnPtr::new(loadfn("glBufferSubData"), failing::glBufferSubData),
+		GetBufferSubData: FnPtr::new(loadfn("glGetBufferSubData"), failing::glGetBufferSubData),
+		MapBuffer: FnPtr::new(loadfn("glMapBuffer"), failing::glMapBuffer),
+		UnmapBuffer: FnPtr::new(loadfn("glUnmapBuffer"), failing::glUnmapBuffer),
+		GetBufferParameteriv: FnPtr::new(loadfn("glGetBufferParameteriv"), failing::glGetBufferParameteriv),
+		GetBufferPointerv: FnPtr::new(loadfn("glGetBufferPointerv"), failing::glGetBufferPointerv),
 		
 		// Version: 2.0
-		BlendEquationSeparate: FPointer::load(loadfn("glBlendEquationSeparate"), failing::glBlendEquationSeparate),
-		DrawBuffers: FPointer::load(loadfn("glDrawBuffers"), failing::glDrawBuffers),
-		StencilOpSeparate: FPointer::load(loadfn("glStencilOpSeparate"), failing::glStencilOpSeparate),
-		StencilFuncSeparate: FPointer::load(loadfn("glStencilFuncSeparate"), failing::glStencilFuncSeparate),
-		StencilMaskSeparate: FPointer::load(loadfn("glStencilMaskSeparate"), failing::glStencilMaskSeparate),
-		AttachShader: FPointer::load(loadfn("glAttachShader"), failing::glAttachShader),
-		BindAttribLocation: FPointer::load(loadfn("glBindAttribLocation"), failing::glBindAttribLocation),
-		CompileShader: FPointer::load(loadfn("glCompileShader"), failing::glCompileShader),
-		CreateProgram: FPointer::load(loadfn("glCreateProgram"), failing::glCreateProgram),
-		CreateShader: FPointer::load(loadfn("glCreateShader"), failing::glCreateShader),
-		DeleteProgram: FPointer::load(loadfn("glDeleteProgram"), failing::glDeleteProgram),
-		DeleteShader: FPointer::load(loadfn("glDeleteShader"), failing::glDeleteShader),
-		DetachShader: FPointer::load(loadfn("glDetachShader"), failing::glDetachShader),
-		DisableVertexAttribArray: FPointer::load(loadfn("glDisableVertexAttribArray"), failing::glDisableVertexAttribArray),
-		EnableVertexAttribArray: FPointer::load(loadfn("glEnableVertexAttribArray"), failing::glEnableVertexAttribArray),
-		GetActiveAttrib: FPointer::load(loadfn("glGetActiveAttrib"), failing::glGetActiveAttrib),
-		GetActiveUniform: FPointer::load(loadfn("glGetActiveUniform"), failing::glGetActiveUniform),
-		GetAttachedShaders: FPointer::load(loadfn("glGetAttachedShaders"), failing::glGetAttachedShaders),
-		GetAttribLocation: FPointer::load(loadfn("glGetAttribLocation"), failing::glGetAttribLocation),
-		GetProgramiv: FPointer::load(loadfn("glGetProgramiv"), failing::glGetProgramiv),
-		GetProgramInfoLog: FPointer::load(loadfn("glGetProgramInfoLog"), failing::glGetProgramInfoLog),
-		GetShaderiv: FPointer::load(loadfn("glGetShaderiv"), failing::glGetShaderiv),
-		GetShaderInfoLog: FPointer::load(loadfn("glGetShaderInfoLog"), failing::glGetShaderInfoLog),
-		GetShaderSource: FPointer::load(loadfn("glGetShaderSource"), failing::glGetShaderSource),
-		GetUniformLocation: FPointer::load(loadfn("glGetUniformLocation"), failing::glGetUniformLocation),
-		GetUniformfv: FPointer::load(loadfn("glGetUniformfv"), failing::glGetUniformfv),
-		GetUniformiv: FPointer::load(loadfn("glGetUniformiv"), failing::glGetUniformiv),
-		GetVertexAttribdv: FPointer::load(loadfn("glGetVertexAttribdv"), failing::glGetVertexAttribdv),
-		GetVertexAttribfv: FPointer::load(loadfn("glGetVertexAttribfv"), failing::glGetVertexAttribfv),
-		GetVertexAttribiv: FPointer::load(loadfn("glGetVertexAttribiv"), failing::glGetVertexAttribiv),
-		GetVertexAttribPointerv: FPointer::load(loadfn("glGetVertexAttribPointerv"), failing::glGetVertexAttribPointerv),
-		IsProgram: FPointer::load(loadfn("glIsProgram"), failing::glIsProgram),
-		IsShader: FPointer::load(loadfn("glIsShader"), failing::glIsShader),
-		LinkProgram: FPointer::load(loadfn("glLinkProgram"), failing::glLinkProgram),
-		ShaderSource: FPointer::load(loadfn("glShaderSource"), failing::glShaderSource),
-		UseProgram: FPointer::load(loadfn("glUseProgram"), failing::glUseProgram),
-		Uniform1f: FPointer::load(loadfn("glUniform1f"), failing::glUniform1f),
-		Uniform2f: FPointer::load(loadfn("glUniform2f"), failing::glUniform2f),
-		Uniform3f: FPointer::load(loadfn("glUniform3f"), failing::glUniform3f),
-		Uniform4f: FPointer::load(loadfn("glUniform4f"), failing::glUniform4f),
-		Uniform1i: FPointer::load(loadfn("glUniform1i"), failing::glUniform1i),
-		Uniform2i: FPointer::load(loadfn("glUniform2i"), failing::glUniform2i),
-		Uniform3i: FPointer::load(loadfn("glUniform3i"), failing::glUniform3i),
-		Uniform4i: FPointer::load(loadfn("glUniform4i"), failing::glUniform4i),
-		Uniform1fv: FPointer::load(loadfn("glUniform1fv"), failing::glUniform1fv),
-		Uniform2fv: FPointer::load(loadfn("glUniform2fv"), failing::glUniform2fv),
-		Uniform3fv: FPointer::load(loadfn("glUniform3fv"), failing::glUniform3fv),
-		Uniform4fv: FPointer::load(loadfn("glUniform4fv"), failing::glUniform4fv),
-		Uniform1iv: FPointer::load(loadfn("glUniform1iv"), failing::glUniform1iv),
-		Uniform2iv: FPointer::load(loadfn("glUniform2iv"), failing::glUniform2iv),
-		Uniform3iv: FPointer::load(loadfn("glUniform3iv"), failing::glUniform3iv),
-		Uniform4iv: FPointer::load(loadfn("glUniform4iv"), failing::glUniform4iv),
-		UniformMatrix2fv: FPointer::load(loadfn("glUniformMatrix2fv"), failing::glUniformMatrix2fv),
-		UniformMatrix3fv: FPointer::load(loadfn("glUniformMatrix3fv"), failing::glUniformMatrix3fv),
-		UniformMatrix4fv: FPointer::load(loadfn("glUniformMatrix4fv"), failing::glUniformMatrix4fv),
-		ValidateProgram: FPointer::load(loadfn("glValidateProgram"), failing::glValidateProgram),
-		VertexAttribPointer: FPointer::load(loadfn("glVertexAttribPointer"), failing::glVertexAttribPointer),
+		BlendEquationSeparate: FnPtr::new(loadfn("glBlendEquationSeparate"), failing::glBlendEquationSeparate),
+		DrawBuffers: FnPtr::new(loadfn("glDrawBuffers"), failing::glDrawBuffers),
+		StencilOpSeparate: FnPtr::new(loadfn("glStencilOpSeparate"), failing::glStencilOpSeparate),
+		StencilFuncSeparate: FnPtr::new(loadfn("glStencilFuncSeparate"), failing::glStencilFuncSeparate),
+		StencilMaskSeparate: FnPtr::new(loadfn("glStencilMaskSeparate"), failing::glStencilMaskSeparate),
+		AttachShader: FnPtr::new(loadfn("glAttachShader"), failing::glAttachShader),
+		BindAttribLocation: FnPtr::new(loadfn("glBindAttribLocation"), failing::glBindAttribLocation),
+		CompileShader: FnPtr::new(loadfn("glCompileShader"), failing::glCompileShader),
+		CreateProgram: FnPtr::new(loadfn("glCreateProgram"), failing::glCreateProgram),
+		CreateShader: FnPtr::new(loadfn("glCreateShader"), failing::glCreateShader),
+		DeleteProgram: FnPtr::new(loadfn("glDeleteProgram"), failing::glDeleteProgram),
+		DeleteShader: FnPtr::new(loadfn("glDeleteShader"), failing::glDeleteShader),
+		DetachShader: FnPtr::new(loadfn("glDetachShader"), failing::glDetachShader),
+		DisableVertexAttribArray: FnPtr::new(loadfn("glDisableVertexAttribArray"), failing::glDisableVertexAttribArray),
+		EnableVertexAttribArray: FnPtr::new(loadfn("glEnableVertexAttribArray"), failing::glEnableVertexAttribArray),
+		GetActiveAttrib: FnPtr::new(loadfn("glGetActiveAttrib"), failing::glGetActiveAttrib),
+		GetActiveUniform: FnPtr::new(loadfn("glGetActiveUniform"), failing::glGetActiveUniform),
+		GetAttachedShaders: FnPtr::new(loadfn("glGetAttachedShaders"), failing::glGetAttachedShaders),
+		GetAttribLocation: FnPtr::new(loadfn("glGetAttribLocation"), failing::glGetAttribLocation),
+		GetProgramiv: FnPtr::new(loadfn("glGetProgramiv"), failing::glGetProgramiv),
+		GetProgramInfoLog: FnPtr::new(loadfn("glGetProgramInfoLog"), failing::glGetProgramInfoLog),
+		GetShaderiv: FnPtr::new(loadfn("glGetShaderiv"), failing::glGetShaderiv),
+		GetShaderInfoLog: FnPtr::new(loadfn("glGetShaderInfoLog"), failing::glGetShaderInfoLog),
+		GetShaderSource: FnPtr::new(loadfn("glGetShaderSource"), failing::glGetShaderSource),
+		GetUniformLocation: FnPtr::new(loadfn("glGetUniformLocation"), failing::glGetUniformLocation),
+		GetUniformfv: FnPtr::new(loadfn("glGetUniformfv"), failing::glGetUniformfv),
+		GetUniformiv: FnPtr::new(loadfn("glGetUniformiv"), failing::glGetUniformiv),
+		GetVertexAttribdv: FnPtr::new(loadfn("glGetVertexAttribdv"), failing::glGetVertexAttribdv),
+		GetVertexAttribfv: FnPtr::new(loadfn("glGetVertexAttribfv"), failing::glGetVertexAttribfv),
+		GetVertexAttribiv: FnPtr::new(loadfn("glGetVertexAttribiv"), failing::glGetVertexAttribiv),
+		GetVertexAttribPointerv: FnPtr::new(loadfn("glGetVertexAttribPointerv"), failing::glGetVertexAttribPointerv),
+		IsProgram: FnPtr::new(loadfn("glIsProgram"), failing::glIsProgram),
+		IsShader: FnPtr::new(loadfn("glIsShader"), failing::glIsShader),
+		LinkProgram: FnPtr::new(loadfn("glLinkProgram"), failing::glLinkProgram),
+		ShaderSource: FnPtr::new(loadfn("glShaderSource"), failing::glShaderSource),
+		UseProgram: FnPtr::new(loadfn("glUseProgram"), failing::glUseProgram),
+		Uniform1f: FnPtr::new(loadfn("glUniform1f"), failing::glUniform1f),
+		Uniform2f: FnPtr::new(loadfn("glUniform2f"), failing::glUniform2f),
+		Uniform3f: FnPtr::new(loadfn("glUniform3f"), failing::glUniform3f),
+		Uniform4f: FnPtr::new(loadfn("glUniform4f"), failing::glUniform4f),
+		Uniform1i: FnPtr::new(loadfn("glUniform1i"), failing::glUniform1i),
+		Uniform2i: FnPtr::new(loadfn("glUniform2i"), failing::glUniform2i),
+		Uniform3i: FnPtr::new(loadfn("glUniform3i"), failing::glUniform3i),
+		Uniform4i: FnPtr::new(loadfn("glUniform4i"), failing::glUniform4i),
+		Uniform1fv: FnPtr::new(loadfn("glUniform1fv"), failing::glUniform1fv),
+		Uniform2fv: FnPtr::new(loadfn("glUniform2fv"), failing::glUniform2fv),
+		Uniform3fv: FnPtr::new(loadfn("glUniform3fv"), failing::glUniform3fv),
+		Uniform4fv: FnPtr::new(loadfn("glUniform4fv"), failing::glUniform4fv),
+		Uniform1iv: FnPtr::new(loadfn("glUniform1iv"), failing::glUniform1iv),
+		Uniform2iv: FnPtr::new(loadfn("glUniform2iv"), failing::glUniform2iv),
+		Uniform3iv: FnPtr::new(loadfn("glUniform3iv"), failing::glUniform3iv),
+		Uniform4iv: FnPtr::new(loadfn("glUniform4iv"), failing::glUniform4iv),
+		UniformMatrix2fv: FnPtr::new(loadfn("glUniformMatrix2fv"), failing::glUniformMatrix2fv),
+		UniformMatrix3fv: FnPtr::new(loadfn("glUniformMatrix3fv"), failing::glUniformMatrix3fv),
+		UniformMatrix4fv: FnPtr::new(loadfn("glUniformMatrix4fv"), failing::glUniformMatrix4fv),
+		ValidateProgram: FnPtr::new(loadfn("glValidateProgram"), failing::glValidateProgram),
+		VertexAttribPointer: FnPtr::new(loadfn("glVertexAttribPointer"), failing::glVertexAttribPointer),
 		
 		// Version: 2.1
-		UniformMatrix2x3fv: FPointer::load(loadfn("glUniformMatrix2x3fv"), failing::glUniformMatrix2x3fv),
-		UniformMatrix3x2fv: FPointer::load(loadfn("glUniformMatrix3x2fv"), failing::glUniformMatrix3x2fv),
-		UniformMatrix2x4fv: FPointer::load(loadfn("glUniformMatrix2x4fv"), failing::glUniformMatrix2x4fv),
-		UniformMatrix4x2fv: FPointer::load(loadfn("glUniformMatrix4x2fv"), failing::glUniformMatrix4x2fv),
-		UniformMatrix3x4fv: FPointer::load(loadfn("glUniformMatrix3x4fv"), failing::glUniformMatrix3x4fv),
-		UniformMatrix4x3fv: FPointer::load(loadfn("glUniformMatrix4x3fv"), failing::glUniformMatrix4x3fv),
+		UniformMatrix2x3fv: FnPtr::new(loadfn("glUniformMatrix2x3fv"), failing::glUniformMatrix2x3fv),
+		UniformMatrix3x2fv: FnPtr::new(loadfn("glUniformMatrix3x2fv"), failing::glUniformMatrix3x2fv),
+		UniformMatrix2x4fv: FnPtr::new(loadfn("glUniformMatrix2x4fv"), failing::glUniformMatrix2x4fv),
+		UniformMatrix4x2fv: FnPtr::new(loadfn("glUniformMatrix4x2fv"), failing::glUniformMatrix4x2fv),
+		UniformMatrix3x4fv: FnPtr::new(loadfn("glUniformMatrix3x4fv"), failing::glUniformMatrix3x4fv),
+		UniformMatrix4x3fv: FnPtr::new(loadfn("glUniformMatrix4x3fv"), failing::glUniformMatrix4x3fv),
 		
 		// Version: 3.0
-		ColorMaski: FPointer::load(loadfn("glColorMaski"), failing::glColorMaski),
-		GetBooleani_v: FPointer::load(loadfn("glGetBooleani_v"), failing::glGetBooleani_v),
-		GetIntegeri_v: FPointer::load(loadfn("glGetIntegeri_v"), failing::glGetIntegeri_v),
-		Enablei: FPointer::load(loadfn("glEnablei"), failing::glEnablei),
-		Disablei: FPointer::load(loadfn("glDisablei"), failing::glDisablei),
-		IsEnabledi: FPointer::load(loadfn("glIsEnabledi"), failing::glIsEnabledi),
-		BeginTransformFeedback: FPointer::load(loadfn("glBeginTransformFeedback"), failing::glBeginTransformFeedback),
-		EndTransformFeedback: FPointer::load(loadfn("glEndTransformFeedback"), failing::glEndTransformFeedback),
-		BindBufferRange: FPointer::load(loadfn("glBindBufferRange"), failing::glBindBufferRange),
-		BindBufferBase: FPointer::load(loadfn("glBindBufferBase"), failing::glBindBufferBase),
-		TransformFeedbackVaryings: FPointer::load(loadfn("glTransformFeedbackVaryings"), failing::glTransformFeedbackVaryings),
-		GetTransformFeedbackVarying: FPointer::load(loadfn("glGetTransformFeedbackVarying"), failing::glGetTransformFeedbackVarying),
-		ClampColor: FPointer::load(loadfn("glClampColor"), failing::glClampColor),
-		BeginConditionalRender: FPointer::load(loadfn("glBeginConditionalRender"), failing::glBeginConditionalRender),
-		EndConditionalRender: FPointer::load(loadfn("glEndConditionalRender"), failing::glEndConditionalRender),
-		VertexAttribIPointer: FPointer::load(loadfn("glVertexAttribIPointer"), failing::glVertexAttribIPointer),
-		GetVertexAttribIiv: FPointer::load(loadfn("glGetVertexAttribIiv"), failing::glGetVertexAttribIiv),
-		GetVertexAttribIuiv: FPointer::load(loadfn("glGetVertexAttribIuiv"), failing::glGetVertexAttribIuiv),
-		VertexAttribI1i: FPointer::load(loadfn("glVertexAttribI1i"), failing::glVertexAttribI1i),
-		VertexAttribI2i: FPointer::load(loadfn("glVertexAttribI2i"), failing::glVertexAttribI2i),
-		VertexAttribI3i: FPointer::load(loadfn("glVertexAttribI3i"), failing::glVertexAttribI3i),
-		VertexAttribI4i: FPointer::load(loadfn("glVertexAttribI4i"), failing::glVertexAttribI4i),
-		VertexAttribI1ui: FPointer::load(loadfn("glVertexAttribI1ui"), failing::glVertexAttribI1ui),
-		VertexAttribI2ui: FPointer::load(loadfn("glVertexAttribI2ui"), failing::glVertexAttribI2ui),
-		VertexAttribI3ui: FPointer::load(loadfn("glVertexAttribI3ui"), failing::glVertexAttribI3ui),
-		VertexAttribI4ui: FPointer::load(loadfn("glVertexAttribI4ui"), failing::glVertexAttribI4ui),
-		VertexAttribI1iv: FPointer::load(loadfn("glVertexAttribI1iv"), failing::glVertexAttribI1iv),
-		VertexAttribI2iv: FPointer::load(loadfn("glVertexAttribI2iv"), failing::glVertexAttribI2iv),
-		VertexAttribI3iv: FPointer::load(loadfn("glVertexAttribI3iv"), failing::glVertexAttribI3iv),
-		VertexAttribI4iv: FPointer::load(loadfn("glVertexAttribI4iv"), failing::glVertexAttribI4iv),
-		VertexAttribI1uiv: FPointer::load(loadfn("glVertexAttribI1uiv"), failing::glVertexAttribI1uiv),
-		VertexAttribI2uiv: FPointer::load(loadfn("glVertexAttribI2uiv"), failing::glVertexAttribI2uiv),
-		VertexAttribI3uiv: FPointer::load(loadfn("glVertexAttribI3uiv"), failing::glVertexAttribI3uiv),
-		VertexAttribI4uiv: FPointer::load(loadfn("glVertexAttribI4uiv"), failing::glVertexAttribI4uiv),
-		VertexAttribI4bv: FPointer::load(loadfn("glVertexAttribI4bv"), failing::glVertexAttribI4bv),
-		VertexAttribI4sv: FPointer::load(loadfn("glVertexAttribI4sv"), failing::glVertexAttribI4sv),
-		VertexAttribI4ubv: FPointer::load(loadfn("glVertexAttribI4ubv"), failing::glVertexAttribI4ubv),
-		VertexAttribI4usv: FPointer::load(loadfn("glVertexAttribI4usv"), failing::glVertexAttribI4usv),
-		GetUniformuiv: FPointer::load(loadfn("glGetUniformuiv"), failing::glGetUniformuiv),
-		BindFragDataLocation: FPointer::load(loadfn("glBindFragDataLocation"), failing::glBindFragDataLocation),
-		GetFragDataLocation: FPointer::load(loadfn("glGetFragDataLocation"), failing::glGetFragDataLocation),
-		Uniform1ui: FPointer::load(loadfn("glUniform1ui"), failing::glUniform1ui),
-		Uniform2ui: FPointer::load(loadfn("glUniform2ui"), failing::glUniform2ui),
-		Uniform3ui: FPointer::load(loadfn("glUniform3ui"), failing::glUniform3ui),
-		Uniform4ui: FPointer::load(loadfn("glUniform4ui"), failing::glUniform4ui),
-		Uniform1uiv: FPointer::load(loadfn("glUniform1uiv"), failing::glUniform1uiv),
-		Uniform2uiv: FPointer::load(loadfn("glUniform2uiv"), failing::glUniform2uiv),
-		Uniform3uiv: FPointer::load(loadfn("glUniform3uiv"), failing::glUniform3uiv),
-		Uniform4uiv: FPointer::load(loadfn("glUniform4uiv"), failing::glUniform4uiv),
-		TexParameterIiv: FPointer::load(loadfn("glTexParameterIiv"), failing::glTexParameterIiv),
-		TexParameterIuiv: FPointer::load(loadfn("glTexParameterIuiv"), failing::glTexParameterIuiv),
-		GetTexParameterIiv: FPointer::load(loadfn("glGetTexParameterIiv"), failing::glGetTexParameterIiv),
-		GetTexParameterIuiv: FPointer::load(loadfn("glGetTexParameterIuiv"), failing::glGetTexParameterIuiv),
-		ClearBufferiv: FPointer::load(loadfn("glClearBufferiv"), failing::glClearBufferiv),
-		ClearBufferuiv: FPointer::load(loadfn("glClearBufferuiv"), failing::glClearBufferuiv),
-		ClearBufferfv: FPointer::load(loadfn("glClearBufferfv"), failing::glClearBufferfv),
-		ClearBufferfi: FPointer::load(loadfn("glClearBufferfi"), failing::glClearBufferfi),
-		GetStringi: FPointer::load(loadfn("glGetStringi"), failing::glGetStringi),
+		ColorMaski: FnPtr::new(loadfn("glColorMaski"), failing::glColorMaski),
+		GetBooleani_v: FnPtr::new(loadfn("glGetBooleani_v"), failing::glGetBooleani_v),
+		GetIntegeri_v: FnPtr::new(loadfn("glGetIntegeri_v"), failing::glGetIntegeri_v),
+		Enablei: FnPtr::new(loadfn("glEnablei"), failing::glEnablei),
+		Disablei: FnPtr::new(loadfn("glDisablei"), failing::glDisablei),
+		IsEnabledi: FnPtr::new(loadfn("glIsEnabledi"), failing::glIsEnabledi),
+		BeginTransformFeedback: FnPtr::new(loadfn("glBeginTransformFeedback"), failing::glBeginTransformFeedback),
+		EndTransformFeedback: FnPtr::new(loadfn("glEndTransformFeedback"), failing::glEndTransformFeedback),
+		BindBufferRange: FnPtr::new(loadfn("glBindBufferRange"), failing::glBindBufferRange),
+		BindBufferBase: FnPtr::new(loadfn("glBindBufferBase"), failing::glBindBufferBase),
+		TransformFeedbackVaryings: FnPtr::new(loadfn("glTransformFeedbackVaryings"), failing::glTransformFeedbackVaryings),
+		GetTransformFeedbackVarying: FnPtr::new(loadfn("glGetTransformFeedbackVarying"), failing::glGetTransformFeedbackVarying),
+		ClampColor: FnPtr::new(loadfn("glClampColor"), failing::glClampColor),
+		BeginConditionalRender: FnPtr::new(loadfn("glBeginConditionalRender"), failing::glBeginConditionalRender),
+		EndConditionalRender: FnPtr::new(loadfn("glEndConditionalRender"), failing::glEndConditionalRender),
+		VertexAttribIPointer: FnPtr::new(loadfn("glVertexAttribIPointer"), failing::glVertexAttribIPointer),
+		GetVertexAttribIiv: FnPtr::new(loadfn("glGetVertexAttribIiv"), failing::glGetVertexAttribIiv),
+		GetVertexAttribIuiv: FnPtr::new(loadfn("glGetVertexAttribIuiv"), failing::glGetVertexAttribIuiv),
+		VertexAttribI1i: FnPtr::new(loadfn("glVertexAttribI1i"), failing::glVertexAttribI1i),
+		VertexAttribI2i: FnPtr::new(loadfn("glVertexAttribI2i"), failing::glVertexAttribI2i),
+		VertexAttribI3i: FnPtr::new(loadfn("glVertexAttribI3i"), failing::glVertexAttribI3i),
+		VertexAttribI4i: FnPtr::new(loadfn("glVertexAttribI4i"), failing::glVertexAttribI4i),
+		VertexAttribI1ui: FnPtr::new(loadfn("glVertexAttribI1ui"), failing::glVertexAttribI1ui),
+		VertexAttribI2ui: FnPtr::new(loadfn("glVertexAttribI2ui"), failing::glVertexAttribI2ui),
+		VertexAttribI3ui: FnPtr::new(loadfn("glVertexAttribI3ui"), failing::glVertexAttribI3ui),
+		VertexAttribI4ui: FnPtr::new(loadfn("glVertexAttribI4ui"), failing::glVertexAttribI4ui),
+		VertexAttribI1iv: FnPtr::new(loadfn("glVertexAttribI1iv"), failing::glVertexAttribI1iv),
+		VertexAttribI2iv: FnPtr::new(loadfn("glVertexAttribI2iv"), failing::glVertexAttribI2iv),
+		VertexAttribI3iv: FnPtr::new(loadfn("glVertexAttribI3iv"), failing::glVertexAttribI3iv),
+		VertexAttribI4iv: FnPtr::new(loadfn("glVertexAttribI4iv"), failing::glVertexAttribI4iv),
+		VertexAttribI1uiv: FnPtr::new(loadfn("glVertexAttribI1uiv"), failing::glVertexAttribI1uiv),
+		VertexAttribI2uiv: FnPtr::new(loadfn("glVertexAttribI2uiv"), failing::glVertexAttribI2uiv),
+		VertexAttribI3uiv: FnPtr::new(loadfn("glVertexAttribI3uiv"), failing::glVertexAttribI3uiv),
+		VertexAttribI4uiv: FnPtr::new(loadfn("glVertexAttribI4uiv"), failing::glVertexAttribI4uiv),
+		VertexAttribI4bv: FnPtr::new(loadfn("glVertexAttribI4bv"), failing::glVertexAttribI4bv),
+		VertexAttribI4sv: FnPtr::new(loadfn("glVertexAttribI4sv"), failing::glVertexAttribI4sv),
+		VertexAttribI4ubv: FnPtr::new(loadfn("glVertexAttribI4ubv"), failing::glVertexAttribI4ubv),
+		VertexAttribI4usv: FnPtr::new(loadfn("glVertexAttribI4usv"), failing::glVertexAttribI4usv),
+		GetUniformuiv: FnPtr::new(loadfn("glGetUniformuiv"), failing::glGetUniformuiv),
+		BindFragDataLocation: FnPtr::new(loadfn("glBindFragDataLocation"), failing::glBindFragDataLocation),
+		GetFragDataLocation: FnPtr::new(loadfn("glGetFragDataLocation"), failing::glGetFragDataLocation),
+		Uniform1ui: FnPtr::new(loadfn("glUniform1ui"), failing::glUniform1ui),
+		Uniform2ui: FnPtr::new(loadfn("glUniform2ui"), failing::glUniform2ui),
+		Uniform3ui: FnPtr::new(loadfn("glUniform3ui"), failing::glUniform3ui),
+		Uniform4ui: FnPtr::new(loadfn("glUniform4ui"), failing::glUniform4ui),
+		Uniform1uiv: FnPtr::new(loadfn("glUniform1uiv"), failing::glUniform1uiv),
+		Uniform2uiv: FnPtr::new(loadfn("glUniform2uiv"), failing::glUniform2uiv),
+		Uniform3uiv: FnPtr::new(loadfn("glUniform3uiv"), failing::glUniform3uiv),
+		Uniform4uiv: FnPtr::new(loadfn("glUniform4uiv"), failing::glUniform4uiv),
+		TexParameterIiv: FnPtr::new(loadfn("glTexParameterIiv"), failing::glTexParameterIiv),
+		TexParameterIuiv: FnPtr::new(loadfn("glTexParameterIuiv"), failing::glTexParameterIuiv),
+		GetTexParameterIiv: FnPtr::new(loadfn("glGetTexParameterIiv"), failing::glGetTexParameterIiv),
+		GetTexParameterIuiv: FnPtr::new(loadfn("glGetTexParameterIuiv"), failing::glGetTexParameterIuiv),
+		ClearBufferiv: FnPtr::new(loadfn("glClearBufferiv"), failing::glClearBufferiv),
+		ClearBufferuiv: FnPtr::new(loadfn("glClearBufferuiv"), failing::glClearBufferuiv),
+		ClearBufferfv: FnPtr::new(loadfn("glClearBufferfv"), failing::glClearBufferfv),
+		ClearBufferfi: FnPtr::new(loadfn("glClearBufferfi"), failing::glClearBufferfi),
+		GetStringi: FnPtr::new(loadfn("glGetStringi"), failing::glGetStringi),
 		
 		// Core Extension: ARB_vertex_array_object
-		BindVertexArray: FPointer::load(loadfn("glBindVertexArray"), failing::glBindVertexArray),
-		DeleteVertexArrays: FPointer::load(loadfn("glDeleteVertexArrays"), failing::glDeleteVertexArrays),
-		GenVertexArrays: FPointer::load(loadfn("glGenVertexArrays"), failing::glGenVertexArrays),
-		IsVertexArray: FPointer::load(loadfn("glIsVertexArray"), failing::glIsVertexArray),
+		BindVertexArray: FnPtr::new(loadfn("glBindVertexArray"), failing::glBindVertexArray),
+		DeleteVertexArrays: FnPtr::new(loadfn("glDeleteVertexArrays"), failing::glDeleteVertexArrays),
+		GenVertexArrays: FnPtr::new(loadfn("glGenVertexArrays"), failing::glGenVertexArrays),
+		IsVertexArray: FnPtr::new(loadfn("glIsVertexArray"), failing::glIsVertexArray),
 		
 		// Core Extension: ARB_map_buffer_range
-		MapBufferRange: FPointer::load(loadfn("glMapBufferRange"), failing::glMapBufferRange),
-		FlushMappedBufferRange: FPointer::load(loadfn("glFlushMappedBufferRange"), failing::glFlushMappedBufferRange),
+		MapBufferRange: FnPtr::new(loadfn("glMapBufferRange"), failing::glMapBufferRange),
+		FlushMappedBufferRange: FnPtr::new(loadfn("glFlushMappedBufferRange"), failing::glFlushMappedBufferRange),
 		
 		// Core Extension: ARB_framebuffer_object
-		IsRenderbuffer: FPointer::load(loadfn("glIsRenderbuffer"), failing::glIsRenderbuffer),
-		BindRenderbuffer: FPointer::load(loadfn("glBindRenderbuffer"), failing::glBindRenderbuffer),
-		DeleteRenderbuffers: FPointer::load(loadfn("glDeleteRenderbuffers"), failing::glDeleteRenderbuffers),
-		GenRenderbuffers: FPointer::load(loadfn("glGenRenderbuffers"), failing::glGenRenderbuffers),
-		RenderbufferStorage: FPointer::load(loadfn("glRenderbufferStorage"), failing::glRenderbufferStorage),
-		GetRenderbufferParameteriv: FPointer::load(loadfn("glGetRenderbufferParameteriv"), failing::glGetRenderbufferParameteriv),
-		IsFramebuffer: FPointer::load(loadfn("glIsFramebuffer"), failing::glIsFramebuffer),
-		BindFramebuffer: FPointer::load(loadfn("glBindFramebuffer"), failing::glBindFramebuffer),
-		DeleteFramebuffers: FPointer::load(loadfn("glDeleteFramebuffers"), failing::glDeleteFramebuffers),
-		GenFramebuffers: FPointer::load(loadfn("glGenFramebuffers"), failing::glGenFramebuffers),
-		CheckFramebufferStatus: FPointer::load(loadfn("glCheckFramebufferStatus"), failing::glCheckFramebufferStatus),
-		FramebufferTexture1D: FPointer::load(loadfn("glFramebufferTexture1D"), failing::glFramebufferTexture1D),
-		FramebufferTexture2D: FPointer::load(loadfn("glFramebufferTexture2D"), failing::glFramebufferTexture2D),
-		FramebufferTexture3D: FPointer::load(loadfn("glFramebufferTexture3D"), failing::glFramebufferTexture3D),
-		FramebufferRenderbuffer: FPointer::load(loadfn("glFramebufferRenderbuffer"), failing::glFramebufferRenderbuffer),
-		GetFramebufferAttachmentParameteriv: FPointer::load(loadfn("glGetFramebufferAttachmentParameteriv"), failing::glGetFramebufferAttachmentParameteriv),
-		GenerateMipmap: FPointer::load(loadfn("glGenerateMipmap"), failing::glGenerateMipmap),
-		BlitFramebuffer: FPointer::load(loadfn("glBlitFramebuffer"), failing::glBlitFramebuffer),
-		RenderbufferStorageMultisample: FPointer::load(loadfn("glRenderbufferStorageMultisample"), failing::glRenderbufferStorageMultisample),
-		FramebufferTextureLayer: FPointer::load(loadfn("glFramebufferTextureLayer"), failing::glFramebufferTextureLayer),
+		IsRenderbuffer: FnPtr::new(loadfn("glIsRenderbuffer"), failing::glIsRenderbuffer),
+		BindRenderbuffer: FnPtr::new(loadfn("glBindRenderbuffer"), failing::glBindRenderbuffer),
+		DeleteRenderbuffers: FnPtr::new(loadfn("glDeleteRenderbuffers"), failing::glDeleteRenderbuffers),
+		GenRenderbuffers: FnPtr::new(loadfn("glGenRenderbuffers"), failing::glGenRenderbuffers),
+		RenderbufferStorage: FnPtr::new(loadfn("glRenderbufferStorage"), failing::glRenderbufferStorage),
+		GetRenderbufferParameteriv: FnPtr::new(loadfn("glGetRenderbufferParameteriv"), failing::glGetRenderbufferParameteriv),
+		IsFramebuffer: FnPtr::new(loadfn("glIsFramebuffer"), failing::glIsFramebuffer),
+		BindFramebuffer: FnPtr::new(loadfn("glBindFramebuffer"), failing::glBindFramebuffer),
+		DeleteFramebuffers: FnPtr::new(loadfn("glDeleteFramebuffers"), failing::glDeleteFramebuffers),
+		GenFramebuffers: FnPtr::new(loadfn("glGenFramebuffers"), failing::glGenFramebuffers),
+		CheckFramebufferStatus: FnPtr::new(loadfn("glCheckFramebufferStatus"), failing::glCheckFramebufferStatus),
+		FramebufferTexture1D: FnPtr::new(loadfn("glFramebufferTexture1D"), failing::glFramebufferTexture1D),
+		FramebufferTexture2D: FnPtr::new(loadfn("glFramebufferTexture2D"), failing::glFramebufferTexture2D),
+		FramebufferTexture3D: FnPtr::new(loadfn("glFramebufferTexture3D"), failing::glFramebufferTexture3D),
+		FramebufferRenderbuffer: FnPtr::new(loadfn("glFramebufferRenderbuffer"), failing::glFramebufferRenderbuffer),
+		GetFramebufferAttachmentParameteriv: FnPtr::new(loadfn("glGetFramebufferAttachmentParameteriv"), failing::glGetFramebufferAttachmentParameteriv),
+		GenerateMipmap: FnPtr::new(loadfn("glGenerateMipmap"), failing::glGenerateMipmap),
+		BlitFramebuffer: FnPtr::new(loadfn("glBlitFramebuffer"), failing::glBlitFramebuffer),
+		RenderbufferStorageMultisample: FnPtr::new(loadfn("glRenderbufferStorageMultisample"), failing::glRenderbufferStorageMultisample),
+		FramebufferTextureLayer: FnPtr::new(loadfn("glFramebufferTextureLayer"), failing::glFramebufferTextureLayer),
 		
 		// Version: 3.1
-		DrawArraysInstanced: FPointer::load(loadfn("glDrawArraysInstanced"), failing::glDrawArraysInstanced),
-		DrawElementsInstanced: FPointer::load(loadfn("glDrawElementsInstanced"), failing::glDrawElementsInstanced),
-		TexBuffer: FPointer::load(loadfn("glTexBuffer"), failing::glTexBuffer),
-		PrimitiveRestartIndex: FPointer::load(loadfn("glPrimitiveRestartIndex"), failing::glPrimitiveRestartIndex),
+		DrawArraysInstanced: FnPtr::new(loadfn("glDrawArraysInstanced"), failing::glDrawArraysInstanced),
+		DrawElementsInstanced: FnPtr::new(loadfn("glDrawElementsInstanced"), failing::glDrawElementsInstanced),
+		TexBuffer: FnPtr::new(loadfn("glTexBuffer"), failing::glTexBuffer),
+		PrimitiveRestartIndex: FnPtr::new(loadfn("glPrimitiveRestartIndex"), failing::glPrimitiveRestartIndex),
 		
 		// Core Extension: ARB_uniform_buffer_object
-		GetUniformIndices: FPointer::load(loadfn("glGetUniformIndices"), failing::glGetUniformIndices),
-		GetActiveUniformsiv: FPointer::load(loadfn("glGetActiveUniformsiv"), failing::glGetActiveUniformsiv),
-		GetActiveUniformName: FPointer::load(loadfn("glGetActiveUniformName"), failing::glGetActiveUniformName),
-		GetUniformBlockIndex: FPointer::load(loadfn("glGetUniformBlockIndex"), failing::glGetUniformBlockIndex),
-		GetActiveUniformBlockiv: FPointer::load(loadfn("glGetActiveUniformBlockiv"), failing::glGetActiveUniformBlockiv),
-		GetActiveUniformBlockName: FPointer::load(loadfn("glGetActiveUniformBlockName"), failing::glGetActiveUniformBlockName),
-		UniformBlockBinding: FPointer::load(loadfn("glUniformBlockBinding"), failing::glUniformBlockBinding),
+		GetUniformIndices: FnPtr::new(loadfn("glGetUniformIndices"), failing::glGetUniformIndices),
+		GetActiveUniformsiv: FnPtr::new(loadfn("glGetActiveUniformsiv"), failing::glGetActiveUniformsiv),
+		GetActiveUniformName: FnPtr::new(loadfn("glGetActiveUniformName"), failing::glGetActiveUniformName),
+		GetUniformBlockIndex: FnPtr::new(loadfn("glGetUniformBlockIndex"), failing::glGetUniformBlockIndex),
+		GetActiveUniformBlockiv: FnPtr::new(loadfn("glGetActiveUniformBlockiv"), failing::glGetActiveUniformBlockiv),
+		GetActiveUniformBlockName: FnPtr::new(loadfn("glGetActiveUniformBlockName"), failing::glGetActiveUniformBlockName),
+		UniformBlockBinding: FnPtr::new(loadfn("glUniformBlockBinding"), failing::glUniformBlockBinding),
 		
 		// Core Extension: ARB_copy_buffer
-		CopyBufferSubData: FPointer::load(loadfn("glCopyBufferSubData"), failing::glCopyBufferSubData),
+		CopyBufferSubData: FnPtr::new(loadfn("glCopyBufferSubData"), failing::glCopyBufferSubData),
 		
 		// Version: 3.2
-		GetInteger64i_v: FPointer::load(loadfn("glGetInteger64i_v"), failing::glGetInteger64i_v),
-		GetBufferParameteri64v: FPointer::load(loadfn("glGetBufferParameteri64v"), failing::glGetBufferParameteri64v),
-		FramebufferTexture: FPointer::load(loadfn("glFramebufferTexture"), failing::glFramebufferTexture),
+		GetInteger64i_v: FnPtr::new(loadfn("glGetInteger64i_v"), failing::glGetInteger64i_v),
+		GetBufferParameteri64v: FnPtr::new(loadfn("glGetBufferParameteri64v"), failing::glGetBufferParameteri64v),
+		FramebufferTexture: FnPtr::new(loadfn("glFramebufferTexture"), failing::glFramebufferTexture),
 		
 		// Core Extension: ARB_draw_elements_base_vertex
-		DrawElementsBaseVertex: FPointer::load(loadfn("glDrawElementsBaseVertex"), failing::glDrawElementsBaseVertex),
-		DrawRangeElementsBaseVertex: FPointer::load(loadfn("glDrawRangeElementsBaseVertex"), failing::glDrawRangeElementsBaseVertex),
-		DrawElementsInstancedBaseVertex: FPointer::load(loadfn("glDrawElementsInstancedBaseVertex"), failing::glDrawElementsInstancedBaseVertex),
-		MultiDrawElementsBaseVertex: FPointer::load(loadfn("glMultiDrawElementsBaseVertex"), failing::glMultiDrawElementsBaseVertex),
+		DrawElementsBaseVertex: FnPtr::new(loadfn("glDrawElementsBaseVertex"), failing::glDrawElementsBaseVertex),
+		DrawRangeElementsBaseVertex: FnPtr::new(loadfn("glDrawRangeElementsBaseVertex"), failing::glDrawRangeElementsBaseVertex),
+		DrawElementsInstancedBaseVertex: FnPtr::new(loadfn("glDrawElementsInstancedBaseVertex"), failing::glDrawElementsInstancedBaseVertex),
+		MultiDrawElementsBaseVertex: FnPtr::new(loadfn("glMultiDrawElementsBaseVertex"), failing::glMultiDrawElementsBaseVertex),
 		
 		// Core Extension: ARB_provoking_vertex
-		ProvokingVertex: FPointer::load(loadfn("glProvokingVertex"), failing::glProvokingVertex),
+		ProvokingVertex: FnPtr::new(loadfn("glProvokingVertex"), failing::glProvokingVertex),
 		
 		// Core Extension: ARB_sync
-		FenceSync: FPointer::load(loadfn("glFenceSync"), failing::glFenceSync),
-		IsSync: FPointer::load(loadfn("glIsSync"), failing::glIsSync),
-		DeleteSync: FPointer::load(loadfn("glDeleteSync"), failing::glDeleteSync),
-		ClientWaitSync: FPointer::load(loadfn("glClientWaitSync"), failing::glClientWaitSync),
-		WaitSync: FPointer::load(loadfn("glWaitSync"), failing::glWaitSync),
-		GetInteger64v: FPointer::load(loadfn("glGetInteger64v"), failing::glGetInteger64v),
-		GetSynciv: FPointer::load(loadfn("glGetSynciv"), failing::glGetSynciv),
+		FenceSync: FnPtr::new(loadfn("glFenceSync"), failing::glFenceSync),
+		IsSync: FnPtr::new(loadfn("glIsSync"), failing::glIsSync),
+		DeleteSync: FnPtr::new(loadfn("glDeleteSync"), failing::glDeleteSync),
+		ClientWaitSync: FnPtr::new(loadfn("glClientWaitSync"), failing::glClientWaitSync),
+		WaitSync: FnPtr::new(loadfn("glWaitSync"), failing::glWaitSync),
+		GetInteger64v: FnPtr::new(loadfn("glGetInteger64v"), failing::glGetInteger64v),
+		GetSynciv: FnPtr::new(loadfn("glGetSynciv"), failing::glGetSynciv),
 		
 		// Core Extension: ARB_texture_multisample
-		TexImage2DMultisample: FPointer::load(loadfn("glTexImage2DMultisample"), failing::glTexImage2DMultisample),
-		TexImage3DMultisample: FPointer::load(loadfn("glTexImage3DMultisample"), failing::glTexImage3DMultisample),
-		GetMultisamplefv: FPointer::load(loadfn("glGetMultisamplefv"), failing::glGetMultisamplefv),
-		SampleMaski: FPointer::load(loadfn("glSampleMaski"), failing::glSampleMaski),
+		TexImage2DMultisample: FnPtr::new(loadfn("glTexImage2DMultisample"), failing::glTexImage2DMultisample),
+		TexImage3DMultisample: FnPtr::new(loadfn("glTexImage3DMultisample"), failing::glTexImage3DMultisample),
+		GetMultisamplefv: FnPtr::new(loadfn("glGetMultisamplefv"), failing::glGetMultisamplefv),
+		SampleMaski: FnPtr::new(loadfn("glSampleMaski"), failing::glSampleMaski),
 		
 		// Version: 3.3
-		VertexAttribDivisor: FPointer::load(loadfn("glVertexAttribDivisor"), failing::glVertexAttribDivisor),
+		VertexAttribDivisor: FnPtr::new(loadfn("glVertexAttribDivisor"), failing::glVertexAttribDivisor),
 		
 		// Core Extension: ARB_timer_query
-		QueryCounter: FPointer::load(loadfn("glQueryCounter"), failing::glQueryCounter),
-		GetQueryObjecti64v: FPointer::load(loadfn("glGetQueryObjecti64v"), failing::glGetQueryObjecti64v),
-		GetQueryObjectui64v: FPointer::load(loadfn("glGetQueryObjectui64v"), failing::glGetQueryObjectui64v),
+		QueryCounter: FnPtr::new(loadfn("glQueryCounter"), failing::glQueryCounter),
+		GetQueryObjecti64v: FnPtr::new(loadfn("glGetQueryObjecti64v"), failing::glGetQueryObjecti64v),
+		GetQueryObjectui64v: FnPtr::new(loadfn("glGetQueryObjectui64v"), failing::glGetQueryObjectui64v),
 		
 		// Core Extension: ARB_vertex_type_2_10_10_10_rev
-		VertexP2ui: FPointer::load(loadfn("glVertexP2ui"), failing::glVertexP2ui),
-		VertexP2uiv: FPointer::load(loadfn("glVertexP2uiv"), failing::glVertexP2uiv),
-		VertexP3ui: FPointer::load(loadfn("glVertexP3ui"), failing::glVertexP3ui),
-		VertexP3uiv: FPointer::load(loadfn("glVertexP3uiv"), failing::glVertexP3uiv),
-		VertexP4ui: FPointer::load(loadfn("glVertexP4ui"), failing::glVertexP4ui),
-		VertexP4uiv: FPointer::load(loadfn("glVertexP4uiv"), failing::glVertexP4uiv),
-		TexCoordP1ui: FPointer::load(loadfn("glTexCoordP1ui"), failing::glTexCoordP1ui),
-		TexCoordP1uiv: FPointer::load(loadfn("glTexCoordP1uiv"), failing::glTexCoordP1uiv),
-		TexCoordP2ui: FPointer::load(loadfn("glTexCoordP2ui"), failing::glTexCoordP2ui),
-		TexCoordP2uiv: FPointer::load(loadfn("glTexCoordP2uiv"), failing::glTexCoordP2uiv),
-		TexCoordP3ui: FPointer::load(loadfn("glTexCoordP3ui"), failing::glTexCoordP3ui),
-		TexCoordP3uiv: FPointer::load(loadfn("glTexCoordP3uiv"), failing::glTexCoordP3uiv),
-		TexCoordP4ui: FPointer::load(loadfn("glTexCoordP4ui"), failing::glTexCoordP4ui),
-		TexCoordP4uiv: FPointer::load(loadfn("glTexCoordP4uiv"), failing::glTexCoordP4uiv),
-		MultiTexCoordP1ui: FPointer::load(loadfn("glMultiTexCoordP1ui"), failing::glMultiTexCoordP1ui),
-		MultiTexCoordP1uiv: FPointer::load(loadfn("glMultiTexCoordP1uiv"), failing::glMultiTexCoordP1uiv),
-		MultiTexCoordP2ui: FPointer::load(loadfn("glMultiTexCoordP2ui"), failing::glMultiTexCoordP2ui),
-		MultiTexCoordP2uiv: FPointer::load(loadfn("glMultiTexCoordP2uiv"), failing::glMultiTexCoordP2uiv),
-		MultiTexCoordP3ui: FPointer::load(loadfn("glMultiTexCoordP3ui"), failing::glMultiTexCoordP3ui),
-		MultiTexCoordP3uiv: FPointer::load(loadfn("glMultiTexCoordP3uiv"), failing::glMultiTexCoordP3uiv),
-		MultiTexCoordP4ui: FPointer::load(loadfn("glMultiTexCoordP4ui"), failing::glMultiTexCoordP4ui),
-		MultiTexCoordP4uiv: FPointer::load(loadfn("glMultiTexCoordP4uiv"), failing::glMultiTexCoordP4uiv),
-		NormalP3ui: FPointer::load(loadfn("glNormalP3ui"), failing::glNormalP3ui),
-		NormalP3uiv: FPointer::load(loadfn("glNormalP3uiv"), failing::glNormalP3uiv),
-		ColorP3ui: FPointer::load(loadfn("glColorP3ui"), failing::glColorP3ui),
-		ColorP3uiv: FPointer::load(loadfn("glColorP3uiv"), failing::glColorP3uiv),
-		ColorP4ui: FPointer::load(loadfn("glColorP4ui"), failing::glColorP4ui),
-		ColorP4uiv: FPointer::load(loadfn("glColorP4uiv"), failing::glColorP4uiv),
-		SecondaryColorP3ui: FPointer::load(loadfn("glSecondaryColorP3ui"), failing::glSecondaryColorP3ui),
-		SecondaryColorP3uiv: FPointer::load(loadfn("glSecondaryColorP3uiv"), failing::glSecondaryColorP3uiv),
-		VertexAttribP1ui: FPointer::load(loadfn("glVertexAttribP1ui"), failing::glVertexAttribP1ui),
-		VertexAttribP1uiv: FPointer::load(loadfn("glVertexAttribP1uiv"), failing::glVertexAttribP1uiv),
-		VertexAttribP2ui: FPointer::load(loadfn("glVertexAttribP2ui"), failing::glVertexAttribP2ui),
-		VertexAttribP2uiv: FPointer::load(loadfn("glVertexAttribP2uiv"), failing::glVertexAttribP2uiv),
-		VertexAttribP3ui: FPointer::load(loadfn("glVertexAttribP3ui"), failing::glVertexAttribP3ui),
-		VertexAttribP3uiv: FPointer::load(loadfn("glVertexAttribP3uiv"), failing::glVertexAttribP3uiv),
-		VertexAttribP4ui: FPointer::load(loadfn("glVertexAttribP4ui"), failing::glVertexAttribP4ui),
-		VertexAttribP4uiv: FPointer::load(loadfn("glVertexAttribP4uiv"), failing::glVertexAttribP4uiv),
+		VertexP2ui: FnPtr::new(loadfn("glVertexP2ui"), failing::glVertexP2ui),
+		VertexP2uiv: FnPtr::new(loadfn("glVertexP2uiv"), failing::glVertexP2uiv),
+		VertexP3ui: FnPtr::new(loadfn("glVertexP3ui"), failing::glVertexP3ui),
+		VertexP3uiv: FnPtr::new(loadfn("glVertexP3uiv"), failing::glVertexP3uiv),
+		VertexP4ui: FnPtr::new(loadfn("glVertexP4ui"), failing::glVertexP4ui),
+		VertexP4uiv: FnPtr::new(loadfn("glVertexP4uiv"), failing::glVertexP4uiv),
+		TexCoordP1ui: FnPtr::new(loadfn("glTexCoordP1ui"), failing::glTexCoordP1ui),
+		TexCoordP1uiv: FnPtr::new(loadfn("glTexCoordP1uiv"), failing::glTexCoordP1uiv),
+		TexCoordP2ui: FnPtr::new(loadfn("glTexCoordP2ui"), failing::glTexCoordP2ui),
+		TexCoordP2uiv: FnPtr::new(loadfn("glTexCoordP2uiv"), failing::glTexCoordP2uiv),
+		TexCoordP3ui: FnPtr::new(loadfn("glTexCoordP3ui"), failing::glTexCoordP3ui),
+		TexCoordP3uiv: FnPtr::new(loadfn("glTexCoordP3uiv"), failing::glTexCoordP3uiv),
+		TexCoordP4ui: FnPtr::new(loadfn("glTexCoordP4ui"), failing::glTexCoordP4ui),
+		TexCoordP4uiv: FnPtr::new(loadfn("glTexCoordP4uiv"), failing::glTexCoordP4uiv),
+		MultiTexCoordP1ui: FnPtr::new(loadfn("glMultiTexCoordP1ui"), failing::glMultiTexCoordP1ui),
+		MultiTexCoordP1uiv: FnPtr::new(loadfn("glMultiTexCoordP1uiv"), failing::glMultiTexCoordP1uiv),
+		MultiTexCoordP2ui: FnPtr::new(loadfn("glMultiTexCoordP2ui"), failing::glMultiTexCoordP2ui),
+		MultiTexCoordP2uiv: FnPtr::new(loadfn("glMultiTexCoordP2uiv"), failing::glMultiTexCoordP2uiv),
+		MultiTexCoordP3ui: FnPtr::new(loadfn("glMultiTexCoordP3ui"), failing::glMultiTexCoordP3ui),
+		MultiTexCoordP3uiv: FnPtr::new(loadfn("glMultiTexCoordP3uiv"), failing::glMultiTexCoordP3uiv),
+		MultiTexCoordP4ui: FnPtr::new(loadfn("glMultiTexCoordP4ui"), failing::glMultiTexCoordP4ui),
+		MultiTexCoordP4uiv: FnPtr::new(loadfn("glMultiTexCoordP4uiv"), failing::glMultiTexCoordP4uiv),
+		NormalP3ui: FnPtr::new(loadfn("glNormalP3ui"), failing::glNormalP3ui),
+		NormalP3uiv: FnPtr::new(loadfn("glNormalP3uiv"), failing::glNormalP3uiv),
+		ColorP3ui: FnPtr::new(loadfn("glColorP3ui"), failing::glColorP3ui),
+		ColorP3uiv: FnPtr::new(loadfn("glColorP3uiv"), failing::glColorP3uiv),
+		ColorP4ui: FnPtr::new(loadfn("glColorP4ui"), failing::glColorP4ui),
+		ColorP4uiv: FnPtr::new(loadfn("glColorP4uiv"), failing::glColorP4uiv),
+		SecondaryColorP3ui: FnPtr::new(loadfn("glSecondaryColorP3ui"), failing::glSecondaryColorP3ui),
+		SecondaryColorP3uiv: FnPtr::new(loadfn("glSecondaryColorP3uiv"), failing::glSecondaryColorP3uiv),
+		VertexAttribP1ui: FnPtr::new(loadfn("glVertexAttribP1ui"), failing::glVertexAttribP1ui),
+		VertexAttribP1uiv: FnPtr::new(loadfn("glVertexAttribP1uiv"), failing::glVertexAttribP1uiv),
+		VertexAttribP2ui: FnPtr::new(loadfn("glVertexAttribP2ui"), failing::glVertexAttribP2ui),
+		VertexAttribP2uiv: FnPtr::new(loadfn("glVertexAttribP2uiv"), failing::glVertexAttribP2uiv),
+		VertexAttribP3ui: FnPtr::new(loadfn("glVertexAttribP3ui"), failing::glVertexAttribP3ui),
+		VertexAttribP3uiv: FnPtr::new(loadfn("glVertexAttribP3uiv"), failing::glVertexAttribP3uiv),
+		VertexAttribP4ui: FnPtr::new(loadfn("glVertexAttribP4ui"), failing::glVertexAttribP4ui),
+		VertexAttribP4uiv: FnPtr::new(loadfn("glVertexAttribP4uiv"), failing::glVertexAttribP4uiv),
 		
 		// Core Extension: ARB_blend_func_extended
-		BindFragDataLocationIndexed: FPointer::load(loadfn("glBindFragDataLocationIndexed"), failing::glBindFragDataLocationIndexed),
-		GetFragDataIndex: FPointer::load(loadfn("glGetFragDataIndex"), failing::glGetFragDataIndex),
+		BindFragDataLocationIndexed: FnPtr::new(loadfn("glBindFragDataLocationIndexed"), failing::glBindFragDataLocationIndexed),
+		GetFragDataIndex: FnPtr::new(loadfn("glGetFragDataIndex"), failing::glGetFragDataIndex),
 		
 		// Core Extension: ARB_sampler_objects
-		GenSamplers: FPointer::load(loadfn("glGenSamplers"), failing::glGenSamplers),
-		DeleteSamplers: FPointer::load(loadfn("glDeleteSamplers"), failing::glDeleteSamplers),
-		IsSampler: FPointer::load(loadfn("glIsSampler"), failing::glIsSampler),
-		BindSampler: FPointer::load(loadfn("glBindSampler"), failing::glBindSampler),
-		SamplerParameteri: FPointer::load(loadfn("glSamplerParameteri"), failing::glSamplerParameteri),
-		SamplerParameteriv: FPointer::load(loadfn("glSamplerParameteriv"), failing::glSamplerParameteriv),
-		SamplerParameterf: FPointer::load(loadfn("glSamplerParameterf"), failing::glSamplerParameterf),
-		SamplerParameterfv: FPointer::load(loadfn("glSamplerParameterfv"), failing::glSamplerParameterfv),
-		SamplerParameterIiv: FPointer::load(loadfn("glSamplerParameterIiv"), failing::glSamplerParameterIiv),
-		SamplerParameterIuiv: FPointer::load(loadfn("glSamplerParameterIuiv"), failing::glSamplerParameterIuiv),
-		GetSamplerParameteriv: FPointer::load(loadfn("glGetSamplerParameteriv"), failing::glGetSamplerParameteriv),
-		GetSamplerParameterIiv: FPointer::load(loadfn("glGetSamplerParameterIiv"), failing::glGetSamplerParameterIiv),
-		GetSamplerParameterfv: FPointer::load(loadfn("glGetSamplerParameterfv"), failing::glGetSamplerParameterfv),
-		GetSamplerParameterIuiv: FPointer::load(loadfn("glGetSamplerParameterIuiv"), failing::glGetSamplerParameterIuiv),
+		GenSamplers: FnPtr::new(loadfn("glGenSamplers"), failing::glGenSamplers),
+		DeleteSamplers: FnPtr::new(loadfn("glDeleteSamplers"), failing::glDeleteSamplers),
+		IsSampler: FnPtr::new(loadfn("glIsSampler"), failing::glIsSampler),
+		BindSampler: FnPtr::new(loadfn("glBindSampler"), failing::glBindSampler),
+		SamplerParameteri: FnPtr::new(loadfn("glSamplerParameteri"), failing::glSamplerParameteri),
+		SamplerParameteriv: FnPtr::new(loadfn("glSamplerParameteriv"), failing::glSamplerParameteriv),
+		SamplerParameterf: FnPtr::new(loadfn("glSamplerParameterf"), failing::glSamplerParameterf),
+		SamplerParameterfv: FnPtr::new(loadfn("glSamplerParameterfv"), failing::glSamplerParameterfv),
+		SamplerParameterIiv: FnPtr::new(loadfn("glSamplerParameterIiv"), failing::glSamplerParameterIiv),
+		SamplerParameterIuiv: FnPtr::new(loadfn("glSamplerParameterIuiv"), failing::glSamplerParameterIuiv),
+		GetSamplerParameteriv: FnPtr::new(loadfn("glGetSamplerParameteriv"), failing::glGetSamplerParameteriv),
+		GetSamplerParameterIiv: FnPtr::new(loadfn("glGetSamplerParameterIiv"), failing::glGetSamplerParameterIiv),
+		GetSamplerParameterfv: FnPtr::new(loadfn("glGetSamplerParameterfv"), failing::glGetSamplerParameterfv),
+		GetSamplerParameterIuiv: FnPtr::new(loadfn("glGetSamplerParameterIuiv"), failing::glGetSamplerParameterIuiv),
 		
 		// Version: 4.0
-		MinSampleShading: FPointer::load(loadfn("glMinSampleShading"), failing::glMinSampleShading),
-		BlendEquationi: FPointer::load(loadfn("glBlendEquationi"), failing::glBlendEquationi),
-		BlendEquationSeparatei: FPointer::load(loadfn("glBlendEquationSeparatei"), failing::glBlendEquationSeparatei),
-		BlendFunci: FPointer::load(loadfn("glBlendFunci"), failing::glBlendFunci),
-		BlendFuncSeparatei: FPointer::load(loadfn("glBlendFuncSeparatei"), failing::glBlendFuncSeparatei),
+		MinSampleShading: FnPtr::new(loadfn("glMinSampleShading"), failing::glMinSampleShading),
+		BlendEquationi: FnPtr::new(loadfn("glBlendEquationi"), failing::glBlendEquationi),
+		BlendEquationSeparatei: FnPtr::new(loadfn("glBlendEquationSeparatei"), failing::glBlendEquationSeparatei),
+		BlendFunci: FnPtr::new(loadfn("glBlendFunci"), failing::glBlendFunci),
+		BlendFuncSeparatei: FnPtr::new(loadfn("glBlendFuncSeparatei"), failing::glBlendFuncSeparatei),
 		
 		// Core Extension: ARB_draw_indirect
-		DrawArraysIndirect: FPointer::load(loadfn("glDrawArraysIndirect"), failing::glDrawArraysIndirect),
-		DrawElementsIndirect: FPointer::load(loadfn("glDrawElementsIndirect"), failing::glDrawElementsIndirect),
+		DrawArraysIndirect: FnPtr::new(loadfn("glDrawArraysIndirect"), failing::glDrawArraysIndirect),
+		DrawElementsIndirect: FnPtr::new(loadfn("glDrawElementsIndirect"), failing::glDrawElementsIndirect),
 		
 		// Core Extension: ARB_gpu_shader_fp64
-		Uniform1d: FPointer::load(loadfn("glUniform1d"), failing::glUniform1d),
-		Uniform2d: FPointer::load(loadfn("glUniform2d"), failing::glUniform2d),
-		Uniform3d: FPointer::load(loadfn("glUniform3d"), failing::glUniform3d),
-		Uniform4d: FPointer::load(loadfn("glUniform4d"), failing::glUniform4d),
-		Uniform1dv: FPointer::load(loadfn("glUniform1dv"), failing::glUniform1dv),
-		Uniform2dv: FPointer::load(loadfn("glUniform2dv"), failing::glUniform2dv),
-		Uniform3dv: FPointer::load(loadfn("glUniform3dv"), failing::glUniform3dv),
-		Uniform4dv: FPointer::load(loadfn("glUniform4dv"), failing::glUniform4dv),
-		UniformMatrix2dv: FPointer::load(loadfn("glUniformMatrix2dv"), failing::glUniformMatrix2dv),
-		UniformMatrix3dv: FPointer::load(loadfn("glUniformMatrix3dv"), failing::glUniformMatrix3dv),
-		UniformMatrix4dv: FPointer::load(loadfn("glUniformMatrix4dv"), failing::glUniformMatrix4dv),
-		UniformMatrix2x3dv: FPointer::load(loadfn("glUniformMatrix2x3dv"), failing::glUniformMatrix2x3dv),
-		UniformMatrix2x4dv: FPointer::load(loadfn("glUniformMatrix2x4dv"), failing::glUniformMatrix2x4dv),
-		UniformMatrix3x2dv: FPointer::load(loadfn("glUniformMatrix3x2dv"), failing::glUniformMatrix3x2dv),
-		UniformMatrix3x4dv: FPointer::load(loadfn("glUniformMatrix3x4dv"), failing::glUniformMatrix3x4dv),
-		UniformMatrix4x2dv: FPointer::load(loadfn("glUniformMatrix4x2dv"), failing::glUniformMatrix4x2dv),
-		UniformMatrix4x3dv: FPointer::load(loadfn("glUniformMatrix4x3dv"), failing::glUniformMatrix4x3dv),
-		GetUniformdv: FPointer::load(loadfn("glGetUniformdv"), failing::glGetUniformdv),
+		Uniform1d: FnPtr::new(loadfn("glUniform1d"), failing::glUniform1d),
+		Uniform2d: FnPtr::new(loadfn("glUniform2d"), failing::glUniform2d),
+		Uniform3d: FnPtr::new(loadfn("glUniform3d"), failing::glUniform3d),
+		Uniform4d: FnPtr::new(loadfn("glUniform4d"), failing::glUniform4d),
+		Uniform1dv: FnPtr::new(loadfn("glUniform1dv"), failing::glUniform1dv),
+		Uniform2dv: FnPtr::new(loadfn("glUniform2dv"), failing::glUniform2dv),
+		Uniform3dv: FnPtr::new(loadfn("glUniform3dv"), failing::glUniform3dv),
+		Uniform4dv: FnPtr::new(loadfn("glUniform4dv"), failing::glUniform4dv),
+		UniformMatrix2dv: FnPtr::new(loadfn("glUniformMatrix2dv"), failing::glUniformMatrix2dv),
+		UniformMatrix3dv: FnPtr::new(loadfn("glUniformMatrix3dv"), failing::glUniformMatrix3dv),
+		UniformMatrix4dv: FnPtr::new(loadfn("glUniformMatrix4dv"), failing::glUniformMatrix4dv),
+		UniformMatrix2x3dv: FnPtr::new(loadfn("glUniformMatrix2x3dv"), failing::glUniformMatrix2x3dv),
+		UniformMatrix2x4dv: FnPtr::new(loadfn("glUniformMatrix2x4dv"), failing::glUniformMatrix2x4dv),
+		UniformMatrix3x2dv: FnPtr::new(loadfn("glUniformMatrix3x2dv"), failing::glUniformMatrix3x2dv),
+		UniformMatrix3x4dv: FnPtr::new(loadfn("glUniformMatrix3x4dv"), failing::glUniformMatrix3x4dv),
+		UniformMatrix4x2dv: FnPtr::new(loadfn("glUniformMatrix4x2dv"), failing::glUniformMatrix4x2dv),
+		UniformMatrix4x3dv: FnPtr::new(loadfn("glUniformMatrix4x3dv"), failing::glUniformMatrix4x3dv),
+		GetUniformdv: FnPtr::new(loadfn("glGetUniformdv"), failing::glGetUniformdv),
 		
 		// Core Extension: ARB_shader_subroutine
-		GetSubroutineUniformLocation: FPointer::load(loadfn("glGetSubroutineUniformLocation"), failing::glGetSubroutineUniformLocation),
-		GetSubroutineIndex: FPointer::load(loadfn("glGetSubroutineIndex"), failing::glGetSubroutineIndex),
-		GetActiveSubroutineUniformiv: FPointer::load(loadfn("glGetActiveSubroutineUniformiv"), failing::glGetActiveSubroutineUniformiv),
-		GetActiveSubroutineUniformName: FPointer::load(loadfn("glGetActiveSubroutineUniformName"), failing::glGetActiveSubroutineUniformName),
-		GetActiveSubroutineName: FPointer::load(loadfn("glGetActiveSubroutineName"), failing::glGetActiveSubroutineName),
-		UniformSubroutinesuiv: FPointer::load(loadfn("glUniformSubroutinesuiv"), failing::glUniformSubroutinesuiv),
-		GetUniformSubroutineuiv: FPointer::load(loadfn("glGetUniformSubroutineuiv"), failing::glGetUniformSubroutineuiv),
-		GetProgramStageiv: FPointer::load(loadfn("glGetProgramStageiv"), failing::glGetProgramStageiv),
+		GetSubroutineUniformLocation: FnPtr::new(loadfn("glGetSubroutineUniformLocation"), failing::glGetSubroutineUniformLocation),
+		GetSubroutineIndex: FnPtr::new(loadfn("glGetSubroutineIndex"), failing::glGetSubroutineIndex),
+		GetActiveSubroutineUniformiv: FnPtr::new(loadfn("glGetActiveSubroutineUniformiv"), failing::glGetActiveSubroutineUniformiv),
+		GetActiveSubroutineUniformName: FnPtr::new(loadfn("glGetActiveSubroutineUniformName"), failing::glGetActiveSubroutineUniformName),
+		GetActiveSubroutineName: FnPtr::new(loadfn("glGetActiveSubroutineName"), failing::glGetActiveSubroutineName),
+		UniformSubroutinesuiv: FnPtr::new(loadfn("glUniformSubroutinesuiv"), failing::glUniformSubroutinesuiv),
+		GetUniformSubroutineuiv: FnPtr::new(loadfn("glGetUniformSubroutineuiv"), failing::glGetUniformSubroutineuiv),
+		GetProgramStageiv: FnPtr::new(loadfn("glGetProgramStageiv"), failing::glGetProgramStageiv),
 		
 		// Core Extension: ARB_tessellation_shader
-		PatchParameteri: FPointer::load(loadfn("glPatchParameteri"), failing::glPatchParameteri),
-		PatchParameterfv: FPointer::load(loadfn("glPatchParameterfv"), failing::glPatchParameterfv),
+		PatchParameteri: FnPtr::new(loadfn("glPatchParameteri"), failing::glPatchParameteri),
+		PatchParameterfv: FnPtr::new(loadfn("glPatchParameterfv"), failing::glPatchParameterfv),
 		
 		// Core Extension: ARB_transform_feedback2
-		BindTransformFeedback: FPointer::load(loadfn("glBindTransformFeedback"), failing::glBindTransformFeedback),
-		DeleteTransformFeedbacks: FPointer::load(loadfn("glDeleteTransformFeedbacks"), failing::glDeleteTransformFeedbacks),
-		GenTransformFeedbacks: FPointer::load(loadfn("glGenTransformFeedbacks"), failing::glGenTransformFeedbacks),
-		IsTransformFeedback: FPointer::load(loadfn("glIsTransformFeedback"), failing::glIsTransformFeedback),
-		PauseTransformFeedback: FPointer::load(loadfn("glPauseTransformFeedback"), failing::glPauseTransformFeedback),
-		ResumeTransformFeedback: FPointer::load(loadfn("glResumeTransformFeedback"), failing::glResumeTransformFeedback),
-		DrawTransformFeedback: FPointer::load(loadfn("glDrawTransformFeedback"), failing::glDrawTransformFeedback),
+		BindTransformFeedback: FnPtr::new(loadfn("glBindTransformFeedback"), failing::glBindTransformFeedback),
+		DeleteTransformFeedbacks: FnPtr::new(loadfn("glDeleteTransformFeedbacks"), failing::glDeleteTransformFeedbacks),
+		GenTransformFeedbacks: FnPtr::new(loadfn("glGenTransformFeedbacks"), failing::glGenTransformFeedbacks),
+		IsTransformFeedback: FnPtr::new(loadfn("glIsTransformFeedback"), failing::glIsTransformFeedback),
+		PauseTransformFeedback: FnPtr::new(loadfn("glPauseTransformFeedback"), failing::glPauseTransformFeedback),
+		ResumeTransformFeedback: FnPtr::new(loadfn("glResumeTransformFeedback"), failing::glResumeTransformFeedback),
+		DrawTransformFeedback: FnPtr::new(loadfn("glDrawTransformFeedback"), failing::glDrawTransformFeedback),
 		
 		// Core Extension: ARB_transform_feedback3
-		DrawTransformFeedbackStream: FPointer::load(loadfn("glDrawTransformFeedbackStream"), failing::glDrawTransformFeedbackStream),
-		BeginQueryIndexed: FPointer::load(loadfn("glBeginQueryIndexed"), failing::glBeginQueryIndexed),
-		EndQueryIndexed: FPointer::load(loadfn("glEndQueryIndexed"), failing::glEndQueryIndexed),
-		GetQueryIndexediv: FPointer::load(loadfn("glGetQueryIndexediv"), failing::glGetQueryIndexediv),
+		DrawTransformFeedbackStream: FnPtr::new(loadfn("glDrawTransformFeedbackStream"), failing::glDrawTransformFeedbackStream),
+		BeginQueryIndexed: FnPtr::new(loadfn("glBeginQueryIndexed"), failing::glBeginQueryIndexed),
+		EndQueryIndexed: FnPtr::new(loadfn("glEndQueryIndexed"), failing::glEndQueryIndexed),
+		GetQueryIndexediv: FnPtr::new(loadfn("glGetQueryIndexediv"), failing::glGetQueryIndexediv),
 		
 		// Core Extension: ARB_ES2_compatibility
-		ReleaseShaderCompiler: FPointer::load(loadfn("glReleaseShaderCompiler"), failing::glReleaseShaderCompiler),
-		ShaderBinary: FPointer::load(loadfn("glShaderBinary"), failing::glShaderBinary),
-		GetShaderPrecisionFormat: FPointer::load(loadfn("glGetShaderPrecisionFormat"), failing::glGetShaderPrecisionFormat),
-		DepthRangef: FPointer::load(loadfn("glDepthRangef"), failing::glDepthRangef),
-		ClearDepthf: FPointer::load(loadfn("glClearDepthf"), failing::glClearDepthf),
+		ReleaseShaderCompiler: FnPtr::new(loadfn("glReleaseShaderCompiler"), failing::glReleaseShaderCompiler),
+		ShaderBinary: FnPtr::new(loadfn("glShaderBinary"), failing::glShaderBinary),
+		GetShaderPrecisionFormat: FnPtr::new(loadfn("glGetShaderPrecisionFormat"), failing::glGetShaderPrecisionFormat),
+		DepthRangef: FnPtr::new(loadfn("glDepthRangef"), failing::glDepthRangef),
+		ClearDepthf: FnPtr::new(loadfn("glClearDepthf"), failing::glClearDepthf),
 		
 		// Core Extension: ARB_get_program_binary
-		GetProgramBinary: FPointer::load(loadfn("glGetProgramBinary"), failing::glGetProgramBinary),
-		ProgramBinary: FPointer::load(loadfn("glProgramBinary"), failing::glProgramBinary),
-		ProgramParameteri: FPointer::load(loadfn("glProgramParameteri"), failing::glProgramParameteri),
+		GetProgramBinary: FnPtr::new(loadfn("glGetProgramBinary"), failing::glGetProgramBinary),
+		ProgramBinary: FnPtr::new(loadfn("glProgramBinary"), failing::glProgramBinary),
+		ProgramParameteri: FnPtr::new(loadfn("glProgramParameteri"), failing::glProgramParameteri),
 		
 		// Core Extension: ARB_separate_shader_objects
-		UseProgramStages: FPointer::load(loadfn("glUseProgramStages"), failing::glUseProgramStages),
-		ActiveShaderProgram: FPointer::load(loadfn("glActiveShaderProgram"), failing::glActiveShaderProgram),
-		CreateShaderProgramv: FPointer::load(loadfn("glCreateShaderProgramv"), failing::glCreateShaderProgramv),
-		BindProgramPipeline: FPointer::load(loadfn("glBindProgramPipeline"), failing::glBindProgramPipeline),
-		DeleteProgramPipelines: FPointer::load(loadfn("glDeleteProgramPipelines"), failing::glDeleteProgramPipelines),
-		GenProgramPipelines: FPointer::load(loadfn("glGenProgramPipelines"), failing::glGenProgramPipelines),
-		IsProgramPipeline: FPointer::load(loadfn("glIsProgramPipeline"), failing::glIsProgramPipeline),
-		GetProgramPipelineiv: FPointer::load(loadfn("glGetProgramPipelineiv"), failing::glGetProgramPipelineiv),
-		ProgramUniform1i: FPointer::load(loadfn("glProgramUniform1i"), failing::glProgramUniform1i),
-		ProgramUniform1iv: FPointer::load(loadfn("glProgramUniform1iv"), failing::glProgramUniform1iv),
-		ProgramUniform1f: FPointer::load(loadfn("glProgramUniform1f"), failing::glProgramUniform1f),
-		ProgramUniform1fv: FPointer::load(loadfn("glProgramUniform1fv"), failing::glProgramUniform1fv),
-		ProgramUniform1d: FPointer::load(loadfn("glProgramUniform1d"), failing::glProgramUniform1d),
-		ProgramUniform1dv: FPointer::load(loadfn("glProgramUniform1dv"), failing::glProgramUniform1dv),
-		ProgramUniform1ui: FPointer::load(loadfn("glProgramUniform1ui"), failing::glProgramUniform1ui),
-		ProgramUniform1uiv: FPointer::load(loadfn("glProgramUniform1uiv"), failing::glProgramUniform1uiv),
-		ProgramUniform2i: FPointer::load(loadfn("glProgramUniform2i"), failing::glProgramUniform2i),
-		ProgramUniform2iv: FPointer::load(loadfn("glProgramUniform2iv"), failing::glProgramUniform2iv),
-		ProgramUniform2f: FPointer::load(loadfn("glProgramUniform2f"), failing::glProgramUniform2f),
-		ProgramUniform2fv: FPointer::load(loadfn("glProgramUniform2fv"), failing::glProgramUniform2fv),
-		ProgramUniform2d: FPointer::load(loadfn("glProgramUniform2d"), failing::glProgramUniform2d),
-		ProgramUniform2dv: FPointer::load(loadfn("glProgramUniform2dv"), failing::glProgramUniform2dv),
-		ProgramUniform2ui: FPointer::load(loadfn("glProgramUniform2ui"), failing::glProgramUniform2ui),
-		ProgramUniform2uiv: FPointer::load(loadfn("glProgramUniform2uiv"), failing::glProgramUniform2uiv),
-		ProgramUniform3i: FPointer::load(loadfn("glProgramUniform3i"), failing::glProgramUniform3i),
-		ProgramUniform3iv: FPointer::load(loadfn("glProgramUniform3iv"), failing::glProgramUniform3iv),
-		ProgramUniform3f: FPointer::load(loadfn("glProgramUniform3f"), failing::glProgramUniform3f),
-		ProgramUniform3fv: FPointer::load(loadfn("glProgramUniform3fv"), failing::glProgramUniform3fv),
-		ProgramUniform3d: FPointer::load(loadfn("glProgramUniform3d"), failing::glProgramUniform3d),
-		ProgramUniform3dv: FPointer::load(loadfn("glProgramUniform3dv"), failing::glProgramUniform3dv),
-		ProgramUniform3ui: FPointer::load(loadfn("glProgramUniform3ui"), failing::glProgramUniform3ui),
-		ProgramUniform3uiv: FPointer::load(loadfn("glProgramUniform3uiv"), failing::glProgramUniform3uiv),
-		ProgramUniform4i: FPointer::load(loadfn("glProgramUniform4i"), failing::glProgramUniform4i),
-		ProgramUniform4iv: FPointer::load(loadfn("glProgramUniform4iv"), failing::glProgramUniform4iv),
-		ProgramUniform4f: FPointer::load(loadfn("glProgramUniform4f"), failing::glProgramUniform4f),
-		ProgramUniform4fv: FPointer::load(loadfn("glProgramUniform4fv"), failing::glProgramUniform4fv),
-		ProgramUniform4d: FPointer::load(loadfn("glProgramUniform4d"), failing::glProgramUniform4d),
-		ProgramUniform4dv: FPointer::load(loadfn("glProgramUniform4dv"), failing::glProgramUniform4dv),
-		ProgramUniform4ui: FPointer::load(loadfn("glProgramUniform4ui"), failing::glProgramUniform4ui),
-		ProgramUniform4uiv: FPointer::load(loadfn("glProgramUniform4uiv"), failing::glProgramUniform4uiv),
-		ProgramUniformMatrix2fv: FPointer::load(loadfn("glProgramUniformMatrix2fv"), failing::glProgramUniformMatrix2fv),
-		ProgramUniformMatrix3fv: FPointer::load(loadfn("glProgramUniformMatrix3fv"), failing::glProgramUniformMatrix3fv),
-		ProgramUniformMatrix4fv: FPointer::load(loadfn("glProgramUniformMatrix4fv"), failing::glProgramUniformMatrix4fv),
-		ProgramUniformMatrix2dv: FPointer::load(loadfn("glProgramUniformMatrix2dv"), failing::glProgramUniformMatrix2dv),
-		ProgramUniformMatrix3dv: FPointer::load(loadfn("glProgramUniformMatrix3dv"), failing::glProgramUniformMatrix3dv),
-		ProgramUniformMatrix4dv: FPointer::load(loadfn("glProgramUniformMatrix4dv"), failing::glProgramUniformMatrix4dv),
-		ProgramUniformMatrix2x3fv: FPointer::load(loadfn("glProgramUniformMatrix2x3fv"), failing::glProgramUniformMatrix2x3fv),
-		ProgramUniformMatrix3x2fv: FPointer::load(loadfn("glProgramUniformMatrix3x2fv"), failing::glProgramUniformMatrix3x2fv),
-		ProgramUniformMatrix2x4fv: FPointer::load(loadfn("glProgramUniformMatrix2x4fv"), failing::glProgramUniformMatrix2x4fv),
-		ProgramUniformMatrix4x2fv: FPointer::load(loadfn("glProgramUniformMatrix4x2fv"), failing::glProgramUniformMatrix4x2fv),
-		ProgramUniformMatrix3x4fv: FPointer::load(loadfn("glProgramUniformMatrix3x4fv"), failing::glProgramUniformMatrix3x4fv),
-		ProgramUniformMatrix4x3fv: FPointer::load(loadfn("glProgramUniformMatrix4x3fv"), failing::glProgramUniformMatrix4x3fv),
-		ProgramUniformMatrix2x3dv: FPointer::load(loadfn("glProgramUniformMatrix2x3dv"), failing::glProgramUniformMatrix2x3dv),
-		ProgramUniformMatrix3x2dv: FPointer::load(loadfn("glProgramUniformMatrix3x2dv"), failing::glProgramUniformMatrix3x2dv),
-		ProgramUniformMatrix2x4dv: FPointer::load(loadfn("glProgramUniformMatrix2x4dv"), failing::glProgramUniformMatrix2x4dv),
-		ProgramUniformMatrix4x2dv: FPointer::load(loadfn("glProgramUniformMatrix4x2dv"), failing::glProgramUniformMatrix4x2dv),
-		ProgramUniformMatrix3x4dv: FPointer::load(loadfn("glProgramUniformMatrix3x4dv"), failing::glProgramUniformMatrix3x4dv),
-		ProgramUniformMatrix4x3dv: FPointer::load(loadfn("glProgramUniformMatrix4x3dv"), failing::glProgramUniformMatrix4x3dv),
-		ValidateProgramPipeline: FPointer::load(loadfn("glValidateProgramPipeline"), failing::glValidateProgramPipeline),
-		GetProgramPipelineInfoLog: FPointer::load(loadfn("glGetProgramPipelineInfoLog"), failing::glGetProgramPipelineInfoLog),
+		UseProgramStages: FnPtr::new(loadfn("glUseProgramStages"), failing::glUseProgramStages),
+		ActiveShaderProgram: FnPtr::new(loadfn("glActiveShaderProgram"), failing::glActiveShaderProgram),
+		CreateShaderProgramv: FnPtr::new(loadfn("glCreateShaderProgramv"), failing::glCreateShaderProgramv),
+		BindProgramPipeline: FnPtr::new(loadfn("glBindProgramPipeline"), failing::glBindProgramPipeline),
+		DeleteProgramPipelines: FnPtr::new(loadfn("glDeleteProgramPipelines"), failing::glDeleteProgramPipelines),
+		GenProgramPipelines: FnPtr::new(loadfn("glGenProgramPipelines"), failing::glGenProgramPipelines),
+		IsProgramPipeline: FnPtr::new(loadfn("glIsProgramPipeline"), failing::glIsProgramPipeline),
+		GetProgramPipelineiv: FnPtr::new(loadfn("glGetProgramPipelineiv"), failing::glGetProgramPipelineiv),
+		ProgramUniform1i: FnPtr::new(loadfn("glProgramUniform1i"), failing::glProgramUniform1i),
+		ProgramUniform1iv: FnPtr::new(loadfn("glProgramUniform1iv"), failing::glProgramUniform1iv),
+		ProgramUniform1f: FnPtr::new(loadfn("glProgramUniform1f"), failing::glProgramUniform1f),
+		ProgramUniform1fv: FnPtr::new(loadfn("glProgramUniform1fv"), failing::glProgramUniform1fv),
+		ProgramUniform1d: FnPtr::new(loadfn("glProgramUniform1d"), failing::glProgramUniform1d),
+		ProgramUniform1dv: FnPtr::new(loadfn("glProgramUniform1dv"), failing::glProgramUniform1dv),
+		ProgramUniform1ui: FnPtr::new(loadfn("glProgramUniform1ui"), failing::glProgramUniform1ui),
+		ProgramUniform1uiv: FnPtr::new(loadfn("glProgramUniform1uiv"), failing::glProgramUniform1uiv),
+		ProgramUniform2i: FnPtr::new(loadfn("glProgramUniform2i"), failing::glProgramUniform2i),
+		ProgramUniform2iv: FnPtr::new(loadfn("glProgramUniform2iv"), failing::glProgramUniform2iv),
+		ProgramUniform2f: FnPtr::new(loadfn("glProgramUniform2f"), failing::glProgramUniform2f),
+		ProgramUniform2fv: FnPtr::new(loadfn("glProgramUniform2fv"), failing::glProgramUniform2fv),
+		ProgramUniform2d: FnPtr::new(loadfn("glProgramUniform2d"), failing::glProgramUniform2d),
+		ProgramUniform2dv: FnPtr::new(loadfn("glProgramUniform2dv"), failing::glProgramUniform2dv),
+		ProgramUniform2ui: FnPtr::new(loadfn("glProgramUniform2ui"), failing::glProgramUniform2ui),
+		ProgramUniform2uiv: FnPtr::new(loadfn("glProgramUniform2uiv"), failing::glProgramUniform2uiv),
+		ProgramUniform3i: FnPtr::new(loadfn("glProgramUniform3i"), failing::glProgramUniform3i),
+		ProgramUniform3iv: FnPtr::new(loadfn("glProgramUniform3iv"), failing::glProgramUniform3iv),
+		ProgramUniform3f: FnPtr::new(loadfn("glProgramUniform3f"), failing::glProgramUniform3f),
+		ProgramUniform3fv: FnPtr::new(loadfn("glProgramUniform3fv"), failing::glProgramUniform3fv),
+		ProgramUniform3d: FnPtr::new(loadfn("glProgramUniform3d"), failing::glProgramUniform3d),
+		ProgramUniform3dv: FnPtr::new(loadfn("glProgramUniform3dv"), failing::glProgramUniform3dv),
+		ProgramUniform3ui: FnPtr::new(loadfn("glProgramUniform3ui"), failing::glProgramUniform3ui),
+		ProgramUniform3uiv: FnPtr::new(loadfn("glProgramUniform3uiv"), failing::glProgramUniform3uiv),
+		ProgramUniform4i: FnPtr::new(loadfn("glProgramUniform4i"), failing::glProgramUniform4i),
+		ProgramUniform4iv: FnPtr::new(loadfn("glProgramUniform4iv"), failing::glProgramUniform4iv),
+		ProgramUniform4f: FnPtr::new(loadfn("glProgramUniform4f"), failing::glProgramUniform4f),
+		ProgramUniform4fv: FnPtr::new(loadfn("glProgramUniform4fv"), failing::glProgramUniform4fv),
+		ProgramUniform4d: FnPtr::new(loadfn("glProgramUniform4d"), failing::glProgramUniform4d),
+		ProgramUniform4dv: FnPtr::new(loadfn("glProgramUniform4dv"), failing::glProgramUniform4dv),
+		ProgramUniform4ui: FnPtr::new(loadfn("glProgramUniform4ui"), failing::glProgramUniform4ui),
+		ProgramUniform4uiv: FnPtr::new(loadfn("glProgramUniform4uiv"), failing::glProgramUniform4uiv),
+		ProgramUniformMatrix2fv: FnPtr::new(loadfn("glProgramUniformMatrix2fv"), failing::glProgramUniformMatrix2fv),
+		ProgramUniformMatrix3fv: FnPtr::new(loadfn("glProgramUniformMatrix3fv"), failing::glProgramUniformMatrix3fv),
+		ProgramUniformMatrix4fv: FnPtr::new(loadfn("glProgramUniformMatrix4fv"), failing::glProgramUniformMatrix4fv),
+		ProgramUniformMatrix2dv: FnPtr::new(loadfn("glProgramUniformMatrix2dv"), failing::glProgramUniformMatrix2dv),
+		ProgramUniformMatrix3dv: FnPtr::new(loadfn("glProgramUniformMatrix3dv"), failing::glProgramUniformMatrix3dv),
+		ProgramUniformMatrix4dv: FnPtr::new(loadfn("glProgramUniformMatrix4dv"), failing::glProgramUniformMatrix4dv),
+		ProgramUniformMatrix2x3fv: FnPtr::new(loadfn("glProgramUniformMatrix2x3fv"), failing::glProgramUniformMatrix2x3fv),
+		ProgramUniformMatrix3x2fv: FnPtr::new(loadfn("glProgramUniformMatrix3x2fv"), failing::glProgramUniformMatrix3x2fv),
+		ProgramUniformMatrix2x4fv: FnPtr::new(loadfn("glProgramUniformMatrix2x4fv"), failing::glProgramUniformMatrix2x4fv),
+		ProgramUniformMatrix4x2fv: FnPtr::new(loadfn("glProgramUniformMatrix4x2fv"), failing::glProgramUniformMatrix4x2fv),
+		ProgramUniformMatrix3x4fv: FnPtr::new(loadfn("glProgramUniformMatrix3x4fv"), failing::glProgramUniformMatrix3x4fv),
+		ProgramUniformMatrix4x3fv: FnPtr::new(loadfn("glProgramUniformMatrix4x3fv"), failing::glProgramUniformMatrix4x3fv),
+		ProgramUniformMatrix2x3dv: FnPtr::new(loadfn("glProgramUniformMatrix2x3dv"), failing::glProgramUniformMatrix2x3dv),
+		ProgramUniformMatrix3x2dv: FnPtr::new(loadfn("glProgramUniformMatrix3x2dv"), failing::glProgramUniformMatrix3x2dv),
+		ProgramUniformMatrix2x4dv: FnPtr::new(loadfn("glProgramUniformMatrix2x4dv"), failing::glProgramUniformMatrix2x4dv),
+		ProgramUniformMatrix4x2dv: FnPtr::new(loadfn("glProgramUniformMatrix4x2dv"), failing::glProgramUniformMatrix4x2dv),
+		ProgramUniformMatrix3x4dv: FnPtr::new(loadfn("glProgramUniformMatrix3x4dv"), failing::glProgramUniformMatrix3x4dv),
+		ProgramUniformMatrix4x3dv: FnPtr::new(loadfn("glProgramUniformMatrix4x3dv"), failing::glProgramUniformMatrix4x3dv),
+		ValidateProgramPipeline: FnPtr::new(loadfn("glValidateProgramPipeline"), failing::glValidateProgramPipeline),
+		GetProgramPipelineInfoLog: FnPtr::new(loadfn("glGetProgramPipelineInfoLog"), failing::glGetProgramPipelineInfoLog),
 		
 		// Core Extension: ARB_vertex_attrib_64bit
-		VertexAttribL1d: FPointer::load(loadfn("glVertexAttribL1d"), failing::glVertexAttribL1d),
-		VertexAttribL2d: FPointer::load(loadfn("glVertexAttribL2d"), failing::glVertexAttribL2d),
-		VertexAttribL3d: FPointer::load(loadfn("glVertexAttribL3d"), failing::glVertexAttribL3d),
-		VertexAttribL4d: FPointer::load(loadfn("glVertexAttribL4d"), failing::glVertexAttribL4d),
-		VertexAttribL1dv: FPointer::load(loadfn("glVertexAttribL1dv"), failing::glVertexAttribL1dv),
-		VertexAttribL2dv: FPointer::load(loadfn("glVertexAttribL2dv"), failing::glVertexAttribL2dv),
-		VertexAttribL3dv: FPointer::load(loadfn("glVertexAttribL3dv"), failing::glVertexAttribL3dv),
-		VertexAttribL4dv: FPointer::load(loadfn("glVertexAttribL4dv"), failing::glVertexAttribL4dv),
-		VertexAttribLPointer: FPointer::load(loadfn("glVertexAttribLPointer"), failing::glVertexAttribLPointer),
-		GetVertexAttribLdv: FPointer::load(loadfn("glGetVertexAttribLdv"), failing::glGetVertexAttribLdv),
+		VertexAttribL1d: FnPtr::new(loadfn("glVertexAttribL1d"), failing::glVertexAttribL1d),
+		VertexAttribL2d: FnPtr::new(loadfn("glVertexAttribL2d"), failing::glVertexAttribL2d),
+		VertexAttribL3d: FnPtr::new(loadfn("glVertexAttribL3d"), failing::glVertexAttribL3d),
+		VertexAttribL4d: FnPtr::new(loadfn("glVertexAttribL4d"), failing::glVertexAttribL4d),
+		VertexAttribL1dv: FnPtr::new(loadfn("glVertexAttribL1dv"), failing::glVertexAttribL1dv),
+		VertexAttribL2dv: FnPtr::new(loadfn("glVertexAttribL2dv"), failing::glVertexAttribL2dv),
+		VertexAttribL3dv: FnPtr::new(loadfn("glVertexAttribL3dv"), failing::glVertexAttribL3dv),
+		VertexAttribL4dv: FnPtr::new(loadfn("glVertexAttribL4dv"), failing::glVertexAttribL4dv),
+		VertexAttribLPointer: FnPtr::new(loadfn("glVertexAttribLPointer"), failing::glVertexAttribLPointer),
+		GetVertexAttribLdv: FnPtr::new(loadfn("glGetVertexAttribLdv"), failing::glGetVertexAttribLdv),
 		
 		// Core Extension: ARB_viewport_array
-		ViewportArrayv: FPointer::load(loadfn("glViewportArrayv"), failing::glViewportArrayv),
-		ViewportIndexedf: FPointer::load(loadfn("glViewportIndexedf"), failing::glViewportIndexedf),
-		ViewportIndexedfv: FPointer::load(loadfn("glViewportIndexedfv"), failing::glViewportIndexedfv),
-		ScissorArrayv: FPointer::load(loadfn("glScissorArrayv"), failing::glScissorArrayv),
-		ScissorIndexed: FPointer::load(loadfn("glScissorIndexed"), failing::glScissorIndexed),
-		ScissorIndexedv: FPointer::load(loadfn("glScissorIndexedv"), failing::glScissorIndexedv),
-		DepthRangeArrayv: FPointer::load(loadfn("glDepthRangeArrayv"), failing::glDepthRangeArrayv),
-		DepthRangeIndexed: FPointer::load(loadfn("glDepthRangeIndexed"), failing::glDepthRangeIndexed),
-		GetFloati_v: FPointer::load(loadfn("glGetFloati_v"), failing::glGetFloati_v),
-		GetDoublei_v: FPointer::load(loadfn("glGetDoublei_v"), failing::glGetDoublei_v),
+		ViewportArrayv: FnPtr::new(loadfn("glViewportArrayv"), failing::glViewportArrayv),
+		ViewportIndexedf: FnPtr::new(loadfn("glViewportIndexedf"), failing::glViewportIndexedf),
+		ViewportIndexedfv: FnPtr::new(loadfn("glViewportIndexedfv"), failing::glViewportIndexedfv),
+		ScissorArrayv: FnPtr::new(loadfn("glScissorArrayv"), failing::glScissorArrayv),
+		ScissorIndexed: FnPtr::new(loadfn("glScissorIndexed"), failing::glScissorIndexed),
+		ScissorIndexedv: FnPtr::new(loadfn("glScissorIndexedv"), failing::glScissorIndexedv),
+		DepthRangeArrayv: FnPtr::new(loadfn("glDepthRangeArrayv"), failing::glDepthRangeArrayv),
+		DepthRangeIndexed: FnPtr::new(loadfn("glDepthRangeIndexed"), failing::glDepthRangeIndexed),
+		GetFloati_v: FnPtr::new(loadfn("glGetFloati_v"), failing::glGetFloati_v),
+		GetDoublei_v: FnPtr::new(loadfn("glGetDoublei_v"), failing::glGetDoublei_v),
 		
 		// Core Extension: ARB_base_instance
-		DrawArraysInstancedBaseInstance: FPointer::load(loadfn("glDrawArraysInstancedBaseInstance"), failing::glDrawArraysInstancedBaseInstance),
-		DrawElementsInstancedBaseInstance: FPointer::load(loadfn("glDrawElementsInstancedBaseInstance"), failing::glDrawElementsInstancedBaseInstance),
-		DrawElementsInstancedBaseVertexBaseInstance: FPointer::load(loadfn("glDrawElementsInstancedBaseVertexBaseInstance"), failing::glDrawElementsInstancedBaseVertexBaseInstance),
+		DrawArraysInstancedBaseInstance: FnPtr::new(loadfn("glDrawArraysInstancedBaseInstance"), failing::glDrawArraysInstancedBaseInstance),
+		DrawElementsInstancedBaseInstance: FnPtr::new(loadfn("glDrawElementsInstancedBaseInstance"), failing::glDrawElementsInstancedBaseInstance),
+		DrawElementsInstancedBaseVertexBaseInstance: FnPtr::new(loadfn("glDrawElementsInstancedBaseVertexBaseInstance"), failing::glDrawElementsInstancedBaseVertexBaseInstance),
 		
 		// Core Extension: ARB_transform_feedback_instanced
-		DrawTransformFeedbackInstanced: FPointer::load(loadfn("glDrawTransformFeedbackInstanced"), failing::glDrawTransformFeedbackInstanced),
-		DrawTransformFeedbackStreamInstanced: FPointer::load(loadfn("glDrawTransformFeedbackStreamInstanced"), failing::glDrawTransformFeedbackStreamInstanced),
+		DrawTransformFeedbackInstanced: FnPtr::new(loadfn("glDrawTransformFeedbackInstanced"), failing::glDrawTransformFeedbackInstanced),
+		DrawTransformFeedbackStreamInstanced: FnPtr::new(loadfn("glDrawTransformFeedbackStreamInstanced"), failing::glDrawTransformFeedbackStreamInstanced),
 		
 		// Core Extension: ARB_internalformat_query
-		GetInternalformativ: FPointer::load(loadfn("glGetInternalformativ"), failing::glGetInternalformativ),
+		GetInternalformativ: FnPtr::new(loadfn("glGetInternalformativ"), failing::glGetInternalformativ),
 		
 		// Core Extension: ARB_shader_atomic_counters
-		GetActiveAtomicCounterBufferiv: FPointer::load(loadfn("glGetActiveAtomicCounterBufferiv"), failing::glGetActiveAtomicCounterBufferiv),
+		GetActiveAtomicCounterBufferiv: FnPtr::new(loadfn("glGetActiveAtomicCounterBufferiv"), failing::glGetActiveAtomicCounterBufferiv),
 		
 		// Core Extension: ARB_shader_image_load_store
-		BindImageTexture: FPointer::load(loadfn("glBindImageTexture"), failing::glBindImageTexture),
-		MemoryBarrier: FPointer::load(loadfn("glMemoryBarrier"), failing::glMemoryBarrier),
+		BindImageTexture: FnPtr::new(loadfn("glBindImageTexture"), failing::glBindImageTexture),
+		MemoryBarrier: FnPtr::new(loadfn("glMemoryBarrier"), failing::glMemoryBarrier),
 		
 		// Core Extension: ARB_texture_storage
-		TexStorage1D: FPointer::load(loadfn("glTexStorage1D"), failing::glTexStorage1D),
-		TexStorage2D: FPointer::load(loadfn("glTexStorage2D"), failing::glTexStorage2D),
-		TexStorage3D: FPointer::load(loadfn("glTexStorage3D"), failing::glTexStorage3D),
-		TextureStorage1DEXT: FPointer::load(loadfn("glTextureStorage1DEXT"), failing::glTextureStorage1DEXT),
-		TextureStorage2DEXT: FPointer::load(loadfn("glTextureStorage2DEXT"), failing::glTextureStorage2DEXT),
-		TextureStorage3DEXT: FPointer::load(loadfn("glTextureStorage3DEXT"), failing::glTextureStorage3DEXT),
+		TexStorage1D: FnPtr::new(loadfn("glTexStorage1D"), failing::glTexStorage1D),
+		TexStorage2D: FnPtr::new(loadfn("glTexStorage2D"), failing::glTexStorage2D),
+		TexStorage3D: FnPtr::new(loadfn("glTexStorage3D"), failing::glTexStorage3D),
+		TextureStorage1DEXT: FnPtr::new(loadfn("glTextureStorage1DEXT"), failing::glTextureStorage1DEXT),
+		TextureStorage2DEXT: FnPtr::new(loadfn("glTextureStorage2DEXT"), failing::glTextureStorage2DEXT),
+		TextureStorage3DEXT: FnPtr::new(loadfn("glTextureStorage3DEXT"), failing::glTextureStorage3DEXT),
 		
 		// Core Extension: KHR_debug
-		DebugMessageControl: FPointer::load(loadfn("glDebugMessageControl"), failing::glDebugMessageControl),
-		DebugMessageInsert: FPointer::load(loadfn("glDebugMessageInsert"), failing::glDebugMessageInsert),
-		DebugMessageCallback: FPointer::load(loadfn("glDebugMessageCallback"), failing::glDebugMessageCallback),
-		GetDebugMessageLog: FPointer::load(loadfn("glGetDebugMessageLog"), failing::glGetDebugMessageLog),
-		PushDebugGroup: FPointer::load(loadfn("glPushDebugGroup"), failing::glPushDebugGroup),
-		PopDebugGroup: FPointer::load(loadfn("glPopDebugGroup"), failing::glPopDebugGroup),
-		ObjectLabel: FPointer::load(loadfn("glObjectLabel"), failing::glObjectLabel),
-		GetObjectLabel: FPointer::load(loadfn("glGetObjectLabel"), failing::glGetObjectLabel),
-		ObjectPtrLabel: FPointer::load(loadfn("glObjectPtrLabel"), failing::glObjectPtrLabel),
-		GetObjectPtrLabel: FPointer::load(loadfn("glGetObjectPtrLabel"), failing::glGetObjectPtrLabel),
+		DebugMessageControl: FnPtr::new(loadfn("glDebugMessageControl"), failing::glDebugMessageControl),
+		DebugMessageInsert: FnPtr::new(loadfn("glDebugMessageInsert"), failing::glDebugMessageInsert),
+		DebugMessageCallback: FnPtr::new(loadfn("glDebugMessageCallback"), failing::glDebugMessageCallback),
+		GetDebugMessageLog: FnPtr::new(loadfn("glGetDebugMessageLog"), failing::glGetDebugMessageLog),
+		PushDebugGroup: FnPtr::new(loadfn("glPushDebugGroup"), failing::glPushDebugGroup),
+		PopDebugGroup: FnPtr::new(loadfn("glPopDebugGroup"), failing::glPopDebugGroup),
+		ObjectLabel: FnPtr::new(loadfn("glObjectLabel"), failing::glObjectLabel),
+		GetObjectLabel: FnPtr::new(loadfn("glGetObjectLabel"), failing::glGetObjectLabel),
+		ObjectPtrLabel: FnPtr::new(loadfn("glObjectPtrLabel"), failing::glObjectPtrLabel),
+		GetObjectPtrLabel: FnPtr::new(loadfn("glGetObjectPtrLabel"), failing::glGetObjectPtrLabel),
 		
 		// Core Extension: ARB_clear_buffer_object
-		ClearBufferData: FPointer::load(loadfn("glClearBufferData"), failing::glClearBufferData),
-		ClearBufferSubData: FPointer::load(loadfn("glClearBufferSubData"), failing::glClearBufferSubData),
-		ClearNamedBufferDataEXT: FPointer::load(loadfn("glClearNamedBufferDataEXT"), failing::glClearNamedBufferDataEXT),
-		ClearNamedBufferSubDataEXT: FPointer::load(loadfn("glClearNamedBufferSubDataEXT"), failing::glClearNamedBufferSubDataEXT),
+		ClearBufferData: FnPtr::new(loadfn("glClearBufferData"), failing::glClearBufferData),
+		ClearBufferSubData: FnPtr::new(loadfn("glClearBufferSubData"), failing::glClearBufferSubData),
+		ClearNamedBufferDataEXT: FnPtr::new(loadfn("glClearNamedBufferDataEXT"), failing::glClearNamedBufferDataEXT),
+		ClearNamedBufferSubDataEXT: FnPtr::new(loadfn("glClearNamedBufferSubDataEXT"), failing::glClearNamedBufferSubDataEXT),
 		
 		// Core Extension: ARB_compute_shader
-		DispatchCompute: FPointer::load(loadfn("glDispatchCompute"), failing::glDispatchCompute),
-		DispatchComputeIndirect: FPointer::load(loadfn("glDispatchComputeIndirect"), failing::glDispatchComputeIndirect),
+		DispatchCompute: FnPtr::new(loadfn("glDispatchCompute"), failing::glDispatchCompute),
+		DispatchComputeIndirect: FnPtr::new(loadfn("glDispatchComputeIndirect"), failing::glDispatchComputeIndirect),
 		
 		// Core Extension: ARB_copy_image
-		CopyImageSubData: FPointer::load(loadfn("glCopyImageSubData"), failing::glCopyImageSubData),
+		CopyImageSubData: FnPtr::new(loadfn("glCopyImageSubData"), failing::glCopyImageSubData),
 		
 		// Core Extension: ARB_framebuffer_no_attachments
-		FramebufferParameteri: FPointer::load(loadfn("glFramebufferParameteri"), failing::glFramebufferParameteri),
-		GetFramebufferParameteriv: FPointer::load(loadfn("glGetFramebufferParameteriv"), failing::glGetFramebufferParameteriv),
-		NamedFramebufferParameteriEXT: FPointer::load(loadfn("glNamedFramebufferParameteriEXT"), failing::glNamedFramebufferParameteriEXT),
-		GetNamedFramebufferParameterivEXT: FPointer::load(loadfn("glGetNamedFramebufferParameterivEXT"), failing::glGetNamedFramebufferParameterivEXT),
+		FramebufferParameteri: FnPtr::new(loadfn("glFramebufferParameteri"), failing::glFramebufferParameteri),
+		GetFramebufferParameteriv: FnPtr::new(loadfn("glGetFramebufferParameteriv"), failing::glGetFramebufferParameteriv),
+		NamedFramebufferParameteriEXT: FnPtr::new(loadfn("glNamedFramebufferParameteriEXT"), failing::glNamedFramebufferParameteriEXT),
+		GetNamedFramebufferParameterivEXT: FnPtr::new(loadfn("glGetNamedFramebufferParameterivEXT"), failing::glGetNamedFramebufferParameterivEXT),
 		
 		// Core Extension: ARB_internalformat_query2
-		GetInternalformati64v: FPointer::load(loadfn("glGetInternalformati64v"), failing::glGetInternalformati64v),
+		GetInternalformati64v: FnPtr::new(loadfn("glGetInternalformati64v"), failing::glGetInternalformati64v),
 		
 		// Core Extension: ARB_invalidate_subdata
-		InvalidateTexSubImage: FPointer::load(loadfn("glInvalidateTexSubImage"), failing::glInvalidateTexSubImage),
-		InvalidateTexImage: FPointer::load(loadfn("glInvalidateTexImage"), failing::glInvalidateTexImage),
-		InvalidateBufferSubData: FPointer::load(loadfn("glInvalidateBufferSubData"), failing::glInvalidateBufferSubData),
-		InvalidateBufferData: FPointer::load(loadfn("glInvalidateBufferData"), failing::glInvalidateBufferData),
-		InvalidateFramebuffer: FPointer::load(loadfn("glInvalidateFramebuffer"), failing::glInvalidateFramebuffer),
-		InvalidateSubFramebuffer: FPointer::load(loadfn("glInvalidateSubFramebuffer"), failing::glInvalidateSubFramebuffer),
+		InvalidateTexSubImage: FnPtr::new(loadfn("glInvalidateTexSubImage"), failing::glInvalidateTexSubImage),
+		InvalidateTexImage: FnPtr::new(loadfn("glInvalidateTexImage"), failing::glInvalidateTexImage),
+		InvalidateBufferSubData: FnPtr::new(loadfn("glInvalidateBufferSubData"), failing::glInvalidateBufferSubData),
+		InvalidateBufferData: FnPtr::new(loadfn("glInvalidateBufferData"), failing::glInvalidateBufferData),
+		InvalidateFramebuffer: FnPtr::new(loadfn("glInvalidateFramebuffer"), failing::glInvalidateFramebuffer),
+		InvalidateSubFramebuffer: FnPtr::new(loadfn("glInvalidateSubFramebuffer"), failing::glInvalidateSubFramebuffer),
 		
 		// Core Extension: ARB_multi_draw_indirect
-		MultiDrawArraysIndirect: FPointer::load(loadfn("glMultiDrawArraysIndirect"), failing::glMultiDrawArraysIndirect),
-		MultiDrawElementsIndirect: FPointer::load(loadfn("glMultiDrawElementsIndirect"), failing::glMultiDrawElementsIndirect),
+		MultiDrawArraysIndirect: FnPtr::new(loadfn("glMultiDrawArraysIndirect"), failing::glMultiDrawArraysIndirect),
+		MultiDrawElementsIndirect: FnPtr::new(loadfn("glMultiDrawElementsIndirect"), failing::glMultiDrawElementsIndirect),
 		
 		// Core Extension: ARB_program_interface_query
-		GetProgramInterfaceiv: FPointer::load(loadfn("glGetProgramInterfaceiv"), failing::glGetProgramInterfaceiv),
-		GetProgramResourceIndex: FPointer::load(loadfn("glGetProgramResourceIndex"), failing::glGetProgramResourceIndex),
-		GetProgramResourceName: FPointer::load(loadfn("glGetProgramResourceName"), failing::glGetProgramResourceName),
-		GetProgramResourceiv: FPointer::load(loadfn("glGetProgramResourceiv"), failing::glGetProgramResourceiv),
-		GetProgramResourceLocation: FPointer::load(loadfn("glGetProgramResourceLocation"), failing::glGetProgramResourceLocation),
-		GetProgramResourceLocationIndex: FPointer::load(loadfn("glGetProgramResourceLocationIndex"), failing::glGetProgramResourceLocationIndex),
+		GetProgramInterfaceiv: FnPtr::new(loadfn("glGetProgramInterfaceiv"), failing::glGetProgramInterfaceiv),
+		GetProgramResourceIndex: FnPtr::new(loadfn("glGetProgramResourceIndex"), failing::glGetProgramResourceIndex),
+		GetProgramResourceName: FnPtr::new(loadfn("glGetProgramResourceName"), failing::glGetProgramResourceName),
+		GetProgramResourceiv: FnPtr::new(loadfn("glGetProgramResourceiv"), failing::glGetProgramResourceiv),
+		GetProgramResourceLocation: FnPtr::new(loadfn("glGetProgramResourceLocation"), failing::glGetProgramResourceLocation),
+		GetProgramResourceLocationIndex: FnPtr::new(loadfn("glGetProgramResourceLocationIndex"), failing::glGetProgramResourceLocationIndex),
 		
 		// Core Extension: ARB_shader_storage_buffer_object
-		ShaderStorageBlockBinding: FPointer::load(loadfn("glShaderStorageBlockBinding"), failing::glShaderStorageBlockBinding),
+		ShaderStorageBlockBinding: FnPtr::new(loadfn("glShaderStorageBlockBinding"), failing::glShaderStorageBlockBinding),
 		
 		// Core Extension: ARB_texture_buffer_range
-		TexBufferRange: FPointer::load(loadfn("glTexBufferRange"), failing::glTexBufferRange),
-		TextureBufferRangeEXT: FPointer::load(loadfn("glTextureBufferRangeEXT"), failing::glTextureBufferRangeEXT),
+		TexBufferRange: FnPtr::new(loadfn("glTexBufferRange"), failing::glTexBufferRange),
+		TextureBufferRangeEXT: FnPtr::new(loadfn("glTextureBufferRangeEXT"), failing::glTextureBufferRangeEXT),
 		
 		// Core Extension: ARB_texture_storage_multisample
-		TexStorage2DMultisample: FPointer::load(loadfn("glTexStorage2DMultisample"), failing::glTexStorage2DMultisample),
-		TexStorage3DMultisample: FPointer::load(loadfn("glTexStorage3DMultisample"), failing::glTexStorage3DMultisample),
-		TextureStorage2DMultisampleEXT: FPointer::load(loadfn("glTextureStorage2DMultisampleEXT"), failing::glTextureStorage2DMultisampleEXT),
-		TextureStorage3DMultisampleEXT: FPointer::load(loadfn("glTextureStorage3DMultisampleEXT"), failing::glTextureStorage3DMultisampleEXT),
+		TexStorage2DMultisample: FnPtr::new(loadfn("glTexStorage2DMultisample"), failing::glTexStorage2DMultisample),
+		TexStorage3DMultisample: FnPtr::new(loadfn("glTexStorage3DMultisample"), failing::glTexStorage3DMultisample),
+		TextureStorage2DMultisampleEXT: FnPtr::new(loadfn("glTextureStorage2DMultisampleEXT"), failing::glTextureStorage2DMultisampleEXT),
+		TextureStorage3DMultisampleEXT: FnPtr::new(loadfn("glTextureStorage3DMultisampleEXT"), failing::glTextureStorage3DMultisampleEXT),
 		
 		// Core Extension: ARB_texture_view
-		TextureView: FPointer::load(loadfn("glTextureView"), failing::glTextureView),
+		TextureView: FnPtr::new(loadfn("glTextureView"), failing::glTextureView),
 		
 		// Core Extension: ARB_vertex_attrib_binding
-		BindVertexBuffer: FPointer::load(loadfn("glBindVertexBuffer"), failing::glBindVertexBuffer),
-		VertexAttribFormat: FPointer::load(loadfn("glVertexAttribFormat"), failing::glVertexAttribFormat),
-		VertexAttribIFormat: FPointer::load(loadfn("glVertexAttribIFormat"), failing::glVertexAttribIFormat),
-		VertexAttribLFormat: FPointer::load(loadfn("glVertexAttribLFormat"), failing::glVertexAttribLFormat),
-		VertexAttribBinding: FPointer::load(loadfn("glVertexAttribBinding"), failing::glVertexAttribBinding),
-		VertexBindingDivisor: FPointer::load(loadfn("glVertexBindingDivisor"), failing::glVertexBindingDivisor),
-		VertexArrayBindVertexBufferEXT: FPointer::load(loadfn("glVertexArrayBindVertexBufferEXT"), failing::glVertexArrayBindVertexBufferEXT),
-		VertexArrayVertexAttribFormatEXT: FPointer::load(loadfn("glVertexArrayVertexAttribFormatEXT"), failing::glVertexArrayVertexAttribFormatEXT),
-		VertexArrayVertexAttribIFormatEXT: FPointer::load(loadfn("glVertexArrayVertexAttribIFormatEXT"), failing::glVertexArrayVertexAttribIFormatEXT),
-		VertexArrayVertexAttribLFormatEXT: FPointer::load(loadfn("glVertexArrayVertexAttribLFormatEXT"), failing::glVertexArrayVertexAttribLFormatEXT),
-		VertexArrayVertexAttribBindingEXT: FPointer::load(loadfn("glVertexArrayVertexAttribBindingEXT"), failing::glVertexArrayVertexAttribBindingEXT),
-		VertexArrayVertexBindingDivisorEXT: FPointer::load(loadfn("glVertexArrayVertexBindingDivisorEXT"), failing::glVertexArrayVertexBindingDivisorEXT),
+		BindVertexBuffer: FnPtr::new(loadfn("glBindVertexBuffer"), failing::glBindVertexBuffer),
+		VertexAttribFormat: FnPtr::new(loadfn("glVertexAttribFormat"), failing::glVertexAttribFormat),
+		VertexAttribIFormat: FnPtr::new(loadfn("glVertexAttribIFormat"), failing::glVertexAttribIFormat),
+		VertexAttribLFormat: FnPtr::new(loadfn("glVertexAttribLFormat"), failing::glVertexAttribLFormat),
+		VertexAttribBinding: FnPtr::new(loadfn("glVertexAttribBinding"), failing::glVertexAttribBinding),
+		VertexBindingDivisor: FnPtr::new(loadfn("glVertexBindingDivisor"), failing::glVertexBindingDivisor),
+		VertexArrayBindVertexBufferEXT: FnPtr::new(loadfn("glVertexArrayBindVertexBufferEXT"), failing::glVertexArrayBindVertexBufferEXT),
+		VertexArrayVertexAttribFormatEXT: FnPtr::new(loadfn("glVertexArrayVertexAttribFormatEXT"), failing::glVertexArrayVertexAttribFormatEXT),
+		VertexArrayVertexAttribIFormatEXT: FnPtr::new(loadfn("glVertexArrayVertexAttribIFormatEXT"), failing::glVertexArrayVertexAttribIFormatEXT),
+		VertexArrayVertexAttribLFormatEXT: FnPtr::new(loadfn("glVertexArrayVertexAttribLFormatEXT"), failing::glVertexArrayVertexAttribLFormatEXT),
+		VertexArrayVertexAttribBindingEXT: FnPtr::new(loadfn("glVertexArrayVertexAttribBindingEXT"), failing::glVertexArrayVertexAttribBindingEXT),
+		VertexArrayVertexBindingDivisorEXT: FnPtr::new(loadfn("glVertexArrayVertexBindingDivisorEXT"), failing::glVertexArrayVertexBindingDivisorEXT),
 		
 	}
 }
@@ -3616,663 +3616,663 @@ pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) -> ~GL {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-pub impl GL {
+impl GL {
 	// Version: 1.1
-	#[inline(always)] unsafe fn CullFace(&self, mode: GLenum) { (self.CullFace.f)(mode) }
-	#[inline(always)] unsafe fn FrontFace(&self, mode: GLenum) { (self.FrontFace.f)(mode) }
-	#[inline(always)] unsafe fn Hint(&self, target: GLenum, mode: GLenum) { (self.Hint.f)(target, mode) }
-	#[inline(always)] unsafe fn LineWidth(&self, width: GLfloat) { (self.LineWidth.f)(width) }
-	#[inline(always)] unsafe fn PointSize(&self, size: GLfloat) { (self.PointSize.f)(size) }
-	#[inline(always)] unsafe fn PolygonMode(&self, face: GLenum, mode: GLenum) { (self.PolygonMode.f)(face, mode) }
-	#[inline(always)] unsafe fn Scissor(&self, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.Scissor.f)(x, y, width, height) }
-	#[inline(always)] unsafe fn TexParameterf(&self, target: GLenum, pname: GLenum, param: GLfloat) { (self.TexParameterf.f)(target, pname, param) }
-	#[inline(always)] unsafe fn TexParameterfv(&self, target: GLenum, pname: GLenum, params: *GLfloat) { (self.TexParameterfv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn TexParameteri(&self, target: GLenum, pname: GLenum, param: GLint) { (self.TexParameteri.f)(target, pname, param) }
-	#[inline(always)] unsafe fn TexParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.TexParameteriv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn TexImage1D(&self, target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexImage1D.f)(target, level, internalformat, width, border, format, type_, pixels) }
-	#[inline(always)] unsafe fn TexImage2D(&self, target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexImage2D.f)(target, level, internalformat, width, height, border, format, type_, pixels) }
-	#[inline(always)] unsafe fn DrawBuffer(&self, mode: GLenum) { (self.DrawBuffer.f)(mode) }
-	#[inline(always)] unsafe fn Clear(&self, mask: GLbitfield) { (self.Clear.f)(mask) }
-	#[inline(always)] unsafe fn ClearColor(&self, red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { (self.ClearColor.f)(red, green, blue, alpha) }
-	#[inline(always)] unsafe fn ClearStencil(&self, s: GLint) { (self.ClearStencil.f)(s) }
-	#[inline(always)] unsafe fn ClearDepth(&self, depth: GLdouble) { (self.ClearDepth.f)(depth) }
-	#[inline(always)] unsafe fn StencilMask(&self, mask: GLuint) { (self.StencilMask.f)(mask) }
-	#[inline(always)] unsafe fn ColorMask(&self, red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean) { (self.ColorMask.f)(red, green, blue, alpha) }
-	#[inline(always)] unsafe fn DepthMask(&self, flag: GLboolean) { (self.DepthMask.f)(flag) }
-	#[inline(always)] unsafe fn Disable(&self, cap: GLenum) { (self.Disable.f)(cap) }
-	#[inline(always)] unsafe fn Enable(&self, cap: GLenum) { (self.Enable.f)(cap) }
-	#[inline(always)] unsafe fn Finish(&self) { (self.Finish.f)() }
-	#[inline(always)] unsafe fn Flush(&self) { (self.Flush.f)() }
-	#[inline(always)] unsafe fn BlendFunc(&self, sfactor: GLenum, dfactor: GLenum) { (self.BlendFunc.f)(sfactor, dfactor) }
-	#[inline(always)] unsafe fn LogicOp(&self, opcode: GLenum) { (self.LogicOp.f)(opcode) }
-	#[inline(always)] unsafe fn StencilFunc(&self, func: GLenum, ref_: GLint, mask: GLuint) { (self.StencilFunc.f)(func, ref_, mask) }
-	#[inline(always)] unsafe fn StencilOp(&self, fail: GLenum, zfail: GLenum, zpass: GLenum) { (self.StencilOp.f)(fail, zfail, zpass) }
-	#[inline(always)] unsafe fn DepthFunc(&self, func: GLenum) { (self.DepthFunc.f)(func) }
-	#[inline(always)] unsafe fn PixelStoref(&self, pname: GLenum, param: GLfloat) { (self.PixelStoref.f)(pname, param) }
-	#[inline(always)] unsafe fn PixelStorei(&self, pname: GLenum, param: GLint) { (self.PixelStorei.f)(pname, param) }
-	#[inline(always)] unsafe fn ReadBuffer(&self, mode: GLenum) { (self.ReadBuffer.f)(mode) }
-	#[inline(always)] unsafe fn ReadPixels(&self, x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.ReadPixels.f)(x, y, width, height, format, type_, pixels) }
-	#[inline(always)] unsafe fn GetBooleanv(&self, pname: GLenum, params: *GLboolean) { (self.GetBooleanv.f)(pname, params) }
-	#[inline(always)] unsafe fn GetDoublev(&self, pname: GLenum, params: *GLdouble) { (self.GetDoublev.f)(pname, params) }
-	#[inline(always)] unsafe fn GetError(&self) -> GLenum { (self.GetError.f)() }
-	#[inline(always)] unsafe fn GetFloatv(&self, pname: GLenum, params: *GLfloat) { (self.GetFloatv.f)(pname, params) }
-	#[inline(always)] unsafe fn GetIntegerv(&self, pname: GLenum, params: *GLint) { (self.GetIntegerv.f)(pname, params) }
-	#[inline(always)] unsafe fn GetString(&self, name: GLenum) -> *GLubyte { (self.GetString.f)(name) }
-	#[inline(always)] unsafe fn GetTexImage(&self, target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.GetTexImage.f)(target, level, format, type_, pixels) }
-	#[inline(always)] unsafe fn GetTexParameterfv(&self, target: GLenum, pname: GLenum, params: *GLfloat) { (self.GetTexParameterfv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn GetTexParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetTexParameteriv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn GetTexLevelParameterfv(&self, target: GLenum, level: GLint, pname: GLenum, params: *GLfloat) { (self.GetTexLevelParameterfv.f)(target, level, pname, params) }
-	#[inline(always)] unsafe fn GetTexLevelParameteriv(&self, target: GLenum, level: GLint, pname: GLenum, params: *GLint) { (self.GetTexLevelParameteriv.f)(target, level, pname, params) }
-	#[inline(always)] unsafe fn IsEnabled(&self, cap: GLenum) -> GLboolean { (self.IsEnabled.f)(cap) }
-	#[inline(always)] unsafe fn DepthRange(&self, near: GLdouble, far: GLdouble) { (self.DepthRange.f)(near, far) }
-	#[inline(always)] unsafe fn Viewport(&self, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.Viewport.f)(x, y, width, height) }
-	#[inline(always)] unsafe fn DrawArrays(&self, mode: GLenum, first: GLint, count: GLsizei) { (self.DrawArrays.f)(mode, first, count) }
-	#[inline(always)] unsafe fn DrawElements(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid) { (self.DrawElements.f)(mode, count, type_, indices) }
-	#[inline(always)] unsafe fn GetPointerv(&self, pname: GLenum, params: **GLvoid) { (self.GetPointerv.f)(pname, params) }
-	#[inline(always)] unsafe fn PolygonOffset(&self, factor: GLfloat, units: GLfloat) { (self.PolygonOffset.f)(factor, units) }
-	#[inline(always)] unsafe fn CopyTexImage1D(&self, target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint) { (self.CopyTexImage1D.f)(target, level, internalformat, x, y, width, border) }
-	#[inline(always)] unsafe fn CopyTexImage2D(&self, target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint) { (self.CopyTexImage2D.f)(target, level, internalformat, x, y, width, height, border) }
-	#[inline(always)] unsafe fn CopyTexSubImage1D(&self, target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei) { (self.CopyTexSubImage1D.f)(target, level, xoffset, x, y, width) }
-	#[inline(always)] unsafe fn CopyTexSubImage2D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.CopyTexSubImage2D.f)(target, level, xoffset, yoffset, x, y, width, height) }
-	#[inline(always)] unsafe fn TexSubImage1D(&self, target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexSubImage1D.f)(target, level, xoffset, width, format, type_, pixels) }
-	#[inline(always)] unsafe fn TexSubImage2D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, type_, pixels) }
-	#[inline(always)] unsafe fn BindTexture(&self, target: GLenum, texture: GLuint) { (self.BindTexture.f)(target, texture) }
-	#[inline(always)] unsafe fn DeleteTextures(&self, n: GLsizei, textures: *GLuint) { (self.DeleteTextures.f)(n, textures) }
-	#[inline(always)] unsafe fn GenTextures(&self, n: GLsizei, textures: *GLuint) { (self.GenTextures.f)(n, textures) }
-	#[inline(always)] unsafe fn IsTexture(&self, texture: GLuint) -> GLboolean { (self.IsTexture.f)(texture) }
-	#[inline(always)] unsafe fn Indexub(&self, c: GLubyte) { (self.Indexub.f)(c) }
-	#[inline(always)] unsafe fn Indexubv(&self, c: *GLubyte) { (self.Indexubv.f)(c) }
+	#[inline(always)] pub unsafe fn CullFace(&self, mode: GLenum) { (self.CullFace.f)(mode) }
+	#[inline(always)] pub unsafe fn FrontFace(&self, mode: GLenum) { (self.FrontFace.f)(mode) }
+	#[inline(always)] pub unsafe fn Hint(&self, target: GLenum, mode: GLenum) { (self.Hint.f)(target, mode) }
+	#[inline(always)] pub unsafe fn LineWidth(&self, width: GLfloat) { (self.LineWidth.f)(width) }
+	#[inline(always)] pub unsafe fn PointSize(&self, size: GLfloat) { (self.PointSize.f)(size) }
+	#[inline(always)] pub unsafe fn PolygonMode(&self, face: GLenum, mode: GLenum) { (self.PolygonMode.f)(face, mode) }
+	#[inline(always)] pub unsafe fn Scissor(&self, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.Scissor.f)(x, y, width, height) }
+	#[inline(always)] pub unsafe fn TexParameterf(&self, target: GLenum, pname: GLenum, param: GLfloat) { (self.TexParameterf.f)(target, pname, param) }
+	#[inline(always)] pub unsafe fn TexParameterfv(&self, target: GLenum, pname: GLenum, params: *GLfloat) { (self.TexParameterfv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn TexParameteri(&self, target: GLenum, pname: GLenum, param: GLint) { (self.TexParameteri.f)(target, pname, param) }
+	#[inline(always)] pub unsafe fn TexParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.TexParameteriv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn TexImage1D(&self, target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexImage1D.f)(target, level, internalformat, width, border, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn TexImage2D(&self, target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexImage2D.f)(target, level, internalformat, width, height, border, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn DrawBuffer(&self, mode: GLenum) { (self.DrawBuffer.f)(mode) }
+	#[inline(always)] pub unsafe fn Clear(&self, mask: GLbitfield) { (self.Clear.f)(mask) }
+	#[inline(always)] pub unsafe fn ClearColor(&self, red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { (self.ClearColor.f)(red, green, blue, alpha) }
+	#[inline(always)] pub unsafe fn ClearStencil(&self, s: GLint) { (self.ClearStencil.f)(s) }
+	#[inline(always)] pub unsafe fn ClearDepth(&self, depth: GLdouble) { (self.ClearDepth.f)(depth) }
+	#[inline(always)] pub unsafe fn StencilMask(&self, mask: GLuint) { (self.StencilMask.f)(mask) }
+	#[inline(always)] pub unsafe fn ColorMask(&self, red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean) { (self.ColorMask.f)(red, green, blue, alpha) }
+	#[inline(always)] pub unsafe fn DepthMask(&self, flag: GLboolean) { (self.DepthMask.f)(flag) }
+	#[inline(always)] pub unsafe fn Disable(&self, cap: GLenum) { (self.Disable.f)(cap) }
+	#[inline(always)] pub unsafe fn Enable(&self, cap: GLenum) { (self.Enable.f)(cap) }
+	#[inline(always)] pub unsafe fn Finish(&self) { (self.Finish.f)() }
+	#[inline(always)] pub unsafe fn Flush(&self) { (self.Flush.f)() }
+	#[inline(always)] pub unsafe fn BlendFunc(&self, sfactor: GLenum, dfactor: GLenum) { (self.BlendFunc.f)(sfactor, dfactor) }
+	#[inline(always)] pub unsafe fn LogicOp(&self, opcode: GLenum) { (self.LogicOp.f)(opcode) }
+	#[inline(always)] pub unsafe fn StencilFunc(&self, func: GLenum, ref_: GLint, mask: GLuint) { (self.StencilFunc.f)(func, ref_, mask) }
+	#[inline(always)] pub unsafe fn StencilOp(&self, fail: GLenum, zfail: GLenum, zpass: GLenum) { (self.StencilOp.f)(fail, zfail, zpass) }
+	#[inline(always)] pub unsafe fn DepthFunc(&self, func: GLenum) { (self.DepthFunc.f)(func) }
+	#[inline(always)] pub unsafe fn PixelStoref(&self, pname: GLenum, param: GLfloat) { (self.PixelStoref.f)(pname, param) }
+	#[inline(always)] pub unsafe fn PixelStorei(&self, pname: GLenum, param: GLint) { (self.PixelStorei.f)(pname, param) }
+	#[inline(always)] pub unsafe fn ReadBuffer(&self, mode: GLenum) { (self.ReadBuffer.f)(mode) }
+	#[inline(always)] pub unsafe fn ReadPixels(&self, x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.ReadPixels.f)(x, y, width, height, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn GetBooleanv(&self, pname: GLenum, params: *GLboolean) { (self.GetBooleanv.f)(pname, params) }
+	#[inline(always)] pub unsafe fn GetDoublev(&self, pname: GLenum, params: *GLdouble) { (self.GetDoublev.f)(pname, params) }
+	#[inline(always)] pub unsafe fn GetError(&self) -> GLenum { (self.GetError.f)() }
+	#[inline(always)] pub unsafe fn GetFloatv(&self, pname: GLenum, params: *GLfloat) { (self.GetFloatv.f)(pname, params) }
+	#[inline(always)] pub unsafe fn GetIntegerv(&self, pname: GLenum, params: *GLint) { (self.GetIntegerv.f)(pname, params) }
+	#[inline(always)] pub unsafe fn GetString(&self, name: GLenum) -> *GLubyte { (self.GetString.f)(name) }
+	#[inline(always)] pub unsafe fn GetTexImage(&self, target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.GetTexImage.f)(target, level, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn GetTexParameterfv(&self, target: GLenum, pname: GLenum, params: *GLfloat) { (self.GetTexParameterfv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn GetTexParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetTexParameteriv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn GetTexLevelParameterfv(&self, target: GLenum, level: GLint, pname: GLenum, params: *GLfloat) { (self.GetTexLevelParameterfv.f)(target, level, pname, params) }
+	#[inline(always)] pub unsafe fn GetTexLevelParameteriv(&self, target: GLenum, level: GLint, pname: GLenum, params: *GLint) { (self.GetTexLevelParameteriv.f)(target, level, pname, params) }
+	#[inline(always)] pub unsafe fn IsEnabled(&self, cap: GLenum) -> GLboolean { (self.IsEnabled.f)(cap) }
+	#[inline(always)] pub unsafe fn DepthRange(&self, near: GLdouble, far: GLdouble) { (self.DepthRange.f)(near, far) }
+	#[inline(always)] pub unsafe fn Viewport(&self, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.Viewport.f)(x, y, width, height) }
+	#[inline(always)] pub unsafe fn DrawArrays(&self, mode: GLenum, first: GLint, count: GLsizei) { (self.DrawArrays.f)(mode, first, count) }
+	#[inline(always)] pub unsafe fn DrawElements(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid) { (self.DrawElements.f)(mode, count, type_, indices) }
+	#[inline(always)] pub unsafe fn GetPointerv(&self, pname: GLenum, params: **GLvoid) { (self.GetPointerv.f)(pname, params) }
+	#[inline(always)] pub unsafe fn PolygonOffset(&self, factor: GLfloat, units: GLfloat) { (self.PolygonOffset.f)(factor, units) }
+	#[inline(always)] pub unsafe fn CopyTexImage1D(&self, target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint) { (self.CopyTexImage1D.f)(target, level, internalformat, x, y, width, border) }
+	#[inline(always)] pub unsafe fn CopyTexImage2D(&self, target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint) { (self.CopyTexImage2D.f)(target, level, internalformat, x, y, width, height, border) }
+	#[inline(always)] pub unsafe fn CopyTexSubImage1D(&self, target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei) { (self.CopyTexSubImage1D.f)(target, level, xoffset, x, y, width) }
+	#[inline(always)] pub unsafe fn CopyTexSubImage2D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.CopyTexSubImage2D.f)(target, level, xoffset, yoffset, x, y, width, height) }
+	#[inline(always)] pub unsafe fn TexSubImage1D(&self, target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexSubImage1D.f)(target, level, xoffset, width, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn TexSubImage2D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn BindTexture(&self, target: GLenum, texture: GLuint) { (self.BindTexture.f)(target, texture) }
+	#[inline(always)] pub unsafe fn DeleteTextures(&self, n: GLsizei, textures: *GLuint) { (self.DeleteTextures.f)(n, textures) }
+	#[inline(always)] pub unsafe fn GenTextures(&self, n: GLsizei, textures: *GLuint) { (self.GenTextures.f)(n, textures) }
+	#[inline(always)] pub unsafe fn IsTexture(&self, texture: GLuint) -> GLboolean { (self.IsTexture.f)(texture) }
+	#[inline(always)] pub unsafe fn Indexub(&self, c: GLubyte) { (self.Indexub.f)(c) }
+	#[inline(always)] pub unsafe fn Indexubv(&self, c: *GLubyte) { (self.Indexubv.f)(c) }
 	
 	// Version: 1.2
-	#[inline(always)] unsafe fn BlendColor(&self, red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { (self.BlendColor.f)(red, green, blue, alpha) }
-	#[inline(always)] unsafe fn BlendEquation(&self, mode: GLenum) { (self.BlendEquation.f)(mode) }
-	#[inline(always)] unsafe fn DrawRangeElements(&self, mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid) { (self.DrawRangeElements.f)(mode, start, end, count, type_, indices) }
-	#[inline(always)] unsafe fn TexImage3D(&self, target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexImage3D.f)(target, level, internalformat, width, height, depth, border, format, type_, pixels) }
-	#[inline(always)] unsafe fn TexSubImage3D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels) }
-	#[inline(always)] unsafe fn CopyTexSubImage3D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.CopyTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, x, y, width, height) }
+	#[inline(always)] pub unsafe fn BlendColor(&self, red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { (self.BlendColor.f)(red, green, blue, alpha) }
+	#[inline(always)] pub unsafe fn BlendEquation(&self, mode: GLenum) { (self.BlendEquation.f)(mode) }
+	#[inline(always)] pub unsafe fn DrawRangeElements(&self, mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid) { (self.DrawRangeElements.f)(mode, start, end, count, type_, indices) }
+	#[inline(always)] pub unsafe fn TexImage3D(&self, target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexImage3D.f)(target, level, internalformat, width, height, depth, border, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn TexSubImage3D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (self.TexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels) }
+	#[inline(always)] pub unsafe fn CopyTexSubImage3D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.CopyTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, x, y, width, height) }
 	
 	// Version: 1.3
-	#[inline(always)] unsafe fn ActiveTexture(&self, texture: GLenum) { (self.ActiveTexture.f)(texture) }
-	#[inline(always)] unsafe fn SampleCoverage(&self, value: GLfloat, invert: GLboolean) { (self.SampleCoverage.f)(value, invert) }
-	#[inline(always)] unsafe fn CompressedTexImage3D(&self, target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexImage3D.f)(target, level, internalformat, width, height, depth, border, imageSize, data) }
-	#[inline(always)] unsafe fn CompressedTexImage2D(&self, target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexImage2D.f)(target, level, internalformat, width, height, border, imageSize, data) }
-	#[inline(always)] unsafe fn CompressedTexImage1D(&self, target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexImage1D.f)(target, level, internalformat, width, border, imageSize, data) }
-	#[inline(always)] unsafe fn CompressedTexSubImage3D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data) }
-	#[inline(always)] unsafe fn CompressedTexSubImage2D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, imageSize, data) }
-	#[inline(always)] unsafe fn CompressedTexSubImage1D(&self, target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexSubImage1D.f)(target, level, xoffset, width, format, imageSize, data) }
-	#[inline(always)] unsafe fn GetCompressedTexImage(&self, target: GLenum, level: GLint, img: *GLvoid) { (self.GetCompressedTexImage.f)(target, level, img) }
+	#[inline(always)] pub unsafe fn ActiveTexture(&self, texture: GLenum) { (self.ActiveTexture.f)(texture) }
+	#[inline(always)] pub unsafe fn SampleCoverage(&self, value: GLfloat, invert: GLboolean) { (self.SampleCoverage.f)(value, invert) }
+	#[inline(always)] pub unsafe fn CompressedTexImage3D(&self, target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexImage3D.f)(target, level, internalformat, width, height, depth, border, imageSize, data) }
+	#[inline(always)] pub unsafe fn CompressedTexImage2D(&self, target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexImage2D.f)(target, level, internalformat, width, height, border, imageSize, data) }
+	#[inline(always)] pub unsafe fn CompressedTexImage1D(&self, target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexImage1D.f)(target, level, internalformat, width, border, imageSize, data) }
+	#[inline(always)] pub unsafe fn CompressedTexSubImage3D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data) }
+	#[inline(always)] pub unsafe fn CompressedTexSubImage2D(&self, target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, imageSize, data) }
+	#[inline(always)] pub unsafe fn CompressedTexSubImage1D(&self, target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (self.CompressedTexSubImage1D.f)(target, level, xoffset, width, format, imageSize, data) }
+	#[inline(always)] pub unsafe fn GetCompressedTexImage(&self, target: GLenum, level: GLint, img: *GLvoid) { (self.GetCompressedTexImage.f)(target, level, img) }
 	
 	// Version: 1.4
-	#[inline(always)] unsafe fn BlendFuncSeparate(&self, sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum) { (self.BlendFuncSeparate.f)(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha) }
-	#[inline(always)] unsafe fn MultiDrawArrays(&self, mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei) { (self.MultiDrawArrays.f)(mode, first, count, drawcount) }
-	#[inline(always)] unsafe fn MultiDrawElements(&self, mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei) { (self.MultiDrawElements.f)(mode, count, type_, indices, drawcount) }
-	#[inline(always)] unsafe fn PointParameterf(&self, pname: GLenum, param: GLfloat) { (self.PointParameterf.f)(pname, param) }
-	#[inline(always)] unsafe fn PointParameterfv(&self, pname: GLenum, params: *GLfloat) { (self.PointParameterfv.f)(pname, params) }
-	#[inline(always)] unsafe fn PointParameteri(&self, pname: GLenum, param: GLint) { (self.PointParameteri.f)(pname, param) }
-	#[inline(always)] unsafe fn PointParameteriv(&self, pname: GLenum, params: *GLint) { (self.PointParameteriv.f)(pname, params) }
+	#[inline(always)] pub unsafe fn BlendFuncSeparate(&self, sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum) { (self.BlendFuncSeparate.f)(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha) }
+	#[inline(always)] pub unsafe fn MultiDrawArrays(&self, mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei) { (self.MultiDrawArrays.f)(mode, first, count, drawcount) }
+	#[inline(always)] pub unsafe fn MultiDrawElements(&self, mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei) { (self.MultiDrawElements.f)(mode, count, type_, indices, drawcount) }
+	#[inline(always)] pub unsafe fn PointParameterf(&self, pname: GLenum, param: GLfloat) { (self.PointParameterf.f)(pname, param) }
+	#[inline(always)] pub unsafe fn PointParameterfv(&self, pname: GLenum, params: *GLfloat) { (self.PointParameterfv.f)(pname, params) }
+	#[inline(always)] pub unsafe fn PointParameteri(&self, pname: GLenum, param: GLint) { (self.PointParameteri.f)(pname, param) }
+	#[inline(always)] pub unsafe fn PointParameteriv(&self, pname: GLenum, params: *GLint) { (self.PointParameteriv.f)(pname, params) }
 	
 	// Version: 1.5
-	#[inline(always)] unsafe fn GenQueries(&self, n: GLsizei, ids: *GLuint) { (self.GenQueries.f)(n, ids) }
-	#[inline(always)] unsafe fn DeleteQueries(&self, n: GLsizei, ids: *GLuint) { (self.DeleteQueries.f)(n, ids) }
-	#[inline(always)] unsafe fn IsQuery(&self, id: GLuint) -> GLboolean { (self.IsQuery.f)(id) }
-	#[inline(always)] unsafe fn BeginQuery(&self, target: GLenum, id: GLuint) { (self.BeginQuery.f)(target, id) }
-	#[inline(always)] unsafe fn EndQuery(&self, target: GLenum) { (self.EndQuery.f)(target) }
-	#[inline(always)] unsafe fn GetQueryiv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetQueryiv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn GetQueryObjectiv(&self, id: GLuint, pname: GLenum, params: *GLint) { (self.GetQueryObjectiv.f)(id, pname, params) }
-	#[inline(always)] unsafe fn GetQueryObjectuiv(&self, id: GLuint, pname: GLenum, params: *GLuint) { (self.GetQueryObjectuiv.f)(id, pname, params) }
-	#[inline(always)] unsafe fn BindBuffer(&self, target: GLenum, buffer: GLuint) { (self.BindBuffer.f)(target, buffer) }
-	#[inline(always)] unsafe fn DeleteBuffers(&self, n: GLsizei, buffers: *GLuint) { (self.DeleteBuffers.f)(n, buffers) }
-	#[inline(always)] unsafe fn GenBuffers(&self, n: GLsizei, buffers: *GLuint) { (self.GenBuffers.f)(n, buffers) }
-	#[inline(always)] unsafe fn IsBuffer(&self, buffer: GLuint) -> GLboolean { (self.IsBuffer.f)(buffer) }
-	#[inline(always)] unsafe fn BufferData(&self, target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum) { (self.BufferData.f)(target, size, data, usage) }
-	#[inline(always)] unsafe fn BufferSubData(&self, target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid) { (self.BufferSubData.f)(target, offset, size, data) }
-	#[inline(always)] unsafe fn GetBufferSubData(&self, target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid) { (self.GetBufferSubData.f)(target, offset, size, data) }
-	#[inline(always)] unsafe fn MapBuffer(&self, target: GLenum, access: GLenum) -> *GLvoid { (self.MapBuffer.f)(target, access) }
-	#[inline(always)] unsafe fn UnmapBuffer(&self, target: GLenum) -> GLboolean { (self.UnmapBuffer.f)(target) }
-	#[inline(always)] unsafe fn GetBufferParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetBufferParameteriv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn GetBufferPointerv(&self, target: GLenum, pname: GLenum, params: **GLvoid) { (self.GetBufferPointerv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn GenQueries(&self, n: GLsizei, ids: *GLuint) { (self.GenQueries.f)(n, ids) }
+	#[inline(always)] pub unsafe fn DeleteQueries(&self, n: GLsizei, ids: *GLuint) { (self.DeleteQueries.f)(n, ids) }
+	#[inline(always)] pub unsafe fn IsQuery(&self, id: GLuint) -> GLboolean { (self.IsQuery.f)(id) }
+	#[inline(always)] pub unsafe fn BeginQuery(&self, target: GLenum, id: GLuint) { (self.BeginQuery.f)(target, id) }
+	#[inline(always)] pub unsafe fn EndQuery(&self, target: GLenum) { (self.EndQuery.f)(target) }
+	#[inline(always)] pub unsafe fn GetQueryiv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetQueryiv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn GetQueryObjectiv(&self, id: GLuint, pname: GLenum, params: *GLint) { (self.GetQueryObjectiv.f)(id, pname, params) }
+	#[inline(always)] pub unsafe fn GetQueryObjectuiv(&self, id: GLuint, pname: GLenum, params: *GLuint) { (self.GetQueryObjectuiv.f)(id, pname, params) }
+	#[inline(always)] pub unsafe fn BindBuffer(&self, target: GLenum, buffer: GLuint) { (self.BindBuffer.f)(target, buffer) }
+	#[inline(always)] pub unsafe fn DeleteBuffers(&self, n: GLsizei, buffers: *GLuint) { (self.DeleteBuffers.f)(n, buffers) }
+	#[inline(always)] pub unsafe fn GenBuffers(&self, n: GLsizei, buffers: *GLuint) { (self.GenBuffers.f)(n, buffers) }
+	#[inline(always)] pub unsafe fn IsBuffer(&self, buffer: GLuint) -> GLboolean { (self.IsBuffer.f)(buffer) }
+	#[inline(always)] pub unsafe fn BufferData(&self, target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum) { (self.BufferData.f)(target, size, data, usage) }
+	#[inline(always)] pub unsafe fn BufferSubData(&self, target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid) { (self.BufferSubData.f)(target, offset, size, data) }
+	#[inline(always)] pub unsafe fn GetBufferSubData(&self, target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid) { (self.GetBufferSubData.f)(target, offset, size, data) }
+	#[inline(always)] pub unsafe fn MapBuffer(&self, target: GLenum, access: GLenum) -> *GLvoid { (self.MapBuffer.f)(target, access) }
+	#[inline(always)] pub unsafe fn UnmapBuffer(&self, target: GLenum) -> GLboolean { (self.UnmapBuffer.f)(target) }
+	#[inline(always)] pub unsafe fn GetBufferParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetBufferParameteriv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn GetBufferPointerv(&self, target: GLenum, pname: GLenum, params: **GLvoid) { (self.GetBufferPointerv.f)(target, pname, params) }
 	
 	// Version: 2.0
-	#[inline(always)] unsafe fn BlendEquationSeparate(&self, modeRGB: GLenum, modeAlpha: GLenum) { (self.BlendEquationSeparate.f)(modeRGB, modeAlpha) }
-	#[inline(always)] unsafe fn DrawBuffers(&self, n: GLsizei, bufs: *GLenum) { (self.DrawBuffers.f)(n, bufs) }
-	#[inline(always)] unsafe fn StencilOpSeparate(&self, face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum) { (self.StencilOpSeparate.f)(face, sfail, dpfail, dppass) }
-	#[inline(always)] unsafe fn StencilFuncSeparate(&self, face: GLenum, func: GLenum, ref_: GLint, mask: GLuint) { (self.StencilFuncSeparate.f)(face, func, ref_, mask) }
-	#[inline(always)] unsafe fn StencilMaskSeparate(&self, face: GLenum, mask: GLuint) { (self.StencilMaskSeparate.f)(face, mask) }
-	#[inline(always)] unsafe fn AttachShader(&self, program: GLuint, shader: GLuint) { (self.AttachShader.f)(program, shader) }
-	#[inline(always)] unsafe fn BindAttribLocation(&self, program: GLuint, index: GLuint, name: *GLchar) { (self.BindAttribLocation.f)(program, index, name) }
-	#[inline(always)] unsafe fn CompileShader(&self, shader: GLuint) { (self.CompileShader.f)(shader) }
-	#[inline(always)] unsafe fn CreateProgram(&self) -> GLuint { (self.CreateProgram.f)() }
-	#[inline(always)] unsafe fn CreateShader(&self, type_: GLenum) -> GLuint { (self.CreateShader.f)(type_) }
-	#[inline(always)] unsafe fn DeleteProgram(&self, program: GLuint) { (self.DeleteProgram.f)(program) }
-	#[inline(always)] unsafe fn DeleteShader(&self, shader: GLuint) { (self.DeleteShader.f)(shader) }
-	#[inline(always)] unsafe fn DetachShader(&self, program: GLuint, shader: GLuint) { (self.DetachShader.f)(program, shader) }
-	#[inline(always)] unsafe fn DisableVertexAttribArray(&self, index: GLuint) { (self.DisableVertexAttribArray.f)(index) }
-	#[inline(always)] unsafe fn EnableVertexAttribArray(&self, index: GLuint) { (self.EnableVertexAttribArray.f)(index) }
-	#[inline(always)] unsafe fn GetActiveAttrib(&self, program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar) { (self.GetActiveAttrib.f)(program, index, bufSize, length, size, type_, name) }
-	#[inline(always)] unsafe fn GetActiveUniform(&self, program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar) { (self.GetActiveUniform.f)(program, index, bufSize, length, size, type_, name) }
-	#[inline(always)] unsafe fn GetAttachedShaders(&self, program: GLuint, maxCount: GLsizei, count: *GLsizei, obj: *GLuint) { (self.GetAttachedShaders.f)(program, maxCount, count, obj) }
-	#[inline(always)] unsafe fn GetAttribLocation(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetAttribLocation.f)(program, name) }
-	#[inline(always)] unsafe fn GetProgramiv(&self, program: GLuint, pname: GLenum, params: *GLint) { (self.GetProgramiv.f)(program, pname, params) }
-	#[inline(always)] unsafe fn GetProgramInfoLog(&self, program: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) { (self.GetProgramInfoLog.f)(program, bufSize, length, infoLog) }
-	#[inline(always)] unsafe fn GetShaderiv(&self, shader: GLuint, pname: GLenum, params: *GLint) { (self.GetShaderiv.f)(shader, pname, params) }
-	#[inline(always)] unsafe fn GetShaderInfoLog(&self, shader: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) { (self.GetShaderInfoLog.f)(shader, bufSize, length, infoLog) }
-	#[inline(always)] unsafe fn GetShaderSource(&self, shader: GLuint, bufSize: GLsizei, length: *GLsizei, source: *GLchar) { (self.GetShaderSource.f)(shader, bufSize, length, source) }
-	#[inline(always)] unsafe fn GetUniformLocation(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetUniformLocation.f)(program, name) }
-	#[inline(always)] unsafe fn GetUniformfv(&self, program: GLuint, location: GLint, params: *GLfloat) { (self.GetUniformfv.f)(program, location, params) }
-	#[inline(always)] unsafe fn GetUniformiv(&self, program: GLuint, location: GLint, params: *GLint) { (self.GetUniformiv.f)(program, location, params) }
-	#[inline(always)] unsafe fn GetVertexAttribdv(&self, index: GLuint, pname: GLenum, params: *GLdouble) { (self.GetVertexAttribdv.f)(index, pname, params) }
-	#[inline(always)] unsafe fn GetVertexAttribfv(&self, index: GLuint, pname: GLenum, params: *GLfloat) { (self.GetVertexAttribfv.f)(index, pname, params) }
-	#[inline(always)] unsafe fn GetVertexAttribiv(&self, index: GLuint, pname: GLenum, params: *GLint) { (self.GetVertexAttribiv.f)(index, pname, params) }
-	#[inline(always)] unsafe fn GetVertexAttribPointerv(&self, index: GLuint, pname: GLenum, pointer: **GLvoid) { (self.GetVertexAttribPointerv.f)(index, pname, pointer) }
-	#[inline(always)] unsafe fn IsProgram(&self, program: GLuint) -> GLboolean { (self.IsProgram.f)(program) }
-	#[inline(always)] unsafe fn IsShader(&self, shader: GLuint) -> GLboolean { (self.IsShader.f)(shader) }
-	#[inline(always)] unsafe fn LinkProgram(&self, program: GLuint) { (self.LinkProgram.f)(program) }
-	#[inline(always)] unsafe fn ShaderSource(&self, shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint) { (self.ShaderSource.f)(shader, count, string, length) }
-	#[inline(always)] unsafe fn UseProgram(&self, program: GLuint) { (self.UseProgram.f)(program) }
-	#[inline(always)] unsafe fn Uniform1f(&self, location: GLint, v0: GLfloat) { (self.Uniform1f.f)(location, v0) }
-	#[inline(always)] unsafe fn Uniform2f(&self, location: GLint, v0: GLfloat, v1: GLfloat) { (self.Uniform2f.f)(location, v0, v1) }
-	#[inline(always)] unsafe fn Uniform3f(&self, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { (self.Uniform3f.f)(location, v0, v1, v2) }
-	#[inline(always)] unsafe fn Uniform4f(&self, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { (self.Uniform4f.f)(location, v0, v1, v2, v3) }
-	#[inline(always)] unsafe fn Uniform1i(&self, location: GLint, v0: GLint) { (self.Uniform1i.f)(location, v0) }
-	#[inline(always)] unsafe fn Uniform2i(&self, location: GLint, v0: GLint, v1: GLint) { (self.Uniform2i.f)(location, v0, v1) }
-	#[inline(always)] unsafe fn Uniform3i(&self, location: GLint, v0: GLint, v1: GLint, v2: GLint) { (self.Uniform3i.f)(location, v0, v1, v2) }
-	#[inline(always)] unsafe fn Uniform4i(&self, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { (self.Uniform4i.f)(location, v0, v1, v2, v3) }
-	#[inline(always)] unsafe fn Uniform1fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform1fv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform2fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform2fv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform3fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform3fv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform4fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform4fv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform1iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform1iv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform2iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform2iv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform3iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform3iv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform4iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform4iv.f)(location, count, value) }
-	#[inline(always)] unsafe fn UniformMatrix2fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix2fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix3fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix3fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix4fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix4fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn ValidateProgram(&self, program: GLuint) { (self.ValidateProgram.f)(program) }
-	#[inline(always)] unsafe fn VertexAttribPointer(&self, index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid) { (self.VertexAttribPointer.f)(index, size, type_, normalized, stride, pointer) }
+	#[inline(always)] pub unsafe fn BlendEquationSeparate(&self, modeRGB: GLenum, modeAlpha: GLenum) { (self.BlendEquationSeparate.f)(modeRGB, modeAlpha) }
+	#[inline(always)] pub unsafe fn DrawBuffers(&self, n: GLsizei, bufs: *GLenum) { (self.DrawBuffers.f)(n, bufs) }
+	#[inline(always)] pub unsafe fn StencilOpSeparate(&self, face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum) { (self.StencilOpSeparate.f)(face, sfail, dpfail, dppass) }
+	#[inline(always)] pub unsafe fn StencilFuncSeparate(&self, face: GLenum, func: GLenum, ref_: GLint, mask: GLuint) { (self.StencilFuncSeparate.f)(face, func, ref_, mask) }
+	#[inline(always)] pub unsafe fn StencilMaskSeparate(&self, face: GLenum, mask: GLuint) { (self.StencilMaskSeparate.f)(face, mask) }
+	#[inline(always)] pub unsafe fn AttachShader(&self, program: GLuint, shader: GLuint) { (self.AttachShader.f)(program, shader) }
+	#[inline(always)] pub unsafe fn BindAttribLocation(&self, program: GLuint, index: GLuint, name: *GLchar) { (self.BindAttribLocation.f)(program, index, name) }
+	#[inline(always)] pub unsafe fn CompileShader(&self, shader: GLuint) { (self.CompileShader.f)(shader) }
+	#[inline(always)] pub unsafe fn CreateProgram(&self) -> GLuint { (self.CreateProgram.f)() }
+	#[inline(always)] pub unsafe fn CreateShader(&self, type_: GLenum) -> GLuint { (self.CreateShader.f)(type_) }
+	#[inline(always)] pub unsafe fn DeleteProgram(&self, program: GLuint) { (self.DeleteProgram.f)(program) }
+	#[inline(always)] pub unsafe fn DeleteShader(&self, shader: GLuint) { (self.DeleteShader.f)(shader) }
+	#[inline(always)] pub unsafe fn DetachShader(&self, program: GLuint, shader: GLuint) { (self.DetachShader.f)(program, shader) }
+	#[inline(always)] pub unsafe fn DisableVertexAttribArray(&self, index: GLuint) { (self.DisableVertexAttribArray.f)(index) }
+	#[inline(always)] pub unsafe fn EnableVertexAttribArray(&self, index: GLuint) { (self.EnableVertexAttribArray.f)(index) }
+	#[inline(always)] pub unsafe fn GetActiveAttrib(&self, program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar) { (self.GetActiveAttrib.f)(program, index, bufSize, length, size, type_, name) }
+	#[inline(always)] pub unsafe fn GetActiveUniform(&self, program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type_: *GLenum, name: *GLchar) { (self.GetActiveUniform.f)(program, index, bufSize, length, size, type_, name) }
+	#[inline(always)] pub unsafe fn GetAttachedShaders(&self, program: GLuint, maxCount: GLsizei, count: *GLsizei, obj: *GLuint) { (self.GetAttachedShaders.f)(program, maxCount, count, obj) }
+	#[inline(always)] pub unsafe fn GetAttribLocation(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetAttribLocation.f)(program, name) }
+	#[inline(always)] pub unsafe fn GetProgramiv(&self, program: GLuint, pname: GLenum, params: *GLint) { (self.GetProgramiv.f)(program, pname, params) }
+	#[inline(always)] pub unsafe fn GetProgramInfoLog(&self, program: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) { (self.GetProgramInfoLog.f)(program, bufSize, length, infoLog) }
+	#[inline(always)] pub unsafe fn GetShaderiv(&self, shader: GLuint, pname: GLenum, params: *GLint) { (self.GetShaderiv.f)(shader, pname, params) }
+	#[inline(always)] pub unsafe fn GetShaderInfoLog(&self, shader: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) { (self.GetShaderInfoLog.f)(shader, bufSize, length, infoLog) }
+	#[inline(always)] pub unsafe fn GetShaderSource(&self, shader: GLuint, bufSize: GLsizei, length: *GLsizei, source: *GLchar) { (self.GetShaderSource.f)(shader, bufSize, length, source) }
+	#[inline(always)] pub unsafe fn GetUniformLocation(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetUniformLocation.f)(program, name) }
+	#[inline(always)] pub unsafe fn GetUniformfv(&self, program: GLuint, location: GLint, params: *GLfloat) { (self.GetUniformfv.f)(program, location, params) }
+	#[inline(always)] pub unsafe fn GetUniformiv(&self, program: GLuint, location: GLint, params: *GLint) { (self.GetUniformiv.f)(program, location, params) }
+	#[inline(always)] pub unsafe fn GetVertexAttribdv(&self, index: GLuint, pname: GLenum, params: *GLdouble) { (self.GetVertexAttribdv.f)(index, pname, params) }
+	#[inline(always)] pub unsafe fn GetVertexAttribfv(&self, index: GLuint, pname: GLenum, params: *GLfloat) { (self.GetVertexAttribfv.f)(index, pname, params) }
+	#[inline(always)] pub unsafe fn GetVertexAttribiv(&self, index: GLuint, pname: GLenum, params: *GLint) { (self.GetVertexAttribiv.f)(index, pname, params) }
+	#[inline(always)] pub unsafe fn GetVertexAttribPointerv(&self, index: GLuint, pname: GLenum, pointer: **GLvoid) { (self.GetVertexAttribPointerv.f)(index, pname, pointer) }
+	#[inline(always)] pub unsafe fn IsProgram(&self, program: GLuint) -> GLboolean { (self.IsProgram.f)(program) }
+	#[inline(always)] pub unsafe fn IsShader(&self, shader: GLuint) -> GLboolean { (self.IsShader.f)(shader) }
+	#[inline(always)] pub unsafe fn LinkProgram(&self, program: GLuint) { (self.LinkProgram.f)(program) }
+	#[inline(always)] pub unsafe fn ShaderSource(&self, shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint) { (self.ShaderSource.f)(shader, count, string, length) }
+	#[inline(always)] pub unsafe fn UseProgram(&self, program: GLuint) { (self.UseProgram.f)(program) }
+	#[inline(always)] pub unsafe fn Uniform1f(&self, location: GLint, v0: GLfloat) { (self.Uniform1f.f)(location, v0) }
+	#[inline(always)] pub unsafe fn Uniform2f(&self, location: GLint, v0: GLfloat, v1: GLfloat) { (self.Uniform2f.f)(location, v0, v1) }
+	#[inline(always)] pub unsafe fn Uniform3f(&self, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { (self.Uniform3f.f)(location, v0, v1, v2) }
+	#[inline(always)] pub unsafe fn Uniform4f(&self, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { (self.Uniform4f.f)(location, v0, v1, v2, v3) }
+	#[inline(always)] pub unsafe fn Uniform1i(&self, location: GLint, v0: GLint) { (self.Uniform1i.f)(location, v0) }
+	#[inline(always)] pub unsafe fn Uniform2i(&self, location: GLint, v0: GLint, v1: GLint) { (self.Uniform2i.f)(location, v0, v1) }
+	#[inline(always)] pub unsafe fn Uniform3i(&self, location: GLint, v0: GLint, v1: GLint, v2: GLint) { (self.Uniform3i.f)(location, v0, v1, v2) }
+	#[inline(always)] pub unsafe fn Uniform4i(&self, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { (self.Uniform4i.f)(location, v0, v1, v2, v3) }
+	#[inline(always)] pub unsafe fn Uniform1fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform1fv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform2fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform2fv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform3fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform3fv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform4fv(&self, location: GLint, count: GLsizei, value: *GLfloat) { (self.Uniform4fv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform1iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform1iv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform2iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform2iv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform3iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform3iv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform4iv(&self, location: GLint, count: GLsizei, value: *GLint) { (self.Uniform4iv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix2fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix2fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix3fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix3fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix4fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix4fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ValidateProgram(&self, program: GLuint) { (self.ValidateProgram.f)(program) }
+	#[inline(always)] pub unsafe fn VertexAttribPointer(&self, index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid) { (self.VertexAttribPointer.f)(index, size, type_, normalized, stride, pointer) }
 	
 	// Version: 2.1
-	#[inline(always)] unsafe fn UniformMatrix2x3fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix2x3fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix3x2fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix3x2fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix2x4fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix2x4fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix4x2fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix4x2fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix3x4fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix3x4fv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix4x3fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix4x3fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix2x3fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix2x3fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix3x2fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix3x2fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix2x4fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix2x4fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix4x2fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix4x2fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix3x4fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix3x4fv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix4x3fv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.UniformMatrix4x3fv.f)(location, count, transpose, value) }
 	
 	// Version: 3.0
-	#[inline(always)] unsafe fn ColorMaski(&self, index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean) { (self.ColorMaski.f)(index, r, g, b, a) }
-	#[inline(always)] unsafe fn GetBooleani_v(&self, target: GLenum, index: GLuint, data: *GLboolean) { (self.GetBooleani_v.f)(target, index, data) }
-	#[inline(always)] unsafe fn GetIntegeri_v(&self, target: GLenum, index: GLuint, data: *GLint) { (self.GetIntegeri_v.f)(target, index, data) }
-	#[inline(always)] unsafe fn Enablei(&self, target: GLenum, index: GLuint) { (self.Enablei.f)(target, index) }
-	#[inline(always)] unsafe fn Disablei(&self, target: GLenum, index: GLuint) { (self.Disablei.f)(target, index) }
-	#[inline(always)] unsafe fn IsEnabledi(&self, target: GLenum, index: GLuint) -> GLboolean { (self.IsEnabledi.f)(target, index) }
-	#[inline(always)] unsafe fn BeginTransformFeedback(&self, primitiveMode: GLenum) { (self.BeginTransformFeedback.f)(primitiveMode) }
-	#[inline(always)] unsafe fn EndTransformFeedback(&self) { (self.EndTransformFeedback.f)() }
-	#[inline(always)] unsafe fn BindBufferRange(&self, target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { (self.BindBufferRange.f)(target, index, buffer, offset, size) }
-	#[inline(always)] unsafe fn BindBufferBase(&self, target: GLenum, index: GLuint, buffer: GLuint) { (self.BindBufferBase.f)(target, index, buffer) }
-	#[inline(always)] unsafe fn TransformFeedbackVaryings(&self, program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum) { (self.TransformFeedbackVaryings.f)(program, count, varyings, bufferMode) }
-	#[inline(always)] unsafe fn GetTransformFeedbackVarying(&self, program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLsizei, type_: *GLenum, name: *GLchar) { (self.GetTransformFeedbackVarying.f)(program, index, bufSize, length, size, type_, name) }
-	#[inline(always)] unsafe fn ClampColor(&self, target: GLenum, clamp: GLenum) { (self.ClampColor.f)(target, clamp) }
-	#[inline(always)] unsafe fn BeginConditionalRender(&self, id: GLuint, mode: GLenum) { (self.BeginConditionalRender.f)(id, mode) }
-	#[inline(always)] unsafe fn EndConditionalRender(&self) { (self.EndConditionalRender.f)() }
-	#[inline(always)] unsafe fn VertexAttribIPointer(&self, index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) { (self.VertexAttribIPointer.f)(index, size, type_, stride, pointer) }
-	#[inline(always)] unsafe fn GetVertexAttribIiv(&self, index: GLuint, pname: GLenum, params: *GLint) { (self.GetVertexAttribIiv.f)(index, pname, params) }
-	#[inline(always)] unsafe fn GetVertexAttribIuiv(&self, index: GLuint, pname: GLenum, params: *GLuint) { (self.GetVertexAttribIuiv.f)(index, pname, params) }
-	#[inline(always)] unsafe fn VertexAttribI1i(&self, index: GLuint, x: GLint) { (self.VertexAttribI1i.f)(index, x) }
-	#[inline(always)] unsafe fn VertexAttribI2i(&self, index: GLuint, x: GLint, y: GLint) { (self.VertexAttribI2i.f)(index, x, y) }
-	#[inline(always)] unsafe fn VertexAttribI3i(&self, index: GLuint, x: GLint, y: GLint, z: GLint) { (self.VertexAttribI3i.f)(index, x, y, z) }
-	#[inline(always)] unsafe fn VertexAttribI4i(&self, index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint) { (self.VertexAttribI4i.f)(index, x, y, z, w) }
-	#[inline(always)] unsafe fn VertexAttribI1ui(&self, index: GLuint, x: GLuint) { (self.VertexAttribI1ui.f)(index, x) }
-	#[inline(always)] unsafe fn VertexAttribI2ui(&self, index: GLuint, x: GLuint, y: GLuint) { (self.VertexAttribI2ui.f)(index, x, y) }
-	#[inline(always)] unsafe fn VertexAttribI3ui(&self, index: GLuint, x: GLuint, y: GLuint, z: GLuint) { (self.VertexAttribI3ui.f)(index, x, y, z) }
-	#[inline(always)] unsafe fn VertexAttribI4ui(&self, index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint) { (self.VertexAttribI4ui.f)(index, x, y, z, w) }
-	#[inline(always)] unsafe fn VertexAttribI1iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI1iv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI2iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI2iv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI3iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI3iv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI4iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI4iv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI1uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI1uiv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI2uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI2uiv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI3uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI3uiv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI4uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI4uiv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI4bv(&self, index: GLuint, v: *GLbyte) { (self.VertexAttribI4bv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI4sv(&self, index: GLuint, v: *GLshort) { (self.VertexAttribI4sv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI4ubv(&self, index: GLuint, v: *GLubyte) { (self.VertexAttribI4ubv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribI4usv(&self, index: GLuint, v: *GLushort) { (self.VertexAttribI4usv.f)(index, v) }
-	#[inline(always)] unsafe fn GetUniformuiv(&self, program: GLuint, location: GLint, params: *GLuint) { (self.GetUniformuiv.f)(program, location, params) }
-	#[inline(always)] unsafe fn BindFragDataLocation(&self, program: GLuint, color: GLuint, name: *GLchar) { (self.BindFragDataLocation.f)(program, color, name) }
-	#[inline(always)] unsafe fn GetFragDataLocation(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetFragDataLocation.f)(program, name) }
-	#[inline(always)] unsafe fn Uniform1ui(&self, location: GLint, v0: GLuint) { (self.Uniform1ui.f)(location, v0) }
-	#[inline(always)] unsafe fn Uniform2ui(&self, location: GLint, v0: GLuint, v1: GLuint) { (self.Uniform2ui.f)(location, v0, v1) }
-	#[inline(always)] unsafe fn Uniform3ui(&self, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { (self.Uniform3ui.f)(location, v0, v1, v2) }
-	#[inline(always)] unsafe fn Uniform4ui(&self, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { (self.Uniform4ui.f)(location, v0, v1, v2, v3) }
-	#[inline(always)] unsafe fn Uniform1uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform1uiv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform2uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform2uiv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform3uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform3uiv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform4uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform4uiv.f)(location, count, value) }
-	#[inline(always)] unsafe fn TexParameterIiv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.TexParameterIiv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn TexParameterIuiv(&self, target: GLenum, pname: GLenum, params: *GLuint) { (self.TexParameterIuiv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn GetTexParameterIiv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetTexParameterIiv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn GetTexParameterIuiv(&self, target: GLenum, pname: GLenum, params: *GLuint) { (self.GetTexParameterIuiv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn ClearBufferiv(&self, buffer: GLenum, drawbuffer: GLint, value: *GLint) { (self.ClearBufferiv.f)(buffer, drawbuffer, value) }
-	#[inline(always)] unsafe fn ClearBufferuiv(&self, buffer: GLenum, drawbuffer: GLint, value: *GLuint) { (self.ClearBufferuiv.f)(buffer, drawbuffer, value) }
-	#[inline(always)] unsafe fn ClearBufferfv(&self, buffer: GLenum, drawbuffer: GLint, value: *GLfloat) { (self.ClearBufferfv.f)(buffer, drawbuffer, value) }
-	#[inline(always)] unsafe fn ClearBufferfi(&self, buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint) { (self.ClearBufferfi.f)(buffer, drawbuffer, depth, stencil) }
-	#[inline(always)] unsafe fn GetStringi(&self, name: GLenum, index: GLuint) -> *GLubyte { (self.GetStringi.f)(name, index) }
+	#[inline(always)] pub unsafe fn ColorMaski(&self, index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean) { (self.ColorMaski.f)(index, r, g, b, a) }
+	#[inline(always)] pub unsafe fn GetBooleani_v(&self, target: GLenum, index: GLuint, data: *GLboolean) { (self.GetBooleani_v.f)(target, index, data) }
+	#[inline(always)] pub unsafe fn GetIntegeri_v(&self, target: GLenum, index: GLuint, data: *GLint) { (self.GetIntegeri_v.f)(target, index, data) }
+	#[inline(always)] pub unsafe fn Enablei(&self, target: GLenum, index: GLuint) { (self.Enablei.f)(target, index) }
+	#[inline(always)] pub unsafe fn Disablei(&self, target: GLenum, index: GLuint) { (self.Disablei.f)(target, index) }
+	#[inline(always)] pub unsafe fn IsEnabledi(&self, target: GLenum, index: GLuint) -> GLboolean { (self.IsEnabledi.f)(target, index) }
+	#[inline(always)] pub unsafe fn BeginTransformFeedback(&self, primitiveMode: GLenum) { (self.BeginTransformFeedback.f)(primitiveMode) }
+	#[inline(always)] pub unsafe fn EndTransformFeedback(&self) { (self.EndTransformFeedback.f)() }
+	#[inline(always)] pub unsafe fn BindBufferRange(&self, target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { (self.BindBufferRange.f)(target, index, buffer, offset, size) }
+	#[inline(always)] pub unsafe fn BindBufferBase(&self, target: GLenum, index: GLuint, buffer: GLuint) { (self.BindBufferBase.f)(target, index, buffer) }
+	#[inline(always)] pub unsafe fn TransformFeedbackVaryings(&self, program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum) { (self.TransformFeedbackVaryings.f)(program, count, varyings, bufferMode) }
+	#[inline(always)] pub unsafe fn GetTransformFeedbackVarying(&self, program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLsizei, type_: *GLenum, name: *GLchar) { (self.GetTransformFeedbackVarying.f)(program, index, bufSize, length, size, type_, name) }
+	#[inline(always)] pub unsafe fn ClampColor(&self, target: GLenum, clamp: GLenum) { (self.ClampColor.f)(target, clamp) }
+	#[inline(always)] pub unsafe fn BeginConditionalRender(&self, id: GLuint, mode: GLenum) { (self.BeginConditionalRender.f)(id, mode) }
+	#[inline(always)] pub unsafe fn EndConditionalRender(&self) { (self.EndConditionalRender.f)() }
+	#[inline(always)] pub unsafe fn VertexAttribIPointer(&self, index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) { (self.VertexAttribIPointer.f)(index, size, type_, stride, pointer) }
+	#[inline(always)] pub unsafe fn GetVertexAttribIiv(&self, index: GLuint, pname: GLenum, params: *GLint) { (self.GetVertexAttribIiv.f)(index, pname, params) }
+	#[inline(always)] pub unsafe fn GetVertexAttribIuiv(&self, index: GLuint, pname: GLenum, params: *GLuint) { (self.GetVertexAttribIuiv.f)(index, pname, params) }
+	#[inline(always)] pub unsafe fn VertexAttribI1i(&self, index: GLuint, x: GLint) { (self.VertexAttribI1i.f)(index, x) }
+	#[inline(always)] pub unsafe fn VertexAttribI2i(&self, index: GLuint, x: GLint, y: GLint) { (self.VertexAttribI2i.f)(index, x, y) }
+	#[inline(always)] pub unsafe fn VertexAttribI3i(&self, index: GLuint, x: GLint, y: GLint, z: GLint) { (self.VertexAttribI3i.f)(index, x, y, z) }
+	#[inline(always)] pub unsafe fn VertexAttribI4i(&self, index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint) { (self.VertexAttribI4i.f)(index, x, y, z, w) }
+	#[inline(always)] pub unsafe fn VertexAttribI1ui(&self, index: GLuint, x: GLuint) { (self.VertexAttribI1ui.f)(index, x) }
+	#[inline(always)] pub unsafe fn VertexAttribI2ui(&self, index: GLuint, x: GLuint, y: GLuint) { (self.VertexAttribI2ui.f)(index, x, y) }
+	#[inline(always)] pub unsafe fn VertexAttribI3ui(&self, index: GLuint, x: GLuint, y: GLuint, z: GLuint) { (self.VertexAttribI3ui.f)(index, x, y, z) }
+	#[inline(always)] pub unsafe fn VertexAttribI4ui(&self, index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint) { (self.VertexAttribI4ui.f)(index, x, y, z, w) }
+	#[inline(always)] pub unsafe fn VertexAttribI1iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI1iv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI2iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI2iv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI3iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI3iv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI4iv(&self, index: GLuint, v: *GLint) { (self.VertexAttribI4iv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI1uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI1uiv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI2uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI2uiv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI3uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI3uiv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI4uiv(&self, index: GLuint, v: *GLuint) { (self.VertexAttribI4uiv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI4bv(&self, index: GLuint, v: *GLbyte) { (self.VertexAttribI4bv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI4sv(&self, index: GLuint, v: *GLshort) { (self.VertexAttribI4sv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI4ubv(&self, index: GLuint, v: *GLubyte) { (self.VertexAttribI4ubv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribI4usv(&self, index: GLuint, v: *GLushort) { (self.VertexAttribI4usv.f)(index, v) }
+	#[inline(always)] pub unsafe fn GetUniformuiv(&self, program: GLuint, location: GLint, params: *GLuint) { (self.GetUniformuiv.f)(program, location, params) }
+	#[inline(always)] pub unsafe fn BindFragDataLocation(&self, program: GLuint, color: GLuint, name: *GLchar) { (self.BindFragDataLocation.f)(program, color, name) }
+	#[inline(always)] pub unsafe fn GetFragDataLocation(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetFragDataLocation.f)(program, name) }
+	#[inline(always)] pub unsafe fn Uniform1ui(&self, location: GLint, v0: GLuint) { (self.Uniform1ui.f)(location, v0) }
+	#[inline(always)] pub unsafe fn Uniform2ui(&self, location: GLint, v0: GLuint, v1: GLuint) { (self.Uniform2ui.f)(location, v0, v1) }
+	#[inline(always)] pub unsafe fn Uniform3ui(&self, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { (self.Uniform3ui.f)(location, v0, v1, v2) }
+	#[inline(always)] pub unsafe fn Uniform4ui(&self, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { (self.Uniform4ui.f)(location, v0, v1, v2, v3) }
+	#[inline(always)] pub unsafe fn Uniform1uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform1uiv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform2uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform2uiv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform3uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform3uiv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform4uiv(&self, location: GLint, count: GLsizei, value: *GLuint) { (self.Uniform4uiv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn TexParameterIiv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.TexParameterIiv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn TexParameterIuiv(&self, target: GLenum, pname: GLenum, params: *GLuint) { (self.TexParameterIuiv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn GetTexParameterIiv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetTexParameterIiv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn GetTexParameterIuiv(&self, target: GLenum, pname: GLenum, params: *GLuint) { (self.GetTexParameterIuiv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn ClearBufferiv(&self, buffer: GLenum, drawbuffer: GLint, value: *GLint) { (self.ClearBufferiv.f)(buffer, drawbuffer, value) }
+	#[inline(always)] pub unsafe fn ClearBufferuiv(&self, buffer: GLenum, drawbuffer: GLint, value: *GLuint) { (self.ClearBufferuiv.f)(buffer, drawbuffer, value) }
+	#[inline(always)] pub unsafe fn ClearBufferfv(&self, buffer: GLenum, drawbuffer: GLint, value: *GLfloat) { (self.ClearBufferfv.f)(buffer, drawbuffer, value) }
+	#[inline(always)] pub unsafe fn ClearBufferfi(&self, buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint) { (self.ClearBufferfi.f)(buffer, drawbuffer, depth, stencil) }
+	#[inline(always)] pub unsafe fn GetStringi(&self, name: GLenum, index: GLuint) -> *GLubyte { (self.GetStringi.f)(name, index) }
 	
 	// Core Extension: ARB_vertex_array_object
-	#[inline(always)] unsafe fn BindVertexArray(&self, array: GLuint) { (self.BindVertexArray.f)(array) }
-	#[inline(always)] unsafe fn DeleteVertexArrays(&self, n: GLsizei, arrays: *GLuint) { (self.DeleteVertexArrays.f)(n, arrays) }
-	#[inline(always)] unsafe fn GenVertexArrays(&self, n: GLsizei, arrays: *GLuint) { (self.GenVertexArrays.f)(n, arrays) }
-	#[inline(always)] unsafe fn IsVertexArray(&self, array: GLuint) -> GLboolean { (self.IsVertexArray.f)(array) }
+	#[inline(always)] pub unsafe fn BindVertexArray(&self, array: GLuint) { (self.BindVertexArray.f)(array) }
+	#[inline(always)] pub unsafe fn DeleteVertexArrays(&self, n: GLsizei, arrays: *GLuint) { (self.DeleteVertexArrays.f)(n, arrays) }
+	#[inline(always)] pub unsafe fn GenVertexArrays(&self, n: GLsizei, arrays: *GLuint) { (self.GenVertexArrays.f)(n, arrays) }
+	#[inline(always)] pub unsafe fn IsVertexArray(&self, array: GLuint) -> GLboolean { (self.IsVertexArray.f)(array) }
 	
 	// Core Extension: ARB_map_buffer_range
-	#[inline(always)] unsafe fn MapBufferRange(&self, target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *GLvoid { (self.MapBufferRange.f)(target, offset, length, access) }
-	#[inline(always)] unsafe fn FlushMappedBufferRange(&self, target: GLenum, offset: GLintptr, length: GLsizeiptr) { (self.FlushMappedBufferRange.f)(target, offset, length) }
+	#[inline(always)] pub unsafe fn MapBufferRange(&self, target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *GLvoid { (self.MapBufferRange.f)(target, offset, length, access) }
+	#[inline(always)] pub unsafe fn FlushMappedBufferRange(&self, target: GLenum, offset: GLintptr, length: GLsizeiptr) { (self.FlushMappedBufferRange.f)(target, offset, length) }
 	
 	// Core Extension: ARB_framebuffer_object
-	#[inline(always)] unsafe fn IsRenderbuffer(&self, renderbuffer: GLuint) -> GLboolean { (self.IsRenderbuffer.f)(renderbuffer) }
-	#[inline(always)] unsafe fn BindRenderbuffer(&self, target: GLenum, renderbuffer: GLuint) { (self.BindRenderbuffer.f)(target, renderbuffer) }
-	#[inline(always)] unsafe fn DeleteRenderbuffers(&self, n: GLsizei, renderbuffers: *GLuint) { (self.DeleteRenderbuffers.f)(n, renderbuffers) }
-	#[inline(always)] unsafe fn GenRenderbuffers(&self, n: GLsizei, renderbuffers: *GLuint) { (self.GenRenderbuffers.f)(n, renderbuffers) }
-	#[inline(always)] unsafe fn RenderbufferStorage(&self, target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.RenderbufferStorage.f)(target, internalformat, width, height) }
-	#[inline(always)] unsafe fn GetRenderbufferParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetRenderbufferParameteriv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn IsFramebuffer(&self, framebuffer: GLuint) -> GLboolean { (self.IsFramebuffer.f)(framebuffer) }
-	#[inline(always)] unsafe fn BindFramebuffer(&self, target: GLenum, framebuffer: GLuint) { (self.BindFramebuffer.f)(target, framebuffer) }
-	#[inline(always)] unsafe fn DeleteFramebuffers(&self, n: GLsizei, framebuffers: *GLuint) { (self.DeleteFramebuffers.f)(n, framebuffers) }
-	#[inline(always)] unsafe fn GenFramebuffers(&self, n: GLsizei, framebuffers: *GLuint) { (self.GenFramebuffers.f)(n, framebuffers) }
-	#[inline(always)] unsafe fn CheckFramebufferStatus(&self, target: GLenum) -> GLenum { (self.CheckFramebufferStatus.f)(target) }
-	#[inline(always)] unsafe fn FramebufferTexture1D(&self, target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { (self.FramebufferTexture1D.f)(target, attachment, textarget, texture, level) }
-	#[inline(always)] unsafe fn FramebufferTexture2D(&self, target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { (self.FramebufferTexture2D.f)(target, attachment, textarget, texture, level) }
-	#[inline(always)] unsafe fn FramebufferTexture3D(&self, target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint) { (self.FramebufferTexture3D.f)(target, attachment, textarget, texture, level, zoffset) }
-	#[inline(always)] unsafe fn FramebufferRenderbuffer(&self, target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint) { (self.FramebufferRenderbuffer.f)(target, attachment, renderbuffertarget, renderbuffer) }
-	#[inline(always)] unsafe fn GetFramebufferAttachmentParameteriv(&self, target: GLenum, attachment: GLenum, pname: GLenum, params: *GLint) { (self.GetFramebufferAttachmentParameteriv.f)(target, attachment, pname, params) }
-	#[inline(always)] unsafe fn GenerateMipmap(&self, target: GLenum) { (self.GenerateMipmap.f)(target) }
-	#[inline(always)] unsafe fn BlitFramebuffer(&self, srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum) { (self.BlitFramebuffer.f)(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter) }
-	#[inline(always)] unsafe fn RenderbufferStorageMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.RenderbufferStorageMultisample.f)(target, samples, internalformat, width, height) }
-	#[inline(always)] unsafe fn FramebufferTextureLayer(&self, target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint) { (self.FramebufferTextureLayer.f)(target, attachment, texture, level, layer) }
+	#[inline(always)] pub unsafe fn IsRenderbuffer(&self, renderbuffer: GLuint) -> GLboolean { (self.IsRenderbuffer.f)(renderbuffer) }
+	#[inline(always)] pub unsafe fn BindRenderbuffer(&self, target: GLenum, renderbuffer: GLuint) { (self.BindRenderbuffer.f)(target, renderbuffer) }
+	#[inline(always)] pub unsafe fn DeleteRenderbuffers(&self, n: GLsizei, renderbuffers: *GLuint) { (self.DeleteRenderbuffers.f)(n, renderbuffers) }
+	#[inline(always)] pub unsafe fn GenRenderbuffers(&self, n: GLsizei, renderbuffers: *GLuint) { (self.GenRenderbuffers.f)(n, renderbuffers) }
+	#[inline(always)] pub unsafe fn RenderbufferStorage(&self, target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.RenderbufferStorage.f)(target, internalformat, width, height) }
+	#[inline(always)] pub unsafe fn GetRenderbufferParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetRenderbufferParameteriv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn IsFramebuffer(&self, framebuffer: GLuint) -> GLboolean { (self.IsFramebuffer.f)(framebuffer) }
+	#[inline(always)] pub unsafe fn BindFramebuffer(&self, target: GLenum, framebuffer: GLuint) { (self.BindFramebuffer.f)(target, framebuffer) }
+	#[inline(always)] pub unsafe fn DeleteFramebuffers(&self, n: GLsizei, framebuffers: *GLuint) { (self.DeleteFramebuffers.f)(n, framebuffers) }
+	#[inline(always)] pub unsafe fn GenFramebuffers(&self, n: GLsizei, framebuffers: *GLuint) { (self.GenFramebuffers.f)(n, framebuffers) }
+	#[inline(always)] pub unsafe fn CheckFramebufferStatus(&self, target: GLenum) -> GLenum { (self.CheckFramebufferStatus.f)(target) }
+	#[inline(always)] pub unsafe fn FramebufferTexture1D(&self, target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { (self.FramebufferTexture1D.f)(target, attachment, textarget, texture, level) }
+	#[inline(always)] pub unsafe fn FramebufferTexture2D(&self, target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { (self.FramebufferTexture2D.f)(target, attachment, textarget, texture, level) }
+	#[inline(always)] pub unsafe fn FramebufferTexture3D(&self, target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint) { (self.FramebufferTexture3D.f)(target, attachment, textarget, texture, level, zoffset) }
+	#[inline(always)] pub unsafe fn FramebufferRenderbuffer(&self, target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint) { (self.FramebufferRenderbuffer.f)(target, attachment, renderbuffertarget, renderbuffer) }
+	#[inline(always)] pub unsafe fn GetFramebufferAttachmentParameteriv(&self, target: GLenum, attachment: GLenum, pname: GLenum, params: *GLint) { (self.GetFramebufferAttachmentParameteriv.f)(target, attachment, pname, params) }
+	#[inline(always)] pub unsafe fn GenerateMipmap(&self, target: GLenum) { (self.GenerateMipmap.f)(target) }
+	#[inline(always)] pub unsafe fn BlitFramebuffer(&self, srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum) { (self.BlitFramebuffer.f)(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter) }
+	#[inline(always)] pub unsafe fn RenderbufferStorageMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.RenderbufferStorageMultisample.f)(target, samples, internalformat, width, height) }
+	#[inline(always)] pub unsafe fn FramebufferTextureLayer(&self, target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint) { (self.FramebufferTextureLayer.f)(target, attachment, texture, level, layer) }
 	
 	// Version: 3.1
-	#[inline(always)] unsafe fn DrawArraysInstanced(&self, mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei) { (self.DrawArraysInstanced.f)(mode, first, count, instancecount) }
-	#[inline(always)] unsafe fn DrawElementsInstanced(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei) { (self.DrawElementsInstanced.f)(mode, count, type_, indices, instancecount) }
-	#[inline(always)] unsafe fn TexBuffer(&self, target: GLenum, internalformat: GLenum, buffer: GLuint) { (self.TexBuffer.f)(target, internalformat, buffer) }
-	#[inline(always)] unsafe fn PrimitiveRestartIndex(&self, index: GLuint) { (self.PrimitiveRestartIndex.f)(index) }
+	#[inline(always)] pub unsafe fn DrawArraysInstanced(&self, mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei) { (self.DrawArraysInstanced.f)(mode, first, count, instancecount) }
+	#[inline(always)] pub unsafe fn DrawElementsInstanced(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei) { (self.DrawElementsInstanced.f)(mode, count, type_, indices, instancecount) }
+	#[inline(always)] pub unsafe fn TexBuffer(&self, target: GLenum, internalformat: GLenum, buffer: GLuint) { (self.TexBuffer.f)(target, internalformat, buffer) }
+	#[inline(always)] pub unsafe fn PrimitiveRestartIndex(&self, index: GLuint) { (self.PrimitiveRestartIndex.f)(index) }
 	
 	// Core Extension: ARB_uniform_buffer_object
-	#[inline(always)] unsafe fn GetUniformIndices(&self, program: GLuint, uniformCount: GLsizei, uniformNames: **GLchar, uniformIndices: *GLuint) { (self.GetUniformIndices.f)(program, uniformCount, uniformNames, uniformIndices) }
-	#[inline(always)] unsafe fn GetActiveUniformsiv(&self, program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *GLint) { (self.GetActiveUniformsiv.f)(program, uniformCount, uniformIndices, pname, params) }
-	#[inline(always)] unsafe fn GetActiveUniformName(&self, program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformName: *GLchar) { (self.GetActiveUniformName.f)(program, uniformIndex, bufSize, length, uniformName) }
-	#[inline(always)] unsafe fn GetUniformBlockIndex(&self, program: GLuint, uniformBlockName: *GLchar) -> GLuint { (self.GetUniformBlockIndex.f)(program, uniformBlockName) }
-	#[inline(always)] unsafe fn GetActiveUniformBlockiv(&self, program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *GLint) { (self.GetActiveUniformBlockiv.f)(program, uniformBlockIndex, pname, params) }
-	#[inline(always)] unsafe fn GetActiveUniformBlockName(&self, program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformBlockName: *GLchar) { (self.GetActiveUniformBlockName.f)(program, uniformBlockIndex, bufSize, length, uniformBlockName) }
-	#[inline(always)] unsafe fn UniformBlockBinding(&self, program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint) { (self.UniformBlockBinding.f)(program, uniformBlockIndex, uniformBlockBinding) }
+	#[inline(always)] pub unsafe fn GetUniformIndices(&self, program: GLuint, uniformCount: GLsizei, uniformNames: **GLchar, uniformIndices: *GLuint) { (self.GetUniformIndices.f)(program, uniformCount, uniformNames, uniformIndices) }
+	#[inline(always)] pub unsafe fn GetActiveUniformsiv(&self, program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *GLint) { (self.GetActiveUniformsiv.f)(program, uniformCount, uniformIndices, pname, params) }
+	#[inline(always)] pub unsafe fn GetActiveUniformName(&self, program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformName: *GLchar) { (self.GetActiveUniformName.f)(program, uniformIndex, bufSize, length, uniformName) }
+	#[inline(always)] pub unsafe fn GetUniformBlockIndex(&self, program: GLuint, uniformBlockName: *GLchar) -> GLuint { (self.GetUniformBlockIndex.f)(program, uniformBlockName) }
+	#[inline(always)] pub unsafe fn GetActiveUniformBlockiv(&self, program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *GLint) { (self.GetActiveUniformBlockiv.f)(program, uniformBlockIndex, pname, params) }
+	#[inline(always)] pub unsafe fn GetActiveUniformBlockName(&self, program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *GLsizei, uniformBlockName: *GLchar) { (self.GetActiveUniformBlockName.f)(program, uniformBlockIndex, bufSize, length, uniformBlockName) }
+	#[inline(always)] pub unsafe fn UniformBlockBinding(&self, program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint) { (self.UniformBlockBinding.f)(program, uniformBlockIndex, uniformBlockBinding) }
 	
 	// Core Extension: ARB_copy_buffer
-	#[inline(always)] unsafe fn CopyBufferSubData(&self, readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr) { (self.CopyBufferSubData.f)(readTarget, writeTarget, readOffset, writeOffset, size) }
+	#[inline(always)] pub unsafe fn CopyBufferSubData(&self, readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr) { (self.CopyBufferSubData.f)(readTarget, writeTarget, readOffset, writeOffset, size) }
 	
 	// Version: 3.2
-	#[inline(always)] unsafe fn GetInteger64i_v(&self, target: GLenum, index: GLuint, data: *GLint64) { (self.GetInteger64i_v.f)(target, index, data) }
-	#[inline(always)] unsafe fn GetBufferParameteri64v(&self, target: GLenum, pname: GLenum, params: *GLint64) { (self.GetBufferParameteri64v.f)(target, pname, params) }
-	#[inline(always)] unsafe fn FramebufferTexture(&self, target: GLenum, attachment: GLenum, texture: GLuint, level: GLint) { (self.FramebufferTexture.f)(target, attachment, texture, level) }
+	#[inline(always)] pub unsafe fn GetInteger64i_v(&self, target: GLenum, index: GLuint, data: *GLint64) { (self.GetInteger64i_v.f)(target, index, data) }
+	#[inline(always)] pub unsafe fn GetBufferParameteri64v(&self, target: GLenum, pname: GLenum, params: *GLint64) { (self.GetBufferParameteri64v.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn FramebufferTexture(&self, target: GLenum, attachment: GLenum, texture: GLuint, level: GLint) { (self.FramebufferTexture.f)(target, attachment, texture, level) }
 	
 	// Core Extension: ARB_draw_elements_base_vertex
-	#[inline(always)] unsafe fn DrawElementsBaseVertex(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) { (self.DrawElementsBaseVertex.f)(mode, count, type_, indices, basevertex) }
-	#[inline(always)] unsafe fn DrawRangeElementsBaseVertex(&self, mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) { (self.DrawRangeElementsBaseVertex.f)(mode, start, end, count, type_, indices, basevertex) }
-	#[inline(always)] unsafe fn DrawElementsInstancedBaseVertex(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint) { (self.DrawElementsInstancedBaseVertex.f)(mode, count, type_, indices, instancecount, basevertex) }
-	#[inline(always)] unsafe fn MultiDrawElementsBaseVertex(&self, mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei, basevertex: *GLint) { (self.MultiDrawElementsBaseVertex.f)(mode, count, type_, indices, drawcount, basevertex) }
+	#[inline(always)] pub unsafe fn DrawElementsBaseVertex(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) { (self.DrawElementsBaseVertex.f)(mode, count, type_, indices, basevertex) }
+	#[inline(always)] pub unsafe fn DrawRangeElementsBaseVertex(&self, mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) { (self.DrawRangeElementsBaseVertex.f)(mode, start, end, count, type_, indices, basevertex) }
+	#[inline(always)] pub unsafe fn DrawElementsInstancedBaseVertex(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint) { (self.DrawElementsInstancedBaseVertex.f)(mode, count, type_, indices, instancecount, basevertex) }
+	#[inline(always)] pub unsafe fn MultiDrawElementsBaseVertex(&self, mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei, basevertex: *GLint) { (self.MultiDrawElementsBaseVertex.f)(mode, count, type_, indices, drawcount, basevertex) }
 	
 	// Core Extension: ARB_provoking_vertex
-	#[inline(always)] unsafe fn ProvokingVertex(&self, mode: GLenum) { (self.ProvokingVertex.f)(mode) }
+	#[inline(always)] pub unsafe fn ProvokingVertex(&self, mode: GLenum) { (self.ProvokingVertex.f)(mode) }
 	
 	// Core Extension: ARB_sync
-	#[inline(always)] unsafe fn FenceSync(&self, condition: GLenum, flags: GLbitfield) -> GLsync { (self.FenceSync.f)(condition, flags) }
-	#[inline(always)] unsafe fn IsSync(&self, sync: GLsync) -> GLboolean { (self.IsSync.f)(sync) }
-	#[inline(always)] unsafe fn DeleteSync(&self, sync: GLsync) { (self.DeleteSync.f)(sync) }
-	#[inline(always)] unsafe fn ClientWaitSync(&self, sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum { (self.ClientWaitSync.f)(sync, flags, timeout) }
-	#[inline(always)] unsafe fn WaitSync(&self, sync: GLsync, flags: GLbitfield, timeout: GLuint64) { (self.WaitSync.f)(sync, flags, timeout) }
-	#[inline(always)] unsafe fn GetInteger64v(&self, pname: GLenum, params: *GLint64) { (self.GetInteger64v.f)(pname, params) }
-	#[inline(always)] unsafe fn GetSynciv(&self, sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *GLsizei, values: *GLint) { (self.GetSynciv.f)(sync, pname, bufSize, length, values) }
+	#[inline(always)] pub unsafe fn FenceSync(&self, condition: GLenum, flags: GLbitfield) -> GLsync { (self.FenceSync.f)(condition, flags) }
+	#[inline(always)] pub unsafe fn IsSync(&self, sync: GLsync) -> GLboolean { (self.IsSync.f)(sync) }
+	#[inline(always)] pub unsafe fn DeleteSync(&self, sync: GLsync) { (self.DeleteSync.f)(sync) }
+	#[inline(always)] pub unsafe fn ClientWaitSync(&self, sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum { (self.ClientWaitSync.f)(sync, flags, timeout) }
+	#[inline(always)] pub unsafe fn WaitSync(&self, sync: GLsync, flags: GLbitfield, timeout: GLuint64) { (self.WaitSync.f)(sync, flags, timeout) }
+	#[inline(always)] pub unsafe fn GetInteger64v(&self, pname: GLenum, params: *GLint64) { (self.GetInteger64v.f)(pname, params) }
+	#[inline(always)] pub unsafe fn GetSynciv(&self, sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *GLsizei, values: *GLint) { (self.GetSynciv.f)(sync, pname, bufSize, length, values) }
 	
 	// Core Extension: ARB_texture_multisample
-	#[inline(always)] unsafe fn TexImage2DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { (self.TexImage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) }
-	#[inline(always)] unsafe fn TexImage3DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { (self.TexImage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) }
-	#[inline(always)] unsafe fn GetMultisamplefv(&self, pname: GLenum, index: GLuint, val: *GLfloat) { (self.GetMultisamplefv.f)(pname, index, val) }
-	#[inline(always)] unsafe fn SampleMaski(&self, index: GLuint, mask: GLbitfield) { (self.SampleMaski.f)(index, mask) }
+	#[inline(always)] pub unsafe fn TexImage2DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { (self.TexImage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) }
+	#[inline(always)] pub unsafe fn TexImage3DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { (self.TexImage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) }
+	#[inline(always)] pub unsafe fn GetMultisamplefv(&self, pname: GLenum, index: GLuint, val: *GLfloat) { (self.GetMultisamplefv.f)(pname, index, val) }
+	#[inline(always)] pub unsafe fn SampleMaski(&self, index: GLuint, mask: GLbitfield) { (self.SampleMaski.f)(index, mask) }
 	
 	// Version: 3.3
-	#[inline(always)] unsafe fn VertexAttribDivisor(&self, index: GLuint, divisor: GLuint) { (self.VertexAttribDivisor.f)(index, divisor) }
+	#[inline(always)] pub unsafe fn VertexAttribDivisor(&self, index: GLuint, divisor: GLuint) { (self.VertexAttribDivisor.f)(index, divisor) }
 	
 	// Core Extension: ARB_timer_query
-	#[inline(always)] unsafe fn QueryCounter(&self, id: GLuint, target: GLenum) { (self.QueryCounter.f)(id, target) }
-	#[inline(always)] unsafe fn GetQueryObjecti64v(&self, id: GLuint, pname: GLenum, params: *GLint64) { (self.GetQueryObjecti64v.f)(id, pname, params) }
-	#[inline(always)] unsafe fn GetQueryObjectui64v(&self, id: GLuint, pname: GLenum, params: *GLuint64) { (self.GetQueryObjectui64v.f)(id, pname, params) }
+	#[inline(always)] pub unsafe fn QueryCounter(&self, id: GLuint, target: GLenum) { (self.QueryCounter.f)(id, target) }
+	#[inline(always)] pub unsafe fn GetQueryObjecti64v(&self, id: GLuint, pname: GLenum, params: *GLint64) { (self.GetQueryObjecti64v.f)(id, pname, params) }
+	#[inline(always)] pub unsafe fn GetQueryObjectui64v(&self, id: GLuint, pname: GLenum, params: *GLuint64) { (self.GetQueryObjectui64v.f)(id, pname, params) }
 	
 	// Core Extension: ARB_vertex_type_2_10_10_10_rev
-	#[inline(always)] unsafe fn VertexP2ui(&self, type_: GLenum, value: GLuint) { (self.VertexP2ui.f)(type_, value) }
-	#[inline(always)] unsafe fn VertexP2uiv(&self, type_: GLenum, value: *GLuint) { (self.VertexP2uiv.f)(type_, value) }
-	#[inline(always)] unsafe fn VertexP3ui(&self, type_: GLenum, value: GLuint) { (self.VertexP3ui.f)(type_, value) }
-	#[inline(always)] unsafe fn VertexP3uiv(&self, type_: GLenum, value: *GLuint) { (self.VertexP3uiv.f)(type_, value) }
-	#[inline(always)] unsafe fn VertexP4ui(&self, type_: GLenum, value: GLuint) { (self.VertexP4ui.f)(type_, value) }
-	#[inline(always)] unsafe fn VertexP4uiv(&self, type_: GLenum, value: *GLuint) { (self.VertexP4uiv.f)(type_, value) }
-	#[inline(always)] unsafe fn TexCoordP1ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP1ui.f)(type_, coords) }
-	#[inline(always)] unsafe fn TexCoordP1uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP1uiv.f)(type_, coords) }
-	#[inline(always)] unsafe fn TexCoordP2ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP2ui.f)(type_, coords) }
-	#[inline(always)] unsafe fn TexCoordP2uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP2uiv.f)(type_, coords) }
-	#[inline(always)] unsafe fn TexCoordP3ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP3ui.f)(type_, coords) }
-	#[inline(always)] unsafe fn TexCoordP3uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP3uiv.f)(type_, coords) }
-	#[inline(always)] unsafe fn TexCoordP4ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP4ui.f)(type_, coords) }
-	#[inline(always)] unsafe fn TexCoordP4uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP4uiv.f)(type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP1ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP1ui.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP1uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP1uiv.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP2ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP2ui.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP2uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP2uiv.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP3ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP3ui.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP3uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP3uiv.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP4ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP4ui.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn MultiTexCoordP4uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP4uiv.f)(texture, type_, coords) }
-	#[inline(always)] unsafe fn NormalP3ui(&self, type_: GLenum, coords: GLuint) { (self.NormalP3ui.f)(type_, coords) }
-	#[inline(always)] unsafe fn NormalP3uiv(&self, type_: GLenum, coords: *GLuint) { (self.NormalP3uiv.f)(type_, coords) }
-	#[inline(always)] unsafe fn ColorP3ui(&self, type_: GLenum, color: GLuint) { (self.ColorP3ui.f)(type_, color) }
-	#[inline(always)] unsafe fn ColorP3uiv(&self, type_: GLenum, color: *GLuint) { (self.ColorP3uiv.f)(type_, color) }
-	#[inline(always)] unsafe fn ColorP4ui(&self, type_: GLenum, color: GLuint) { (self.ColorP4ui.f)(type_, color) }
-	#[inline(always)] unsafe fn ColorP4uiv(&self, type_: GLenum, color: *GLuint) { (self.ColorP4uiv.f)(type_, color) }
-	#[inline(always)] unsafe fn SecondaryColorP3ui(&self, type_: GLenum, color: GLuint) { (self.SecondaryColorP3ui.f)(type_, color) }
-	#[inline(always)] unsafe fn SecondaryColorP3uiv(&self, type_: GLenum, color: *GLuint) { (self.SecondaryColorP3uiv.f)(type_, color) }
-	#[inline(always)] unsafe fn VertexAttribP1ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP1ui.f)(index, type_, normalized, value) }
-	#[inline(always)] unsafe fn VertexAttribP1uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP1uiv.f)(index, type_, normalized, value) }
-	#[inline(always)] unsafe fn VertexAttribP2ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP2ui.f)(index, type_, normalized, value) }
-	#[inline(always)] unsafe fn VertexAttribP2uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP2uiv.f)(index, type_, normalized, value) }
-	#[inline(always)] unsafe fn VertexAttribP3ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP3ui.f)(index, type_, normalized, value) }
-	#[inline(always)] unsafe fn VertexAttribP3uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP3uiv.f)(index, type_, normalized, value) }
-	#[inline(always)] unsafe fn VertexAttribP4ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP4ui.f)(index, type_, normalized, value) }
-	#[inline(always)] unsafe fn VertexAttribP4uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP4uiv.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexP2ui(&self, type_: GLenum, value: GLuint) { (self.VertexP2ui.f)(type_, value) }
+	#[inline(always)] pub unsafe fn VertexP2uiv(&self, type_: GLenum, value: *GLuint) { (self.VertexP2uiv.f)(type_, value) }
+	#[inline(always)] pub unsafe fn VertexP3ui(&self, type_: GLenum, value: GLuint) { (self.VertexP3ui.f)(type_, value) }
+	#[inline(always)] pub unsafe fn VertexP3uiv(&self, type_: GLenum, value: *GLuint) { (self.VertexP3uiv.f)(type_, value) }
+	#[inline(always)] pub unsafe fn VertexP4ui(&self, type_: GLenum, value: GLuint) { (self.VertexP4ui.f)(type_, value) }
+	#[inline(always)] pub unsafe fn VertexP4uiv(&self, type_: GLenum, value: *GLuint) { (self.VertexP4uiv.f)(type_, value) }
+	#[inline(always)] pub unsafe fn TexCoordP1ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP1ui.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn TexCoordP1uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP1uiv.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn TexCoordP2ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP2ui.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn TexCoordP2uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP2uiv.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn TexCoordP3ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP3ui.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn TexCoordP3uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP3uiv.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn TexCoordP4ui(&self, type_: GLenum, coords: GLuint) { (self.TexCoordP4ui.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn TexCoordP4uiv(&self, type_: GLenum, coords: *GLuint) { (self.TexCoordP4uiv.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP1ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP1ui.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP1uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP1uiv.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP2ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP2ui.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP2uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP2uiv.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP3ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP3ui.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP3uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP3uiv.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP4ui(&self, texture: GLenum, type_: GLenum, coords: GLuint) { (self.MultiTexCoordP4ui.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn MultiTexCoordP4uiv(&self, texture: GLenum, type_: GLenum, coords: *GLuint) { (self.MultiTexCoordP4uiv.f)(texture, type_, coords) }
+	#[inline(always)] pub unsafe fn NormalP3ui(&self, type_: GLenum, coords: GLuint) { (self.NormalP3ui.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn NormalP3uiv(&self, type_: GLenum, coords: *GLuint) { (self.NormalP3uiv.f)(type_, coords) }
+	#[inline(always)] pub unsafe fn ColorP3ui(&self, type_: GLenum, color: GLuint) { (self.ColorP3ui.f)(type_, color) }
+	#[inline(always)] pub unsafe fn ColorP3uiv(&self, type_: GLenum, color: *GLuint) { (self.ColorP3uiv.f)(type_, color) }
+	#[inline(always)] pub unsafe fn ColorP4ui(&self, type_: GLenum, color: GLuint) { (self.ColorP4ui.f)(type_, color) }
+	#[inline(always)] pub unsafe fn ColorP4uiv(&self, type_: GLenum, color: *GLuint) { (self.ColorP4uiv.f)(type_, color) }
+	#[inline(always)] pub unsafe fn SecondaryColorP3ui(&self, type_: GLenum, color: GLuint) { (self.SecondaryColorP3ui.f)(type_, color) }
+	#[inline(always)] pub unsafe fn SecondaryColorP3uiv(&self, type_: GLenum, color: *GLuint) { (self.SecondaryColorP3uiv.f)(type_, color) }
+	#[inline(always)] pub unsafe fn VertexAttribP1ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP1ui.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexAttribP1uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP1uiv.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexAttribP2ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP2ui.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexAttribP2uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP2uiv.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexAttribP3ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP3ui.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexAttribP3uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP3uiv.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexAttribP4ui(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { (self.VertexAttribP4ui.f)(index, type_, normalized, value) }
+	#[inline(always)] pub unsafe fn VertexAttribP4uiv(&self, index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (self.VertexAttribP4uiv.f)(index, type_, normalized, value) }
 	
 	// Core Extension: ARB_blend_func_extended
-	#[inline(always)] unsafe fn BindFragDataLocationIndexed(&self, program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar) { (self.BindFragDataLocationIndexed.f)(program, colorNumber, index, name) }
-	#[inline(always)] unsafe fn GetFragDataIndex(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetFragDataIndex.f)(program, name) }
+	#[inline(always)] pub unsafe fn BindFragDataLocationIndexed(&self, program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar) { (self.BindFragDataLocationIndexed.f)(program, colorNumber, index, name) }
+	#[inline(always)] pub unsafe fn GetFragDataIndex(&self, program: GLuint, name: *GLchar) -> GLint { (self.GetFragDataIndex.f)(program, name) }
 	
 	// Core Extension: ARB_sampler_objects
-	#[inline(always)] unsafe fn GenSamplers(&self, count: GLsizei, samplers: *GLuint) { (self.GenSamplers.f)(count, samplers) }
-	#[inline(always)] unsafe fn DeleteSamplers(&self, count: GLsizei, samplers: *GLuint) { (self.DeleteSamplers.f)(count, samplers) }
-	#[inline(always)] unsafe fn IsSampler(&self, sampler: GLuint) -> GLboolean { (self.IsSampler.f)(sampler) }
-	#[inline(always)] unsafe fn BindSampler(&self, unit: GLuint, sampler: GLuint) { (self.BindSampler.f)(unit, sampler) }
-	#[inline(always)] unsafe fn SamplerParameteri(&self, sampler: GLuint, pname: GLenum, param: GLint) { (self.SamplerParameteri.f)(sampler, pname, param) }
-	#[inline(always)] unsafe fn SamplerParameteriv(&self, sampler: GLuint, pname: GLenum, param: *GLint) { (self.SamplerParameteriv.f)(sampler, pname, param) }
-	#[inline(always)] unsafe fn SamplerParameterf(&self, sampler: GLuint, pname: GLenum, param: GLfloat) { (self.SamplerParameterf.f)(sampler, pname, param) }
-	#[inline(always)] unsafe fn SamplerParameterfv(&self, sampler: GLuint, pname: GLenum, param: *GLfloat) { (self.SamplerParameterfv.f)(sampler, pname, param) }
-	#[inline(always)] unsafe fn SamplerParameterIiv(&self, sampler: GLuint, pname: GLenum, param: *GLint) { (self.SamplerParameterIiv.f)(sampler, pname, param) }
-	#[inline(always)] unsafe fn SamplerParameterIuiv(&self, sampler: GLuint, pname: GLenum, param: *GLuint) { (self.SamplerParameterIuiv.f)(sampler, pname, param) }
-	#[inline(always)] unsafe fn GetSamplerParameteriv(&self, sampler: GLuint, pname: GLenum, params: *GLint) { (self.GetSamplerParameteriv.f)(sampler, pname, params) }
-	#[inline(always)] unsafe fn GetSamplerParameterIiv(&self, sampler: GLuint, pname: GLenum, params: *GLint) { (self.GetSamplerParameterIiv.f)(sampler, pname, params) }
-	#[inline(always)] unsafe fn GetSamplerParameterfv(&self, sampler: GLuint, pname: GLenum, params: *GLfloat) { (self.GetSamplerParameterfv.f)(sampler, pname, params) }
-	#[inline(always)] unsafe fn GetSamplerParameterIuiv(&self, sampler: GLuint, pname: GLenum, params: *GLuint) { (self.GetSamplerParameterIuiv.f)(sampler, pname, params) }
+	#[inline(always)] pub unsafe fn GenSamplers(&self, count: GLsizei, samplers: *GLuint) { (self.GenSamplers.f)(count, samplers) }
+	#[inline(always)] pub unsafe fn DeleteSamplers(&self, count: GLsizei, samplers: *GLuint) { (self.DeleteSamplers.f)(count, samplers) }
+	#[inline(always)] pub unsafe fn IsSampler(&self, sampler: GLuint) -> GLboolean { (self.IsSampler.f)(sampler) }
+	#[inline(always)] pub unsafe fn BindSampler(&self, unit: GLuint, sampler: GLuint) { (self.BindSampler.f)(unit, sampler) }
+	#[inline(always)] pub unsafe fn SamplerParameteri(&self, sampler: GLuint, pname: GLenum, param: GLint) { (self.SamplerParameteri.f)(sampler, pname, param) }
+	#[inline(always)] pub unsafe fn SamplerParameteriv(&self, sampler: GLuint, pname: GLenum, param: *GLint) { (self.SamplerParameteriv.f)(sampler, pname, param) }
+	#[inline(always)] pub unsafe fn SamplerParameterf(&self, sampler: GLuint, pname: GLenum, param: GLfloat) { (self.SamplerParameterf.f)(sampler, pname, param) }
+	#[inline(always)] pub unsafe fn SamplerParameterfv(&self, sampler: GLuint, pname: GLenum, param: *GLfloat) { (self.SamplerParameterfv.f)(sampler, pname, param) }
+	#[inline(always)] pub unsafe fn SamplerParameterIiv(&self, sampler: GLuint, pname: GLenum, param: *GLint) { (self.SamplerParameterIiv.f)(sampler, pname, param) }
+	#[inline(always)] pub unsafe fn SamplerParameterIuiv(&self, sampler: GLuint, pname: GLenum, param: *GLuint) { (self.SamplerParameterIuiv.f)(sampler, pname, param) }
+	#[inline(always)] pub unsafe fn GetSamplerParameteriv(&self, sampler: GLuint, pname: GLenum, params: *GLint) { (self.GetSamplerParameteriv.f)(sampler, pname, params) }
+	#[inline(always)] pub unsafe fn GetSamplerParameterIiv(&self, sampler: GLuint, pname: GLenum, params: *GLint) { (self.GetSamplerParameterIiv.f)(sampler, pname, params) }
+	#[inline(always)] pub unsafe fn GetSamplerParameterfv(&self, sampler: GLuint, pname: GLenum, params: *GLfloat) { (self.GetSamplerParameterfv.f)(sampler, pname, params) }
+	#[inline(always)] pub unsafe fn GetSamplerParameterIuiv(&self, sampler: GLuint, pname: GLenum, params: *GLuint) { (self.GetSamplerParameterIuiv.f)(sampler, pname, params) }
 	
 	// Version: 4.0
-	#[inline(always)] unsafe fn MinSampleShading(&self, value: GLfloat) { (self.MinSampleShading.f)(value) }
-	#[inline(always)] unsafe fn BlendEquationi(&self, buf: GLuint, mode: GLenum) { (self.BlendEquationi.f)(buf, mode) }
-	#[inline(always)] unsafe fn BlendEquationSeparatei(&self, buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum) { (self.BlendEquationSeparatei.f)(buf, modeRGB, modeAlpha) }
-	#[inline(always)] unsafe fn BlendFunci(&self, buf: GLuint, src: GLenum, dst: GLenum) { (self.BlendFunci.f)(buf, src, dst) }
-	#[inline(always)] unsafe fn BlendFuncSeparatei(&self, buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum) { (self.BlendFuncSeparatei.f)(buf, srcRGB, dstRGB, srcAlpha, dstAlpha) }
+	#[inline(always)] pub unsafe fn MinSampleShading(&self, value: GLfloat) { (self.MinSampleShading.f)(value) }
+	#[inline(always)] pub unsafe fn BlendEquationi(&self, buf: GLuint, mode: GLenum) { (self.BlendEquationi.f)(buf, mode) }
+	#[inline(always)] pub unsafe fn BlendEquationSeparatei(&self, buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum) { (self.BlendEquationSeparatei.f)(buf, modeRGB, modeAlpha) }
+	#[inline(always)] pub unsafe fn BlendFunci(&self, buf: GLuint, src: GLenum, dst: GLenum) { (self.BlendFunci.f)(buf, src, dst) }
+	#[inline(always)] pub unsafe fn BlendFuncSeparatei(&self, buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum) { (self.BlendFuncSeparatei.f)(buf, srcRGB, dstRGB, srcAlpha, dstAlpha) }
 	
 	// Core Extension: ARB_draw_indirect
-	#[inline(always)] unsafe fn DrawArraysIndirect(&self, mode: GLenum, indirect: *GLvoid) { (self.DrawArraysIndirect.f)(mode, indirect) }
-	#[inline(always)] unsafe fn DrawElementsIndirect(&self, mode: GLenum, type_: GLenum, indirect: *GLvoid) { (self.DrawElementsIndirect.f)(mode, type_, indirect) }
+	#[inline(always)] pub unsafe fn DrawArraysIndirect(&self, mode: GLenum, indirect: *GLvoid) { (self.DrawArraysIndirect.f)(mode, indirect) }
+	#[inline(always)] pub unsafe fn DrawElementsIndirect(&self, mode: GLenum, type_: GLenum, indirect: *GLvoid) { (self.DrawElementsIndirect.f)(mode, type_, indirect) }
 	
 	// Core Extension: ARB_gpu_shader_fp64
-	#[inline(always)] unsafe fn Uniform1d(&self, location: GLint, x: GLdouble) { (self.Uniform1d.f)(location, x) }
-	#[inline(always)] unsafe fn Uniform2d(&self, location: GLint, x: GLdouble, y: GLdouble) { (self.Uniform2d.f)(location, x, y) }
-	#[inline(always)] unsafe fn Uniform3d(&self, location: GLint, x: GLdouble, y: GLdouble, z: GLdouble) { (self.Uniform3d.f)(location, x, y, z) }
-	#[inline(always)] unsafe fn Uniform4d(&self, location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { (self.Uniform4d.f)(location, x, y, z, w) }
-	#[inline(always)] unsafe fn Uniform1dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform1dv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform2dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform2dv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform3dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform3dv.f)(location, count, value) }
-	#[inline(always)] unsafe fn Uniform4dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform4dv.f)(location, count, value) }
-	#[inline(always)] unsafe fn UniformMatrix2dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix2dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix3dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix3dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix4dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix4dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix2x3dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix2x3dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix2x4dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix2x4dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix3x2dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix3x2dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix3x4dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix3x4dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix4x2dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix4x2dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn UniformMatrix4x3dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix4x3dv.f)(location, count, transpose, value) }
-	#[inline(always)] unsafe fn GetUniformdv(&self, program: GLuint, location: GLint, params: *GLdouble) { (self.GetUniformdv.f)(program, location, params) }
+	#[inline(always)] pub unsafe fn Uniform1d(&self, location: GLint, x: GLdouble) { (self.Uniform1d.f)(location, x) }
+	#[inline(always)] pub unsafe fn Uniform2d(&self, location: GLint, x: GLdouble, y: GLdouble) { (self.Uniform2d.f)(location, x, y) }
+	#[inline(always)] pub unsafe fn Uniform3d(&self, location: GLint, x: GLdouble, y: GLdouble, z: GLdouble) { (self.Uniform3d.f)(location, x, y, z) }
+	#[inline(always)] pub unsafe fn Uniform4d(&self, location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { (self.Uniform4d.f)(location, x, y, z, w) }
+	#[inline(always)] pub unsafe fn Uniform1dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform1dv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform2dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform2dv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform3dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform3dv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn Uniform4dv(&self, location: GLint, count: GLsizei, value: *GLdouble) { (self.Uniform4dv.f)(location, count, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix2dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix2dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix3dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix3dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix4dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix4dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix2x3dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix2x3dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix2x4dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix2x4dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix3x2dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix3x2dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix3x4dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix3x4dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix4x2dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix4x2dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn UniformMatrix4x3dv(&self, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.UniformMatrix4x3dv.f)(location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn GetUniformdv(&self, program: GLuint, location: GLint, params: *GLdouble) { (self.GetUniformdv.f)(program, location, params) }
 	
 	// Core Extension: ARB_shader_subroutine
-	#[inline(always)] unsafe fn GetSubroutineUniformLocation(&self, program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint { (self.GetSubroutineUniformLocation.f)(program, shadertype, name) }
-	#[inline(always)] unsafe fn GetSubroutineIndex(&self, program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint { (self.GetSubroutineIndex.f)(program, shadertype, name) }
-	#[inline(always)] unsafe fn GetActiveSubroutineUniformiv(&self, program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *GLint) { (self.GetActiveSubroutineUniformiv.f)(program, shadertype, index, pname, values) }
-	#[inline(always)] unsafe fn GetActiveSubroutineUniformName(&self, program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar) { (self.GetActiveSubroutineUniformName.f)(program, shadertype, index, bufsize, length, name) }
-	#[inline(always)] unsafe fn GetActiveSubroutineName(&self, program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar) { (self.GetActiveSubroutineName.f)(program, shadertype, index, bufsize, length, name) }
-	#[inline(always)] unsafe fn UniformSubroutinesuiv(&self, shadertype: GLenum, count: GLsizei, indices: *GLuint) { (self.UniformSubroutinesuiv.f)(shadertype, count, indices) }
-	#[inline(always)] unsafe fn GetUniformSubroutineuiv(&self, shadertype: GLenum, location: GLint, params: *GLuint) { (self.GetUniformSubroutineuiv.f)(shadertype, location, params) }
-	#[inline(always)] unsafe fn GetProgramStageiv(&self, program: GLuint, shadertype: GLenum, pname: GLenum, values: *GLint) { (self.GetProgramStageiv.f)(program, shadertype, pname, values) }
+	#[inline(always)] pub unsafe fn GetSubroutineUniformLocation(&self, program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint { (self.GetSubroutineUniformLocation.f)(program, shadertype, name) }
+	#[inline(always)] pub unsafe fn GetSubroutineIndex(&self, program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint { (self.GetSubroutineIndex.f)(program, shadertype, name) }
+	#[inline(always)] pub unsafe fn GetActiveSubroutineUniformiv(&self, program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *GLint) { (self.GetActiveSubroutineUniformiv.f)(program, shadertype, index, pname, values) }
+	#[inline(always)] pub unsafe fn GetActiveSubroutineUniformName(&self, program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar) { (self.GetActiveSubroutineUniformName.f)(program, shadertype, index, bufsize, length, name) }
+	#[inline(always)] pub unsafe fn GetActiveSubroutineName(&self, program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *GLsizei, name: *GLchar) { (self.GetActiveSubroutineName.f)(program, shadertype, index, bufsize, length, name) }
+	#[inline(always)] pub unsafe fn UniformSubroutinesuiv(&self, shadertype: GLenum, count: GLsizei, indices: *GLuint) { (self.UniformSubroutinesuiv.f)(shadertype, count, indices) }
+	#[inline(always)] pub unsafe fn GetUniformSubroutineuiv(&self, shadertype: GLenum, location: GLint, params: *GLuint) { (self.GetUniformSubroutineuiv.f)(shadertype, location, params) }
+	#[inline(always)] pub unsafe fn GetProgramStageiv(&self, program: GLuint, shadertype: GLenum, pname: GLenum, values: *GLint) { (self.GetProgramStageiv.f)(program, shadertype, pname, values) }
 	
 	// Core Extension: ARB_tessellation_shader
-	#[inline(always)] unsafe fn PatchParameteri(&self, pname: GLenum, value: GLint) { (self.PatchParameteri.f)(pname, value) }
-	#[inline(always)] unsafe fn PatchParameterfv(&self, pname: GLenum, values: *GLfloat) { (self.PatchParameterfv.f)(pname, values) }
+	#[inline(always)] pub unsafe fn PatchParameteri(&self, pname: GLenum, value: GLint) { (self.PatchParameteri.f)(pname, value) }
+	#[inline(always)] pub unsafe fn PatchParameterfv(&self, pname: GLenum, values: *GLfloat) { (self.PatchParameterfv.f)(pname, values) }
 	
 	// Core Extension: ARB_transform_feedback2
-	#[inline(always)] unsafe fn BindTransformFeedback(&self, target: GLenum, id: GLuint) { (self.BindTransformFeedback.f)(target, id) }
-	#[inline(always)] unsafe fn DeleteTransformFeedbacks(&self, n: GLsizei, ids: *GLuint) { (self.DeleteTransformFeedbacks.f)(n, ids) }
-	#[inline(always)] unsafe fn GenTransformFeedbacks(&self, n: GLsizei, ids: *GLuint) { (self.GenTransformFeedbacks.f)(n, ids) }
-	#[inline(always)] unsafe fn IsTransformFeedback(&self, id: GLuint) -> GLboolean { (self.IsTransformFeedback.f)(id) }
-	#[inline(always)] unsafe fn PauseTransformFeedback(&self) { (self.PauseTransformFeedback.f)() }
-	#[inline(always)] unsafe fn ResumeTransformFeedback(&self) { (self.ResumeTransformFeedback.f)() }
-	#[inline(always)] unsafe fn DrawTransformFeedback(&self, mode: GLenum, id: GLuint) { (self.DrawTransformFeedback.f)(mode, id) }
+	#[inline(always)] pub unsafe fn BindTransformFeedback(&self, target: GLenum, id: GLuint) { (self.BindTransformFeedback.f)(target, id) }
+	#[inline(always)] pub unsafe fn DeleteTransformFeedbacks(&self, n: GLsizei, ids: *GLuint) { (self.DeleteTransformFeedbacks.f)(n, ids) }
+	#[inline(always)] pub unsafe fn GenTransformFeedbacks(&self, n: GLsizei, ids: *GLuint) { (self.GenTransformFeedbacks.f)(n, ids) }
+	#[inline(always)] pub unsafe fn IsTransformFeedback(&self, id: GLuint) -> GLboolean { (self.IsTransformFeedback.f)(id) }
+	#[inline(always)] pub unsafe fn PauseTransformFeedback(&self) { (self.PauseTransformFeedback.f)() }
+	#[inline(always)] pub unsafe fn ResumeTransformFeedback(&self) { (self.ResumeTransformFeedback.f)() }
+	#[inline(always)] pub unsafe fn DrawTransformFeedback(&self, mode: GLenum, id: GLuint) { (self.DrawTransformFeedback.f)(mode, id) }
 	
 	// Core Extension: ARB_transform_feedback3
-	#[inline(always)] unsafe fn DrawTransformFeedbackStream(&self, mode: GLenum, id: GLuint, stream: GLuint) { (self.DrawTransformFeedbackStream.f)(mode, id, stream) }
-	#[inline(always)] unsafe fn BeginQueryIndexed(&self, target: GLenum, index: GLuint, id: GLuint) { (self.BeginQueryIndexed.f)(target, index, id) }
-	#[inline(always)] unsafe fn EndQueryIndexed(&self, target: GLenum, index: GLuint) { (self.EndQueryIndexed.f)(target, index) }
-	#[inline(always)] unsafe fn GetQueryIndexediv(&self, target: GLenum, index: GLuint, pname: GLenum, params: *GLint) { (self.GetQueryIndexediv.f)(target, index, pname, params) }
+	#[inline(always)] pub unsafe fn DrawTransformFeedbackStream(&self, mode: GLenum, id: GLuint, stream: GLuint) { (self.DrawTransformFeedbackStream.f)(mode, id, stream) }
+	#[inline(always)] pub unsafe fn BeginQueryIndexed(&self, target: GLenum, index: GLuint, id: GLuint) { (self.BeginQueryIndexed.f)(target, index, id) }
+	#[inline(always)] pub unsafe fn EndQueryIndexed(&self, target: GLenum, index: GLuint) { (self.EndQueryIndexed.f)(target, index) }
+	#[inline(always)] pub unsafe fn GetQueryIndexediv(&self, target: GLenum, index: GLuint, pname: GLenum, params: *GLint) { (self.GetQueryIndexediv.f)(target, index, pname, params) }
 	
 	// Core Extension: ARB_ES2_compatibility
-	#[inline(always)] unsafe fn ReleaseShaderCompiler(&self) { (self.ReleaseShaderCompiler.f)() }
-	#[inline(always)] unsafe fn ShaderBinary(&self, count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei) { (self.ShaderBinary.f)(count, shaders, binaryformat, binary, length) }
-	#[inline(always)] unsafe fn GetShaderPrecisionFormat(&self, shadertype: GLenum, precisiontype: GLenum, range: *GLint, precision: *GLint) { (self.GetShaderPrecisionFormat.f)(shadertype, precisiontype, range, precision) }
-	#[inline(always)] unsafe fn DepthRangef(&self, n: GLfloat, f: GLfloat) { (self.DepthRangef.f)(n, f) }
-	#[inline(always)] unsafe fn ClearDepthf(&self, d: GLfloat) { (self.ClearDepthf.f)(d) }
+	#[inline(always)] pub unsafe fn ReleaseShaderCompiler(&self) { (self.ReleaseShaderCompiler.f)() }
+	#[inline(always)] pub unsafe fn ShaderBinary(&self, count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei) { (self.ShaderBinary.f)(count, shaders, binaryformat, binary, length) }
+	#[inline(always)] pub unsafe fn GetShaderPrecisionFormat(&self, shadertype: GLenum, precisiontype: GLenum, range: *GLint, precision: *GLint) { (self.GetShaderPrecisionFormat.f)(shadertype, precisiontype, range, precision) }
+	#[inline(always)] pub unsafe fn DepthRangef(&self, n: GLfloat, f: GLfloat) { (self.DepthRangef.f)(n, f) }
+	#[inline(always)] pub unsafe fn ClearDepthf(&self, d: GLfloat) { (self.ClearDepthf.f)(d) }
 	
 	// Core Extension: ARB_get_program_binary
-	#[inline(always)] unsafe fn GetProgramBinary(&self, program: GLuint, bufSize: GLsizei, length: *GLsizei, binaryFormat: *GLenum, binary: *GLvoid) { (self.GetProgramBinary.f)(program, bufSize, length, binaryFormat, binary) }
-	#[inline(always)] unsafe fn ProgramBinary(&self, program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei) { (self.ProgramBinary.f)(program, binaryFormat, binary, length) }
-	#[inline(always)] unsafe fn ProgramParameteri(&self, program: GLuint, pname: GLenum, value: GLint) { (self.ProgramParameteri.f)(program, pname, value) }
+	#[inline(always)] pub unsafe fn GetProgramBinary(&self, program: GLuint, bufSize: GLsizei, length: *GLsizei, binaryFormat: *GLenum, binary: *GLvoid) { (self.GetProgramBinary.f)(program, bufSize, length, binaryFormat, binary) }
+	#[inline(always)] pub unsafe fn ProgramBinary(&self, program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei) { (self.ProgramBinary.f)(program, binaryFormat, binary, length) }
+	#[inline(always)] pub unsafe fn ProgramParameteri(&self, program: GLuint, pname: GLenum, value: GLint) { (self.ProgramParameteri.f)(program, pname, value) }
 	
 	// Core Extension: ARB_separate_shader_objects
-	#[inline(always)] unsafe fn UseProgramStages(&self, pipeline: GLuint, stages: GLbitfield, program: GLuint) { (self.UseProgramStages.f)(pipeline, stages, program) }
-	#[inline(always)] unsafe fn ActiveShaderProgram(&self, pipeline: GLuint, program: GLuint) { (self.ActiveShaderProgram.f)(pipeline, program) }
-	#[inline(always)] unsafe fn CreateShaderProgramv(&self, type_: GLenum, count: GLsizei, strings: **GLchar) -> GLuint { (self.CreateShaderProgramv.f)(type_, count, strings) }
-	#[inline(always)] unsafe fn BindProgramPipeline(&self, pipeline: GLuint) { (self.BindProgramPipeline.f)(pipeline) }
-	#[inline(always)] unsafe fn DeleteProgramPipelines(&self, n: GLsizei, pipelines: *GLuint) { (self.DeleteProgramPipelines.f)(n, pipelines) }
-	#[inline(always)] unsafe fn GenProgramPipelines(&self, n: GLsizei, pipelines: *GLuint) { (self.GenProgramPipelines.f)(n, pipelines) }
-	#[inline(always)] unsafe fn IsProgramPipeline(&self, pipeline: GLuint) -> GLboolean { (self.IsProgramPipeline.f)(pipeline) }
-	#[inline(always)] unsafe fn GetProgramPipelineiv(&self, pipeline: GLuint, pname: GLenum, params: *GLint) { (self.GetProgramPipelineiv.f)(pipeline, pname, params) }
-	#[inline(always)] unsafe fn ProgramUniform1i(&self, program: GLuint, location: GLint, v0: GLint) { (self.ProgramUniform1i.f)(program, location, v0) }
-	#[inline(always)] unsafe fn ProgramUniform1iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform1iv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform1f(&self, program: GLuint, location: GLint, v0: GLfloat) { (self.ProgramUniform1f.f)(program, location, v0) }
-	#[inline(always)] unsafe fn ProgramUniform1fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform1fv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform1d(&self, program: GLuint, location: GLint, v0: GLdouble) { (self.ProgramUniform1d.f)(program, location, v0) }
-	#[inline(always)] unsafe fn ProgramUniform1dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform1dv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform1ui(&self, program: GLuint, location: GLint, v0: GLuint) { (self.ProgramUniform1ui.f)(program, location, v0) }
-	#[inline(always)] unsafe fn ProgramUniform1uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform1uiv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform2i(&self, program: GLuint, location: GLint, v0: GLint, v1: GLint) { (self.ProgramUniform2i.f)(program, location, v0, v1) }
-	#[inline(always)] unsafe fn ProgramUniform2iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform2iv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform2f(&self, program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat) { (self.ProgramUniform2f.f)(program, location, v0, v1) }
-	#[inline(always)] unsafe fn ProgramUniform2fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform2fv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform2d(&self, program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble) { (self.ProgramUniform2d.f)(program, location, v0, v1) }
-	#[inline(always)] unsafe fn ProgramUniform2dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform2dv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform2ui(&self, program: GLuint, location: GLint, v0: GLuint, v1: GLuint) { (self.ProgramUniform2ui.f)(program, location, v0, v1) }
-	#[inline(always)] unsafe fn ProgramUniform2uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform2uiv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform3i(&self, program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint) { (self.ProgramUniform3i.f)(program, location, v0, v1, v2) }
-	#[inline(always)] unsafe fn ProgramUniform3iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform3iv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform3f(&self, program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { (self.ProgramUniform3f.f)(program, location, v0, v1, v2) }
-	#[inline(always)] unsafe fn ProgramUniform3fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform3fv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform3d(&self, program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble) { (self.ProgramUniform3d.f)(program, location, v0, v1, v2) }
-	#[inline(always)] unsafe fn ProgramUniform3dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform3dv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform3ui(&self, program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { (self.ProgramUniform3ui.f)(program, location, v0, v1, v2) }
-	#[inline(always)] unsafe fn ProgramUniform3uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform3uiv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform4i(&self, program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { (self.ProgramUniform4i.f)(program, location, v0, v1, v2, v3) }
-	#[inline(always)] unsafe fn ProgramUniform4iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform4iv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform4f(&self, program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { (self.ProgramUniform4f.f)(program, location, v0, v1, v2, v3) }
-	#[inline(always)] unsafe fn ProgramUniform4fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform4fv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform4d(&self, program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble) { (self.ProgramUniform4d.f)(program, location, v0, v1, v2, v3) }
-	#[inline(always)] unsafe fn ProgramUniform4dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform4dv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniform4ui(&self, program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { (self.ProgramUniform4ui.f)(program, location, v0, v1, v2, v3) }
-	#[inline(always)] unsafe fn ProgramUniform4uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform4uiv.f)(program, location, count, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix2fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix2fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix3fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix3fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix4fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix4fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix2dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix2dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix3dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix3dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix4dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix4dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix2x3fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix2x3fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix3x2fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix3x2fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix2x4fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix2x4fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix4x2fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix4x2fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix3x4fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix3x4fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix4x3fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix4x3fv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix2x3dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix2x3dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix3x2dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix3x2dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix2x4dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix2x4dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix4x2dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix4x2dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix3x4dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix3x4dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ProgramUniformMatrix4x3dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix4x3dv.f)(program, location, count, transpose, value) }
-	#[inline(always)] unsafe fn ValidateProgramPipeline(&self, pipeline: GLuint) { (self.ValidateProgramPipeline.f)(pipeline) }
-	#[inline(always)] unsafe fn GetProgramPipelineInfoLog(&self, pipeline: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) { (self.GetProgramPipelineInfoLog.f)(pipeline, bufSize, length, infoLog) }
+	#[inline(always)] pub unsafe fn UseProgramStages(&self, pipeline: GLuint, stages: GLbitfield, program: GLuint) { (self.UseProgramStages.f)(pipeline, stages, program) }
+	#[inline(always)] pub unsafe fn ActiveShaderProgram(&self, pipeline: GLuint, program: GLuint) { (self.ActiveShaderProgram.f)(pipeline, program) }
+	#[inline(always)] pub unsafe fn CreateShaderProgramv(&self, type_: GLenum, count: GLsizei, strings: **GLchar) -> GLuint { (self.CreateShaderProgramv.f)(type_, count, strings) }
+	#[inline(always)] pub unsafe fn BindProgramPipeline(&self, pipeline: GLuint) { (self.BindProgramPipeline.f)(pipeline) }
+	#[inline(always)] pub unsafe fn DeleteProgramPipelines(&self, n: GLsizei, pipelines: *GLuint) { (self.DeleteProgramPipelines.f)(n, pipelines) }
+	#[inline(always)] pub unsafe fn GenProgramPipelines(&self, n: GLsizei, pipelines: *GLuint) { (self.GenProgramPipelines.f)(n, pipelines) }
+	#[inline(always)] pub unsafe fn IsProgramPipeline(&self, pipeline: GLuint) -> GLboolean { (self.IsProgramPipeline.f)(pipeline) }
+	#[inline(always)] pub unsafe fn GetProgramPipelineiv(&self, pipeline: GLuint, pname: GLenum, params: *GLint) { (self.GetProgramPipelineiv.f)(pipeline, pname, params) }
+	#[inline(always)] pub unsafe fn ProgramUniform1i(&self, program: GLuint, location: GLint, v0: GLint) { (self.ProgramUniform1i.f)(program, location, v0) }
+	#[inline(always)] pub unsafe fn ProgramUniform1iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform1iv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform1f(&self, program: GLuint, location: GLint, v0: GLfloat) { (self.ProgramUniform1f.f)(program, location, v0) }
+	#[inline(always)] pub unsafe fn ProgramUniform1fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform1fv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform1d(&self, program: GLuint, location: GLint, v0: GLdouble) { (self.ProgramUniform1d.f)(program, location, v0) }
+	#[inline(always)] pub unsafe fn ProgramUniform1dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform1dv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform1ui(&self, program: GLuint, location: GLint, v0: GLuint) { (self.ProgramUniform1ui.f)(program, location, v0) }
+	#[inline(always)] pub unsafe fn ProgramUniform1uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform1uiv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform2i(&self, program: GLuint, location: GLint, v0: GLint, v1: GLint) { (self.ProgramUniform2i.f)(program, location, v0, v1) }
+	#[inline(always)] pub unsafe fn ProgramUniform2iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform2iv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform2f(&self, program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat) { (self.ProgramUniform2f.f)(program, location, v0, v1) }
+	#[inline(always)] pub unsafe fn ProgramUniform2fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform2fv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform2d(&self, program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble) { (self.ProgramUniform2d.f)(program, location, v0, v1) }
+	#[inline(always)] pub unsafe fn ProgramUniform2dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform2dv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform2ui(&self, program: GLuint, location: GLint, v0: GLuint, v1: GLuint) { (self.ProgramUniform2ui.f)(program, location, v0, v1) }
+	#[inline(always)] pub unsafe fn ProgramUniform2uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform2uiv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform3i(&self, program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint) { (self.ProgramUniform3i.f)(program, location, v0, v1, v2) }
+	#[inline(always)] pub unsafe fn ProgramUniform3iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform3iv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform3f(&self, program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { (self.ProgramUniform3f.f)(program, location, v0, v1, v2) }
+	#[inline(always)] pub unsafe fn ProgramUniform3fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform3fv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform3d(&self, program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble) { (self.ProgramUniform3d.f)(program, location, v0, v1, v2) }
+	#[inline(always)] pub unsafe fn ProgramUniform3dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform3dv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform3ui(&self, program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { (self.ProgramUniform3ui.f)(program, location, v0, v1, v2) }
+	#[inline(always)] pub unsafe fn ProgramUniform3uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform3uiv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform4i(&self, program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { (self.ProgramUniform4i.f)(program, location, v0, v1, v2, v3) }
+	#[inline(always)] pub unsafe fn ProgramUniform4iv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (self.ProgramUniform4iv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform4f(&self, program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { (self.ProgramUniform4f.f)(program, location, v0, v1, v2, v3) }
+	#[inline(always)] pub unsafe fn ProgramUniform4fv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (self.ProgramUniform4fv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform4d(&self, program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble) { (self.ProgramUniform4d.f)(program, location, v0, v1, v2, v3) }
+	#[inline(always)] pub unsafe fn ProgramUniform4dv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (self.ProgramUniform4dv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniform4ui(&self, program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { (self.ProgramUniform4ui.f)(program, location, v0, v1, v2, v3) }
+	#[inline(always)] pub unsafe fn ProgramUniform4uiv(&self, program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (self.ProgramUniform4uiv.f)(program, location, count, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix2fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix2fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix3fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix3fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix4fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix4fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix2dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix2dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix3dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix3dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix4dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix4dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix2x3fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix2x3fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix3x2fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix3x2fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix2x4fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix2x4fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix4x2fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix4x2fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix3x4fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix3x4fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix4x3fv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (self.ProgramUniformMatrix4x3fv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix2x3dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix2x3dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix3x2dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix3x2dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix2x4dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix2x4dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix4x2dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix4x2dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix3x4dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix3x4dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ProgramUniformMatrix4x3dv(&self, program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (self.ProgramUniformMatrix4x3dv.f)(program, location, count, transpose, value) }
+	#[inline(always)] pub unsafe fn ValidateProgramPipeline(&self, pipeline: GLuint) { (self.ValidateProgramPipeline.f)(pipeline) }
+	#[inline(always)] pub unsafe fn GetProgramPipelineInfoLog(&self, pipeline: GLuint, bufSize: GLsizei, length: *GLsizei, infoLog: *GLchar) { (self.GetProgramPipelineInfoLog.f)(pipeline, bufSize, length, infoLog) }
 	
 	// Core Extension: ARB_vertex_attrib_64bit
-	#[inline(always)] unsafe fn VertexAttribL1d(&self, index: GLuint, x: GLdouble) { (self.VertexAttribL1d.f)(index, x) }
-	#[inline(always)] unsafe fn VertexAttribL2d(&self, index: GLuint, x: GLdouble, y: GLdouble) { (self.VertexAttribL2d.f)(index, x, y) }
-	#[inline(always)] unsafe fn VertexAttribL3d(&self, index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) { (self.VertexAttribL3d.f)(index, x, y, z) }
-	#[inline(always)] unsafe fn VertexAttribL4d(&self, index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { (self.VertexAttribL4d.f)(index, x, y, z, w) }
-	#[inline(always)] unsafe fn VertexAttribL1dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL1dv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribL2dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL2dv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribL3dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL3dv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribL4dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL4dv.f)(index, v) }
-	#[inline(always)] unsafe fn VertexAttribLPointer(&self, index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) { (self.VertexAttribLPointer.f)(index, size, type_, stride, pointer) }
-	#[inline(always)] unsafe fn GetVertexAttribLdv(&self, index: GLuint, pname: GLenum, params: *GLdouble) { (self.GetVertexAttribLdv.f)(index, pname, params) }
+	#[inline(always)] pub unsafe fn VertexAttribL1d(&self, index: GLuint, x: GLdouble) { (self.VertexAttribL1d.f)(index, x) }
+	#[inline(always)] pub unsafe fn VertexAttribL2d(&self, index: GLuint, x: GLdouble, y: GLdouble) { (self.VertexAttribL2d.f)(index, x, y) }
+	#[inline(always)] pub unsafe fn VertexAttribL3d(&self, index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) { (self.VertexAttribL3d.f)(index, x, y, z) }
+	#[inline(always)] pub unsafe fn VertexAttribL4d(&self, index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { (self.VertexAttribL4d.f)(index, x, y, z, w) }
+	#[inline(always)] pub unsafe fn VertexAttribL1dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL1dv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribL2dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL2dv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribL3dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL3dv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribL4dv(&self, index: GLuint, v: *GLdouble) { (self.VertexAttribL4dv.f)(index, v) }
+	#[inline(always)] pub unsafe fn VertexAttribLPointer(&self, index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) { (self.VertexAttribLPointer.f)(index, size, type_, stride, pointer) }
+	#[inline(always)] pub unsafe fn GetVertexAttribLdv(&self, index: GLuint, pname: GLenum, params: *GLdouble) { (self.GetVertexAttribLdv.f)(index, pname, params) }
 	
 	// Core Extension: ARB_viewport_array
-	#[inline(always)] unsafe fn ViewportArrayv(&self, first: GLuint, count: GLsizei, v: *GLfloat) { (self.ViewportArrayv.f)(first, count, v) }
-	#[inline(always)] unsafe fn ViewportIndexedf(&self, index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat) { (self.ViewportIndexedf.f)(index, x, y, w, h) }
-	#[inline(always)] unsafe fn ViewportIndexedfv(&self, index: GLuint, v: *GLfloat) { (self.ViewportIndexedfv.f)(index, v) }
-	#[inline(always)] unsafe fn ScissorArrayv(&self, first: GLuint, count: GLsizei, v: *GLint) { (self.ScissorArrayv.f)(first, count, v) }
-	#[inline(always)] unsafe fn ScissorIndexed(&self, index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei) { (self.ScissorIndexed.f)(index, left, bottom, width, height) }
-	#[inline(always)] unsafe fn ScissorIndexedv(&self, index: GLuint, v: *GLint) { (self.ScissorIndexedv.f)(index, v) }
-	#[inline(always)] unsafe fn DepthRangeArrayv(&self, first: GLuint, count: GLsizei, v: *GLdouble) { (self.DepthRangeArrayv.f)(first, count, v) }
-	#[inline(always)] unsafe fn DepthRangeIndexed(&self, index: GLuint, n: GLdouble, f: GLdouble) { (self.DepthRangeIndexed.f)(index, n, f) }
-	#[inline(always)] unsafe fn GetFloati_v(&self, target: GLenum, index: GLuint, data: *GLfloat) { (self.GetFloati_v.f)(target, index, data) }
-	#[inline(always)] unsafe fn GetDoublei_v(&self, target: GLenum, index: GLuint, data: *GLdouble) { (self.GetDoublei_v.f)(target, index, data) }
+	#[inline(always)] pub unsafe fn ViewportArrayv(&self, first: GLuint, count: GLsizei, v: *GLfloat) { (self.ViewportArrayv.f)(first, count, v) }
+	#[inline(always)] pub unsafe fn ViewportIndexedf(&self, index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat) { (self.ViewportIndexedf.f)(index, x, y, w, h) }
+	#[inline(always)] pub unsafe fn ViewportIndexedfv(&self, index: GLuint, v: *GLfloat) { (self.ViewportIndexedfv.f)(index, v) }
+	#[inline(always)] pub unsafe fn ScissorArrayv(&self, first: GLuint, count: GLsizei, v: *GLint) { (self.ScissorArrayv.f)(first, count, v) }
+	#[inline(always)] pub unsafe fn ScissorIndexed(&self, index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei) { (self.ScissorIndexed.f)(index, left, bottom, width, height) }
+	#[inline(always)] pub unsafe fn ScissorIndexedv(&self, index: GLuint, v: *GLint) { (self.ScissorIndexedv.f)(index, v) }
+	#[inline(always)] pub unsafe fn DepthRangeArrayv(&self, first: GLuint, count: GLsizei, v: *GLdouble) { (self.DepthRangeArrayv.f)(first, count, v) }
+	#[inline(always)] pub unsafe fn DepthRangeIndexed(&self, index: GLuint, n: GLdouble, f: GLdouble) { (self.DepthRangeIndexed.f)(index, n, f) }
+	#[inline(always)] pub unsafe fn GetFloati_v(&self, target: GLenum, index: GLuint, data: *GLfloat) { (self.GetFloati_v.f)(target, index, data) }
+	#[inline(always)] pub unsafe fn GetDoublei_v(&self, target: GLenum, index: GLuint, data: *GLdouble) { (self.GetDoublei_v.f)(target, index, data) }
 	
 	// Core Extension: ARB_base_instance
-	#[inline(always)] unsafe fn DrawArraysInstancedBaseInstance(&self, mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint) { (self.DrawArraysInstancedBaseInstance.f)(mode, first, count, instancecount, baseinstance) }
-	#[inline(always)] unsafe fn DrawElementsInstancedBaseInstance(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, baseinstance: GLuint) { (self.DrawElementsInstancedBaseInstance.f)(mode, count, type_, indices, instancecount, baseinstance) }
-	#[inline(always)] unsafe fn DrawElementsInstancedBaseVertexBaseInstance(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint) { (self.DrawElementsInstancedBaseVertexBaseInstance.f)(mode, count, type_, indices, instancecount, basevertex, baseinstance) }
+	#[inline(always)] pub unsafe fn DrawArraysInstancedBaseInstance(&self, mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint) { (self.DrawArraysInstancedBaseInstance.f)(mode, first, count, instancecount, baseinstance) }
+	#[inline(always)] pub unsafe fn DrawElementsInstancedBaseInstance(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, baseinstance: GLuint) { (self.DrawElementsInstancedBaseInstance.f)(mode, count, type_, indices, instancecount, baseinstance) }
+	#[inline(always)] pub unsafe fn DrawElementsInstancedBaseVertexBaseInstance(&self, mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint) { (self.DrawElementsInstancedBaseVertexBaseInstance.f)(mode, count, type_, indices, instancecount, basevertex, baseinstance) }
 	
 	// Core Extension: ARB_transform_feedback_instanced
-	#[inline(always)] unsafe fn DrawTransformFeedbackInstanced(&self, mode: GLenum, id: GLuint, instancecount: GLsizei) { (self.DrawTransformFeedbackInstanced.f)(mode, id, instancecount) }
-	#[inline(always)] unsafe fn DrawTransformFeedbackStreamInstanced(&self, mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei) { (self.DrawTransformFeedbackStreamInstanced.f)(mode, id, stream, instancecount) }
+	#[inline(always)] pub unsafe fn DrawTransformFeedbackInstanced(&self, mode: GLenum, id: GLuint, instancecount: GLsizei) { (self.DrawTransformFeedbackInstanced.f)(mode, id, instancecount) }
+	#[inline(always)] pub unsafe fn DrawTransformFeedbackStreamInstanced(&self, mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei) { (self.DrawTransformFeedbackStreamInstanced.f)(mode, id, stream, instancecount) }
 	
 	// Core Extension: ARB_internalformat_query
-	#[inline(always)] unsafe fn GetInternalformativ(&self, target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint) { (self.GetInternalformativ.f)(target, internalformat, pname, bufSize, params) }
+	#[inline(always)] pub unsafe fn GetInternalformativ(&self, target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint) { (self.GetInternalformativ.f)(target, internalformat, pname, bufSize, params) }
 	
 	// Core Extension: ARB_shader_atomic_counters
-	#[inline(always)] unsafe fn GetActiveAtomicCounterBufferiv(&self, program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *GLint) { (self.GetActiveAtomicCounterBufferiv.f)(program, bufferIndex, pname, params) }
+	#[inline(always)] pub unsafe fn GetActiveAtomicCounterBufferiv(&self, program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *GLint) { (self.GetActiveAtomicCounterBufferiv.f)(program, bufferIndex, pname, params) }
 	
 	// Core Extension: ARB_shader_image_load_store
-	#[inline(always)] unsafe fn BindImageTexture(&self, unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum) { (self.BindImageTexture.f)(unit, texture, level, layered, layer, access, format) }
-	#[inline(always)] unsafe fn MemoryBarrier(&self, barriers: GLbitfield) { (self.MemoryBarrier.f)(barriers) }
+	#[inline(always)] pub unsafe fn BindImageTexture(&self, unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum) { (self.BindImageTexture.f)(unit, texture, level, layered, layer, access, format) }
+	#[inline(always)] pub unsafe fn MemoryBarrier(&self, barriers: GLbitfield) { (self.MemoryBarrier.f)(barriers) }
 	
 	// Core Extension: ARB_texture_storage
-	#[inline(always)] unsafe fn TexStorage1D(&self, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) { (self.TexStorage1D.f)(target, levels, internalformat, width) }
-	#[inline(always)] unsafe fn TexStorage2D(&self, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.TexStorage2D.f)(target, levels, internalformat, width, height) }
-	#[inline(always)] unsafe fn TexStorage3D(&self, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) { (self.TexStorage3D.f)(target, levels, internalformat, width, height, depth) }
-	#[inline(always)] unsafe fn TextureStorage1DEXT(&self, texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) { (self.TextureStorage1DEXT.f)(texture, target, levels, internalformat, width) }
-	#[inline(always)] unsafe fn TextureStorage2DEXT(&self, texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.TextureStorage2DEXT.f)(texture, target, levels, internalformat, width, height) }
-	#[inline(always)] unsafe fn TextureStorage3DEXT(&self, texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) { (self.TextureStorage3DEXT.f)(texture, target, levels, internalformat, width, height, depth) }
+	#[inline(always)] pub unsafe fn TexStorage1D(&self, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) { (self.TexStorage1D.f)(target, levels, internalformat, width) }
+	#[inline(always)] pub unsafe fn TexStorage2D(&self, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.TexStorage2D.f)(target, levels, internalformat, width, height) }
+	#[inline(always)] pub unsafe fn TexStorage3D(&self, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) { (self.TexStorage3D.f)(target, levels, internalformat, width, height, depth) }
+	#[inline(always)] pub unsafe fn TextureStorage1DEXT(&self, texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) { (self.TextureStorage1DEXT.f)(texture, target, levels, internalformat, width) }
+	#[inline(always)] pub unsafe fn TextureStorage2DEXT(&self, texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { (self.TextureStorage2DEXT.f)(texture, target, levels, internalformat, width, height) }
+	#[inline(always)] pub unsafe fn TextureStorage3DEXT(&self, texture: GLuint, target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) { (self.TextureStorage3DEXT.f)(texture, target, levels, internalformat, width, height, depth) }
 	
 	// Core Extension: KHR_debug
-	#[inline(always)] unsafe fn DebugMessageControl(&self, source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean) { (self.DebugMessageControl.f)(source, type_, severity, count, ids, enabled) }
-	#[inline(always)] unsafe fn DebugMessageInsert(&self, source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar) { (self.DebugMessageInsert.f)(source, type_, id, severity, length, buf) }
-	#[inline(always)] unsafe fn DebugMessageCallback(&self, callback: GLDEBUGPROC, userParam: *GLvoid) { (self.DebugMessageCallback.f)(callback, userParam) }
-	#[inline(always)] unsafe fn GetDebugMessageLog(&self, count: GLuint, bufsize: GLsizei, sources: *GLenum, types: *GLenum, ids: *GLuint, severities: *GLenum, lengths: *GLsizei, messageLog: *GLchar) -> GLuint { (self.GetDebugMessageLog.f)(count, bufsize, sources, types, ids, severities, lengths, messageLog) }
-	#[inline(always)] unsafe fn PushDebugGroup(&self, source: GLenum, id: GLuint, length: GLsizei, message: *GLchar) { (self.PushDebugGroup.f)(source, id, length, message) }
-	#[inline(always)] unsafe fn PopDebugGroup(&self) { (self.PopDebugGroup.f)() }
-	#[inline(always)] unsafe fn ObjectLabel(&self, identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar) { (self.ObjectLabel.f)(identifier, name, length, label) }
-	#[inline(always)] unsafe fn GetObjectLabel(&self, identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *GLsizei, label: *GLchar) { (self.GetObjectLabel.f)(identifier, name, bufSize, length, label) }
-	#[inline(always)] unsafe fn ObjectPtrLabel(&self, ptr: *GLvoid, length: GLsizei, label: *GLchar) { (self.ObjectPtrLabel.f)(ptr, length, label) }
-	#[inline(always)] unsafe fn GetObjectPtrLabel(&self, ptr: *GLvoid, bufSize: GLsizei, length: *GLsizei, label: *GLchar) { (self.GetObjectPtrLabel.f)(ptr, bufSize, length, label) }
+	#[inline(always)] pub unsafe fn DebugMessageControl(&self, source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean) { (self.DebugMessageControl.f)(source, type_, severity, count, ids, enabled) }
+	#[inline(always)] pub unsafe fn DebugMessageInsert(&self, source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar) { (self.DebugMessageInsert.f)(source, type_, id, severity, length, buf) }
+	#[inline(always)] pub unsafe fn DebugMessageCallback(&self, callback: GLDEBUGPROC, userParam: *GLvoid) { (self.DebugMessageCallback.f)(callback, userParam) }
+	#[inline(always)] pub unsafe fn GetDebugMessageLog(&self, count: GLuint, bufsize: GLsizei, sources: *GLenum, types: *GLenum, ids: *GLuint, severities: *GLenum, lengths: *GLsizei, messageLog: *GLchar) -> GLuint { (self.GetDebugMessageLog.f)(count, bufsize, sources, types, ids, severities, lengths, messageLog) }
+	#[inline(always)] pub unsafe fn PushDebugGroup(&self, source: GLenum, id: GLuint, length: GLsizei, message: *GLchar) { (self.PushDebugGroup.f)(source, id, length, message) }
+	#[inline(always)] pub unsafe fn PopDebugGroup(&self) { (self.PopDebugGroup.f)() }
+	#[inline(always)] pub unsafe fn ObjectLabel(&self, identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar) { (self.ObjectLabel.f)(identifier, name, length, label) }
+	#[inline(always)] pub unsafe fn GetObjectLabel(&self, identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *GLsizei, label: *GLchar) { (self.GetObjectLabel.f)(identifier, name, bufSize, length, label) }
+	#[inline(always)] pub unsafe fn ObjectPtrLabel(&self, ptr: *GLvoid, length: GLsizei, label: *GLchar) { (self.ObjectPtrLabel.f)(ptr, length, label) }
+	#[inline(always)] pub unsafe fn GetObjectPtrLabel(&self, ptr: *GLvoid, bufSize: GLsizei, length: *GLsizei, label: *GLchar) { (self.GetObjectPtrLabel.f)(ptr, bufSize, length, label) }
 	
 	// Core Extension: ARB_clear_buffer_object
-	#[inline(always)] unsafe fn ClearBufferData(&self, target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid) { (self.ClearBufferData.f)(target, internalformat, format, type_, data) }
-	#[inline(always)] unsafe fn ClearBufferSubData(&self, target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *GLvoid) { (self.ClearBufferSubData.f)(target, internalformat, offset, size, format, type_, data) }
-	#[inline(always)] unsafe fn ClearNamedBufferDataEXT(&self, buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid) { (self.ClearNamedBufferDataEXT.f)(buffer, internalformat, format, type_, data) }
-	#[inline(always)] unsafe fn ClearNamedBufferSubDataEXT(&self, buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, offset: GLsizeiptr, size: GLsizeiptr, data: *GLvoid) { (self.ClearNamedBufferSubDataEXT.f)(buffer, internalformat, format, type_, offset, size, data) }
+	#[inline(always)] pub unsafe fn ClearBufferData(&self, target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid) { (self.ClearBufferData.f)(target, internalformat, format, type_, data) }
+	#[inline(always)] pub unsafe fn ClearBufferSubData(&self, target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *GLvoid) { (self.ClearBufferSubData.f)(target, internalformat, offset, size, format, type_, data) }
+	#[inline(always)] pub unsafe fn ClearNamedBufferDataEXT(&self, buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, data: *GLvoid) { (self.ClearNamedBufferDataEXT.f)(buffer, internalformat, format, type_, data) }
+	#[inline(always)] pub unsafe fn ClearNamedBufferSubDataEXT(&self, buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, offset: GLsizeiptr, size: GLsizeiptr, data: *GLvoid) { (self.ClearNamedBufferSubDataEXT.f)(buffer, internalformat, format, type_, offset, size, data) }
 	
 	// Core Extension: ARB_compute_shader
-	#[inline(always)] unsafe fn DispatchCompute(&self, num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint) { (self.DispatchCompute.f)(num_groups_x, num_groups_y, num_groups_z) }
-	#[inline(always)] unsafe fn DispatchComputeIndirect(&self, indirect: GLintptr) { (self.DispatchComputeIndirect.f)(indirect) }
+	#[inline(always)] pub unsafe fn DispatchCompute(&self, num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint) { (self.DispatchCompute.f)(num_groups_x, num_groups_y, num_groups_z) }
+	#[inline(always)] pub unsafe fn DispatchComputeIndirect(&self, indirect: GLintptr) { (self.DispatchComputeIndirect.f)(indirect) }
 	
 	// Core Extension: ARB_copy_image
-	#[inline(always)] unsafe fn CopyImageSubData(&self, srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei) { (self.CopyImageSubData.f)(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth) }
+	#[inline(always)] pub unsafe fn CopyImageSubData(&self, srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei) { (self.CopyImageSubData.f)(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth) }
 	
 	// Core Extension: ARB_framebuffer_no_attachments
-	#[inline(always)] unsafe fn FramebufferParameteri(&self, target: GLenum, pname: GLenum, param: GLint) { (self.FramebufferParameteri.f)(target, pname, param) }
-	#[inline(always)] unsafe fn GetFramebufferParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetFramebufferParameteriv.f)(target, pname, params) }
-	#[inline(always)] unsafe fn NamedFramebufferParameteriEXT(&self, framebuffer: GLuint, pname: GLenum, param: GLint) { (self.NamedFramebufferParameteriEXT.f)(framebuffer, pname, param) }
-	#[inline(always)] unsafe fn GetNamedFramebufferParameterivEXT(&self, framebuffer: GLuint, pname: GLenum, params: *GLint) { (self.GetNamedFramebufferParameterivEXT.f)(framebuffer, pname, params) }
+	#[inline(always)] pub unsafe fn FramebufferParameteri(&self, target: GLenum, pname: GLenum, param: GLint) { (self.FramebufferParameteri.f)(target, pname, param) }
+	#[inline(always)] pub unsafe fn GetFramebufferParameteriv(&self, target: GLenum, pname: GLenum, params: *GLint) { (self.GetFramebufferParameteriv.f)(target, pname, params) }
+	#[inline(always)] pub unsafe fn NamedFramebufferParameteriEXT(&self, framebuffer: GLuint, pname: GLenum, param: GLint) { (self.NamedFramebufferParameteriEXT.f)(framebuffer, pname, param) }
+	#[inline(always)] pub unsafe fn GetNamedFramebufferParameterivEXT(&self, framebuffer: GLuint, pname: GLenum, params: *GLint) { (self.GetNamedFramebufferParameterivEXT.f)(framebuffer, pname, params) }
 	
 	// Core Extension: ARB_internalformat_query2
-	#[inline(always)] unsafe fn GetInternalformati64v(&self, target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint64) { (self.GetInternalformati64v.f)(target, internalformat, pname, bufSize, params) }
+	#[inline(always)] pub unsafe fn GetInternalformati64v(&self, target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *GLint64) { (self.GetInternalformati64v.f)(target, internalformat, pname, bufSize, params) }
 	
 	// Core Extension: ARB_invalidate_subdata
-	#[inline(always)] unsafe fn InvalidateTexSubImage(&self, texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei) { (self.InvalidateTexSubImage.f)(texture, level, xoffset, yoffset, zoffset, width, height, depth) }
-	#[inline(always)] unsafe fn InvalidateTexImage(&self, texture: GLuint, level: GLint) { (self.InvalidateTexImage.f)(texture, level) }
-	#[inline(always)] unsafe fn InvalidateBufferSubData(&self, buffer: GLuint, offset: GLintptr, length: GLsizeiptr) { (self.InvalidateBufferSubData.f)(buffer, offset, length) }
-	#[inline(always)] unsafe fn InvalidateBufferData(&self, buffer: GLuint) { (self.InvalidateBufferData.f)(buffer) }
-	#[inline(always)] unsafe fn InvalidateFramebuffer(&self, target: GLenum, numAttachments: GLsizei, attachments: *GLenum) { (self.InvalidateFramebuffer.f)(target, numAttachments, attachments) }
-	#[inline(always)] unsafe fn InvalidateSubFramebuffer(&self, target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.InvalidateSubFramebuffer.f)(target, numAttachments, attachments, x, y, width, height) }
+	#[inline(always)] pub unsafe fn InvalidateTexSubImage(&self, texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei) { (self.InvalidateTexSubImage.f)(texture, level, xoffset, yoffset, zoffset, width, height, depth) }
+	#[inline(always)] pub unsafe fn InvalidateTexImage(&self, texture: GLuint, level: GLint) { (self.InvalidateTexImage.f)(texture, level) }
+	#[inline(always)] pub unsafe fn InvalidateBufferSubData(&self, buffer: GLuint, offset: GLintptr, length: GLsizeiptr) { (self.InvalidateBufferSubData.f)(buffer, offset, length) }
+	#[inline(always)] pub unsafe fn InvalidateBufferData(&self, buffer: GLuint) { (self.InvalidateBufferData.f)(buffer) }
+	#[inline(always)] pub unsafe fn InvalidateFramebuffer(&self, target: GLenum, numAttachments: GLsizei, attachments: *GLenum) { (self.InvalidateFramebuffer.f)(target, numAttachments, attachments) }
+	#[inline(always)] pub unsafe fn InvalidateSubFramebuffer(&self, target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (self.InvalidateSubFramebuffer.f)(target, numAttachments, attachments, x, y, width, height) }
 	
 	// Core Extension: ARB_multi_draw_indirect
-	#[inline(always)] unsafe fn MultiDrawArraysIndirect(&self, mode: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei) { (self.MultiDrawArraysIndirect.f)(mode, indirect, drawcount, stride) }
-	#[inline(always)] unsafe fn MultiDrawElementsIndirect(&self, mode: GLenum, type_: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei) { (self.MultiDrawElementsIndirect.f)(mode, type_, indirect, drawcount, stride) }
+	#[inline(always)] pub unsafe fn MultiDrawArraysIndirect(&self, mode: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei) { (self.MultiDrawArraysIndirect.f)(mode, indirect, drawcount, stride) }
+	#[inline(always)] pub unsafe fn MultiDrawElementsIndirect(&self, mode: GLenum, type_: GLenum, indirect: *GLvoid, drawcount: GLsizei, stride: GLsizei) { (self.MultiDrawElementsIndirect.f)(mode, type_, indirect, drawcount, stride) }
 	
 	// Core Extension: ARB_program_interface_query
-	#[inline(always)] unsafe fn GetProgramInterfaceiv(&self, program: GLuint, programInterface: GLenum, pname: GLenum, params: *GLint) { (self.GetProgramInterfaceiv.f)(program, programInterface, pname, params) }
-	#[inline(always)] unsafe fn GetProgramResourceIndex(&self, program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint { (self.GetProgramResourceIndex.f)(program, programInterface, name) }
-	#[inline(always)] unsafe fn GetProgramResourceName(&self, program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *GLsizei, name: *GLchar) { (self.GetProgramResourceName.f)(program, programInterface, index, bufSize, length, name) }
-	#[inline(always)] unsafe fn GetProgramResourceiv(&self, program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *GLsizei, params: *GLint) { (self.GetProgramResourceiv.f)(program, programInterface, index, propCount, props, bufSize, length, params) }
-	#[inline(always)] unsafe fn GetProgramResourceLocation(&self, program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (self.GetProgramResourceLocation.f)(program, programInterface, name) }
-	#[inline(always)] unsafe fn GetProgramResourceLocationIndex(&self, program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (self.GetProgramResourceLocationIndex.f)(program, programInterface, name) }
+	#[inline(always)] pub unsafe fn GetProgramInterfaceiv(&self, program: GLuint, programInterface: GLenum, pname: GLenum, params: *GLint) { (self.GetProgramInterfaceiv.f)(program, programInterface, pname, params) }
+	#[inline(always)] pub unsafe fn GetProgramResourceIndex(&self, program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint { (self.GetProgramResourceIndex.f)(program, programInterface, name) }
+	#[inline(always)] pub unsafe fn GetProgramResourceName(&self, program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *GLsizei, name: *GLchar) { (self.GetProgramResourceName.f)(program, programInterface, index, bufSize, length, name) }
+	#[inline(always)] pub unsafe fn GetProgramResourceiv(&self, program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *GLsizei, params: *GLint) { (self.GetProgramResourceiv.f)(program, programInterface, index, propCount, props, bufSize, length, params) }
+	#[inline(always)] pub unsafe fn GetProgramResourceLocation(&self, program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (self.GetProgramResourceLocation.f)(program, programInterface, name) }
+	#[inline(always)] pub unsafe fn GetProgramResourceLocationIndex(&self, program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (self.GetProgramResourceLocationIndex.f)(program, programInterface, name) }
 	
 	// Core Extension: ARB_shader_storage_buffer_object
-	#[inline(always)] unsafe fn ShaderStorageBlockBinding(&self, program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint) { (self.ShaderStorageBlockBinding.f)(program, storageBlockIndex, storageBlockBinding) }
+	#[inline(always)] pub unsafe fn ShaderStorageBlockBinding(&self, program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint) { (self.ShaderStorageBlockBinding.f)(program, storageBlockIndex, storageBlockBinding) }
 	
 	// Core Extension: ARB_texture_buffer_range
-	#[inline(always)] unsafe fn TexBufferRange(&self, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { (self.TexBufferRange.f)(target, internalformat, buffer, offset, size) }
-	#[inline(always)] unsafe fn TextureBufferRangeEXT(&self, texture: GLuint, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { (self.TextureBufferRangeEXT.f)(texture, target, internalformat, buffer, offset, size) }
+	#[inline(always)] pub unsafe fn TexBufferRange(&self, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { (self.TexBufferRange.f)(target, internalformat, buffer, offset, size) }
+	#[inline(always)] pub unsafe fn TextureBufferRangeEXT(&self, texture: GLuint, target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { (self.TextureBufferRangeEXT.f)(texture, target, internalformat, buffer, offset, size) }
 	
 	// Core Extension: ARB_texture_storage_multisample
-	#[inline(always)] unsafe fn TexStorage2DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { (self.TexStorage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) }
-	#[inline(always)] unsafe fn TexStorage3DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { (self.TexStorage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) }
-	#[inline(always)] unsafe fn TextureStorage2DMultisampleEXT(&self, texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { (self.TextureStorage2DMultisampleEXT.f)(texture, target, samples, internalformat, width, height, fixedsamplelocations) }
-	#[inline(always)] unsafe fn TextureStorage3DMultisampleEXT(&self, texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { (self.TextureStorage3DMultisampleEXT.f)(texture, target, samples, internalformat, width, height, depth, fixedsamplelocations) }
+	#[inline(always)] pub unsafe fn TexStorage2DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { (self.TexStorage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) }
+	#[inline(always)] pub unsafe fn TexStorage3DMultisample(&self, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { (self.TexStorage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) }
+	#[inline(always)] pub unsafe fn TextureStorage2DMultisampleEXT(&self, texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { (self.TextureStorage2DMultisampleEXT.f)(texture, target, samples, internalformat, width, height, fixedsamplelocations) }
+	#[inline(always)] pub unsafe fn TextureStorage3DMultisampleEXT(&self, texture: GLuint, target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { (self.TextureStorage3DMultisampleEXT.f)(texture, target, samples, internalformat, width, height, depth, fixedsamplelocations) }
 	
 	// Core Extension: ARB_texture_view
-	#[inline(always)] unsafe fn TextureView(&self, texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint) { (self.TextureView.f)(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers) }
+	#[inline(always)] pub unsafe fn TextureView(&self, texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint) { (self.TextureView.f)(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers) }
 	
 	// Core Extension: ARB_vertex_attrib_binding
-	#[inline(always)] unsafe fn BindVertexBuffer(&self, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) { (self.BindVertexBuffer.f)(bindingindex, buffer, offset, stride) }
-	#[inline(always)] unsafe fn VertexAttribFormat(&self, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) { (self.VertexAttribFormat.f)(attribindex, size, type_, normalized, relativeoffset) }
-	#[inline(always)] unsafe fn VertexAttribIFormat(&self, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexAttribIFormat.f)(attribindex, size, type_, relativeoffset) }
-	#[inline(always)] unsafe fn VertexAttribLFormat(&self, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexAttribLFormat.f)(attribindex, size, type_, relativeoffset) }
-	#[inline(always)] unsafe fn VertexAttribBinding(&self, attribindex: GLuint, bindingindex: GLuint) { (self.VertexAttribBinding.f)(attribindex, bindingindex) }
-	#[inline(always)] unsafe fn VertexBindingDivisor(&self, bindingindex: GLuint, divisor: GLuint) { (self.VertexBindingDivisor.f)(bindingindex, divisor) }
-	#[inline(always)] unsafe fn VertexArrayBindVertexBufferEXT(&self, vaobj: GLuint, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) { (self.VertexArrayBindVertexBufferEXT.f)(vaobj, bindingindex, buffer, offset, stride) }
-	#[inline(always)] unsafe fn VertexArrayVertexAttribFormatEXT(&self, vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) { (self.VertexArrayVertexAttribFormatEXT.f)(vaobj, attribindex, size, type_, normalized, relativeoffset) }
-	#[inline(always)] unsafe fn VertexArrayVertexAttribIFormatEXT(&self, vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexArrayVertexAttribIFormatEXT.f)(vaobj, attribindex, size, type_, relativeoffset) }
-	#[inline(always)] unsafe fn VertexArrayVertexAttribLFormatEXT(&self, vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexArrayVertexAttribLFormatEXT.f)(vaobj, attribindex, size, type_, relativeoffset) }
-	#[inline(always)] unsafe fn VertexArrayVertexAttribBindingEXT(&self, vaobj: GLuint, attribindex: GLuint, bindingindex: GLuint) { (self.VertexArrayVertexAttribBindingEXT.f)(vaobj, attribindex, bindingindex) }
-	#[inline(always)] unsafe fn VertexArrayVertexBindingDivisorEXT(&self, vaobj: GLuint, bindingindex: GLuint, divisor: GLuint) { (self.VertexArrayVertexBindingDivisorEXT.f)(vaobj, bindingindex, divisor) }
+	#[inline(always)] pub unsafe fn BindVertexBuffer(&self, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) { (self.BindVertexBuffer.f)(bindingindex, buffer, offset, stride) }
+	#[inline(always)] pub unsafe fn VertexAttribFormat(&self, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) { (self.VertexAttribFormat.f)(attribindex, size, type_, normalized, relativeoffset) }
+	#[inline(always)] pub unsafe fn VertexAttribIFormat(&self, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexAttribIFormat.f)(attribindex, size, type_, relativeoffset) }
+	#[inline(always)] pub unsafe fn VertexAttribLFormat(&self, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexAttribLFormat.f)(attribindex, size, type_, relativeoffset) }
+	#[inline(always)] pub unsafe fn VertexAttribBinding(&self, attribindex: GLuint, bindingindex: GLuint) { (self.VertexAttribBinding.f)(attribindex, bindingindex) }
+	#[inline(always)] pub unsafe fn VertexBindingDivisor(&self, bindingindex: GLuint, divisor: GLuint) { (self.VertexBindingDivisor.f)(bindingindex, divisor) }
+	#[inline(always)] pub unsafe fn VertexArrayBindVertexBufferEXT(&self, vaobj: GLuint, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) { (self.VertexArrayBindVertexBufferEXT.f)(vaobj, bindingindex, buffer, offset, stride) }
+	#[inline(always)] pub unsafe fn VertexArrayVertexAttribFormatEXT(&self, vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) { (self.VertexArrayVertexAttribFormatEXT.f)(vaobj, attribindex, size, type_, normalized, relativeoffset) }
+	#[inline(always)] pub unsafe fn VertexArrayVertexAttribIFormatEXT(&self, vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexArrayVertexAttribIFormatEXT.f)(vaobj, attribindex, size, type_, relativeoffset) }
+	#[inline(always)] pub unsafe fn VertexArrayVertexAttribLFormatEXT(&self, vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { (self.VertexArrayVertexAttribLFormatEXT.f)(vaobj, attribindex, size, type_, relativeoffset) }
+	#[inline(always)] pub unsafe fn VertexArrayVertexAttribBindingEXT(&self, vaobj: GLuint, attribindex: GLuint, bindingindex: GLuint) { (self.VertexArrayVertexAttribBindingEXT.f)(vaobj, attribindex, bindingindex) }
+	#[inline(always)] pub unsafe fn VertexArrayVertexBindingDivisorEXT(&self, vaobj: GLuint, bindingindex: GLuint, divisor: GLuint) { (self.VertexArrayVertexBindingDivisorEXT.f)(vaobj, bindingindex, divisor) }
 	
 }
