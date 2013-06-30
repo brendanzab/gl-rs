@@ -152,11 +152,11 @@ impl ErrorLevel {
         }
     }
 
-    pub fn term_color(&self) -> u8 {
+    pub fn term_color(&self) -> u16 {
         match *self {
-            Warning => term::color_yellow,
-            Error   => term::color_red,
-            Fatal   => term::color_red,
+            Warning => term::color::yellow,
+            Error   => term::color::red,
+            Fatal   => term::color::red,
         }
     }
 
@@ -166,7 +166,7 @@ impl ErrorLevel {
             let term = term::Terminal::new(writer);
             term.map(|t| t.fg(self.term_color()));
             writer.write_str(self.to_str());
-            term.map(|t| t.fg(term::color_black));
+            term.map(|t| t.fg(term::color::black));
         }
     }
 }
