@@ -1,161 +1,167 @@
-use std::cast::transmute;
-use std::io::{Create, file_reader, file_writer};
-use std::libc::{c_int, c_void, size_t};
-use std::local_data::{local_data_set, local_data_get};
-use std::path::Path;
-use std::ptr::null;
-use std::str::from_bytes;
-use std::str::raw::{from_buf, from_buf_len};
-use std::vec::raw::from_buf_raw;
-use super::xml;
+use std::comm::{Port, stream};
 
-priv fn curl_writer_tls_key(_: @@Writer) {}
-
-trait CurlWriter {
-    pub fn download_from(&self, url: &str);
-}
-
-impl CurlWriter for @Writer {
-    pub fn download_from(&self, url: &str) {
-        use rust_curl::curl::*;
-
-        let curl = Curl::new();
-        do url.as_c_str |c_str| { curl.easy_setopt(opt::URL, c_str); }
-
-        unsafe { local_data_set(curl_writer_tls_key, @*self); }
-        curl.easy_setopt(opt::WRITEFUNCTION, write_fn);
-
-        match curl.easy_perform() {
-            code::CURLE_OK => (),
-            e => fail!(~"Download error: " + easy_strerror(e)),
-        }
-    }
-}
-
-priv extern "C" fn write_fn(data: *u8, size: size_t, nmemb: size_t, _: *c_void) -> size_t {
-    let len = size * nmemb;
-    unsafe {
-        let new_data = from_buf_raw(data, len as uint);
-        local_data_get(curl_writer_tls_key)
-            .expect("Could not find writer.")
-            .write(new_data);
-    }
-    len
-}
-
-pub fn downoad_src(path: Path, url: &str, reload: bool) -> ~[u8] {
-    match file_reader(&path) {
-        Ok(r) if !reload => r,
-        _ => {
-            let file = file_writer(&path, [Create]).get();
-            file.download_from(url);
-            file_reader(&path).get()
-        }
-    }.read_whole_stream()
-}
-
-pub fn parse_xml(data: &[u8]) -> Registry {
-    let sax_handler = &xml::xmlSAXHandler {
-        internalSubset:         null(),
-        isStandalone:           null(),
-        hasInternalSubset:      null(),
-        hasExternalSubset:      null(),
-        resolveEntity:          null(),
-        getEntity:              null(),
-        entityDecl:             null(),
-        notationDecl:           null(),
-        attributeDecl:          null(),
-        elementDecl:            null(),
-        unparsedEntityDecl:     null(),
-        setDocumentLocator:     null(),
-        startDocument:          null(),
-        endDocument:            null(),
-        startElement:           start_element,
-        endElement:             end_element,
-        reference:              null(),
-        characters:             characters,
-        ignorableWhitespace:    null(),
-        processingInstruction:  null(),
-        comment:                null(),
-        warning:                null(),
-        error:                  null(),
-        fatalError:             null(),
-        getParameterEntity:     null(),
-        cdataBlock:             null(),
-        externalSubset:         null(),
-        initialized:            xml::XML_SAX2_MAGIC,
-        _private:               null(),
-        startElementNs:         null(),
-        endElementNs:           null(),
-        serror:                 serror,
-    };
-
-    let registry = Registry {
-        enums: ~[],
-        commands: ~[],
-    };
-    unsafe {
-        xml::parse_str(sax_handler, &registry, from_bytes(data));
-    }
-    registry
-}
+mod xml;
 
 pub struct Registry {
-    enums: ~[Enums],
-    commands: ~[Commands]
+    enum_nss: ~[EnumNs],
+    cmd_nss: ~[CmdNs],
 }
 
-pub struct Enums {
-    namespace: ~str,
-    etype: ~str,
+impl Registry {
+    pub fn from_xml(data: &str) -> Result<Registry, ~str> {
+        RegistryBuilder::parse(data)
+    }
+}
+
+pub struct EnumNs {
+    ns: ~str,
     enums: ~[Enum],
 }
 
 pub struct Enum {
-    name: ~str,
+    ident: ~str,
     value: ~str,
 }
 
-pub struct Commands {
-    namespace: ~str,
-    commands: ~[Command],
+pub struct ReturnType(Option<~str>);
+
+pub struct CmdNs {
+    ns: ~str,
+    cmds: ~[Cmd],
 }
 
-pub struct Command {
-    name: ~str,
-    rtype: Option<~str>,
+pub struct Cmd {
+    ident: ~str,
+    ty: ReturnType,
     params: ~[Param]
 }
 
 pub struct Param {
     ptype: ~str,
-    name: ~str,
+    ident: ~str,
 }
 
-impl Registry {
-    pub unsafe fn from_c_void(ptr: *c_void) -> &mut Registry {
-        transmute(ptr)
+struct RegistryBuilder {
+    priv port: Port<xml::ParseResult>,
+}
+
+macro_rules! ignore(
+    ($name:expr) => (
+        match self.ignore(~$name) {
+            Err(err) => return Err(err), _ => (),
+        }
+    )
+)
+
+impl<'self> RegistryBuilder {
+    fn new(port: Port<xml::ParseResult>) -> RegistryBuilder {
+        RegistryBuilder { port: port }
     }
-}
 
-priv extern "C" fn start_element(_ctx: *c_void, name: *xml::xmlChar, atts: **xml::xmlChar) {
-    println("start_element");
-    unsafe {
-        println(fmt!("    name: %s", from_buf(name)));
+    fn recv(&self) -> Result<xml::Msg, ~str> {
+        do self.port.recv().chain_err |err| {
+            Err(fmt!("XML error: %s", err.to_str()))
+        }
     }
-    println(fmt!("    attribs: %?", xml::build_attrib_vec(atts)));
-}
 
-priv extern "C" fn end_element(_ctx: *c_void, name: *xml::xmlChar) {
-    unsafe { println(fmt!("end_element: %s", from_buf(name))); }
-}
+    fn parse(data: &str) -> Result<Registry, ~str> {
+        let (port, chan) = stream();
+        let builder = RegistryBuilder::new(port);
 
-priv extern "C" fn characters(_ctx: *c_void, ch: *xml::xmlChar, len: c_int) {
-    unsafe { println(fmt!("characters: %s", from_buf_len(ch, len as uint))); }
-}
+        xml::parse(data, chan);
+        match builder.recv() {
+            Ok(xml::StartElement(~"registry", _)) => builder.consume_registry(),
+            Ok(msg) => Err(fmt!("Expected <registry>, found: %?", msg.to_str())),
+            Err(err) => Err(err),
+        }
+    }
 
-priv extern "C" fn serror(_ctx: *c_void, error: *xml::xmlError) {
-    do unsafe { xml::ErrorData::from_ptr(error) }.map |err| {
-        println(fmt!("%s", err.to_str()));
-    };
+    fn ignore(&self, name: ~str) -> Result<(), ~str> {
+        loop {
+            match self.recv() {
+                Ok(xml::EndElement(ref n)) if *n == name => return Ok(()),
+                Ok(_) => (),
+                Err(err) => return Err(err),
+            }
+        }
+    }
+
+    fn consume_registry(&self) -> Result<Registry, ~str> {
+        let mut registry = Registry { enum_nss: ~[], cmd_nss: ~[] };
+        loop {
+            match self.recv() {
+                // ignores
+                Ok(xml::Characters(_)) => (),
+                Ok(xml::StartElement(~"comment", _)) => ignore!("comment"),
+                Ok(xml::StartElement(~"types", _)) => ignore!("types"),
+                Ok(xml::StartElement(~"groups", _)) => ignore!("groups"),
+                Ok(xml::StartElement(~"feature", _)) => ignore!("feature"),
+                Ok(xml::StartElement(~"extensions", _)) => ignore!("extensions"),
+
+                // add enum namespace
+                Ok(xml::StartElement(~"enums", ref atts)) => {
+                    match atts.find(&~"namespace") {
+                        Some(ns) => {
+                            match self.consume_enum_ns(ns.clone()) {
+                                Ok(enum_ns) => registry.enum_nss.push(enum_ns),
+                                Err(err) => return Err(err),
+                            }
+                        }
+                        _ => return Err(fmt!("Unexpected enum namespace attributes, found: %?", atts)),
+                    }
+                }
+                // add command namespace
+                Ok(xml::StartElement(~"commands", _)) => ignore!("commands"),
+
+                // finished building the registry
+                Ok(xml::EndElement(~"registry")) => return Ok(registry),
+                // error handling
+                Ok(msg) => return Err(fmt!("Expected </registry>, found: %?", msg.to_str())),
+                Err(err) => return Err(err),
+            }
+        }
+    }
+
+    fn consume_enum_ns(&self, ns: ~str) -> Result<EnumNs, ~str> {
+        let mut enum_ns = EnumNs { ns: ns, enums: ~[] };
+        loop {
+            match self.recv() {
+                // ignores
+                Ok(xml::Characters(_)) => (),
+                Ok(xml::StartElement(~"unused", _)) => ignore!("unused"),
+
+                // add enum definition
+                Ok(xml::StartElement(~"enum", ref atts)) => {
+                    match (atts.find(&~"name"), atts.find(&~"value")){
+                        (Some(ident), Some(value)) => {
+                            match self.consume_enum(ident.clone(), value.clone()) {
+                                Ok(enm) => enum_ns.enums.push(enm),
+                                Err(err) => return Err(err),
+                            }
+                        }
+                        _ => return Err(fmt!("Unexpected enum attributes, found: %?", atts)),
+                    }
+                }
+
+                // finished building the namespace
+                Ok(xml::EndElement(~"enums")) => return Ok(enum_ns),
+                // error handling
+                Ok(msg) => return Err(fmt!("Expected </enums>, found: %?", msg.to_str())),
+                Err(err) => return Err(err),
+            }
+        }
+    }
+
+    fn consume_enum(&self, ident: ~str, value: ~str) -> Result<Enum, ~str> {
+        match self.recv() {
+            Ok(xml::EndElement(~"enum")) => {
+                Ok(Enum { ident: ident, value: value })
+            }
+            // error handling
+            Ok(msg) => Err(fmt!("Expected </enum>, found: %?", msg.to_str())),
+            Err(err) => Err(err),
+        }
+    }
+
+    // TODO: Consume command namespaces
 }

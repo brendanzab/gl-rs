@@ -1,7 +1,4 @@
-use std::cast::transmute;
 use std::libc::*;
-use std::str::raw::from_buf;
-use extra::term;
 
 pub type xmlChar = c_uchar;
 
@@ -75,6 +72,18 @@ pub struct xmlSAXHandler {
     serror:                 xmlStructuredErrorFunc,
 }
 
+/// Error level type alias
+pub type xmlErrorLevel = c_int;
+
+/// No error
+pub static XML_ERR_NONE:    xmlErrorLevel = 0;
+/// A simple warning
+pub static XML_ERR_WARNING: xmlErrorLevel = 1;
+/// A recoverable error
+pub static XML_ERR_ERROR:   xmlErrorLevel = 2;
+/// A fatal error
+pub static XML_ERR_FATAL:   xmlErrorLevel = 3;
+
 pub struct xmlError {
     /// What part of the library raised this error
     domain: c_int,
@@ -104,127 +113,11 @@ pub struct xmlError {
     node: *c_void,
 }
 
-/// Error level type alias
-priv type xmlErrorLevel = c_int;
-
-/// No error
-priv static XML_ERR_NONE:    xmlErrorLevel = 0;
-/// A simple warning
-priv static XML_ERR_WARNING: xmlErrorLevel = 1;
-/// A recoverable error
-priv static XML_ERR_ERROR:   xmlErrorLevel = 2;
-/// A fatal error
-priv static XML_ERR_FATAL:   xmlErrorLevel = 3;
-
 #[link_args="-lxml2"]
 extern "C" {
-    priv fn xmlCleanupParser();
-    priv fn xmlSAXUserParseMemory(sax: *xmlSAXHandler,
-                                  user_data: *c_void,
-                                  buffer: *c_char,
-                                  size: c_int) -> c_int;
-}
-
-pub unsafe fn parse_str<T>(sax: &xmlSAXHandler, user_data: &T, src: &str) {
-    do src.as_c_str |c_str| {
-        xmlSAXUserParseMemory(sax, transmute(user_data), c_str, src.len() as c_int);
-        xmlCleanupParser();
-    }
-}
-
-/// The severity of the error
-pub enum ErrorLevel {
-    /// A simple warning
-    Warning,
-    /// A recoverable error
-    Error,
-    /// A fatal error
-    Fatal,
-}
-
-impl ErrorLevel {
-    fn from_libxml2_constant(value: xmlErrorLevel) -> Option<ErrorLevel> {
-        match value {
-            XML_ERR_WARNING => Some(Warning),
-            XML_ERR_ERROR   => Some(Error),
-            XML_ERR_FATAL   => Some(Fatal),
-            _               => None,
-        }
-    }
-
-    pub fn term_color(&self) -> u16 {
-        match *self {
-            Warning => term::color::yellow,
-            Error   => term::color::red,
-            Fatal   => term::color::red,
-        }
-    }
-
-    pub fn to_color_str(&self) -> ~str {
-        use std::io::with_str_writer;
-        do with_str_writer |writer| {
-            let term = term::Terminal::new(writer);
-            term.map(|t| t.fg(self.term_color()));
-            writer.write_str(self.to_str());
-            term.map(|t| t.fg(term::color::black));
-        }
-    }
-}
-
-impl ToStr for ErrorLevel {
-    pub fn to_str(&self) -> ~str {
-        match *self {
-            Warning => ~"Warning",
-            Error   => ~"Error",
-            Fatal   => ~"Fatal",
-        }
-    }
-}
-
-/// An xml parse error
-pub struct ErrorData {
-    level: ErrorLevel,
-    line: uint,
-    column: uint,
-    message: ~str,
-}
-
-impl ErrorData {
-    pub unsafe fn from_ptr(error: *xmlError) -> Option<~ErrorData> {
-        use std::str::raw::from_c_str;
-        do ErrorLevel::from_libxml2_constant((*error).level).map |&level| {
-            ~ErrorData {
-                level:      level,
-                message:    from_c_str((*error).message),
-                line:       (*error).line as uint,
-                column:     (*error).int2 as uint,
-            }
-        }
-    }
-}
-
-impl ToStr for ErrorData {
-    pub fn to_str(&self) -> ~str {
-        fmt!("%?:%? %s: %s",
-             self.line,
-             self.column,
-             self.level.to_color_str(),
-             self.message)
-    }
-}
-
-pub fn build_attrib_vec(atts: **xmlChar) -> ~[(~str, ~str)] {
-    use std::vec;
-    do vec::build |push| {
-        let mut curr = atts;
-        unsafe {
-            while !curr.is_null() && !(*curr).is_null() {
-                push((
-                    from_buf(*curr),
-                    from_buf(*curr.offset(1))
-                ));
-                curr = curr.offset(2);
-            }
-        }
-    }
+    pub fn xmlCleanupParser();
+    pub fn xmlSAXUserParseMemory(sax: *xmlSAXHandler,
+                                 user_data: *c_void,
+                                 buffer: *c_char,
+                                 size: c_int) -> c_int;
 }

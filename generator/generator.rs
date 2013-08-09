@@ -1,4 +1,5 @@
 #[link(name = "glgen",
+       author = "Brendan Zabarauskas",
        vers = "0.1")];
 #[comment = "OpenGL function loader generator."];
 
@@ -8,18 +9,24 @@
 // (https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/)
 
 extern mod extra;
-extern mod rust_curl;
 
-pub mod xml;
+use std::io::file_reader;
+
+use registry::Registry;
+
 pub mod registry;
 
 fn main() {
-    let _ = registry::parse_xml(
-        registry::downoad_src(
-            Path("gl.xml"),
-            "https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/gl.xml",
-            true
-        )
-    );
-    // let _ = registry::parse_xml("<hi></hi>".as_bytes());
+    // Parse the XML registry. This is currently hardcoded to look for `gl.xml`
+    // in the current working directory.
+    let reg = Registry::from_xml(
+        file_reader(&Path("gl.xml"))
+            .expect("Could not find gl.xml")
+            .read_c_str()
+    ).unwrap();
+
+    // TODO: Use registry data to generate function loader.
+
+    // Print out the registry data for debugging.
+    printfln!("%?", reg);
 }
