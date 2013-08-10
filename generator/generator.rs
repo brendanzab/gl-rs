@@ -23,7 +23,7 @@ fn main() {
         file_reader(&Path("gl.xml"))
             .expect("Could not find gl.xml")
             .read_c_str()
-    ).unwrap();
+    );
 
     // TODO: Use registry data to generate function loader.
 

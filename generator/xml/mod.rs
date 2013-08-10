@@ -29,6 +29,7 @@ impl ToStr for Msg {
     }
 }
 
+#[deriving(Eq, Clone)]
 pub struct Attributes(HashMap<~str, ~str>);
 
 impl ToStr for Attributes {

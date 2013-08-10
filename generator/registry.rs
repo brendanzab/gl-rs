@@ -1,4 +1,6 @@
 use std::comm::{Port, stream};
+use std::str::eq_slice;
+use self::xml::{Characters, StartElement, EndElement};
 
 mod xml;
 
@@ -8,7 +10,7 @@ pub struct Registry {
 }
 
 impl Registry {
-    pub fn from_xml(data: &str) -> Result<Registry, ~str> {
+    pub fn from_xml(data: &str) -> Registry {
         RegistryBuilder::parse(data)
     }
 }
@@ -45,121 +47,105 @@ struct RegistryBuilder {
     priv port: Port<xml::ParseResult>,
 }
 
-macro_rules! ignore(
-    ($name:expr) => (
-        match self.ignore(~$name) {
-            Err(err) => return Err(err), _ => (),
-        }
-    )
-)
-
 impl<'self> RegistryBuilder {
     fn new(port: Port<xml::ParseResult>) -> RegistryBuilder {
         RegistryBuilder { port: port }
     }
 
-    fn recv(&self) -> Result<xml::Msg, ~str> {
-        do self.port.recv().chain_err |err| {
-            Err(fmt!("XML error: %s", err.to_str()))
+    fn recv(&self) -> xml::Msg {
+        match self.port.recv() {
+            Ok(msg) => msg,
+            Err(err) => fail!("XML error: %s", err.to_str())
         }
     }
 
-    fn parse(data: &str) -> Result<Registry, ~str> {
+    fn parse(data: &str) -> Registry {
         let (port, chan) = stream();
         let builder = RegistryBuilder::new(port);
 
         xml::parse(data, chan);
         match builder.recv() {
-            Ok(xml::StartElement(~"registry", _)) => builder.consume_registry(),
-            Ok(msg) => Err(fmt!("Expected <registry>, found: %?", msg.to_str())),
-            Err(err) => Err(err),
+            StartElement(~"registry", _) => builder.consume_registry(),
+            msg => fail!("Expected <registry>, found: %?", msg.to_str()),
         }
     }
 
-    fn ignore(&self, name: ~str) -> Result<(), ~str> {
+    fn ignore(&self, name: &str) {
         loop {
             match self.recv() {
-                Ok(xml::EndElement(ref n)) if *n == name => return Ok(()),
-                Ok(_) => (),
-                Err(err) => return Err(err),
+                EndElement(ref n) if eq_slice(*n, name) => break,
+                _ => (),
             }
         }
     }
 
-    fn consume_registry(&self) -> Result<Registry, ~str> {
+    fn consume_registry(&self) -> Registry {
         let mut registry = Registry { enum_nss: ~[], cmd_nss: ~[] };
         loop {
             match self.recv() {
                 // ignores
-                Ok(xml::Characters(_)) => (),
-                Ok(xml::StartElement(~"comment", _)) => ignore!("comment"),
-                Ok(xml::StartElement(~"types", _)) => ignore!("types"),
-                Ok(xml::StartElement(~"groups", _)) => ignore!("groups"),
-                Ok(xml::StartElement(~"feature", _)) => ignore!("feature"),
-                Ok(xml::StartElement(~"extensions", _)) => ignore!("extensions"),
+                Characters(_) => (),
+                StartElement(~"comment", _) => self.ignore("comment"),
+                StartElement(~"types", _) => self.ignore("types"),
+                StartElement(~"groups", _) => self.ignore("groups"),
+                StartElement(~"feature", _) => self.ignore("feature"),
+                StartElement(~"extensions", _) => self.ignore("extensions"),
 
                 // add enum namespace
-                Ok(xml::StartElement(~"enums", ref atts)) => {
+                StartElement(~"enums", ref atts) => {
                     match atts.find(&~"namespace") {
                         Some(ns) => {
-                            match self.consume_enum_ns(ns.clone()) {
-                                Ok(enum_ns) => registry.enum_nss.push(enum_ns),
-                                Err(err) => return Err(err),
-                            }
+                            registry.enum_nss.push(
+                                self.consume_enum_ns(ns.clone())
+                            );
                         }
-                        _ => return Err(fmt!("Unexpected enum namespace attributes, found: %?", atts)),
+                        _ => fail!("Unexpected enum namespace attributes, found: %?", atts),
                     }
                 }
                 // add command namespace
-                Ok(xml::StartElement(~"commands", _)) => ignore!("commands"),
+                StartElement(~"commands", _) => self.ignore("commands"),
 
                 // finished building the registry
-                Ok(xml::EndElement(~"registry")) => return Ok(registry),
+                EndElement(~"registry") => break,
+
                 // error handling
-                Ok(msg) => return Err(fmt!("Expected </registry>, found: %?", msg.to_str())),
-                Err(err) => return Err(err),
+                msg => fail!("Expected </registry>, found: %?", msg.to_str()),
             }
         }
+        registry
     }
 
-    fn consume_enum_ns(&self, ns: ~str) -> Result<EnumNs, ~str> {
+    fn consume_enum_ns(&self, ns: ~str) -> EnumNs {
         let mut enum_ns = EnumNs { ns: ns, enums: ~[] };
         loop {
             match self.recv() {
                 // ignores
-                Ok(xml::Characters(_)) => (),
-                Ok(xml::StartElement(~"unused", _)) => ignore!("unused"),
-
+                Characters(_) => (),
+                StartElement(~"unused", _) => self.ignore("unused"),
                 // add enum definition
-                Ok(xml::StartElement(~"enum", ref atts)) => {
+                StartElement(~"enum", ref atts) => {
                     match (atts.find(&~"name"), atts.find(&~"value")){
                         (Some(ident), Some(value)) => {
-                            match self.consume_enum(ident.clone(), value.clone()) {
-                                Ok(enm) => enum_ns.enums.push(enm),
-                                Err(err) => return Err(err),
-                            }
+                            enum_ns.enums.push(
+                                self.consume_enum(ident.clone(), value.clone())
+                            )
                         }
-                        _ => return Err(fmt!("Unexpected enum attributes, found: %?", atts)),
+                        _ => fail!("Unexpected enum attributes, found: %?", atts),
                     }
                 }
-
                 // finished building the namespace
-                Ok(xml::EndElement(~"enums")) => return Ok(enum_ns),
+                EndElement(~"enums") => break,
                 // error handling
-                Ok(msg) => return Err(fmt!("Expected </enums>, found: %?", msg.to_str())),
-                Err(err) => return Err(err),
+                msg => fail!("Expected </enums>, found: %?", msg.to_str()),
             }
         }
+        enum_ns
     }
 
-    fn consume_enum(&self, ident: ~str, value: ~str) -> Result<Enum, ~str> {
+    fn consume_enum(&self, ident: ~str, value: ~str) -> Enum {
         match self.recv() {
-            Ok(xml::EndElement(~"enum")) => {
-                Ok(Enum { ident: ident, value: value })
-            }
-            // error handling
-            Ok(msg) => Err(fmt!("Expected </enum>, found: %?", msg.to_str())),
-            Err(err) => Err(err),
+            EndElement(~"enum") => Enum { ident: ident, value: value },
+            msg => fail!("Expected </enum>, found: %?", msg.to_str()),
         }
     }
 
