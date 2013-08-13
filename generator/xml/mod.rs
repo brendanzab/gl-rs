@@ -3,9 +3,9 @@
 use std::cast::transmute;
 use std::comm::Chan;
 use std::hashmap::*;
-use std::libc::{c_int, c_void};
+use std::libc::{c_char, c_int, c_void};
 use std::ptr::null;
-use std::str::raw::{from_buf, from_buf_len};
+use std::str::raw::{from_c_str, from_buf_len};
 
 use self::error::ErrorData;
 
@@ -34,7 +34,7 @@ pub struct Attributes(HashMap<~str, ~str>);
 
 impl ToStr for Attributes {
     fn to_str(&self) -> ~str {
-        do self.iter().transform |(k, v)| {
+        do self.iter().map |(k, v)| {
             fmt!(" %s=\"%s\"", *k, *v)
         }.to_owned_vec().concat()
     }
@@ -44,7 +44,7 @@ pub type ParseResult = Result<Msg, ErrorData>;
 
 pub fn parse(src: &str, chan: Chan<ParseResult>) {
     unsafe {
-        do src.as_c_str |c_str| {
+        do src.to_c_str().with_ref |c_str| {
             ffi::xmlSAXUserParseMemory(&new_sax_handler(),
                                        transmute(&chan),
                                        c_str, src.len() as c_int);
@@ -60,15 +60,15 @@ unsafe fn chan_from_ptr(ctx: *c_void) -> &Chan<ParseResult> {
 extern "C" fn start_element(ctx: *c_void, name: *ffi::xmlChar, atts: **ffi::xmlChar) {
     unsafe {
         let mut map = Attributes(HashMap::new());
-        let mut ptr = atts;
+        let mut ptr = atts as **c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
-            map.insert(from_buf(*ptr),
-                       from_buf(*(ptr + 1)));
+            map.insert(from_c_str(*ptr),
+                       from_c_str(*(ptr + 1)));
             ptr = ptr + 2;
         }
 
         chan_from_ptr(ctx).send(
-            Ok(StartElement(from_buf(name), map))
+            Ok(StartElement(from_c_str(name as *c_char), map))
         );
     }
 }
@@ -76,7 +76,7 @@ extern "C" fn start_element(ctx: *c_void, name: *ffi::xmlChar, atts: **ffi::xmlC
 extern "C" fn end_element(ctx: *c_void, name: *ffi::xmlChar) {
     unsafe {
         chan_from_ptr(ctx).send(
-            Ok(EndElement(from_buf(name)))
+            Ok(EndElement(from_c_str(name as *c_char)))
         );
     }
 }
