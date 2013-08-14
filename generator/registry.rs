@@ -15,8 +15,14 @@ impl Registry {
 }
 
 pub struct EnumNs {
-    ns: ~str,
+    namespace: ~str,
     enums: ~[Enum],
+    group: Option<~str>,
+    ty: Option<~str>,
+    start: Option<~str>,
+    end: Option<~str>,
+    vendor: Option<~str>,
+    comment: Option<~str>,
 }
 
 pub struct Enum {
@@ -27,7 +33,7 @@ pub struct Enum {
 pub struct ReturnType(Option<~str>);
 
 pub struct CmdNs {
-    ns: ~str,
+    namespace: ~str,
     cmds: ~[Cmd],
 }
 
@@ -89,14 +95,18 @@ impl<'self> RegistryBuilder {
 
                 // add enum namespace
                 StartElement(~"enums", ref atts) => {
-                    match atts.find(&~"namespace") {
-                        Some(ns) => {
-                            registry.enum_nss.push(
-                                self.consume_enum_ns(ns.clone())
-                            );
+                    registry.enum_nss.push(
+                        EnumNs {
+                            namespace:  atts.get_copy(&~"namespace"),
+                            enums:      self.consume_enums(),
+                            group:      atts.find_copy(&~"group"),
+                            ty:         atts.find_copy(&~"type"),
+                            start:      atts.find_copy(&~"start"),
+                            end:        atts.find_copy(&~"end"),
+                            vendor:     atts.find_copy(&~"vendor"),
+                            comment:    atts.find_copy(&~"comment"),
                         }
-                        _ => fail!("Unexpected enum namespace attributes, found: %?", atts),
-                    }
+                    )
                 }
                 // add command namespace
                 StartElement(~"commands", _) => self.skip_until(EndElement(~"commands")),
@@ -111,8 +121,8 @@ impl<'self> RegistryBuilder {
         registry
     }
 
-    fn consume_enum_ns(&self, ns: ~str) -> EnumNs {
-        let mut enum_ns = EnumNs { ns: ns, enums: ~[] };
+    fn consume_enums(&self) -> ~[Enum] {
+        let mut enums = ~[];
         loop {
             match self.recv() {
                 // ignores
@@ -120,13 +130,15 @@ impl<'self> RegistryBuilder {
                 StartElement(~"unused", _) => self.skip_until(EndElement(~"unused")),
                 // add enum definition
                 StartElement(~"enum", ref atts) => {
-                    match (atts.find(&~"name"), atts.find(&~"value")){
-                        (Some(ident), Some(value)) => {
-                            enum_ns.enums.push(
-                                self.consume_enum(ident.clone(), value.clone())
-                            )
+                    enums.push(
+                        Enum {
+                            ident:  atts.get_copy(&~"name"),
+                            value:  atts.get_copy(&~"value"),
                         }
-                        _ => fail!("Unexpected enum attributes, found: %?", atts),
+                    );
+                    match self.recv() {
+                        EndElement(~"enum") => (),
+                        msg => fail!("Expected </enum>, found: %?", msg.to_str()),
                     }
                 }
                 // finished building the namespace
@@ -135,14 +147,7 @@ impl<'self> RegistryBuilder {
                 msg => fail!("Expected </enums>, found: %?", msg.to_str()),
             }
         }
-        enum_ns
-    }
-
-    fn consume_enum(&self, ident: ~str, value: ~str) -> Enum {
-        match self.recv() {
-            EndElement(~"enum") => Enum { ident: ident, value: value },
-            msg => fail!("Expected </enum>, found: %?", msg.to_str()),
-        }
+        enums
     }
 
     // TODO: Consume command namespaces
