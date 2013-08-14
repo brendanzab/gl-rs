@@ -1,8 +1,7 @@
-use std::comm::{Port, stream};
-use std::str::eq_slice;
-use self::xml::{Characters, StartElement, EndElement};
 
-mod xml;
+extern mod sax;
+
+use self::sax::*;
 
 pub struct Registry {
     enum_nss: ~[EnumNs],
@@ -44,15 +43,11 @@ pub struct Param {
 }
 
 struct RegistryBuilder {
-    priv port: Port<xml::ParseResult>,
+    priv port: SaxPort,
 }
 
 impl<'self> RegistryBuilder {
-    fn new(port: Port<xml::ParseResult>) -> RegistryBuilder {
-        RegistryBuilder { port: port }
-    }
-
-    fn recv(&self) -> xml::Msg {
+    fn recv(&self) -> ParseEvent {
         match self.port.recv() {
             Ok(msg) => msg,
             Err(err) => fail!("XML error: %s", err.to_str())
@@ -60,22 +55,23 @@ impl<'self> RegistryBuilder {
     }
 
     fn parse(data: &str) -> Registry {
-        let (port, chan) = stream();
-        let builder = RegistryBuilder::new(port);
-
-        xml::parse(data, chan);
+        let builder = RegistryBuilder {
+            port: parse_xml(data)
+        };
+        match builder.recv() {
+            StartDocument => (),
+            msg => fail!("Expected start of document, found: %?", msg.to_str()),
+        }
         match builder.recv() {
             StartElement(~"registry", _) => builder.consume_registry(),
             msg => fail!("Expected <registry>, found: %?", msg.to_str()),
         }
     }
 
-    fn ignore(&self, name: &str) {
+    fn skip_until(&self, event: ParseEvent) {
         loop {
-            match self.recv() {
-                EndElement(ref n) if eq_slice(*n, name) => break,
-                _ => (),
-            }
+            let msg = self.recv();
+            if msg == event || msg == EndDocument { break }
         }
     }
 
@@ -84,12 +80,12 @@ impl<'self> RegistryBuilder {
         loop {
             match self.recv() {
                 // ignores
-                Characters(_) => (),
-                StartElement(~"comment", _) => self.ignore("comment"),
-                StartElement(~"types", _) => self.ignore("types"),
-                StartElement(~"groups", _) => self.ignore("groups"),
-                StartElement(~"feature", _) => self.ignore("feature"),
-                StartElement(~"extensions", _) => self.ignore("extensions"),
+                Characters(_) | Comment(_) | IgnorableWhitespace(_) => (),
+                StartElement(~"comment", _) => self.skip_until(EndElement(~"comment")),
+                StartElement(~"types", _) => self.skip_until(EndElement(~"types")),
+                StartElement(~"groups", _) => self.skip_until(EndElement(~"groups")),
+                StartElement(~"feature", _) => self.skip_until(EndElement(~"feature")),
+                StartElement(~"extensions", _) => self.skip_until(EndElement(~"extensions")),
 
                 // add enum namespace
                 StartElement(~"enums", ref atts) => {
@@ -103,7 +99,7 @@ impl<'self> RegistryBuilder {
                     }
                 }
                 // add command namespace
-                StartElement(~"commands", _) => self.ignore("commands"),
+                StartElement(~"commands", _) => self.skip_until(EndElement(~"commands")),
 
                 // finished building the registry
                 EndElement(~"registry") => break,
@@ -120,8 +116,8 @@ impl<'self> RegistryBuilder {
         loop {
             match self.recv() {
                 // ignores
-                Characters(_) => (),
-                StartElement(~"unused", _) => self.ignore("unused"),
+                Characters(_) | Comment(_) | IgnorableWhitespace(_) => (),
+                StartElement(~"unused", _) => self.skip_until(EndElement(~"unused")),
                 // add enum definition
                 StartElement(~"enum", ref atts) => {
                     match (atts.find(&~"name"), atts.find(&~"value")){
