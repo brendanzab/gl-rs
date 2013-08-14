@@ -43,6 +43,16 @@ pub struct Binding {
 pub struct Cmd {
     proto: Binding,
     params: ~[Binding],
+    alias: Option<~str>,
+    vecequiv: Option<~str>,
+    glx: Option<GlxOpcode>,
+}
+
+pub struct GlxOpcode {
+    ty: ~str,
+    opcode: ~str,
+    name: Option<~str>,
+    comment: Option<~str>,
 }
 
 struct RegistryBuilder {
@@ -72,21 +82,21 @@ impl<'self> RegistryBuilder {
     fn expect_characters(&self) -> ~str {
         match self.recv() {
             Characters(ref ch) => ch.clone(),
-            msg => fail!("Expected characters, found: %?", msg.to_str()),
+            msg => fail!("Expected characters, found: %s", msg.to_str()),
         }
     }
 
     fn expect_start_element(&self, name: &str) -> Attributes {
         match self.recv() {
             StartElement(ref n, ref atts) if name == *n => atts.clone(),
-            msg => fail!("Expected <%s>, found: %?", name, msg.to_str()),
+            msg => fail!("Expected <%s>, found: %s", name, msg.to_str()),
         }
     }
 
     fn expect_end_element(&self, name: &str) {
         match self.recv() {
             EndElement(ref n) if name == *n => (),
-            msg => fail!("Expected </%s>, found: %?", name, msg.to_str()),
+            msg => fail!("Expected </%s>, found: %s", name, msg.to_str()),
         }
     }
 
@@ -140,7 +150,7 @@ impl<'self> RegistryBuilder {
                 EndElement(~"registry") => break,
 
                 // error handling
-                msg => fail!("Expected </registry>, found: %?", msg.to_str()),
+                msg => fail!("Expected </registry>, found: %s", msg.to_str()),
             }
         }
         registry
@@ -168,7 +178,7 @@ impl<'self> RegistryBuilder {
                 // finished building the namespace
                 EndElement(~"enums") => break,
                 // error handling
-                msg => fail!("Expected </enums>, found: %?", msg.to_str()),
+                msg => fail!("Expected </enums>, found: %s", msg.to_str()),
             }
         }
         enums
@@ -180,24 +190,64 @@ impl<'self> RegistryBuilder {
             match self.recv() {
                 // add command definition
                 StartElement(~"command", _) => {
-                    self.expect_start_element("proto");
-                    let proto = self.consume_binding();
-                    self.expect_end_element("proto");
-
-                    cmds.push(Cmd {
-                        proto: proto,
-                        params: ~[],
-                    });
-
-                    self.skip_until(EndElement(~"command"));
+                    cmds.push(self.consume_cmd());
                 }
                 // finished building the namespace
                 EndElement(~"commands") => break,
-                // // error handling
-                msg => fail!("Expected </commands>, found: %?", msg.to_str()),
+                // error handling
+                msg => fail!("Expected </commands>, found: %s", msg.to_str()),
             }
         }
         cmds
+    }
+
+    fn consume_cmd(&self) -> Cmd {
+        // consume command prototype
+        self.expect_start_element("proto");
+        let proto = self.consume_binding();
+        self.expect_end_element("proto");
+
+        let mut params = ~[];
+        let mut alias = None;
+        let mut vecequiv = None;
+        let mut glx = None;
+
+        loop {
+            match self.recv() {
+                StartElement(~"param", _) => {
+                    params.push(
+                        self.consume_binding()
+                    );
+                    self.expect_end_element("param");
+                }
+                StartElement(~"alias", ref atts) => {
+                    alias = atts.find_copy(&~"alias");
+                    self.expect_end_element("alias");
+                }
+                StartElement(~"vecequiv", ref atts) => {
+                    vecequiv = atts.find_copy(&~"vecequiv");
+                    self.expect_end_element("vecequiv");
+                }
+                StartElement(~"glx", ref atts) => {
+                    glx = Some(GlxOpcode {
+                        ty:      atts.get_copy(&~"type"),
+                        opcode:  atts.get_copy(&~"opcode"),
+                        name:    atts.find_copy(&~"name"),
+                        comment: atts.find_copy(&~"comment"),
+                    });
+                    self.expect_end_element("glx");
+                }
+                EndElement(~"command") => break,
+                msg => fail!("Expected </command>, found: %s", msg.to_str()),
+            }
+        }
+        Cmd {
+            proto: proto,
+            params: params,
+            alias: alias,
+            vecequiv: vecequiv,
+            glx: glx,
+        }
     }
 
     fn consume_binding(&self) -> Binding {
@@ -209,7 +259,7 @@ impl<'self> RegistryBuilder {
                 StartElement(~"ptype", _) => (),
                 EndElement(~"ptype") => (),
                 StartElement(~"name", _) => break,
-                msg => fail!("Expected binding, found: %?", msg.to_str()),
+                msg => fail!("Expected binding, found: %s", msg.to_str()),
             }
         }
         let ident = self.expect_characters();
@@ -220,6 +270,4 @@ impl<'self> RegistryBuilder {
             ty: ty,
         }
     }
-
-    // TODO: Consume command parameters
 }
