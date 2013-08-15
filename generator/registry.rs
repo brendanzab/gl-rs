@@ -1,17 +1,40 @@
 
 extern mod sax;
 
+use extra::treemap::TreeSet;
 use self::sax::*;
 
 pub struct Registry {
+    groups: ~[Group],
     enums: ~[EnumNs],
     cmds: ~[CmdNs],
 }
 
 impl Registry {
+    /// Generate a registry from the supplied XML string
     pub fn from_xml(data: &str) -> Registry {
         RegistryBuilder::parse(data)
     }
+
+    /// Returns a set of all the types used in the supplied registry. This is useful
+    /// for working out what conversions are needed for the specific registry.
+    pub fn get_tys(&self) -> TreeSet<~str> {
+        let mut tys = TreeSet::new();
+        for cmds in self.cmds.iter() {
+            for def in cmds.defs.iter() {
+                tys.insert(def.proto.ty.clone());
+                for param in def.params.iter() {
+                    tys.insert(param.ty.clone());
+                }
+            }
+        }
+        tys
+    }
+}
+
+pub struct Group {
+    name: ~str,
+    enums: ~[~str],
 }
 
 pub struct EnumNs {
@@ -111,16 +134,34 @@ impl<'self> RegistryBuilder {
 
     fn consume_registry(&self) -> Registry {
         self.expect_start_element("registry");
-        let mut registry = Registry { enums: ~[], cmds: ~[] };
+        let mut registry = Registry {
+            groups: ~[],
+            enums: ~[],
+            cmds: ~[]
+        };
         loop {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
                 StartElement(~"comment", _) => self.skip_until(EndElement(~"comment")),
                 StartElement(~"types", _) => self.skip_until(EndElement(~"types")),
-                StartElement(~"groups", _) => self.skip_until(EndElement(~"groups")),
                 StartElement(~"feature", _) => self.skip_until(EndElement(~"feature")),
                 StartElement(~"extensions", _) => self.skip_until(EndElement(~"extensions")),
+
+                // add groups
+                StartElement(~"groups", _) => {
+                    loop {
+                        match self.recv() {
+                            StartElement(~"enums", ref atts) => {
+                                registry.groups.push(
+                                    self.consume_group(atts.get_clone("name"))
+                                );
+                            }
+                            EndElement(~"groups") => break,
+                            msg => fail!("Expected </groups>, found: %s", msg.to_str()),
+                        }
+                    }
+                }
 
                 // add enum namespace
                 StartElement(~"enums", ref atts) => {
@@ -156,6 +197,24 @@ impl<'self> RegistryBuilder {
             }
         }
         registry
+    }
+
+    fn consume_group(&self, name: ~str) -> Group {
+        let mut enms = ~[];
+        loop {
+            match self.recv() {
+                StartElement(~"enum", ref atts) => {
+                    enms.push(atts.get_clone("name"));
+                    self.expect_end_element("enum");
+                }
+                EndElement(~"group") => break,
+                msg => fail!("Expected </group>, found: %s", msg.to_str()),
+            }
+        }
+        Group {
+            name: name,
+            enums: enms,
+        }
     }
 
     fn consume_enums(&self) -> ~[Enum] {
