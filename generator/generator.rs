@@ -40,9 +40,20 @@ fn main() {
                 // Print out the registry data for debugging.
                 printfln!("%?", reg);
             }
-            "--tys" => {
+            "--ctys" => {
                 // Print out a list of all the types used in the registry.
-                print_types(&reg);
+                let tys = get_tys(&reg);
+                for ty in tys.iter() {
+                    printfln!("\"%s\"", *ty);
+                }
+            }
+            "--rtys" => {
+                // Print out a list of all the types used in the registry,
+                // converted to rust syntax.
+                let tys = get_tys(&reg);
+                for ty in tys.iter() {
+                    printfln!("\"%s\"", cty_conv(*ty));
+                }
             }
             _ => {}
         }
@@ -51,8 +62,9 @@ fn main() {
     // TODO: Use registry data to generate function loader.
 }
 
-fn gl_ty_conv(ty: &str) -> ~str {
+fn cty_conv(ty: &str) -> ~str {
     match ty {
+        // gl.xml types
         "GLDEBUGPROC"               => ~"GLDEBUGPROC",
         "GLDEBUGPROCAMD"            => ~"GLDEBUGPROCAMD",
         "GLDEBUGPROCARB"            => ~"GLDEBUGPROCARB",
@@ -85,6 +97,7 @@ fn gl_ty_conv(ty: &str) -> ~str {
         "GLuint64EXT"               => ~"GLuint64EXT",
         "GLushort"                  => ~"GLushort",
         "GLvdpauSurfaceNV"          => ~"GLvdpauSurfaceNV",
+        "void "                     => ~"c_void",
         "GLboolean *"               => ~"*GLboolean",
         "GLchar *"                  => ~"*GLchar",
         "GLcharARB *"               => ~"*GLcharARB",
@@ -128,6 +141,7 @@ fn gl_ty_conv(ty: &str) -> ~str {
         "const GLvdpauSurfaceNV *"  => ~"*GLvdpauSurfaceNV",
         "const GLvoid *"            => ~"*GLvoid",
         "const void *"              => ~"*c_void",
+        "void *"                    => ~"*c_void",
         "const GLboolean **"        => ~"**GLboolean",
         "const GLchar **"           => ~"**GLchar",
         "const GLcharARB **"        => ~"**GLcharARB",
@@ -136,23 +150,143 @@ fn gl_ty_conv(ty: &str) -> ~str {
         "const GLvoid *const*"      => ~"**GLvoid",
         "struct _cl_context *"      => ~"*_cl_context",
         "struct _cl_event *"        => ~"*_cl_event",
-        "void "                     => ~"c_void",
-        "void *"                    => ~"*c_void",
-        _                           => fail!("Type conversion not yet implemented for `%s`", ty),
+
+        // glx.xml types
+        "Bool"                      => ~"Bool",
+        "Colormap"                  => ~"Colormap",
+        "DMbuffer"                  => ~"DMbuffer",
+        "Font"                      => ~"Font",
+        "GLXContext"                => ~"GLXContext",
+        "GLXContextID"              => ~"GLXContextID",
+        "GLXDrawable"               => ~"GLXDrawable",
+        "GLXFBConfig"               => ~"GLXFBConfig",
+        "GLXFBConfigSGIX"           => ~"GLXFBConfigSGIX",
+        "GLXPbuffer"                => ~"GLXPbuffer",
+        "GLXPbufferSGIX"            => ~"GLXPbufferSGIX",
+        "GLXPixmap"                 => ~"GLXPixmap",
+        "GLXVideoCaptureDeviceNV"   => ~"GLXVideoCaptureDeviceNV",
+        "GLXVideoDeviceNV"          => ~"GLXVideoDeviceNV",
+        "GLXVideoSourceSGIX"        => ~"GLXVideoSourceSGIX",
+        "GLXWindow"                 => ~"GLXWindow",
+        // "GLboolean"                 => ~"GLboolean",
+        // "GLenum"                    => ~"GLenum",
+        // "GLint"                     => ~"GLint",
+        // "GLsizei"                   => ~"GLsizei",
+        // "GLuint"                    => ~"GLuint",
+        "Pixmap"                    => ~"Pixmap",
+        "Status"                    => ~"Status",
+        "VLNode"                    => ~"VLNode",
+        "VLPath"                    => ~"VLPath",
+        "VLServer"                  => ~"VLServer",
+        "Window"                    => ~"Window",
+        "__GLXextFuncPtr"           => ~"__GLXextFuncPtr",
+        "const GLXContext"          => ~"const GLXContext",
+        "float "                    => ~"c_float",
+        "int "                      => ~"c_int",
+        "int64_t"                   => ~"i64",
+        "unsigned int "             => ~"c_uint",
+        "unsigned long "            => ~"c_ulong",
+        // "void "                     => ~"c_void",
+        "DMparams *"                => ~"*DMparams",
+        "Display *"                 => ~"*Display",
+        "GLXFBConfig *"             => ~"*GLXFBConfig",
+        "GLXFBConfigSGIX *"         => ~"*GLXFBConfigSGIX",
+        "GLXHyperpipeConfigSGIX *"  => ~"*GLXHyperpipeConfigSGIX",
+        "GLXHyperpipeNetworkSGIX *" => ~"*GLXHyperpipeNetworkSGIX",
+        "GLXVideoCaptureDeviceNV *" => ~"*GLXVideoCaptureDeviceNV",
+        "GLXVideoDeviceNV *"        => ~"*GLXVideoDeviceNV",
+        // "GLuint *"                  => ~"*GLuint",
+        "XVisualInfo *"             => ~"*XVisualInfo",
+        // "const GLubyte *"           => ~"*GLubyte",
+        "const char *"              => ~"*c_char",
+        "const int *"               => ~"*c_int",
+        // "const void *"              => ~"*c_void",
+        "int *"                     => ~"*c_int",
+        "int32_t *"                 => ~"*i32",
+        "int64_t *"                 => ~"*i64",
+        "long *"                    => ~"*c_long",
+        "unsigned int *"            => ~"*c_uint",
+        "unsigned long *"           => ~"*c_ulong",
+        // "void *"                    => ~"*c_void",
+
+        // wgl.xml types
+        "BOOL"                      => ~"BOOL",
+        "DWORD"                     => ~"DWORD",
+        "FLOAT"                     => ~"FLOAT",
+        // "GLbitfield"                => ~"GLbitfield",
+        // "GLboolean"                 => ~"GLboolean",
+        // "GLenum"                    => ~"GLenum",
+        // "GLfloat"                   => ~"GLfloat",
+        // "GLint"                     => ~"GLint",
+        // "GLsizei"                   => ~"GLsizei",
+        // "GLuint"                    => ~"GLuint",
+        // "GLushort"                  => ~"GLushort",
+        "HANDLE"                    => ~"HANDLE",
+        "HDC"                       => ~"HDC",
+        "HENHMETAFILE"              => ~"HENHMETAFILE",
+        "HGLRC"                     => ~"HGLRC",
+        "HGPUNV"                    => ~"HGPUNV",
+        "HPBUFFERARB"               => ~"HPBUFFERARB",
+        "HPBUFFEREXT"               => ~"HPBUFFEREXT",
+        "HPVIDEODEV"                => ~"HPVIDEODEV",
+        "HVIDEOINPUTDEVICENV"       => ~"HVIDEOINPUTDEVICENV",
+        "HVIDEOOUTPUTDEVICENV"      => ~"HVIDEOOUTPUTDEVICENV",
+        "INT"                       => ~"INT",
+        "INT64"                     => ~"INT64",
+        "LPCSTR"                    => ~"LPCSTR",
+        "LPGLYPHMETRICSFLOAT"       => ~"LPGLYPHMETRICSFLOAT",
+        "LPVOID"                    => ~"LPVOID",
+        "PGPU_DEVICE"               => ~"PGPU_DEVICE",
+        "PROC"                      => ~"PROC",
+        "UINT"                      => ~"UINT",
+        "VOID"                      => ~"VOID",
+        // "int "                      => ~"c_int",
+        // "unsigned int "             => ~"c_uint",
+        // "void "                     => ~"c_void",
+        "BOOL *"                    => ~"*BOOL",
+        "DWORD *"                   => ~"*DWORD",
+        "FLOAT *"                   => ~"*FLOAT",
+        // "GLuint *"                  => ~"*GLuint",
+        "HANDLE *"                  => ~"*HANDLE",
+        "HGPUNV *"                  => ~"*HGPUNV",
+        "HPVIDEODEV *"              => ~"*HPVIDEODEV",
+        "HVIDEOINPUTDEVICENV *"     => ~"*HVIDEOINPUTDEVICENV",
+        "HVIDEOOUTPUTDEVICENV *"    => ~"*HVIDEOOUTPUTDEVICENV",
+        "INT32 *"                   => ~"*INT32",
+        "INT64 *"                   => ~"*INT64",
+        "UINT *"                    => ~"*UINT",
+        "USHORT *"                  => ~"*USHORT",
+        "const COLORREF *"          => ~"*COLORREF",
+        "const DWORD *"             => ~"*DWORD",
+        "const FLOAT *"             => ~"*FLOAT",
+        // "const GLushort *"          => ~"*GLushort",
+        "const HANDLE *"            => ~"*HANDLE",
+        "const HGPUNV *"            => ~"*HGPUNV",
+        "const LAYERPLANEDESCRIPTOR *"  => ~"*LAYERPLANEDESCRIPTOR",
+        "const LPVOID *"            => ~"*LPVOID",
+        "const PIXELFORMATDESCRIPTOR *" => ~"*PIXELFORMATDESCRIPTOR",
+        "const USHORT *"            => ~"*USHORT",
+        // "const char *"              => ~"*c_char",
+        // "const int *"               => ~"*c_int",
+        "float *"                   => ~"*c_float",
+        // "int *"                     => ~"*c_int",
+        // "unsigned long *"           => ~"*c_ulong",
+        // "void *"                    => ~"*c_void",
+
+        // failure
+        _ => fail!("Type conversion not implemented for `%s`", ty),
     }
 }
 
-fn print_types(reg: &Registry) {
+fn get_tys(reg: &Registry) -> TreeSet<~str> {
     let mut tys = TreeSet::new();
     for cmds in reg.cmds.iter() {
         for def in cmds.defs.iter() {
-            tys.insert(&def.proto.ty);
+            tys.insert(def.proto.ty.clone());
             for param in def.params.iter() {
-                tys.insert(&param.ty);
+                tys.insert(param.ty.clone());
             }
         }
     }
-    for ty in tys.iter() {
-        printfln!("        \"%s\"", **ty);
-    }
+    tys
 }
