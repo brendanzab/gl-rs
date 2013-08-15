@@ -4,8 +4,8 @@ extern mod sax;
 use self::sax::*;
 
 pub struct Registry {
-    enum_nss: ~[EnumNs],
-    cmd_nss: ~[CmdNs],
+    enums: ~[EnumNs],
+    cmds: ~[CmdNs],
 }
 
 impl Registry {
@@ -22,7 +22,7 @@ pub struct EnumNs {
     end: Option<~str>,
     vendor: Option<~str>,
     comment: Option<~str>,
-    enums: ~[Enum],
+    defs: ~[Enum],
 }
 
 pub struct Enum {
@@ -33,7 +33,7 @@ pub struct Enum {
 
 pub struct CmdNs {
     namespace: ~str,
-    cmds: ~[Cmd],
+    defs: ~[Cmd],
 }
 
 pub struct Binding {
@@ -111,7 +111,7 @@ impl<'self> RegistryBuilder {
 
     fn consume_registry(&self) -> Registry {
         self.expect_start_element("registry");
-        let mut registry = Registry { enum_nss: ~[], cmd_nss: ~[] };
+        let mut registry = Registry { enums: ~[], cmds: ~[] };
         loop {
             match self.recv() {
                 // ignores
@@ -124,7 +124,7 @@ impl<'self> RegistryBuilder {
 
                 // add enum namespace
                 StartElement(~"enums", ref atts) => {
-                    registry.enum_nss.push(
+                    registry.enums.push(
                         EnumNs {
                             namespace:  atts.get_clone("namespace"),
                             group:      atts.find_clone("group"),
@@ -133,17 +133,17 @@ impl<'self> RegistryBuilder {
                             end:        atts.find_clone("end"),
                             vendor:     atts.find_clone("vendor"),
                             comment:    atts.find_clone("comment"),
-                            enums:      self.consume_enums(),
+                            defs:       self.consume_enums(),
                         }
                     )
                 }
 
                 // add command namespace
                 StartElement(~"commands", ref atts) => {
-                    registry.cmd_nss.push(
+                    registry.cmds.push(
                         CmdNs {
                             namespace:  atts.get_clone("namespace"),
-                            cmds:       self.consume_cmds(),
+                            defs:       self.consume_cmds(),
                         }
                     );
                 }
