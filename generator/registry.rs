@@ -60,6 +60,12 @@ struct RegistryBuilder {
 }
 
 impl<'self> RegistryBuilder {
+    fn parse(data: &str) -> Registry {
+        RegistryBuilder {
+            port: parse_xml(data)
+        }.consume_registry()
+    }
+
     fn recv(&self) -> ParseEvent {
         loop {
             match self.port.recv() {
@@ -71,12 +77,6 @@ impl<'self> RegistryBuilder {
                 Err(err) => fail!("XML error: %s", err.to_str()),
             }
         }
-    }
-
-    fn parse(data: &str) -> Registry {
-        RegistryBuilder {
-            port: parse_xml(data)
-        }.consume_registry()
     }
 
     fn expect_characters(&self) -> ~str {
@@ -124,13 +124,13 @@ impl<'self> RegistryBuilder {
                 StartElement(~"enums", ref atts) => {
                     registry.enum_nss.push(
                         EnumNs {
-                            namespace:  atts.get_copy(&~"namespace"),
-                            group:      atts.find_copy(&~"group"),
-                            ty:         atts.find_copy(&~"type"),
-                            start:      atts.find_copy(&~"start"),
-                            end:        atts.find_copy(&~"end"),
-                            vendor:     atts.find_copy(&~"vendor"),
-                            comment:    atts.find_copy(&~"comment"),
+                            namespace:  atts.get_clone("namespace"),
+                            group:      atts.find_clone("group"),
+                            ty:         atts.find_clone("type"),
+                            start:      atts.find_clone("start"),
+                            end:        atts.find_clone("end"),
+                            vendor:     atts.find_clone("vendor"),
+                            comment:    atts.find_clone("comment"),
                             enums:      self.consume_enums(),
                         }
                     )
@@ -140,7 +140,7 @@ impl<'self> RegistryBuilder {
                 StartElement(~"commands", ref atts) => {
                     registry.cmd_nss.push(
                         CmdNs {
-                            namespace:  atts.get_copy(&~"namespace"),
+                            namespace:  atts.get_clone("namespace"),
                             cmds:       self.consume_cmds(),
                         }
                     );
@@ -168,8 +168,8 @@ impl<'self> RegistryBuilder {
                 StartElement(~"enum", ref atts) => {
                     enums.push(
                         Enum {
-                            ident:  atts.get_copy(&~"name"),
-                            value:  atts.get_copy(&~"value"),
+                            ident:  atts.get_clone("name"),
+                            value:  atts.get_clone("value"),
                         }
                     );
                     self.expect_end_element("enum");
@@ -211,7 +211,6 @@ impl<'self> RegistryBuilder {
         let mut alias = None;
         let mut vecequiv = None;
         let mut glx = None;
-
         loop {
             match self.recv() {
                 StartElement(~"param", _) => {
@@ -221,19 +220,19 @@ impl<'self> RegistryBuilder {
                     self.expect_end_element("param");
                 }
                 StartElement(~"alias", ref atts) => {
-                    alias = atts.find_copy(&~"alias");
+                    alias = atts.find_clone("alias");
                     self.expect_end_element("alias");
                 }
                 StartElement(~"vecequiv", ref atts) => {
-                    vecequiv = atts.find_copy(&~"vecequiv");
+                    vecequiv = atts.find_clone("vecequiv");
                     self.expect_end_element("vecequiv");
                 }
                 StartElement(~"glx", ref atts) => {
                     glx = Some(GlxOpcode {
-                        ty:      atts.get_copy(&~"type"),
-                        opcode:  atts.get_copy(&~"opcode"),
-                        name:    atts.find_copy(&~"name"),
-                        comment: atts.find_copy(&~"comment"),
+                        ty:      atts.get_clone("type"),
+                        opcode:  atts.get_clone("opcode"),
+                        name:    atts.find_clone("name"),
+                        comment: atts.find_clone("comment"),
                     });
                     self.expect_end_element("glx");
                 }
@@ -241,6 +240,7 @@ impl<'self> RegistryBuilder {
                 msg => fail!("Expected </command>, found: %s", msg.to_str()),
             }
         }
+
         Cmd {
             proto: proto,
             params: params,
@@ -262,8 +262,8 @@ impl<'self> RegistryBuilder {
                 msg => fail!("Expected binding, found: %s", msg.to_str()),
             }
         }
-        let ident = self.expect_characters();
         // consume identifier
+        let ident = self.expect_characters();
         self.expect_end_element("name");
         Binding {
             ident: ident,
