@@ -84,6 +84,7 @@ struct RegistryBuilder {
     priv port: SaxPort,
 }
 
+/// A big, ugly, imperative impl with methods that accumulates a Registry struct
 impl<'self> RegistryBuilder {
     fn parse(data: &str) -> Registry {
         RegistryBuilder {
@@ -152,7 +153,7 @@ impl<'self> RegistryBuilder {
                 StartElement(~"groups", _) => {
                     loop {
                         match self.recv() {
-                            StartElement(~"enums", ref atts) => {
+                            StartElement(~"group", ref atts) => {
                                 registry.groups.push(
                                     self.consume_group(atts.get_clone("name"))
                                 );
