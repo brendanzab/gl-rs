@@ -28,6 +28,7 @@ pub struct EnumNs {
 pub struct Enum {
     ident: ~str,
     value: ~str,
+    alias: Option<~str>,
 }
 
 pub struct CmdNs {
@@ -38,6 +39,7 @@ pub struct CmdNs {
 pub struct Binding {
     ident: ~str,
     ty: ~str,
+    group: Option<~str>,
 }
 
 pub struct Cmd {
@@ -170,6 +172,7 @@ impl<'self> RegistryBuilder {
                         Enum {
                             ident:  atts.get_clone("name"),
                             value:  atts.get_clone("value"),
+                            alias:  atts.find_clone("alias"),
                         }
                     );
                     self.expect_end_element("enum");
@@ -203,8 +206,8 @@ impl<'self> RegistryBuilder {
 
     fn consume_cmd(&self) -> Cmd {
         // consume command prototype
-        self.expect_start_element("proto");
-        let proto = self.consume_binding();
+        let proto_atts = self.expect_start_element("proto");
+        let proto = self.consume_binding(proto_atts.find_clone("group"));
         self.expect_end_element("proto");
 
         let mut params = ~[];
@@ -213,9 +216,9 @@ impl<'self> RegistryBuilder {
         let mut glx = None;
         loop {
             match self.recv() {
-                StartElement(~"param", _) => {
+                StartElement(~"param", ref atts) => {
                     params.push(
-                        self.consume_binding()
+                        self.consume_binding(atts.find_clone("group"))
                     );
                     self.expect_end_element("param");
                 }
@@ -250,7 +253,7 @@ impl<'self> RegistryBuilder {
         }
     }
 
-    fn consume_binding(&self) -> Binding {
+    fn consume_binding(&self, group: Option<~str>) -> Binding {
         // consume type
         let mut ty = ~"";
         loop {
@@ -268,6 +271,7 @@ impl<'self> RegistryBuilder {
         Binding {
             ident: ident,
             ty: ty,
+            group: group,
         }
     }
 }
