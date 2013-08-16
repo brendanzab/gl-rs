@@ -21,7 +21,7 @@ use std::util;
 use registry::Registry;
 
 pub mod registry;
-pub mod ty_conv;
+pub mod ty;
 
 fn main() {
     match os::real_args() {
@@ -77,6 +77,6 @@ fn print_ctys(reg: &Registry) {
 fn print_rtys(reg: &Registry) {
     let tys = reg.get_tys();
     for ty in tys.iter() {
-        printfln!("\"%s\"", ty_conv::from_cty(*ty));
+        printfln!("\"%s\"", ty::from_cty(*ty));
     }
 }
