@@ -16,6 +16,7 @@ extern mod extra;
 
 use std::io;
 use std::os;
+use std::util;
 
 use registry::Registry;
 
@@ -23,41 +24,59 @@ pub mod registry;
 pub mod ty_conv;
 
 fn main() {
-    let args = os::real_args();
-    let path_str = args[1].as_slice();
-
-    // Parse the XML registry.
-    let reg = Registry::from_xml(
-        io::file_reader(&Path(path_str))
-            .expect(fmt!("Could not read %s", path_str))
-            .read_c_str()
-    );
-
-    // Debug output
-    if args.len() > 2 {
-        match args[2].as_slice() {
-            "--reg" => {
-                // Print out the registry data for debugging.
-                printfln!("%?", reg);
-            }
-            "--ctys" => {
-                // Print out a list of all the types used in the registry.
-                let tys = reg.get_tys();
-                for ty in tys.iter() {
-                    printfln!("\"%s\"", *ty);
-                }
-            }
-            "--rtys" => {
-                // Print out a list of all the types used in the registry,
-                // converted to their Rust form.
-                let tys = reg.get_tys();
-                for ty in tys.iter() {
-                    printfln!("\"%s\"", ty_conv::from_cty(*ty));
-                }
-            }
-            _ => {}
+    match os::real_args() {
+        [_, ref path, ..args] => {
+            // Parse the XML registry.
+            let reg = Registry::from_xml(
+                io::file_reader(&Path(path.as_slice()))
+                    .expect(fmt!("Could not read %s", *path))
+                    .read_c_str()
+            );
+            parse_args(args, &reg);
         }
+        [_] => println("Error: expected a path to an XML file."),
+        [] => util::unreachable(),
     }
-
     // TODO: Use registry data to generate function loader.
+}
+
+fn parse_args(args: &[~str], reg: &Registry) {
+    match args {
+        [~"--reg", ..tl] => {
+            print_registry(reg);
+            parse_args(tl, reg);
+        }
+        [~"--ctys", ..tl] => {
+            print_ctys(reg);
+            parse_args(tl, reg);
+        }
+        [~"--rtys", ..tl] => {
+            print_rtys(reg);
+            parse_args(tl, reg);
+        }
+        [ref flag] => printfln!("Error: unexpected argument `%s`.", *flag),
+        [] => (),
+    }
+}
+
+/// Print out the registry data for debugging.
+fn print_registry(reg: &Registry) {
+    printfln!("%?", reg);
+}
+
+/// Print out a list of all the types used in the registry.
+fn print_ctys(reg: &Registry) {
+    let tys = reg.get_tys();
+    for ty in tys.iter() {
+        printfln!("\"%s\"", *ty);
+    }
+}
+
+/// Print out a list of all the types used in the registry, converted to their
+/// Rust declaration syntax.
+fn print_rtys(reg: &Registry) {
+    let tys = reg.get_tys();
+    for ty in tys.iter() {
+        printfln!("\"%s\"", ty_conv::from_cty(*ty));
+    }
 }
