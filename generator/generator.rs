@@ -92,14 +92,26 @@ pub mod gen {
         "    ".repeat(n)
     }
 
-    pub fn enum_str(enm: &Enum, ty: &str) -> ~str {
-        fmt!("pub static %s: %s = %s;", enm.ident, ty, enm.value)
+    pub fn enum_ident_str(enm: &Enum) -> ~str {
+        if (enm.ident[0] as char).is_digit() {
+            "_" + enm.ident
+        } else {
+            enm.ident.clone()
+        }
     }
 
-    pub fn ident_str(binding: &Binding, use_idents: bool) -> ~str {
+    pub fn enum_str(enm: &Enum, ty: &str) -> ~str {
+        fmt!("pub static %s: %s = %s;",
+            enum_ident_str(enm),
+            ty, enm.value)
+    }
+
+    pub fn binding_ident_str(binding: &Binding, use_idents: bool) -> ~str {
         if use_idents {
             match binding.ident {
-                ~"type" => ~"ty",
+                ~"in" => ~"in_",
+                ~"ref" => ~"ref_",
+                ~"type" => ~"type_",
                 ref ident => ident.clone(),
             }
         } else { ~"_" }
@@ -107,7 +119,7 @@ pub mod gen {
 
     pub fn binding_str(binding: &Binding, use_idents: bool) -> ~str {
         fmt!("%s: %s",
-            ident_str(binding, use_idents),
+            binding_ident_str(binding, use_idents),
             ty::to_rust_ty(binding.ty))
     }
 
@@ -125,11 +137,11 @@ pub mod gen {
     }
 
     pub fn write_header(writer: @Writer, reg: &Registry, ns: Ns) {
-        writer.write_line("use std::libc::*");
-        writer.write_line("use self::types::*");
+        writer.write_line("use std::libc::*;");
+        writer.write_line("use self::types::*;");
         writer.write_line("");
         writer.write_line("mod types {");
-        writer.write_line(tab_str(1) + "use std::libc::*");
+        writer.write_line(tab_str(1) + "use std::libc::*;");
         match ns {
             Gl => {
                 for alias in ty::GL_ALIASES.iter()
@@ -170,6 +182,11 @@ pub mod gen_ptr {
             cmd.proto.ident)
     }
 
+    pub fn is_loaded_str(cmd: &Cmd) -> ~str {
+        fmt!("pub mod %s { pub static mut is_loaded: bool = false; }",
+            cmd.proto.ident)
+    }
+
     pub fn failing_fn_str(cmd: &Cmd) -> ~str {
         fmt!("extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
             cmd.proto.ident,
@@ -179,7 +196,9 @@ pub mod gen_ptr {
     }
 
     pub fn load_statement_str(cmd: &Cmd) -> ~str {
-        fmt!("match loadfn(\"%s\") { ptr if !ptr.is_null() => unsafe { %s = transmute(ptr) }, _ => () }",
+        fmt!("match loadfn(\"%s\") { ptr if !ptr.is_null() => unsafe { %s = transmute(ptr); %s::is_loaded = true; }, _ => unsafe { %s::is_loaded = false; } }",
+            cmd.proto.ident,
+            cmd.proto.ident,
             cmd.proto.ident,
             cmd.proto.ident)
     }
@@ -191,6 +210,12 @@ pub mod gen_ptr {
         // static muts for storing function pointers
         for def in reg.cmds[0].defs.iter() {
             writer.write_line(static_mut_str(def));
+        }
+        writer.write_line("");
+
+        // static muts for storing the status of the function pointers
+        for def in reg.cmds[0].defs.iter() {
+            writer.write_line(is_loaded_str(def));
         }
         writer.write_line("");
 
@@ -216,7 +241,6 @@ pub mod gen_ptr {
             writer.write_line(gen::tab_str(1) + load_statement_str(def));
         }
         writer.write_line("}");
-        writer.write_line("");
     }
 }
 
