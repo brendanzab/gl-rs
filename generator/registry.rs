@@ -4,6 +4,28 @@ extern mod sax;
 use extra::treemap::TreeSet;
 use self::sax::*;
 
+pub enum Ns { Gl, Glx, Wgl }
+
+fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
+    if s.starts_with(trim) { s.slice_from(trim.len()) } else { s }
+}
+
+fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
+    match ns {
+        Gl => trim_str(ident, "GL_"),
+        Glx => trim_str(ident, "GLX_"),
+        Wgl =>  trim_str(ident, "WGL_"),
+    }
+}
+
+fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
+    match ns {
+        Gl => trim_str(ident, "gl"),
+        Glx => trim_str(ident, "glx"),
+        Wgl =>  trim_str(ident, "wgl"),
+    }
+}
+
 pub struct Registry {
     groups: ~[Group],
     enums: ~[EnumNs],
@@ -12,8 +34,8 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml(data: &str) -> Registry {
-        RegistryBuilder::parse(data)
+    pub fn from_xml(data: &str, ns: Ns) -> Registry {
+        RegistryBuilder::parse(data, ns)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
@@ -81,14 +103,16 @@ pub struct GlxOpcode {
 }
 
 struct RegistryBuilder {
+    ns: Ns,
     priv port: SaxPort,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
 impl<'self> RegistryBuilder {
-    fn parse(data: &str) -> Registry {
+    fn parse(data: &str, ns: Ns) -> Registry {
         RegistryBuilder {
-            port: parse_xml(data)
+            ns: ns,
+            port: parse_xml(data),
         }.consume_registry()
     }
 
@@ -230,7 +254,7 @@ impl<'self> RegistryBuilder {
                 StartElement(~"enum", ref atts) => {
                     enums.push(
                         Enum {
-                            ident:  atts.get_clone("name"),
+                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_owned(),
                             value:  atts.get_clone("value"),
                             alias:  atts.find_clone("alias"),
                         }
@@ -267,7 +291,8 @@ impl<'self> RegistryBuilder {
     fn consume_cmd(&self) -> Cmd {
         // consume command prototype
         let proto_atts = self.expect_start_element("proto");
-        let proto = self.consume_binding(proto_atts.find_clone("group"));
+        let mut proto = self.consume_binding(proto_atts.find_clone("group"));
+        proto.ident = trim_cmd_prefix(proto.ident, self.ns).to_owned();
         self.expect_end_element("proto");
 
         let mut params = ~[];
