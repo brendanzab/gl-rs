@@ -14,6 +14,7 @@
 
 extern mod extra;
 
+use std::hashmap::HashMap;
 use std::io;
 use std::os;
 use std::util;
@@ -50,7 +51,7 @@ fn main() {
 fn parse_args(args: &[~str], reg: &Registry, ns: Ns) {
     match args {
         [~"ptr", .._] => {
-            gen_ptr::write_loader(std::io::stdout(), reg, ns);
+            PtrGenerator::write(std::io::stdout(), reg, ns, 4);
         }
         [~"struct", .._] => {
             gen_struct::write_loader(std::io::stdout(), reg, ns);
@@ -84,15 +85,67 @@ fn print_rtys(reg: &Registry) {
     }
 }
 
-pub mod gen {
-    use super::ty;
-    use registry::*;
+struct Generator<'self> {
+    ns: Ns,
+    writer: @Writer,
+    registry: &'self Registry,
+    indent: uint,
+    tab_width: uint,
+}
 
-    pub fn tab_str(n: uint) -> ~str {
-        "    ".repeat(n)
+impl<'self> Generator<'self> {
+    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns, tab_width: uint) -> Generator<'a> {
+        Generator {
+            ns: ns,
+            writer: writer,
+            registry: &'a *reg,
+            indent: 0,
+            tab_width: tab_width,
+        }
     }
 
-    pub fn enum_ident_str(enm: &Enum) -> ~str {
+    fn incr_indent(&mut self) {
+        self.indent += 1;
+    }
+
+    fn decr_indent(&mut self) {
+        if self.indent > 0 { self.indent -= 1 }
+    }
+
+    fn write_indent(&self) {
+        do (self.tab_width * self.indent).times {
+            self.writer.write_char(' ');
+        }
+    }
+
+    fn write_line(&self, s: &str) {
+        self.write_indent();
+        self.writer.write_line(s);
+    }
+
+    fn write_comment(&self, s: &str) {
+        self.write_line("// " + s);
+    }
+
+    fn write_doc_comment(&self, s: &str) {
+        self.write_line("/// " + s);
+    }
+
+    fn for_enums(&self, fn_ns: &fn(&EnumNs), fn_unseen: &fn(&EnumNs, &Enum), fn_seen: &fn(&EnumNs, &Enum)) {
+        let mut seen = HashMap::new();
+        for ns in self.registry.enums.iter() {
+            fn_ns(ns);
+            for def in ns.defs.iter() {
+                match seen.find(&def.ident) {
+                    Some(seen_ns) => { fn_seen(*seen_ns, def); loop; }
+                    None => fn_unseen(ns, def),
+                }
+                seen.insert(def.ident.clone(), ns);
+            }
+        }
+    }
+
+    fn gen_enum_ident(enm: &Enum) -> ~str {
         if (enm.ident[0] as char).is_digit() {
             "_" + enm.ident
         } else {
@@ -100,13 +153,37 @@ pub mod gen {
         }
     }
 
-    pub fn enum_str(enm: &Enum, ty: &str) -> ~str {
-        fmt!("pub static %s: %s = %s;",
-            enum_ident_str(enm),
-            ty, enm.value)
+    fn write_enum(&self, enm: &Enum, ty: &str) {
+        self.write_line(
+            fmt!("pub static %s: %s = %s;",
+                Generator::gen_enum_ident(enm),
+                ty, enm.value)
+        )
     }
 
-    pub fn binding_ident_str(binding: &Binding, use_idents: bool) -> ~str {
+    fn write_enums(&self) {
+        self.for_enums(
+            |_| (),
+            |_, e| self.write_enum(e, "GLenum"),
+            |_, _| ()
+        )
+    }
+
+    fn for_cmds(&self, fn_ns: &fn(&CmdNs), fn_unseen: &fn(&CmdNs, &Cmd), fn_seen: &fn(&CmdNs, &Cmd)) {
+        let mut seen = HashMap::new();
+        for ns in self.registry.cmds.iter() {
+            fn_ns(ns);
+            for def in ns.defs.iter() {
+                match seen.find(&def.proto.ident) {
+                    Some(seen_ns) => { fn_seen(*seen_ns, def); loop; }
+                    None => fn_unseen(ns, def),
+                }
+                seen.insert(def.proto.ident.clone(), ns);
+            }
+        }
+    }
+
+    fn gen_binding_ident(binding: &Binding, use_idents: bool) -> ~str {
         if use_idents {
             match binding.ident {
                 ~"in" => ~"in_",
@@ -117,139 +194,164 @@ pub mod gen {
         } else { ~"_" }
     }
 
-    pub fn binding_str(binding: &Binding, use_idents: bool) -> ~str {
+    fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
         fmt!("%s: %s",
-            binding_ident_str(binding, use_idents),
+            Generator::gen_binding_ident(binding, use_idents),
             ty::to_rust_ty(binding.ty))
     }
 
-    pub fn param_list_str(cmd: &Cmd, use_idents: bool) -> ~str {
+    fn gen_param_list(cmd: &Cmd, use_idents: bool) -> ~str {
         cmd.params.iter()
-            .map(|b| binding_str(b, use_idents))
+            .map(|b| Generator::gen_binding(b, use_idents))
             .to_owned_vec()
             .connect(", ")
     }
 
-    pub fn return_suffix_str(cmd: &Cmd) -> ~str {
-        ty::to_return_suffix(
-            ty::to_rust_ty(cmd.proto.ty)
-        )
+    fn gen_return_suffix(cmd: &Cmd) -> ~str {
+        ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty))
     }
 
-    pub fn write_header(writer: @Writer, reg: &Registry, ns: Ns) {
-        writer.write_line("use std::libc::*;");
-        writer.write_line("use self::types::*;");
-        writer.write_line("");
-        writer.write_line("mod types {");
-        writer.write_line(tab_str(1) + "use std::libc::*;");
-        match ns {
+    fn write_header(&mut self) {
+        // imports
+        self.write_line("use std::libc::*;");
+        self.write_line("use self::types::*;");
+        self.write_line("");
+
+        // type aliases
+        self.write_line("mod types {");
+        self.incr_indent();
+        self.write_line("use std::libc::*;");
+        self.write_line("");
+        match self.ns {
             Gl => {
-                for alias in ty::GL_ALIASES.iter()
-                    { writer.write_line(tab_str(1) + *alias) }
+                for alias in ty::GL_ALIASES.iter() { self.write_line(*alias) }
             }
             Glx => {
-                for alias in ty::X_ALIASES.iter()
-                    { writer.write_line(tab_str(1) + *alias) }
-                for alias in ty::GLX_ALIASES.iter()
-                    { writer.write_line(tab_str(1) + *alias) }
+                for alias in ty::X_ALIASES.iter() { self.write_line(*alias) }
+                for alias in ty::GLX_ALIASES.iter() { self.write_line(*alias) }
             }
             Wgl => {
-                for alias in ty::WIN_ALIASES.iter()
-                    { writer.write_line(tab_str(1) + *alias) }
-                for alias in ty::WGL_ALIASES.iter()
-                    { writer.write_line(tab_str(1) + *alias) }
+                for alias in ty::WIN_ALIASES.iter() { self.write_line(*alias) }
+                for alias in ty::WGL_ALIASES.iter() { self.write_line(*alias) }
             }
         }
-        writer.write_line("}");
-        writer.write_line("");
-        for ns in reg.enums.iter() {
-            for def in ns.defs.iter() {
-                writer.write_line(enum_str(def, "GLenum"));
-            }
-        }
+        self.decr_indent();
+        self.write_line("}");
+        self.write_line("");
+
+        // enums
+        self.write_enums();
     }
 }
 
-pub mod gen_ptr {
-    use super::gen;
-    use registry::*;
+struct PtrGenerator<'self>(Generator<'self>);
 
-    pub fn static_mut_str(cmd: &Cmd) -> ~str {
-        fmt!("pub static mut %s: extern \"C\" fn(%s)%s = failing::%s;",
-            cmd.proto.ident,
-            gen::param_list_str(cmd, true),
-            gen::return_suffix_str(cmd),
-            cmd.proto.ident)
+impl<'self> PtrGenerator<'self> {
+    fn write_fns(&self) {
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(
+                fmt!("pub static mut %s: extern \"C\" fn(%s)%s = failing::%s;",
+                    c.proto.ident,
+                    Generator::gen_param_list(c, true),
+                    Generator::gen_return_suffix(c),
+                    c.proto.ident)
+            ),
+            |_, _| ()
+        );
     }
 
-    pub fn is_loaded_str(cmd: &Cmd) -> ~str {
-        fmt!("pub mod %s { pub static mut is_loaded: bool = false; }",
-            cmd.proto.ident)
+    fn write_is_loaded_mods(&self) {
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(fmt!("pub mod %s { pub static mut is_loaded: bool = false; }", c.proto.ident)),
+            |_, _| ()
+        );
     }
 
-    pub fn failing_fn_str(cmd: &Cmd) -> ~str {
-        fmt!("extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
-            cmd.proto.ident,
-            gen::param_list_str(cmd, false),
-            gen::return_suffix_str(cmd),
-            cmd.proto.ident)
+    fn write_failing_fns(&mut self) {
+        self.write_line("mod failing {");
+        self.incr_indent();
+        self.write_line("use std::libc::*;");
+        self.write_line("use super::types::*;");
+        self.write_line("");
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(
+                fmt!("pub extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
+                    c.proto.ident,
+                    Generator::gen_param_list(c, false),
+                    Generator::gen_return_suffix(c),
+                    c.proto.ident)
+            ),
+            |_, _| ()
+        );
+        self.decr_indent();
+        self.write_line("}");
     }
 
-    pub fn load_statement_str(cmd: &Cmd) -> ~str {
-        fmt!("match loadfn(\"%s\") { ptr if !ptr.is_null() => unsafe { %s = transmute(ptr); %s::is_loaded = true; }, _ => unsafe { %s::is_loaded = false; } }",
-            cmd.proto.ident,
-            cmd.proto.ident,
-            cmd.proto.ident,
-            cmd.proto.ident)
+    fn write_load_fn(&mut self) {
+        self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
+        self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
+        self.write_line("///");
+        self.write_line("/// ~~~");
+        self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
+        self.write_line("/// ~~~");
+        self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) {");
+        self.incr_indent();
+        self.write_line("use std::cast::transmute;");
+        self.write_line("");
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(
+                fmt!(
+                    "match loadfn(\"%s\") { \
+                        ptr if !ptr.is_null() => unsafe { %s = transmute(ptr); %s::is_loaded = true; }, \
+                        _ => unsafe { %s::is_loaded = false; } \
+                    }",
+                    c.proto.ident,
+                    c.proto.ident,
+                    c.proto.ident,
+                    c.proto.ident
+                )
+            ),
+            |_, _| ()
+        );
+        self.decr_indent();
+        self.write_line("}");
     }
 
-    pub fn write_loader(writer: @Writer, reg: &Registry, ns: Ns) {
-        gen::write_header(writer, reg, ns);
-        writer.write_line("");
+    fn write(writer: @Writer, reg: &Registry, ns: Ns, tab_width: uint) {
+        let mut gen = PtrGenerator(
+            Generator::new(writer, reg, ns, tab_width)
+        );
+
+        gen.write_header();
+        gen.write_line("");
 
         // static muts for storing function pointers
-        for def in reg.cmds[0].defs.iter() {
-            writer.write_line(static_mut_str(def));
-        }
-        writer.write_line("");
+        gen.write_fns();
+        gen.write_line("");
 
         // static muts for storing the status of the function pointers
-        for def in reg.cmds[0].defs.iter() {
-            writer.write_line(is_loaded_str(def));
-        }
-        writer.write_line("");
+        gen.write_is_loaded_mods();
+        gen.write_line("");
 
         // failing functions to assign to the function pointers
-        writer.write_line("mod failing {");
-        for def in reg.cmds[0].defs.iter() {
-            writer.write_line(gen::tab_str(1) + failing_fn_str(def));
-        }
-        writer.write_line("}");
-        writer.write_line("");
+        gen.write_failing_fns();
+        gen.write_line("");
 
         // loader function
-        writer.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
-        writer.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
-        writer.write_line("///");
-        writer.write_line("/// ~~~");
-        writer.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
-        writer.write_line("/// ~~~");
-        writer.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) {");
-        writer.write_line("    use std::cast::transmute;");
-        writer.write_line("");
-        for def in reg.cmds[0].defs.iter() {
-            writer.write_line(gen::tab_str(1) + load_statement_str(def));
-        }
-        writer.write_line("}");
+        gen.write_load_fn();
+        gen.write_line("");
     }
 }
 
 pub mod gen_struct {
-    use super::gen;
     use registry::*;
 
-    pub fn write_loader(writer: @Writer, reg: &Registry, ns: Ns) {
-        gen::write_header(writer, reg, ns);
-        writer.write_line("");
+    pub fn write_loader(_writer: @Writer, _reg: &Registry, _ns: Ns) {
+        // gen::write_header(writer, reg, ns);
+        // writer.write_line("");
     }
 }
