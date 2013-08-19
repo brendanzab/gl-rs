@@ -207,11 +207,45 @@ impl<'self> Generator<'self> {
             .connect(", ")
     }
 
+    fn gen_param_call_list(cmd: &Cmd) -> ~str {
+        cmd.params.iter()
+            .map(|b| Generator::gen_binding_ident(b, true))
+            .to_owned_vec()
+            .connect(", ")
+    }
+
     fn gen_return_suffix(cmd: &Cmd) -> ~str {
         ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty))
     }
 
     fn write_header(&mut self) {
+        // license
+        self.write_comment("Copyright 2013 The gl-rs developers. For a full listing of the authors,");
+        self.write_comment("refer to the AUTHORS file at the top-level directory of this distribution.");
+        self.write_comment("");
+        self.write_comment("Licensed under the Apache License, Version 2.0 (the \"License\");");
+        self.write_comment("you may not use this file except in compliance with the License.");
+        self.write_comment("You may obtain a copy of the License at");
+        self.write_comment("");
+        self.write_comment("    http://www.apache.org/licenses/LICENSE-2.0");
+        self.write_comment("");
+        self.write_comment("Unless required by applicable law or agreed to in writing, software");
+        self.write_comment("distributed under the License is distributed on an \"AS IS\" BASIS,");
+        self.write_comment("WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
+        self.write_comment("See the License for the specific language governing permissions and");
+        self.write_comment("limitations under the License.");
+        self.write_line("");
+
+        // crate metadata
+        self.write_line(fmt!("#[link(name = \"%s\",", match self.ns { Gl => "gl", Glx => "glx", Wgl => "wgl" }));
+        self.write_line("       author = \"Brendan Zabarauskas\",");
+        self.write_line("       url = \"https://github.com/bjz/gl-rs\",");
+        self.write_line("       vers = \"0.1\")];");
+        self.write_line("#[comment = \"An OpenGL function loader.\"];");
+        self.write_line("#[license = \"ASL2\"];");
+        self.write_line("#[crate_type = \"lib\"];");
+        self.write_line("");
+
         // imports
         self.write_line("use std::libc::*;");
         self.write_line("use self::types::*;");
@@ -251,7 +285,30 @@ impl<'self> PtrGenerator<'self> {
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(
-                fmt!("pub static mut %s: extern \"C\" fn(%s)%s = failing::%s;",
+                fmt!("#[inline] pub %sfn %s(%s)%s { %sstorage::%s(%s)%s }",
+                    if c.is_safe { "" } else { "unsafe " },
+                    c.proto.ident,
+                    Generator::gen_param_list(c, true),
+                    Generator::gen_return_suffix(c),
+                    if !c.is_safe { "" } else { "unsafe { " },
+                    c.proto.ident,
+                    Generator::gen_param_call_list(c),
+                    if !c.is_safe { "" } else { " }" })
+            ),
+            |_, _| ()
+        );
+    }
+
+    fn write_ptrs(&mut self) {
+        self.write_line("mod storage {");
+        self.incr_indent();
+        self.write_line("use std::libc::*;");
+        self.write_line("use super::types::*;");
+        self.write_line("");
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(
+                fmt!("pub static mut %s: extern \"C\" fn(%s)%s = super::failing::%s;",
                     c.proto.ident,
                     Generator::gen_param_list(c, true),
                     Generator::gen_return_suffix(c),
@@ -259,6 +316,8 @@ impl<'self> PtrGenerator<'self> {
             ),
             |_, _| ()
         );
+        self.decr_indent();
+        self.write_line("}");
     }
 
     fn write_is_loaded_mods(&self) {
@@ -306,7 +365,7 @@ impl<'self> PtrGenerator<'self> {
             |_, c| self.write_line(
                 fmt!(
                     "match loadfn(\"%s\") { \
-                        ptr if !ptr.is_null() => unsafe { %s = transmute(ptr); %s::is_loaded = true; }, \
+                        ptr if !ptr.is_null() => unsafe { storage::%s = transmute(ptr); %s::is_loaded = true; }, \
                         _ => unsafe { %s::is_loaded = false; } \
                     }",
                     c.proto.ident,
@@ -326,20 +385,15 @@ impl<'self> PtrGenerator<'self> {
             Generator::new(writer, reg, ns, tab_width)
         );
 
-        gen.write_line(fmt!("#[link(name = \"%s\",", match ns { Gl => "gl", Glx => "glx", Wgl => "wgl" }));
-        gen.write_line("       author = \"Brendan Zabarauskas\",");
-        gen.write_line("       url = \"https://github.com/bjz/gl-rs\",");
-        gen.write_line("       vers = \"0.1\")];");
-        gen.write_line("#[comment = \"OpenGL bindings for the Rust programming language.\"];");
-        gen.write_line("#[license = \"ASL2\"];");
-        gen.write_line("#[crate_type = \"lib\"];");
-        gen.write_line("");
-
         gen.write_header();
         gen.write_line("");
 
-        // static muts for storing function pointers
+        // safe and unsafe OpenGl functions
         gen.write_fns();
+        gen.write_line("");
+
+        // static muts for storing function pointers
+        gen.write_ptrs();
         gen.write_line("");
 
         // static muts for storing the status of the function pointers

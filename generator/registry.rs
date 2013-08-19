@@ -90,6 +90,7 @@ pub struct Binding {
 pub struct Cmd {
     proto: Binding,
     params: ~[Binding],
+    is_safe: bool,
     alias: Option<~str>,
     vecequiv: Option<~str>,
     glx: Option<GlxOpcode>,
@@ -328,10 +329,12 @@ impl<'self> RegistryBuilder {
                 msg => fail!("Expected </command>, found: %s", msg.to_str()),
             }
         }
+        let is_safe = params.iter().any(|p| !p.ty.contains_char('*'));
 
         Cmd {
             proto: proto,
             params: params,
+            is_safe: is_safe,
             alias: alias,
             vecequiv: vecequiv,
             glx: glx,

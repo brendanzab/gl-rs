@@ -35,8 +35,10 @@ gl::RED_BITS
 And this is how you call a function:
 
 ~~~rust
-unsafe { gl::Viewport(0, 0, 600, 480) };
+gl::Viewport(0, 0, 600, 480);
 ~~~
+
+Functions that take pointers are marked as `unsafe`.
 
 Each function pointer has a boolean value associated with allowing you to check if a function has been loaded at run time:
 
