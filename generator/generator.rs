@@ -326,6 +326,15 @@ impl<'self> PtrGenerator<'self> {
             Generator::new(writer, reg, ns, tab_width)
         );
 
+        gen.write_line(fmt!("#[link(name = \"%s\",", match ns { Gl => "gl", Glx => "glx", Wgl => "wgl" }));
+        gen.write_line("       author = \"Brendan Zabarauskas\",");
+        gen.write_line("       url = \"https://github.com/bjz/gl-rs\",");
+        gen.write_line("       vers = \"0.1\")];");
+        gen.write_line("#[comment = \"OpenGL bindings for the Rust programming language.\"];");
+        gen.write_line("#[license = \"ASL2\"];");
+        gen.write_line("#[crate_type = \"lib\"];");
+        gen.write_line("");
+
         gen.write_header();
         gen.write_line("");
 

@@ -1,3 +1,11 @@
+#[link(name = "gl",
+       author = "Brendan Zabarauskas",
+       url = "https://github.com/bjz/gl-rs",
+       vers = "0.1")];
+#[comment = "OpenGL bindings for the Rust programming language."];
+#[license = "ASL2"];
+#[crate_type = "lib"];
+
 use std::libc::*;
 use self::types::*;
 
