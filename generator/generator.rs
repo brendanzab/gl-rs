@@ -51,7 +51,7 @@ fn main() {
 fn parse_args(args: &[~str], reg: &Registry, ns: Ns) {
     match args {
         [~"ptr", .._] => {
-            PtrGenerator::write(std::io::stdout(), reg, ns, 4);
+            PtrGenerator::write(std::io::stdout(), reg, ns);
         }
         [~"struct", .._] => {
             gen_struct::write_loader(std::io::stdout(), reg, ns);
@@ -63,44 +63,22 @@ fn parse_args(args: &[~str], reg: &Registry, ns: Ns) {
     }
 }
 
-/// Print out the registry data for debugging.
-fn print_registry(reg: &Registry) {
-    printfln!("%?", reg);
-}
-
-/// Print out a list of all the types used in the registry.
-fn print_ctys(reg: &Registry) {
-    let tys = reg.get_tys();
-    for ty in tys.iter() {
-        printfln!("\"%s\"", *ty);
-    }
-}
-
-/// Print out a list of all the types used in the registry, converted to their
-/// Rust declaration syntax.
-fn print_rtys(reg: &Registry) {
-    let tys = reg.get_tys();
-    for ty in tys.iter() {
-        printfln!("\"%s\"", ty::to_rust_ty(*ty));
-    }
-}
+static TAB_WIDTH: uint = 4;
 
 struct Generator<'self> {
     ns: Ns,
     writer: @Writer,
     registry: &'self Registry,
     indent: uint,
-    tab_width: uint,
 }
 
 impl<'self> Generator<'self> {
-    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns, tab_width: uint) -> Generator<'a> {
+    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns) -> Generator<'a> {
         Generator {
             ns: ns,
             writer: writer,
             registry: &'a *reg,
             indent: 0,
-            tab_width: tab_width,
         }
     }
 
@@ -113,7 +91,7 @@ impl<'self> Generator<'self> {
     }
 
     fn write_indent(&self) {
-        do (self.tab_width * self.indent).times {
+        do (TAB_WIDTH * self.indent).times {
             self.writer.write_char(' ');
         }
     }
@@ -218,25 +196,22 @@ impl<'self> Generator<'self> {
         ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty))
     }
 
-    fn write_header(&mut self) {
-        // license
-        self.write_comment("Copyright 2013 The gl-rs developers. For a full listing of the authors,");
-        self.write_comment("refer to the AUTHORS file at the top-level directory of this distribution.");
-        self.write_comment("");
-        self.write_comment("Licensed under the Apache License, Version 2.0 (the \"License\");");
-        self.write_comment("you may not use this file except in compliance with the License.");
-        self.write_comment("You may obtain a copy of the License at");
-        self.write_comment("");
-        self.write_comment("    http://www.apache.org/licenses/LICENSE-2.0");
-        self.write_comment("");
-        self.write_comment("Unless required by applicable law or agreed to in writing, software");
-        self.write_comment("distributed under the License is distributed on an \"AS IS\" BASIS,");
-        self.write_comment("WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
-        self.write_comment("See the License for the specific language governing permissions and");
-        self.write_comment("limitations under the License.");
+    fn write_header(&self) {
+        self.write_line("// Copyright 2013 The gl-rs developers. For a full listing of the authors,");
+        self.write_line("// refer to the AUTHORS file at the top-level directory of this distribution.");
+        self.write_line("// ");
+        self.write_line("// Licensed under the Apache License, Version 2.0 (the \"License\");");
+        self.write_line("// you may not use this file except in compliance with the License.");
+        self.write_line("// You may obtain a copy of the License at");
+        self.write_line("// ");
+        self.write_line("//     http://www.apache.org/licenses/LICENSE-2.0");
+        self.write_line("// ");
+        self.write_line("// Unless required by applicable law or agreed to in writing, software");
+        self.write_line("// distributed under the License is distributed on an \"AS IS\" BASIS,");
+        self.write_line("// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
+        self.write_line("// See the License for the specific language governing permissions and");
+        self.write_line("// limitations under the License.");
         self.write_line("");
-
-        // crate metadata
         self.write_line(fmt!("#[link(name = \"%s\",", match self.ns { Gl => "gl", Glx => "glx", Wgl => "wgl" }));
         self.write_line("       author = \"Brendan Zabarauskas\",");
         self.write_line("       url = \"https://github.com/bjz/gl-rs\",");
@@ -245,13 +220,11 @@ impl<'self> Generator<'self> {
         self.write_line("#[license = \"ASL2\"];");
         self.write_line("#[crate_type = \"lib\"];");
         self.write_line("");
-
-        // imports
         self.write_line("use std::libc::*;");
         self.write_line("use self::types::*;");
-        self.write_line("");
+    }
 
-        // type aliases
+    fn write_type_aliases(&mut self) {
         self.write_line("mod types {");
         self.incr_indent();
         self.write_line("use std::libc::*;");
@@ -271,21 +244,23 @@ impl<'self> Generator<'self> {
         }
         self.decr_indent();
         self.write_line("}");
-        self.write_line("");
-
-        // enums
-        self.write_enums();
     }
 }
 
 struct PtrGenerator<'self>(Generator<'self>);
 
 impl<'self> PtrGenerator<'self> {
+    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns) -> PtrGenerator<'a> {
+        PtrGenerator(
+            Generator::new(writer, reg, ns)
+        )
+    }
+
     fn write_fns(&self) {
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(
-                fmt!("#[inline] pub %sfn %s(%s)%s { %sstorage::%s(%s)%s }",
+                fmt!("#[inline] pub %sfn %s(%s)%s { %s(storage::%s.f)(%s)%s }",
                     if c.is_safe { "" } else { "unsafe " },
                     c.proto.ident,
                     Generator::gen_param_list(c, true),
@@ -305,10 +280,12 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("use std::libc::*;");
         self.write_line("use super::types::*;");
         self.write_line("");
+        self.write_line("struct FnPtr<F> { f: F, is_loaded: bool }");
+        self.write_line("");
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(
-                fmt!("pub static mut %s: extern \"C\" fn(%s)%s = super::failing::%s;",
+                fmt!("pub static mut %s: FnPtr<extern \"C\" fn(%s)%s> = FnPtr { f: super::failing::%s, is_loaded: false };",
                     c.proto.ident,
                     Generator::gen_param_list(c, true),
                     Generator::gen_return_suffix(c),
@@ -320,10 +297,16 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("}");
     }
 
-    fn write_is_loaded_mods(&self) {
+    fn write_is_loaded_fns(&self) {
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(fmt!("pub mod %s { pub static mut is_loaded: bool = false; }", c.proto.ident)),
+            |_, c| self.write_line(fmt!(
+                "pub mod %s { \
+                    #[inline] pub fn is_loaded() -> bool { unsafe { super::storage::%s.is_loaded } } \
+                }",
+                c.proto.ident,
+                c.proto.ident
+            )),
             |_, _| ()
         );
     }
@@ -362,30 +345,43 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("");
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(
-                fmt!(
-                    "match loadfn(\"%s\") { \
-                        ptr if !ptr.is_null() => unsafe { storage::%s = transmute(ptr); %s::is_loaded = true; }, \
-                        _ => unsafe { %s::is_loaded = false; } \
-                    }",
-                    c.proto.ident,
-                    c.proto.ident,
-                    c.proto.ident,
-                    c.proto.ident
-                )
-            ),
+            |_, c| self.write_line(fmt!(
+                "match loadfn(\"%s\") { \
+                    ptr if !ptr.is_null() => unsafe { \
+                        storage::%s.f = transmute(ptr); \
+                        storage::%s.is_loaded = true; \
+                    }, \
+                    _ => unsafe { \
+                        storage::%s.f = transmute(failing::%s); \
+                        storage::%s.is_loaded = false; \
+                    } \
+                }",
+                c.proto.ident,
+                c.proto.ident,
+                c.proto.ident,
+                c.proto.ident,
+                c.proto.ident,
+                c.proto.ident
+            )),
             |_, _| ()
         );
         self.decr_indent();
         self.write_line("}");
     }
 
-    fn write(writer: @Writer, reg: &Registry, ns: Ns, tab_width: uint) {
-        let mut gen = PtrGenerator(
-            Generator::new(writer, reg, ns, tab_width)
-        );
+    fn write(writer: @Writer, reg: &Registry, ns: Ns) {
+        let mut gen = PtrGenerator::new(writer, reg, ns);
 
+        // header with licence, metadata and imports
         gen.write_header();
+        gen.write_line("");
+
+        // type aliases
+        gen.write_type_aliases();
+        gen.write_line("");
+
+        // enums definitions
+        gen.write_enums();
         gen.write_line("");
 
         // safe and unsafe OpenGl functions
@@ -396,8 +392,8 @@ impl<'self> PtrGenerator<'self> {
         gen.write_ptrs();
         gen.write_line("");
 
-        // static muts for storing the status of the function pointers
-        gen.write_is_loaded_mods();
+        // functions for querying the status of individual function pointers
+        gen.write_is_loaded_fns();
         gen.write_line("");
 
         // failing functions to assign to the function pointers

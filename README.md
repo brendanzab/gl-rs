@@ -43,7 +43,7 @@ Functions that take pointers are marked as `unsafe`.
 Each function pointer has a boolean value associated with allowing you to check if a function has been loaded at run time:
 
 ~~~rust
-if unsafe { gl::Viewport::is_loaded } {
+if gl::Viewport::is_loaded() {
     //...
 }
 ~~~
