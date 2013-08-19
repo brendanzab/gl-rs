@@ -2,58 +2,50 @@ _NOTE: this loader does not currently work with the latest version of Rust but w
 
 # gl-rs
 
-This is an OpenGL function pointer loader for the Rust Programming Language. It was generated using a [modified version of glLoadGen](https://github.com/bjz/glLoadGen) and provides access to functions, types and constants specified in the 4.2 core profile. If you need a compatibility profile or certain extensions not specified here, you can use the loader generator directly by cloning it from its [repository](https://github.com/bjz/glLoadGen).
+An OpenGL function pointer loader for the Rust Programming Language.
 
 ## Usage
 
-### Importing gl-rs
+### Pointer-style loader
+
+You can import the pointer style loader and give it a nice name like so:
 
 ~~~rust
-extern mod gl (name = "gl_core_4_2");
+extern mod gl (name = "gl_ptr");
 use gl;
 use gl::types::*;
 ~~~
 
-### Initialising the loader
-
-You can load each OpenGL symbol into a new struct by using the `load_with`function. You must supply a loader function from your context library, for example, `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
+You can load each OpenGL symbol `load_with`function. You must supply a loader function from your context library, for example, `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
 
 This is an example of what it would look like using [glfw-rs](https://github.com/bjz/glfw-rs):
 
 ~~~rust
-let gl = gl::load_with(glfw::get_proc_address);
+unsafe { gl::load_with(glfw::get_proc_address) };
 ~~~
 
-### Checking if a function is loaded
+If the symbol could not be loaded, it is assigned a failing function. Calling a function that has not been loaded will result in a failure like: `fail!("gl::Viewport was not loaded")`, which aviods a segfault and provides useful information as to the cause of the error. This feature does not cause any run time overhead.
 
-Each function pointer has a boolean value associated with it, allowing you to check if a function is loaded at run time.
+This is how you access an OpenGL enum:
 
 ~~~rust
-if gl.Viewport.is_loaded {
-    // ...
+gl::RED_BITS
+~~~
+
+And this is how you call a function:
+
+~~~rust
+unsafe { gl::Viewport(0, 0, 600, 480) };
+~~~
+
+Each function pointer has a boolean value associated with allowing you to check if a function has been loaded at run time:
+
+~~~rust
+if unsafe { gl::Viewport::is_loaded } {
+    //...
 }
 ~~~
 
-### Calling a function
+### Struct-style loader
 
-~~~rust
-gl.Viewport(0, 0, 600, 480);
-~~~
-
-If the function was not loaded when `load_with` was called, the function will fail with an error:
-
-~~~rust
-Function glTexStorage1D not initialised
-~~~
-
-The failing function was set back when `load_with` was called, so there is no run-time overhead for this functionality.
-
-### Passing the loader to another function
-
-~~~rust
-fn render_resize(gl: &gl::GL, width: GLint, height: GLint) {
-    gl.Viewport(0, 0, width, height);
-}
-
-render_resize(&gl, 600, 480);
-~~~
+_Todo_
