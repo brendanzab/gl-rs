@@ -132,11 +132,11 @@ impl<'self> Generator<'self> {
     }
 
     fn write_enum(&self, enm: &Enum, ty: &str) {
-        self.write_line(
-            fmt!("pub static %s: %s = %s;",
-                Generator::gen_enum_ident(enm),
-                ty, enm.value)
-        )
+        self.write_line(fmt!(
+            "pub static %s: %s = %s;",
+            Generator::gen_enum_ident(enm),
+            ty, enm.value
+        ))
     }
 
     fn write_enums(&self) {
@@ -259,17 +259,17 @@ impl<'self> PtrGenerator<'self> {
     fn write_fns(&self) {
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(
-                fmt!("#[inline] pub %sfn %s(%s)%s { %s(storage::%s.f)(%s)%s }",
-                    if c.is_safe { "" } else { "unsafe " },
-                    c.proto.ident,
-                    Generator::gen_param_list(c, true),
-                    Generator::gen_return_suffix(c),
-                    if !c.is_safe { "" } else { "unsafe { " },
-                    c.proto.ident,
-                    Generator::gen_param_call_list(c),
-                    if !c.is_safe { "" } else { " }" })
-            ),
+            |_, c| self.write_line(fmt!(
+                "#[inline] pub %sfn %s(%s)%s { %s(storage::%s.f)(%s)%s }",
+                if c.is_safe { "" } else { "unsafe " },
+                c.proto.ident,
+                Generator::gen_param_list(c, true),
+                Generator::gen_return_suffix(c),
+                if !c.is_safe { "" } else { "unsafe { " },
+                c.proto.ident,
+                Generator::gen_param_call_list(c),
+                if !c.is_safe { "" } else { " }" }
+            )),
             |_, _| ()
         );
     }
@@ -284,13 +284,13 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("");
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(
-                fmt!("pub static mut %s: FnPtr<extern \"C\" fn(%s)%s> = FnPtr { f: super::failing::%s, is_loaded: false };",
-                    c.proto.ident,
-                    Generator::gen_param_list(c, true),
-                    Generator::gen_return_suffix(c),
-                    c.proto.ident)
-            ),
+            |_, c| self.write_line(fmt!(
+                "pub static mut %s: FnPtr<extern \"C\" fn(%s)%s> = FnPtr { f: super::failing::%s, is_loaded: false };",
+                c.proto.ident,
+                Generator::gen_param_list(c, true),
+                Generator::gen_return_suffix(c),
+                c.proto.ident
+            )),
             |_, _| ()
         );
         self.decr_indent();
@@ -319,13 +319,13 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("");
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(
-                fmt!("pub extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
-                    c.proto.ident,
-                    Generator::gen_param_list(c, false),
-                    Generator::gen_return_suffix(c),
-                    c.proto.ident)
-            ),
+            |_, c| self.write_line(fmt!(
+                "pub extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
+                c.proto.ident,
+                Generator::gen_param_list(c, false),
+                Generator::gen_return_suffix(c),
+                c.proto.ident
+            )),
             |_, _| ()
         );
         self.decr_indent();
@@ -352,16 +352,13 @@ impl<'self> PtrGenerator<'self> {
                         storage::%s.is_loaded = true; \
                     }, \
                     _ => unsafe { \
-                        storage::%s.f = transmute(failing::%s); \
+                        storage::%s.f = failing::%s; \
                         storage::%s.is_loaded = false; \
                     } \
                 }",
-                c.proto.ident,
-                c.proto.ident,
-                c.proto.ident,
-                c.proto.ident,
-                c.proto.ident,
-                c.proto.ident
+                c.proto.ident, c.proto.ident,
+                c.proto.ident, c.proto.ident,
+                c.proto.ident, c.proto.ident
             )),
             |_, _| ()
         );
