@@ -161,15 +161,17 @@ impl<'self> Generator<'self> {
         }
     }
 
-    fn gen_binding_ident(binding: &Binding, use_idents: bool) -> ~str {
+    fn gen_binding_ident<'a>(binding: &'a Binding, use_idents: bool) -> &'a str {
         if use_idents {
-            match binding.ident {
-                ~"in" => ~"in_",
-                ~"ref" => ~"ref_",
-                ~"type" => ~"type_",
-                ref ident => ident.clone(),
+            match binding.ident.as_slice() {
+                "in" => &'a "in_",
+                "ref" => &'a "ref_",
+                "type" => &'a "type_",
+                ident => ident,
             }
-        } else { ~"_" }
+        } else {
+            &'a "_"
+        }
     }
 
     fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
@@ -419,8 +421,12 @@ impl<'self> StructGenerator<'self> {
         )
     }
 
-    fn gen_struct_name(ns: &Ns) -> ~str {
-        match *ns { Gl => ~"GL", Glx => ~"GLX", Wgl => ~"WGL" }
+    fn gen_struct_name(ns: &Ns) -> &'static str {
+        match *ns {
+            Gl => "GL",
+            Glx => "GLX",
+            Wgl => "WGL",
+        }
     }
 
     fn write_struct_def(&mut self) {
