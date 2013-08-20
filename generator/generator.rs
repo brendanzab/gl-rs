@@ -54,7 +54,7 @@ fn parse_args(args: &[~str], reg: &Registry, ns: Ns) {
             PtrGenerator::write(std::io::stdout(), reg, ns);
         }
         [~"struct", .._] => {
-            gen_struct::write_loader(std::io::stdout(), reg, ns);
+            StructGenerator::write(std::io::stdout(), reg, ns);
         }
         [ref flag] => {
             printfln!("Error: unexpected argument `%s`.", *flag);
@@ -245,6 +245,21 @@ impl<'self> Generator<'self> {
         self.decr_indent();
         self.write_line("}");
     }
+
+    fn write_fnptr_struct_def(&mut self) {
+        self.write_line("pub struct FnPtr<F> { f: F, is_loaded: bool }");
+        self.write_line("");
+        self.write_line("impl<F> FnPtr<F> {");
+        self.write_line("    pub fn new(ptr: *c_void, failing_fn: F) -> FnPtr<F> {");
+        self.write_line("        use std::cast::transmute;");
+        self.write_line("        if !ptr.is_null() {");
+        self.write_line("            FnPtr { f: unsafe { transmute(ptr) }, is_loaded: true }");
+        self.write_line("        } else {");
+        self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
+        self.write_line("        }");
+        self.write_line("    }");
+        self.write_line("}");
+    }
 }
 
 struct PtrGenerator<'self>(Generator<'self>);
@@ -280,8 +295,11 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("use std::libc::*;");
         self.write_line("use super::types::*;");
         self.write_line("");
-        self.write_line("struct FnPtr<F> { f: F, is_loaded: bool }");
+
+        // FnPtr struct def
+        self.write_fnptr_struct_def();
         self.write_line("");
+
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(fmt!(
@@ -341,24 +359,13 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("/// ~~~");
         self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) {");
         self.incr_indent();
-        self.write_line("use std::cast::transmute;");
+        self.write_line("use storage::FnPtr;");
         self.write_line("");
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(fmt!(
-                "match loadfn(\"%s\") { \
-                    ptr if !ptr.is_null() => unsafe { \
-                        storage::%s.f = transmute(ptr); \
-                        storage::%s.is_loaded = true; \
-                    }, \
-                    _ => unsafe { \
-                        storage::%s.f = failing::%s; \
-                        storage::%s.is_loaded = false; \
-                    } \
-                }",
-                c.proto.ident, c.proto.ident,
-                c.proto.ident, c.proto.ident,
-                c.proto.ident, c.proto.ident
+                "storage::%s = FnPtr::new(loadfn(\"%s\"), failing::%s);",
+                c.proto.ident, c.proto.ident, c.proto.ident
             )),
             |_, _| ()
         );
@@ -403,11 +410,143 @@ impl<'self> PtrGenerator<'self> {
     }
 }
 
-pub mod gen_struct {
-    use registry::*;
+struct StructGenerator<'self>(Generator<'self>);
 
-    pub fn write_loader(_writer: @Writer, _reg: &Registry, _ns: Ns) {
-        // gen::write_header(writer, reg, ns);
-        // writer.write_line("");
+impl<'self> StructGenerator<'self> {
+    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns) -> StructGenerator<'a> {
+        StructGenerator(
+            Generator::new(writer, reg, ns)
+        )
+    }
+
+    fn gen_struct_name(ns: &Ns) -> ~str {
+        match *ns { Gl => ~"GL", Glx => ~"GLX", Wgl => ~"WGL" }
+    }
+
+    fn write_struct_def(&mut self) {
+        self.write_line(fmt!("pub struct %s {", StructGenerator::gen_struct_name(&self.ns)));
+        self.incr_indent();
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(fmt!(
+                "%s: FnPtr<extern \"C\" fn(%s)%s>,",
+                c.proto.ident,
+                Generator::gen_param_list(c, true),
+                Generator::gen_return_suffix(c)
+            )),
+            |_, _| ()
+        );
+        self.decr_indent();
+        self.write_line("}");
+    }
+
+    fn write_failing_fns(&mut self) {
+        self.write_line("mod failing {");
+        self.incr_indent();
+        self.write_line("use std::libc::*;");
+        self.write_line("use super::types::*;");
+        self.write_line("");
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(
+                fmt!("pub extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
+                    c.proto.ident,
+                    Generator::gen_param_list(c, false),
+                    Generator::gen_return_suffix(c),
+                    c.proto.ident)
+            ),
+            |_, _| ()
+        );
+        self.decr_indent();
+        self.write_line("}");
+    }
+
+    fn write_load_fn(&mut self) {
+        self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
+        self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
+        self.write_line("///");
+        self.write_line("/// ~~~");
+        self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
+        self.write_line("/// ~~~");
+        self.write_line(fmt!(
+            "pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) -> ~%s {",
+            StructGenerator::gen_struct_name(&self.ns)
+        ));
+        self.incr_indent();
+        self.write_line("use std::cast::transmute;");
+        self.write_line("");
+        self.write_line(fmt!("~%s {", StructGenerator::gen_struct_name(&self.ns)));
+        self.incr_indent();
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(fmt!(
+                "%s: FnPtr::new(loadfn(\"%s\"), failing::%s),",
+                c.proto.ident, c.proto.ident, c.proto.ident
+            )),
+            |_, _| ()
+        );
+        self.decr_indent();
+        self.write_line("}");
+        self.decr_indent();
+        self.write_line("}");
+    }
+
+    fn write_wrapper_fns(&mut self) {
+        self.write_line(fmt!("impl %s {", StructGenerator::gen_struct_name(&self.ns)));
+        self.incr_indent();
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(fmt!(
+                "#[inline] pub %sfn %s(%s%s)%s { %s(self.%s.f)(%s)%s }",
+                if c.is_safe { "" } else { "unsafe " },
+                c.proto.ident,
+                if c.params.len() > 0 { "&self, " } else { "&self" },
+                Generator::gen_param_list(c, true),
+                Generator::gen_return_suffix(c),
+                if !c.is_safe { "" } else { "unsafe { " },
+                c.proto.ident,
+                Generator::gen_param_call_list(c),
+                if !c.is_safe { "" } else { " }" }
+            )),
+            |_, _| ()
+        );
+        self.decr_indent();
+        self.write_line("}");
+    }
+
+    pub fn write(writer: @Writer, reg: &Registry, ns: Ns) {
+        let mut gen = StructGenerator::new(writer, reg, ns);
+
+        // header with licence, metadata and imports
+        gen.write_header();
+        gen.write_line("");
+
+        // type aliases
+        gen.write_type_aliases();
+        gen.write_line("");
+
+        // enums definitions
+        gen.write_enums();
+        gen.write_line("");
+
+        // FnPtr struct def
+        gen.write_fnptr_struct_def();
+        gen.write_line("");
+
+        // pointer storage struct definition
+        gen.write_struct_def();
+        gen.write_line("");
+
+        // failing fallback functions
+        gen.write_failing_fns();
+        gen.write_line("");
+
+        // loader function
+        gen.write_load_fn();
+        gen.write_line("");
+
+        // function wrappers
+        gen.write_wrapper_fns();
+        gen.write_line("");
     }
 }
