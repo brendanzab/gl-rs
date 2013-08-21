@@ -297,19 +297,28 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("use std::libc::*;");
         self.write_line("use super::types::*;");
         self.write_line("");
-
-        // FnPtr struct def
-        self.write_fnptr_struct_def();
+        self.write_line("macro_rules! fn_ptr(");
+        self.write_line("    (fn $name:ident()) => (");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn() = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("    );");
+        self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn() -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("    );");
+        self.write_line("    (fn $name:ident($($arg:ident : $arg_ty:ty),*)) => (");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn($($arg: $arg_ty),*)> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("    );");
+        self.write_line("    (fn $name:ident($($arg:ident : $arg_ty:ty),*) -> $ret_ty:ty) => (");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn($($arg: $arg_ty),*) -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("    );");
+        self.write_line(")");
         self.write_line("");
-
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(fmt!(
-                "pub static mut %s: FnPtr<extern \"C\" fn(%s)%s> = FnPtr { f: super::failing::%s, is_loaded: false };",
+                "fn_ptr!(fn %s(%s)%s)",
                 c.proto.ident,
                 Generator::gen_param_list(c, true),
-                Generator::gen_return_suffix(c),
-                c.proto.ident
+                Generator::gen_return_suffix(c)
             )),
             |_, _| ()
         );
@@ -317,16 +326,26 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("}");
     }
 
-    fn write_is_loaded_fns(&self) {
+    fn write_fn_mods(&self) {
+        self.write_line("macro_rules! fn_mod(");
+        self.write_line("    ($name:ident) => (");
+        self.write_line("        pub mod $name {");
+        self.write_line("            use std::libc::c_void;");
+        self.write_line("            ");
+        self.write_line("            #[inline]");
+        self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
+        self.write_line("            ");
+        self.write_line("            #[inline]");
+        self.write_line("            pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) {");
+        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn(stringify!($name)), ::failing::$name) }");
+        self.write_line("            }");
+        self.write_line("        }");
+        self.write_line("    )");
+        self.write_line(")");
+        self.write_line("");
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(fmt!(
-                "pub mod %s { \
-                    #[inline] pub fn is_loaded() -> bool { unsafe { super::storage::%s.is_loaded } } \
-                }",
-                c.proto.ident,
-                c.proto.ident
-            )),
+            |_, c| self.write_line(fmt!("fn_mod!(%s)", c.proto.ident)),
             |_, _| ()
         );
     }
@@ -360,15 +379,11 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
         self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) {");
-        self.incr_indent();
-        self.write_line("use storage::FnPtr;");
         self.write_line("");
+        self.incr_indent();
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(fmt!(
-                "storage::%s = FnPtr::new(loadfn(\"%s\"), failing::%s);",
-                c.proto.ident, c.proto.ident, c.proto.ident
-            )),
+            |_, c| self.write_line(fmt!("%s::load_with(loadfn);", c.proto.ident)),
             |_, _| ()
         );
         self.decr_indent();
@@ -394,12 +409,16 @@ impl<'self> PtrGenerator<'self> {
         gen.write_fns();
         gen.write_line("");
 
+        // FnPtr struct def
+        gen.write_fnptr_struct_def();
+        gen.write_line("");
+
         // static muts for storing function pointers
         gen.write_ptrs();
         gen.write_line("");
 
         // functions for querying the status of individual function pointers
-        gen.write_is_loaded_fns();
+        gen.write_fn_mods();
         gen.write_line("");
 
         // failing functions to assign to the function pointers
