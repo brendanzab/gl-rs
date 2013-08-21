@@ -13606,2825 +13606,2832 @@ mod failing {
     use std::libc::*;
     use super::types::*;
     
-    pub extern "C" fn Accum(_: GLenum, _: GLfloat) -> c_void { fail!("Accum was not loaded") }
-    pub extern "C" fn AccumxOES(_: GLenum, _: GLfixed) -> c_void { fail!("AccumxOES was not loaded") }
-    pub extern "C" fn ActiveProgramEXT(_: GLuint) -> c_void { fail!("ActiveProgramEXT was not loaded") }
-    pub extern "C" fn ActiveShaderProgram(_: GLuint, _: GLuint) -> c_void { fail!("ActiveShaderProgram was not loaded") }
-    pub extern "C" fn ActiveShaderProgramEXT(_: GLuint, _: GLuint) -> c_void { fail!("ActiveShaderProgramEXT was not loaded") }
-    pub extern "C" fn ActiveStencilFaceEXT(_: GLenum) -> c_void { fail!("ActiveStencilFaceEXT was not loaded") }
-    pub extern "C" fn ActiveTexture(_: GLenum) -> c_void { fail!("ActiveTexture was not loaded") }
-    pub extern "C" fn ActiveTextureARB(_: GLenum) -> c_void { fail!("ActiveTextureARB was not loaded") }
-    pub extern "C" fn ActiveVaryingNV(_: GLuint, _: *GLchar) -> c_void { fail!("ActiveVaryingNV was not loaded") }
-    pub extern "C" fn AlphaFragmentOp1ATI(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("AlphaFragmentOp1ATI was not loaded") }
-    pub extern "C" fn AlphaFragmentOp2ATI(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("AlphaFragmentOp2ATI was not loaded") }
-    pub extern "C" fn AlphaFragmentOp3ATI(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("AlphaFragmentOp3ATI was not loaded") }
-    pub extern "C" fn AlphaFunc(_: GLenum, _: GLfloat) -> c_void { fail!("AlphaFunc was not loaded") }
-    pub extern "C" fn AlphaFuncQCOM(_: GLenum, _: GLclampf) -> c_void { fail!("AlphaFuncQCOM was not loaded") }
-    pub extern "C" fn AlphaFuncx(_: GLenum, _: GLfixed) -> c_void { fail!("AlphaFuncx was not loaded") }
-    pub extern "C" fn AlphaFuncxOES(_: GLenum, _: GLfixed) -> c_void { fail!("AlphaFuncxOES was not loaded") }
-    pub extern "C" fn ApplyTextureEXT(_: GLenum) -> c_void { fail!("ApplyTextureEXT was not loaded") }
-    pub extern "C" fn AreProgramsResidentNV(_: GLsizei, _: *GLuint, _: *GLboolean) -> GLboolean { fail!("AreProgramsResidentNV was not loaded") }
-    pub extern "C" fn AreTexturesResident(_: GLsizei, _: *GLuint, _: *GLboolean) -> GLboolean { fail!("AreTexturesResident was not loaded") }
-    pub extern "C" fn AreTexturesResidentEXT(_: GLsizei, _: *GLuint, _: *GLboolean) -> GLboolean { fail!("AreTexturesResidentEXT was not loaded") }
-    pub extern "C" fn ArrayElement(_: GLint) -> c_void { fail!("ArrayElement was not loaded") }
-    pub extern "C" fn ArrayElementEXT(_: GLint) -> c_void { fail!("ArrayElementEXT was not loaded") }
-    pub extern "C" fn ArrayObjectATI(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLuint, _: GLuint) -> c_void { fail!("ArrayObjectATI was not loaded") }
-    pub extern "C" fn AsyncMarkerSGIX(_: GLuint) -> c_void { fail!("AsyncMarkerSGIX was not loaded") }
-    pub extern "C" fn AttachObjectARB(_: GLhandleARB, _: GLhandleARB) -> c_void { fail!("AttachObjectARB was not loaded") }
-    pub extern "C" fn AttachShader(_: GLuint, _: GLuint) -> c_void { fail!("AttachShader was not loaded") }
-    pub extern "C" fn Begin(_: GLenum) -> c_void { fail!("Begin was not loaded") }
-    pub extern "C" fn BeginConditionalRender(_: GLuint, _: GLenum) -> c_void { fail!("BeginConditionalRender was not loaded") }
-    pub extern "C" fn BeginConditionalRenderNV(_: GLuint, _: GLenum) -> c_void { fail!("BeginConditionalRenderNV was not loaded") }
-    pub extern "C" fn BeginConditionalRenderNVX(_: GLuint) -> c_void { fail!("BeginConditionalRenderNVX was not loaded") }
-    pub extern "C" fn BeginFragmentShaderATI() -> c_void { fail!("BeginFragmentShaderATI was not loaded") }
-    pub extern "C" fn BeginOcclusionQueryNV(_: GLuint) -> c_void { fail!("BeginOcclusionQueryNV was not loaded") }
-    pub extern "C" fn BeginPerfMonitorAMD(_: GLuint) -> c_void { fail!("BeginPerfMonitorAMD was not loaded") }
-    pub extern "C" fn BeginQuery(_: GLenum, _: GLuint) -> c_void { fail!("BeginQuery was not loaded") }
-    pub extern "C" fn BeginQueryARB(_: GLenum, _: GLuint) -> c_void { fail!("BeginQueryARB was not loaded") }
-    pub extern "C" fn BeginQueryEXT(_: GLenum, _: GLuint) -> c_void { fail!("BeginQueryEXT was not loaded") }
-    pub extern "C" fn BeginQueryIndexed(_: GLenum, _: GLuint, _: GLuint) -> c_void { fail!("BeginQueryIndexed was not loaded") }
-    pub extern "C" fn BeginTransformFeedback(_: GLenum) -> c_void { fail!("BeginTransformFeedback was not loaded") }
-    pub extern "C" fn BeginTransformFeedbackEXT(_: GLenum) -> c_void { fail!("BeginTransformFeedbackEXT was not loaded") }
-    pub extern "C" fn BeginTransformFeedbackNV(_: GLenum) -> c_void { fail!("BeginTransformFeedbackNV was not loaded") }
-    pub extern "C" fn BeginVertexShaderEXT() -> c_void { fail!("BeginVertexShaderEXT was not loaded") }
-    pub extern "C" fn BeginVideoCaptureNV(_: GLuint) -> c_void { fail!("BeginVideoCaptureNV was not loaded") }
-    pub extern "C" fn BindAttribLocation(_: GLuint, _: GLuint, _: *GLchar) -> c_void { fail!("BindAttribLocation was not loaded") }
-    pub extern "C" fn BindAttribLocationARB(_: GLhandleARB, _: GLuint, _: *GLcharARB) -> c_void { fail!("BindAttribLocationARB was not loaded") }
-    pub extern "C" fn BindBuffer(_: GLenum, _: GLuint) -> c_void { fail!("BindBuffer was not loaded") }
-    pub extern "C" fn BindBufferARB(_: GLenum, _: GLuint) -> c_void { fail!("BindBufferARB was not loaded") }
-    pub extern "C" fn BindBufferBase(_: GLenum, _: GLuint, _: GLuint) -> c_void { fail!("BindBufferBase was not loaded") }
-    pub extern "C" fn BindBufferBaseEXT(_: GLenum, _: GLuint, _: GLuint) -> c_void { fail!("BindBufferBaseEXT was not loaded") }
-    pub extern "C" fn BindBufferBaseNV(_: GLenum, _: GLuint, _: GLuint) -> c_void { fail!("BindBufferBaseNV was not loaded") }
-    pub extern "C" fn BindBufferOffsetEXT(_: GLenum, _: GLuint, _: GLuint, _: GLintptr) -> c_void { fail!("BindBufferOffsetEXT was not loaded") }
-    pub extern "C" fn BindBufferOffsetNV(_: GLenum, _: GLuint, _: GLuint, _: GLintptr) -> c_void { fail!("BindBufferOffsetNV was not loaded") }
-    pub extern "C" fn BindBufferRange(_: GLenum, _: GLuint, _: GLuint, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("BindBufferRange was not loaded") }
-    pub extern "C" fn BindBufferRangeEXT(_: GLenum, _: GLuint, _: GLuint, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("BindBufferRangeEXT was not loaded") }
-    pub extern "C" fn BindBufferRangeNV(_: GLenum, _: GLuint, _: GLuint, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("BindBufferRangeNV was not loaded") }
-    pub extern "C" fn BindBuffersBase(_: GLenum, _: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("BindBuffersBase was not loaded") }
-    pub extern "C" fn BindBuffersRange(_: GLenum, _: GLuint, _: GLsizei, _: *GLuint, _: *GLintptr, _: *GLsizeiptr) -> c_void { fail!("BindBuffersRange was not loaded") }
-    pub extern "C" fn BindFragDataLocation(_: GLuint, _: GLuint, _: *GLchar) -> c_void { fail!("BindFragDataLocation was not loaded") }
-    pub extern "C" fn BindFragDataLocationEXT(_: GLuint, _: GLuint, _: *GLchar) -> c_void { fail!("BindFragDataLocationEXT was not loaded") }
-    pub extern "C" fn BindFragDataLocationIndexed(_: GLuint, _: GLuint, _: GLuint, _: *GLchar) -> c_void { fail!("BindFragDataLocationIndexed was not loaded") }
-    pub extern "C" fn BindFragmentShaderATI(_: GLuint) -> c_void { fail!("BindFragmentShaderATI was not loaded") }
-    pub extern "C" fn BindFramebuffer(_: GLenum, _: GLuint) -> c_void { fail!("BindFramebuffer was not loaded") }
-    pub extern "C" fn BindFramebufferEXT(_: GLenum, _: GLuint) -> c_void { fail!("BindFramebufferEXT was not loaded") }
-    pub extern "C" fn BindFramebufferOES(_: GLenum, _: GLuint) -> c_void { fail!("BindFramebufferOES was not loaded") }
-    pub extern "C" fn BindImageTexture(_: GLuint, _: GLuint, _: GLint, _: GLboolean, _: GLint, _: GLenum, _: GLenum) -> c_void { fail!("BindImageTexture was not loaded") }
-    pub extern "C" fn BindImageTextureEXT(_: GLuint, _: GLuint, _: GLint, _: GLboolean, _: GLint, _: GLenum, _: GLint) -> c_void { fail!("BindImageTextureEXT was not loaded") }
-    pub extern "C" fn BindImageTextures(_: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("BindImageTextures was not loaded") }
-    pub extern "C" fn BindLightParameterEXT(_: GLenum, _: GLenum) -> GLuint { fail!("BindLightParameterEXT was not loaded") }
-    pub extern "C" fn BindMaterialParameterEXT(_: GLenum, _: GLenum) -> GLuint { fail!("BindMaterialParameterEXT was not loaded") }
-    pub extern "C" fn BindMultiTextureEXT(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("BindMultiTextureEXT was not loaded") }
-    pub extern "C" fn BindParameterEXT(_: GLenum) -> GLuint { fail!("BindParameterEXT was not loaded") }
-    pub extern "C" fn BindProgramARB(_: GLenum, _: GLuint) -> c_void { fail!("BindProgramARB was not loaded") }
-    pub extern "C" fn BindProgramNV(_: GLenum, _: GLuint) -> c_void { fail!("BindProgramNV was not loaded") }
-    pub extern "C" fn BindProgramPipeline(_: GLuint) -> c_void { fail!("BindProgramPipeline was not loaded") }
-    pub extern "C" fn BindProgramPipelineEXT(_: GLuint) -> c_void { fail!("BindProgramPipelineEXT was not loaded") }
-    pub extern "C" fn BindRenderbuffer(_: GLenum, _: GLuint) -> c_void { fail!("BindRenderbuffer was not loaded") }
-    pub extern "C" fn BindRenderbufferEXT(_: GLenum, _: GLuint) -> c_void { fail!("BindRenderbufferEXT was not loaded") }
-    pub extern "C" fn BindRenderbufferOES(_: GLenum, _: GLuint) -> c_void { fail!("BindRenderbufferOES was not loaded") }
-    pub extern "C" fn BindSampler(_: GLuint, _: GLuint) -> c_void { fail!("BindSampler was not loaded") }
-    pub extern "C" fn BindSamplers(_: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("BindSamplers was not loaded") }
-    pub extern "C" fn BindTexGenParameterEXT(_: GLenum, _: GLenum, _: GLenum) -> GLuint { fail!("BindTexGenParameterEXT was not loaded") }
-    pub extern "C" fn BindTexture(_: GLenum, _: GLuint) -> c_void { fail!("BindTexture was not loaded") }
-    pub extern "C" fn BindTextureEXT(_: GLenum, _: GLuint) -> c_void { fail!("BindTextureEXT was not loaded") }
-    pub extern "C" fn BindTextureUnitParameterEXT(_: GLenum, _: GLenum) -> GLuint { fail!("BindTextureUnitParameterEXT was not loaded") }
-    pub extern "C" fn BindTextures(_: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("BindTextures was not loaded") }
-    pub extern "C" fn BindTransformFeedback(_: GLenum, _: GLuint) -> c_void { fail!("BindTransformFeedback was not loaded") }
-    pub extern "C" fn BindTransformFeedbackNV(_: GLenum, _: GLuint) -> c_void { fail!("BindTransformFeedbackNV was not loaded") }
-    pub extern "C" fn BindVertexArray(_: GLuint) -> c_void { fail!("BindVertexArray was not loaded") }
-    pub extern "C" fn BindVertexArrayAPPLE(_: GLuint) -> c_void { fail!("BindVertexArrayAPPLE was not loaded") }
-    pub extern "C" fn BindVertexArrayOES(_: GLuint) -> c_void { fail!("BindVertexArrayOES was not loaded") }
-    pub extern "C" fn BindVertexBuffer(_: GLuint, _: GLuint, _: GLintptr, _: GLsizei) -> c_void { fail!("BindVertexBuffer was not loaded") }
-    pub extern "C" fn BindVertexBuffers(_: GLuint, _: GLsizei, _: *GLuint, _: *GLintptr, _: *GLsizei) -> c_void { fail!("BindVertexBuffers was not loaded") }
-    pub extern "C" fn BindVertexShaderEXT(_: GLuint) -> c_void { fail!("BindVertexShaderEXT was not loaded") }
-    pub extern "C" fn BindVideoCaptureStreamBufferNV(_: GLuint, _: GLuint, _: GLenum, _: GLintptrARB) -> c_void { fail!("BindVideoCaptureStreamBufferNV was not loaded") }
-    pub extern "C" fn BindVideoCaptureStreamTextureNV(_: GLuint, _: GLuint, _: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("BindVideoCaptureStreamTextureNV was not loaded") }
-    pub extern "C" fn Binormal3bEXT(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("Binormal3bEXT was not loaded") }
-    pub extern "C" fn Binormal3bvEXT(_: *GLbyte) -> c_void { fail!("Binormal3bvEXT was not loaded") }
-    pub extern "C" fn Binormal3dEXT(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Binormal3dEXT was not loaded") }
-    pub extern "C" fn Binormal3dvEXT(_: *GLdouble) -> c_void { fail!("Binormal3dvEXT was not loaded") }
-    pub extern "C" fn Binormal3fEXT(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Binormal3fEXT was not loaded") }
-    pub extern "C" fn Binormal3fvEXT(_: *GLfloat) -> c_void { fail!("Binormal3fvEXT was not loaded") }
-    pub extern "C" fn Binormal3iEXT(_: GLint, _: GLint, _: GLint) -> c_void { fail!("Binormal3iEXT was not loaded") }
-    pub extern "C" fn Binormal3ivEXT(_: *GLint) -> c_void { fail!("Binormal3ivEXT was not loaded") }
-    pub extern "C" fn Binormal3sEXT(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Binormal3sEXT was not loaded") }
-    pub extern "C" fn Binormal3svEXT(_: *GLshort) -> c_void { fail!("Binormal3svEXT was not loaded") }
-    pub extern "C" fn BinormalPointerEXT(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("BinormalPointerEXT was not loaded") }
-    pub extern "C" fn Bitmap(_: GLsizei, _: GLsizei, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: *GLubyte) -> c_void { fail!("Bitmap was not loaded") }
-    pub extern "C" fn BitmapxOES(_: GLsizei, _: GLsizei, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: *GLubyte) -> c_void { fail!("BitmapxOES was not loaded") }
-    pub extern "C" fn BlendColor(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("BlendColor was not loaded") }
-    pub extern "C" fn BlendColorEXT(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("BlendColorEXT was not loaded") }
-    pub extern "C" fn BlendColorxOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("BlendColorxOES was not loaded") }
-    pub extern "C" fn BlendEquation(_: GLenum) -> c_void { fail!("BlendEquation was not loaded") }
-    pub extern "C" fn BlendEquationEXT(_: GLenum) -> c_void { fail!("BlendEquationEXT was not loaded") }
-    pub extern "C" fn BlendEquationIndexedAMD(_: GLuint, _: GLenum) -> c_void { fail!("BlendEquationIndexedAMD was not loaded") }
-    pub extern "C" fn BlendEquationOES(_: GLenum) -> c_void { fail!("BlendEquationOES was not loaded") }
-    pub extern "C" fn BlendEquationSeparate(_: GLenum, _: GLenum) -> c_void { fail!("BlendEquationSeparate was not loaded") }
-    pub extern "C" fn BlendEquationSeparateEXT(_: GLenum, _: GLenum) -> c_void { fail!("BlendEquationSeparateEXT was not loaded") }
-    pub extern "C" fn BlendEquationSeparateIndexedAMD(_: GLuint, _: GLenum, _: GLenum) -> c_void { fail!("BlendEquationSeparateIndexedAMD was not loaded") }
-    pub extern "C" fn BlendEquationSeparateOES(_: GLenum, _: GLenum) -> c_void { fail!("BlendEquationSeparateOES was not loaded") }
-    pub extern "C" fn BlendEquationSeparatei(_: GLuint, _: GLenum, _: GLenum) -> c_void { fail!("BlendEquationSeparatei was not loaded") }
-    pub extern "C" fn BlendEquationSeparateiARB(_: GLuint, _: GLenum, _: GLenum) -> c_void { fail!("BlendEquationSeparateiARB was not loaded") }
-    pub extern "C" fn BlendEquationi(_: GLuint, _: GLenum) -> c_void { fail!("BlendEquationi was not loaded") }
-    pub extern "C" fn BlendEquationiARB(_: GLuint, _: GLenum) -> c_void { fail!("BlendEquationiARB was not loaded") }
-    pub extern "C" fn BlendFunc(_: GLenum, _: GLenum) -> c_void { fail!("BlendFunc was not loaded") }
-    pub extern "C" fn BlendFuncIndexedAMD(_: GLuint, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncIndexedAMD was not loaded") }
-    pub extern "C" fn BlendFuncSeparate(_: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncSeparate was not loaded") }
-    pub extern "C" fn BlendFuncSeparateEXT(_: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncSeparateEXT was not loaded") }
-    pub extern "C" fn BlendFuncSeparateINGR(_: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncSeparateINGR was not loaded") }
-    pub extern "C" fn BlendFuncSeparateIndexedAMD(_: GLuint, _: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncSeparateIndexedAMD was not loaded") }
-    pub extern "C" fn BlendFuncSeparateOES(_: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncSeparateOES was not loaded") }
-    pub extern "C" fn BlendFuncSeparatei(_: GLuint, _: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncSeparatei was not loaded") }
-    pub extern "C" fn BlendFuncSeparateiARB(_: GLuint, _: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("BlendFuncSeparateiARB was not loaded") }
-    pub extern "C" fn BlendFunci(_: GLuint, _: GLenum, _: GLenum) -> c_void { fail!("BlendFunci was not loaded") }
-    pub extern "C" fn BlendFunciARB(_: GLuint, _: GLenum, _: GLenum) -> c_void { fail!("BlendFunciARB was not loaded") }
-    pub extern "C" fn BlendParameteriNV(_: GLenum, _: GLint) -> c_void { fail!("BlendParameteriNV was not loaded") }
-    pub extern "C" fn BlendBarrierNV() -> c_void { fail!("BlendBarrierNV was not loaded") }
-    pub extern "C" fn BlitFramebuffer(_: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLbitfield, _: GLenum) -> c_void { fail!("BlitFramebuffer was not loaded") }
-    pub extern "C" fn BlitFramebufferANGLE(_: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLbitfield, _: GLenum) -> c_void { fail!("BlitFramebufferANGLE was not loaded") }
-    pub extern "C" fn BlitFramebufferEXT(_: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLbitfield, _: GLenum) -> c_void { fail!("BlitFramebufferEXT was not loaded") }
-    pub extern "C" fn BlitFramebufferNV(_: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLbitfield, _: GLenum) -> c_void { fail!("BlitFramebufferNV was not loaded") }
-    pub extern "C" fn BufferAddressRangeNV(_: GLenum, _: GLuint, _: GLuint64EXT, _: GLsizeiptr) -> c_void { fail!("BufferAddressRangeNV was not loaded") }
-    pub extern "C" fn BufferData(_: GLenum, _: GLsizeiptr, _: *GLvoid, _: GLenum) -> c_void { fail!("BufferData was not loaded") }
-    pub extern "C" fn BufferDataARB(_: GLenum, _: GLsizeiptrARB, _: *GLvoid, _: GLenum) -> c_void { fail!("BufferDataARB was not loaded") }
-    pub extern "C" fn BufferParameteriAPPLE(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("BufferParameteriAPPLE was not loaded") }
-    pub extern "C" fn BufferStorage(_: GLenum, _: GLsizeiptr, _: *c_void, _: GLbitfield) -> c_void { fail!("BufferStorage was not loaded") }
-    pub extern "C" fn BufferSubData(_: GLenum, _: GLintptr, _: GLsizeiptr, _: *GLvoid) -> c_void { fail!("BufferSubData was not loaded") }
-    pub extern "C" fn BufferSubDataARB(_: GLenum, _: GLintptrARB, _: GLsizeiptrARB, _: *GLvoid) -> c_void { fail!("BufferSubDataARB was not loaded") }
-    pub extern "C" fn CallList(_: GLuint) -> c_void { fail!("CallList was not loaded") }
-    pub extern "C" fn CallLists(_: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("CallLists was not loaded") }
-    pub extern "C" fn CheckFramebufferStatus(_: GLenum) -> GLenum { fail!("CheckFramebufferStatus was not loaded") }
-    pub extern "C" fn CheckFramebufferStatusEXT(_: GLenum) -> GLenum { fail!("CheckFramebufferStatusEXT was not loaded") }
-    pub extern "C" fn CheckFramebufferStatusOES(_: GLenum) -> GLenum { fail!("CheckFramebufferStatusOES was not loaded") }
-    pub extern "C" fn CheckNamedFramebufferStatusEXT(_: GLuint, _: GLenum) -> GLenum { fail!("CheckNamedFramebufferStatusEXT was not loaded") }
-    pub extern "C" fn ClampColor(_: GLenum, _: GLenum) -> c_void { fail!("ClampColor was not loaded") }
-    pub extern "C" fn ClampColorARB(_: GLenum, _: GLenum) -> c_void { fail!("ClampColorARB was not loaded") }
-    pub extern "C" fn Clear(_: GLbitfield) -> c_void { fail!("Clear was not loaded") }
-    pub extern "C" fn ClearAccum(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ClearAccum was not loaded") }
-    pub extern "C" fn ClearAccumxOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("ClearAccumxOES was not loaded") }
-    pub extern "C" fn ClearBufferData(_: GLenum, _: GLenum, _: GLenum, _: GLenum, _: *c_void) -> c_void { fail!("ClearBufferData was not loaded") }
-    pub extern "C" fn ClearBufferSubData(_: GLenum, _: GLenum, _: GLintptr, _: GLsizeiptr, _: GLenum, _: GLenum, _: *c_void) -> c_void { fail!("ClearBufferSubData was not loaded") }
-    pub extern "C" fn ClearBufferfi(_: GLenum, _: GLint, _: GLfloat, _: GLint) -> c_void { fail!("ClearBufferfi was not loaded") }
-    pub extern "C" fn ClearBufferfv(_: GLenum, _: GLint, _: *GLfloat) -> c_void { fail!("ClearBufferfv was not loaded") }
-    pub extern "C" fn ClearBufferiv(_: GLenum, _: GLint, _: *GLint) -> c_void { fail!("ClearBufferiv was not loaded") }
-    pub extern "C" fn ClearBufferuiv(_: GLenum, _: GLint, _: *GLuint) -> c_void { fail!("ClearBufferuiv was not loaded") }
-    pub extern "C" fn ClearColor(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ClearColor was not loaded") }
-    pub extern "C" fn ClearColorIiEXT(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ClearColorIiEXT was not loaded") }
-    pub extern "C" fn ClearColorIuiEXT(_: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ClearColorIuiEXT was not loaded") }
-    pub extern "C" fn ClearColorx(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("ClearColorx was not loaded") }
-    pub extern "C" fn ClearColorxOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("ClearColorxOES was not loaded") }
-    pub extern "C" fn ClearDepth(_: GLdouble) -> c_void { fail!("ClearDepth was not loaded") }
-    pub extern "C" fn ClearDepthdNV(_: GLdouble) -> c_void { fail!("ClearDepthdNV was not loaded") }
-    pub extern "C" fn ClearDepthf(_: GLfloat) -> c_void { fail!("ClearDepthf was not loaded") }
-    pub extern "C" fn ClearDepthfOES(_: GLclampf) -> c_void { fail!("ClearDepthfOES was not loaded") }
-    pub extern "C" fn ClearDepthx(_: GLfixed) -> c_void { fail!("ClearDepthx was not loaded") }
-    pub extern "C" fn ClearDepthxOES(_: GLfixed) -> c_void { fail!("ClearDepthxOES was not loaded") }
-    pub extern "C" fn ClearIndex(_: GLfloat) -> c_void { fail!("ClearIndex was not loaded") }
-    pub extern "C" fn ClearNamedBufferDataEXT(_: GLuint, _: GLenum, _: GLenum, _: GLenum, _: *c_void) -> c_void { fail!("ClearNamedBufferDataEXT was not loaded") }
-    pub extern "C" fn ClearNamedBufferSubDataEXT(_: GLuint, _: GLenum, _: GLenum, _: GLenum, _: GLsizeiptr, _: GLsizeiptr, _: *c_void) -> c_void { fail!("ClearNamedBufferSubDataEXT was not loaded") }
-    pub extern "C" fn ClearStencil(_: GLint) -> c_void { fail!("ClearStencil was not loaded") }
-    pub extern "C" fn ClearTexImage(_: GLuint, _: GLint, _: GLenum, _: GLenum, _: *c_void) -> c_void { fail!("ClearTexImage was not loaded") }
-    pub extern "C" fn ClearTexSubImage(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *c_void) -> c_void { fail!("ClearTexSubImage was not loaded") }
-    pub extern "C" fn ClientActiveTexture(_: GLenum) -> c_void { fail!("ClientActiveTexture was not loaded") }
-    pub extern "C" fn ClientActiveTextureARB(_: GLenum) -> c_void { fail!("ClientActiveTextureARB was not loaded") }
-    pub extern "C" fn ClientActiveVertexStreamATI(_: GLenum) -> c_void { fail!("ClientActiveVertexStreamATI was not loaded") }
-    pub extern "C" fn ClientAttribDefaultEXT(_: GLbitfield) -> c_void { fail!("ClientAttribDefaultEXT was not loaded") }
-    pub extern "C" fn ClientWaitSync(_: GLsync, _: GLbitfield, _: GLuint64) -> GLenum { fail!("ClientWaitSync was not loaded") }
-    pub extern "C" fn ClientWaitSyncAPPLE(_: GLsync, _: GLbitfield, _: GLuint64) -> GLenum { fail!("ClientWaitSyncAPPLE was not loaded") }
-    pub extern "C" fn ClipControlARB(_: GLenum, _: GLenum) -> c_void { fail!("ClipControlARB was not loaded") }
-    pub extern "C" fn ClipPlane(_: GLenum, _: *GLdouble) -> c_void { fail!("ClipPlane was not loaded") }
-    pub extern "C" fn ClipPlanef(_: GLenum, _: *GLfloat) -> c_void { fail!("ClipPlanef was not loaded") }
-    pub extern "C" fn ClipPlanefIMG(_: GLenum, _: *GLfloat) -> c_void { fail!("ClipPlanefIMG was not loaded") }
-    pub extern "C" fn ClipPlanefOES(_: GLenum, _: *GLfloat) -> c_void { fail!("ClipPlanefOES was not loaded") }
-    pub extern "C" fn ClipPlanex(_: GLenum, _: *GLfixed) -> c_void { fail!("ClipPlanex was not loaded") }
-    pub extern "C" fn ClipPlanexIMG(_: GLenum, _: *GLfixed) -> c_void { fail!("ClipPlanexIMG was not loaded") }
-    pub extern "C" fn ClipPlanexOES(_: GLenum, _: *GLfixed) -> c_void { fail!("ClipPlanexOES was not loaded") }
-    pub extern "C" fn Color3b(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("Color3b was not loaded") }
-    pub extern "C" fn Color3bv(_: *GLbyte) -> c_void { fail!("Color3bv was not loaded") }
-    pub extern "C" fn Color3d(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Color3d was not loaded") }
-    pub extern "C" fn Color3dv(_: *GLdouble) -> c_void { fail!("Color3dv was not loaded") }
-    pub extern "C" fn Color3f(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Color3f was not loaded") }
-    pub extern "C" fn Color3fVertex3fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Color3fVertex3fSUN was not loaded") }
-    pub extern "C" fn Color3fVertex3fvSUN(_: *GLfloat, _: *GLfloat) -> c_void { fail!("Color3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn Color3fv(_: *GLfloat) -> c_void { fail!("Color3fv was not loaded") }
-    pub extern "C" fn Color3hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("Color3hNV was not loaded") }
-    pub extern "C" fn Color3hvNV(_: *GLhalfNV) -> c_void { fail!("Color3hvNV was not loaded") }
-    pub extern "C" fn Color3i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("Color3i was not loaded") }
-    pub extern "C" fn Color3iv(_: *GLint) -> c_void { fail!("Color3iv was not loaded") }
-    pub extern "C" fn Color3s(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Color3s was not loaded") }
-    pub extern "C" fn Color3sv(_: *GLshort) -> c_void { fail!("Color3sv was not loaded") }
-    pub extern "C" fn Color3ub(_: GLubyte, _: GLubyte, _: GLubyte) -> c_void { fail!("Color3ub was not loaded") }
-    pub extern "C" fn Color3ubv(_: *GLubyte) -> c_void { fail!("Color3ubv was not loaded") }
-    pub extern "C" fn Color3ui(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("Color3ui was not loaded") }
-    pub extern "C" fn Color3uiv(_: *GLuint) -> c_void { fail!("Color3uiv was not loaded") }
-    pub extern "C" fn Color3us(_: GLushort, _: GLushort, _: GLushort) -> c_void { fail!("Color3us was not loaded") }
-    pub extern "C" fn Color3usv(_: *GLushort) -> c_void { fail!("Color3usv was not loaded") }
-    pub extern "C" fn Color3xOES(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Color3xOES was not loaded") }
-    pub extern "C" fn Color3xvOES(_: *GLfixed) -> c_void { fail!("Color3xvOES was not loaded") }
-    pub extern "C" fn Color4b(_: GLbyte, _: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("Color4b was not loaded") }
-    pub extern "C" fn Color4bv(_: *GLbyte) -> c_void { fail!("Color4bv was not loaded") }
-    pub extern "C" fn Color4d(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Color4d was not loaded") }
-    pub extern "C" fn Color4dv(_: *GLdouble) -> c_void { fail!("Color4dv was not loaded") }
-    pub extern "C" fn Color4f(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Color4f was not loaded") }
-    pub extern "C" fn Color4fNormal3fVertex3fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Color4fNormal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn Color4fNormal3fVertex3fvSUN(_: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("Color4fNormal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn Color4fv(_: *GLfloat) -> c_void { fail!("Color4fv was not loaded") }
-    pub extern "C" fn Color4hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("Color4hNV was not loaded") }
-    pub extern "C" fn Color4hvNV(_: *GLhalfNV) -> c_void { fail!("Color4hvNV was not loaded") }
-    pub extern "C" fn Color4i(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("Color4i was not loaded") }
-    pub extern "C" fn Color4iv(_: *GLint) -> c_void { fail!("Color4iv was not loaded") }
-    pub extern "C" fn Color4s(_: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Color4s was not loaded") }
-    pub extern "C" fn Color4sv(_: *GLshort) -> c_void { fail!("Color4sv was not loaded") }
-    pub extern "C" fn Color4ub(_: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte) -> c_void { fail!("Color4ub was not loaded") }
-    pub extern "C" fn Color4ubVertex2fSUN(_: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte, _: GLfloat, _: GLfloat) -> c_void { fail!("Color4ubVertex2fSUN was not loaded") }
-    pub extern "C" fn Color4ubVertex2fvSUN(_: *GLubyte, _: *GLfloat) -> c_void { fail!("Color4ubVertex2fvSUN was not loaded") }
-    pub extern "C" fn Color4ubVertex3fSUN(_: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Color4ubVertex3fSUN was not loaded") }
-    pub extern "C" fn Color4ubVertex3fvSUN(_: *GLubyte, _: *GLfloat) -> c_void { fail!("Color4ubVertex3fvSUN was not loaded") }
-    pub extern "C" fn Color4ubv(_: *GLubyte) -> c_void { fail!("Color4ubv was not loaded") }
-    pub extern "C" fn Color4ui(_: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("Color4ui was not loaded") }
-    pub extern "C" fn Color4uiv(_: *GLuint) -> c_void { fail!("Color4uiv was not loaded") }
-    pub extern "C" fn Color4us(_: GLushort, _: GLushort, _: GLushort, _: GLushort) -> c_void { fail!("Color4us was not loaded") }
-    pub extern "C" fn Color4usv(_: *GLushort) -> c_void { fail!("Color4usv was not loaded") }
-    pub extern "C" fn Color4x(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Color4x was not loaded") }
-    pub extern "C" fn Color4xOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Color4xOES was not loaded") }
-    pub extern "C" fn Color4xvOES(_: *GLfixed) -> c_void { fail!("Color4xvOES was not loaded") }
-    pub extern "C" fn ColorFormatNV(_: GLint, _: GLenum, _: GLsizei) -> c_void { fail!("ColorFormatNV was not loaded") }
-    pub extern "C" fn ColorFragmentOp1ATI(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ColorFragmentOp1ATI was not loaded") }
-    pub extern "C" fn ColorFragmentOp2ATI(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ColorFragmentOp2ATI was not loaded") }
-    pub extern "C" fn ColorFragmentOp3ATI(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ColorFragmentOp3ATI was not loaded") }
-    pub extern "C" fn ColorMask(_: GLboolean, _: GLboolean, _: GLboolean, _: GLboolean) -> c_void { fail!("ColorMask was not loaded") }
-    pub extern "C" fn ColorMaskIndexedEXT(_: GLuint, _: GLboolean, _: GLboolean, _: GLboolean, _: GLboolean) -> c_void { fail!("ColorMaskIndexedEXT was not loaded") }
-    pub extern "C" fn ColorMaski(_: GLuint, _: GLboolean, _: GLboolean, _: GLboolean, _: GLboolean) -> c_void { fail!("ColorMaski was not loaded") }
-    pub extern "C" fn ColorMaterial(_: GLenum, _: GLenum) -> c_void { fail!("ColorMaterial was not loaded") }
-    pub extern "C" fn ColorP3ui(_: GLenum, _: GLuint) -> c_void { fail!("ColorP3ui was not loaded") }
-    pub extern "C" fn ColorP3uiv(_: GLenum, _: *GLuint) -> c_void { fail!("ColorP3uiv was not loaded") }
-    pub extern "C" fn ColorP4ui(_: GLenum, _: GLuint) -> c_void { fail!("ColorP4ui was not loaded") }
-    pub extern "C" fn ColorP4uiv(_: GLenum, _: *GLuint) -> c_void { fail!("ColorP4uiv was not loaded") }
-    pub extern "C" fn ColorPointer(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("ColorPointer was not loaded") }
-    pub extern "C" fn ColorPointerEXT(_: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: *GLvoid) -> c_void { fail!("ColorPointerEXT was not loaded") }
-    pub extern "C" fn ColorPointerListIBM(_: GLint, _: GLenum, _: GLint, _: **GLvoid, _: GLint) -> c_void { fail!("ColorPointerListIBM was not loaded") }
-    pub extern "C" fn ColorPointervINTEL(_: GLint, _: GLenum, _: **GLvoid) -> c_void { fail!("ColorPointervINTEL was not loaded") }
-    pub extern "C" fn ColorSubTable(_: GLenum, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ColorSubTable was not loaded") }
-    pub extern "C" fn ColorSubTableEXT(_: GLenum, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ColorSubTableEXT was not loaded") }
-    pub extern "C" fn ColorTable(_: GLenum, _: GLenum, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ColorTable was not loaded") }
-    pub extern "C" fn ColorTableEXT(_: GLenum, _: GLenum, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ColorTableEXT was not loaded") }
-    pub extern "C" fn ColorTableParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("ColorTableParameterfv was not loaded") }
-    pub extern "C" fn ColorTableParameterfvSGI(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("ColorTableParameterfvSGI was not loaded") }
-    pub extern "C" fn ColorTableParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("ColorTableParameteriv was not loaded") }
-    pub extern "C" fn ColorTableParameterivSGI(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("ColorTableParameterivSGI was not loaded") }
-    pub extern "C" fn ColorTableSGI(_: GLenum, _: GLenum, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ColorTableSGI was not loaded") }
-    pub extern "C" fn CombinerInputNV(_: GLenum, _: GLenum, _: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("CombinerInputNV was not loaded") }
-    pub extern "C" fn CombinerOutputNV(_: GLenum, _: GLenum, _: GLenum, _: GLenum, _: GLenum, _: GLenum, _: GLenum, _: GLboolean, _: GLboolean, _: GLboolean) -> c_void { fail!("CombinerOutputNV was not loaded") }
-    pub extern "C" fn CombinerParameterfNV(_: GLenum, _: GLfloat) -> c_void { fail!("CombinerParameterfNV was not loaded") }
-    pub extern "C" fn CombinerParameterfvNV(_: GLenum, _: *GLfloat) -> c_void { fail!("CombinerParameterfvNV was not loaded") }
-    pub extern "C" fn CombinerParameteriNV(_: GLenum, _: GLint) -> c_void { fail!("CombinerParameteriNV was not loaded") }
-    pub extern "C" fn CombinerParameterivNV(_: GLenum, _: *GLint) -> c_void { fail!("CombinerParameterivNV was not loaded") }
-    pub extern "C" fn CombinerStageParameterfvNV(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("CombinerStageParameterfvNV was not loaded") }
-    pub extern "C" fn CompileShader(_: GLuint) -> c_void { fail!("CompileShader was not loaded") }
-    pub extern "C" fn CompileShaderARB(_: GLhandleARB) -> c_void { fail!("CompileShaderARB was not loaded") }
-    pub extern "C" fn CompileShaderIncludeARB(_: GLuint, _: GLsizei, _: **GLchar, _: *GLint) -> c_void { fail!("CompileShaderIncludeARB was not loaded") }
-    pub extern "C" fn CompressedMultiTexImage1DEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedMultiTexImage1DEXT was not loaded") }
-    pub extern "C" fn CompressedMultiTexImage2DEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedMultiTexImage2DEXT was not loaded") }
-    pub extern "C" fn CompressedMultiTexImage3DEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedMultiTexImage3DEXT was not loaded") }
-    pub extern "C" fn CompressedMultiTexSubImage1DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedMultiTexSubImage1DEXT was not loaded") }
-    pub extern "C" fn CompressedMultiTexSubImage2DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedMultiTexSubImage2DEXT was not loaded") }
-    pub extern "C" fn CompressedMultiTexSubImage3DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedMultiTexSubImage3DEXT was not loaded") }
-    pub extern "C" fn CompressedTexImage1D(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexImage1D was not loaded") }
-    pub extern "C" fn CompressedTexImage1DARB(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexImage1DARB was not loaded") }
-    pub extern "C" fn CompressedTexImage2D(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexImage2D was not loaded") }
-    pub extern "C" fn CompressedTexImage2DARB(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexImage2DARB was not loaded") }
-    pub extern "C" fn CompressedTexImage3D(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexImage3D was not loaded") }
-    pub extern "C" fn CompressedTexImage3DARB(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexImage3DARB was not loaded") }
-    pub extern "C" fn CompressedTexImage3DOES(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexImage3DOES was not loaded") }
-    pub extern "C" fn CompressedTexSubImage1D(_: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexSubImage1D was not loaded") }
-    pub extern "C" fn CompressedTexSubImage1DARB(_: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexSubImage1DARB was not loaded") }
-    pub extern "C" fn CompressedTexSubImage2D(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexSubImage2D was not loaded") }
-    pub extern "C" fn CompressedTexSubImage2DARB(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexSubImage2DARB was not loaded") }
-    pub extern "C" fn CompressedTexSubImage3D(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexSubImage3D was not loaded") }
-    pub extern "C" fn CompressedTexSubImage3DARB(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexSubImage3DARB was not loaded") }
-    pub extern "C" fn CompressedTexSubImage3DOES(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTexSubImage3DOES was not loaded") }
-    pub extern "C" fn CompressedTextureImage1DEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTextureImage1DEXT was not loaded") }
-    pub extern "C" fn CompressedTextureImage2DEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTextureImage2DEXT was not loaded") }
-    pub extern "C" fn CompressedTextureImage3DEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTextureImage3DEXT was not loaded") }
-    pub extern "C" fn CompressedTextureSubImage1DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTextureSubImage1DEXT was not loaded") }
-    pub extern "C" fn CompressedTextureSubImage2DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTextureSubImage2DEXT was not loaded") }
-    pub extern "C" fn CompressedTextureSubImage3DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("CompressedTextureSubImage3DEXT was not loaded") }
-    pub extern "C" fn ConvolutionFilter1D(_: GLenum, _: GLenum, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ConvolutionFilter1D was not loaded") }
-    pub extern "C" fn ConvolutionFilter1DEXT(_: GLenum, _: GLenum, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ConvolutionFilter1DEXT was not loaded") }
-    pub extern "C" fn ConvolutionFilter2D(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ConvolutionFilter2D was not loaded") }
-    pub extern "C" fn ConvolutionFilter2DEXT(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ConvolutionFilter2DEXT was not loaded") }
-    pub extern "C" fn ConvolutionParameterf(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("ConvolutionParameterf was not loaded") }
-    pub extern "C" fn ConvolutionParameterfEXT(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("ConvolutionParameterfEXT was not loaded") }
-    pub extern "C" fn ConvolutionParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("ConvolutionParameterfv was not loaded") }
-    pub extern "C" fn ConvolutionParameterfvEXT(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("ConvolutionParameterfvEXT was not loaded") }
-    pub extern "C" fn ConvolutionParameteri(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("ConvolutionParameteri was not loaded") }
-    pub extern "C" fn ConvolutionParameteriEXT(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("ConvolutionParameteriEXT was not loaded") }
-    pub extern "C" fn ConvolutionParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("ConvolutionParameteriv was not loaded") }
-    pub extern "C" fn ConvolutionParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("ConvolutionParameterivEXT was not loaded") }
-    pub extern "C" fn ConvolutionParameterxOES(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("ConvolutionParameterxOES was not loaded") }
-    pub extern "C" fn ConvolutionParameterxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("ConvolutionParameterxvOES was not loaded") }
-    pub extern "C" fn CopyBufferSubData(_: GLenum, _: GLenum, _: GLintptr, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("CopyBufferSubData was not loaded") }
-    pub extern "C" fn CopyColorSubTable(_: GLenum, _: GLsizei, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyColorSubTable was not loaded") }
-    pub extern "C" fn CopyColorSubTableEXT(_: GLenum, _: GLsizei, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyColorSubTableEXT was not loaded") }
-    pub extern "C" fn CopyColorTable(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyColorTable was not loaded") }
-    pub extern "C" fn CopyColorTableSGI(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyColorTableSGI was not loaded") }
-    pub extern "C" fn CopyConvolutionFilter1D(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyConvolutionFilter1D was not loaded") }
-    pub extern "C" fn CopyConvolutionFilter1DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyConvolutionFilter1DEXT was not loaded") }
-    pub extern "C" fn CopyConvolutionFilter2D(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyConvolutionFilter2D was not loaded") }
-    pub extern "C" fn CopyConvolutionFilter2DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyConvolutionFilter2DEXT was not loaded") }
-    pub extern "C" fn CopyImageSubData(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyImageSubData was not loaded") }
-    pub extern "C" fn CopyImageSubDataNV(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyImageSubDataNV was not loaded") }
-    pub extern "C" fn CopyMultiTexImage1DEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLint) -> c_void { fail!("CopyMultiTexImage1DEXT was not loaded") }
-    pub extern "C" fn CopyMultiTexImage2DEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLint) -> c_void { fail!("CopyMultiTexImage2DEXT was not loaded") }
-    pub extern "C" fn CopyMultiTexSubImage1DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyMultiTexSubImage1DEXT was not loaded") }
-    pub extern "C" fn CopyMultiTexSubImage2DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyMultiTexSubImage2DEXT was not loaded") }
-    pub extern "C" fn CopyMultiTexSubImage3DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyMultiTexSubImage3DEXT was not loaded") }
-    pub extern "C" fn CopyPathNV(_: GLuint, _: GLuint) -> c_void { fail!("CopyPathNV was not loaded") }
-    pub extern "C" fn CopyPixels(_: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum) -> c_void { fail!("CopyPixels was not loaded") }
-    pub extern "C" fn CopyTexImage1D(_: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLint) -> c_void { fail!("CopyTexImage1D was not loaded") }
-    pub extern "C" fn CopyTexImage1DEXT(_: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLint) -> c_void { fail!("CopyTexImage1DEXT was not loaded") }
-    pub extern "C" fn CopyTexImage2D(_: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLint) -> c_void { fail!("CopyTexImage2D was not loaded") }
-    pub extern "C" fn CopyTexImage2DEXT(_: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLint) -> c_void { fail!("CopyTexImage2DEXT was not loaded") }
-    pub extern "C" fn CopyTexSubImage1D(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyTexSubImage1D was not loaded") }
-    pub extern "C" fn CopyTexSubImage1DEXT(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyTexSubImage1DEXT was not loaded") }
-    pub extern "C" fn CopyTexSubImage2D(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyTexSubImage2D was not loaded") }
-    pub extern "C" fn CopyTexSubImage2DEXT(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyTexSubImage2DEXT was not loaded") }
-    pub extern "C" fn CopyTexSubImage3D(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyTexSubImage3D was not loaded") }
-    pub extern "C" fn CopyTexSubImage3DEXT(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyTexSubImage3DEXT was not loaded") }
-    pub extern "C" fn CopyTexSubImage3DOES(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyTexSubImage3DOES was not loaded") }
-    pub extern "C" fn CopyTextureImage1DEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLint) -> c_void { fail!("CopyTextureImage1DEXT was not loaded") }
-    pub extern "C" fn CopyTextureImage2DEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLint) -> c_void { fail!("CopyTextureImage2DEXT was not loaded") }
-    pub extern "C" fn CopyTextureLevelsAPPLE(_: GLuint, _: GLuint, _: GLint, _: GLsizei) -> c_void { fail!("CopyTextureLevelsAPPLE was not loaded") }
-    pub extern "C" fn CopyTextureSubImage1DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei) -> c_void { fail!("CopyTextureSubImage1DEXT was not loaded") }
-    pub extern "C" fn CopyTextureSubImage2DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyTextureSubImage2DEXT was not loaded") }
-    pub extern "C" fn CopyTextureSubImage3DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("CopyTextureSubImage3DEXT was not loaded") }
-    pub extern "C" fn CoverFillPathInstancedNV(_: GLsizei, _: GLenum, _: *GLvoid, _: GLuint, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("CoverFillPathInstancedNV was not loaded") }
-    pub extern "C" fn CoverFillPathNV(_: GLuint, _: GLenum) -> c_void { fail!("CoverFillPathNV was not loaded") }
-    pub extern "C" fn CoverStrokePathInstancedNV(_: GLsizei, _: GLenum, _: *GLvoid, _: GLuint, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("CoverStrokePathInstancedNV was not loaded") }
-    pub extern "C" fn CoverStrokePathNV(_: GLuint, _: GLenum) -> c_void { fail!("CoverStrokePathNV was not loaded") }
-    pub extern "C" fn CoverageMaskNV(_: GLboolean) -> c_void { fail!("CoverageMaskNV was not loaded") }
-    pub extern "C" fn CoverageOperationNV(_: GLenum) -> c_void { fail!("CoverageOperationNV was not loaded") }
-    pub extern "C" fn CreateProgram() -> GLuint { fail!("CreateProgram was not loaded") }
-    pub extern "C" fn CreateProgramObjectARB() -> GLhandleARB { fail!("CreateProgramObjectARB was not loaded") }
-    pub extern "C" fn CreateShader(_: GLenum) -> GLuint { fail!("CreateShader was not loaded") }
-    pub extern "C" fn CreateShaderObjectARB(_: GLenum) -> GLhandleARB { fail!("CreateShaderObjectARB was not loaded") }
-    pub extern "C" fn CreateShaderProgramEXT(_: GLenum, _: *GLchar) -> GLuint { fail!("CreateShaderProgramEXT was not loaded") }
-    pub extern "C" fn CreateShaderProgramv(_: GLenum, _: GLsizei, _: **GLchar) -> GLuint { fail!("CreateShaderProgramv was not loaded") }
-    pub extern "C" fn CreateShaderProgramvEXT(_: GLenum, _: GLsizei, _: **GLchar) -> GLuint { fail!("CreateShaderProgramvEXT was not loaded") }
-    pub extern "C" fn CreateSyncFromCLeventARB(_: *_cl_context, _: *_cl_event, _: GLbitfield) -> GLsync { fail!("CreateSyncFromCLeventARB was not loaded") }
-    pub extern "C" fn CullFace(_: GLenum) -> c_void { fail!("CullFace was not loaded") }
-    pub extern "C" fn CullParameterdvEXT(_: GLenum, _: *GLdouble) -> c_void { fail!("CullParameterdvEXT was not loaded") }
-    pub extern "C" fn CullParameterfvEXT(_: GLenum, _: *GLfloat) -> c_void { fail!("CullParameterfvEXT was not loaded") }
-    pub extern "C" fn CurrentPaletteMatrixARB(_: GLint) -> c_void { fail!("CurrentPaletteMatrixARB was not loaded") }
-    pub extern "C" fn CurrentPaletteMatrixOES(_: GLuint) -> c_void { fail!("CurrentPaletteMatrixOES was not loaded") }
-    pub extern "C" fn DebugMessageCallback(_: GLDEBUGPROC, _: *c_void) -> c_void { fail!("DebugMessageCallback was not loaded") }
-    pub extern "C" fn DebugMessageCallbackAMD(_: GLDEBUGPROCAMD, _: *c_void) -> c_void { fail!("DebugMessageCallbackAMD was not loaded") }
-    pub extern "C" fn DebugMessageCallbackARB(_: GLDEBUGPROCARB, _: *c_void) -> c_void { fail!("DebugMessageCallbackARB was not loaded") }
-    pub extern "C" fn DebugMessageCallbackKHR(_: GLDEBUGPROCKHR, _: *c_void) -> c_void { fail!("DebugMessageCallbackKHR was not loaded") }
-    pub extern "C" fn DebugMessageControl(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLuint, _: GLboolean) -> c_void { fail!("DebugMessageControl was not loaded") }
-    pub extern "C" fn DebugMessageControlARB(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLuint, _: GLboolean) -> c_void { fail!("DebugMessageControlARB was not loaded") }
-    pub extern "C" fn DebugMessageControlKHR(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLuint, _: GLboolean) -> c_void { fail!("DebugMessageControlKHR was not loaded") }
-    pub extern "C" fn DebugMessageEnableAMD(_: GLenum, _: GLenum, _: GLsizei, _: *GLuint, _: GLboolean) -> c_void { fail!("DebugMessageEnableAMD was not loaded") }
-    pub extern "C" fn DebugMessageInsert(_: GLenum, _: GLenum, _: GLuint, _: GLenum, _: GLsizei, _: *GLchar) -> c_void { fail!("DebugMessageInsert was not loaded") }
-    pub extern "C" fn DebugMessageInsertAMD(_: GLenum, _: GLenum, _: GLuint, _: GLsizei, _: *GLchar) -> c_void { fail!("DebugMessageInsertAMD was not loaded") }
-    pub extern "C" fn DebugMessageInsertARB(_: GLenum, _: GLenum, _: GLuint, _: GLenum, _: GLsizei, _: *GLchar) -> c_void { fail!("DebugMessageInsertARB was not loaded") }
-    pub extern "C" fn DebugMessageInsertKHR(_: GLenum, _: GLenum, _: GLuint, _: GLenum, _: GLsizei, _: *GLchar) -> c_void { fail!("DebugMessageInsertKHR was not loaded") }
-    pub extern "C" fn DeformSGIX(_: GLbitfield) -> c_void { fail!("DeformSGIX was not loaded") }
-    pub extern "C" fn DeformationMap3dSGIX(_: GLenum, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: *GLdouble) -> c_void { fail!("DeformationMap3dSGIX was not loaded") }
-    pub extern "C" fn DeformationMap3fSGIX(_: GLenum, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: *GLfloat) -> c_void { fail!("DeformationMap3fSGIX was not loaded") }
-    pub extern "C" fn DeleteAsyncMarkersSGIX(_: GLuint, _: GLsizei) -> c_void { fail!("DeleteAsyncMarkersSGIX was not loaded") }
-    pub extern "C" fn DeleteBuffers(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteBuffers was not loaded") }
-    pub extern "C" fn DeleteBuffersARB(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteBuffersARB was not loaded") }
-    pub extern "C" fn DeleteFencesAPPLE(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteFencesAPPLE was not loaded") }
-    pub extern "C" fn DeleteFencesNV(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteFencesNV was not loaded") }
-    pub extern "C" fn DeleteFragmentShaderATI(_: GLuint) -> c_void { fail!("DeleteFragmentShaderATI was not loaded") }
-    pub extern "C" fn DeleteFramebuffers(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteFramebuffers was not loaded") }
-    pub extern "C" fn DeleteFramebuffersEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteFramebuffersEXT was not loaded") }
-    pub extern "C" fn DeleteFramebuffersOES(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteFramebuffersOES was not loaded") }
-    pub extern "C" fn DeleteLists(_: GLuint, _: GLsizei) -> c_void { fail!("DeleteLists was not loaded") }
-    pub extern "C" fn DeleteNamedStringARB(_: GLint, _: *GLchar) -> c_void { fail!("DeleteNamedStringARB was not loaded") }
-    pub extern "C" fn DeleteNamesAMD(_: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("DeleteNamesAMD was not loaded") }
-    pub extern "C" fn DeleteObjectARB(_: GLhandleARB) -> c_void { fail!("DeleteObjectARB was not loaded") }
-    pub extern "C" fn DeleteOcclusionQueriesNV(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteOcclusionQueriesNV was not loaded") }
-    pub extern "C" fn DeletePathsNV(_: GLuint, _: GLsizei) -> c_void { fail!("DeletePathsNV was not loaded") }
-    pub extern "C" fn DeletePerfMonitorsAMD(_: GLsizei, _: *GLuint) -> c_void { fail!("DeletePerfMonitorsAMD was not loaded") }
-    pub extern "C" fn DeleteProgram(_: GLuint) -> c_void { fail!("DeleteProgram was not loaded") }
-    pub extern "C" fn DeleteProgramPipelines(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteProgramPipelines was not loaded") }
-    pub extern "C" fn DeleteProgramPipelinesEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteProgramPipelinesEXT was not loaded") }
-    pub extern "C" fn DeleteProgramsARB(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteProgramsARB was not loaded") }
-    pub extern "C" fn DeleteProgramsNV(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteProgramsNV was not loaded") }
-    pub extern "C" fn DeleteQueries(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteQueries was not loaded") }
-    pub extern "C" fn DeleteQueriesARB(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteQueriesARB was not loaded") }
-    pub extern "C" fn DeleteQueriesEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteQueriesEXT was not loaded") }
-    pub extern "C" fn DeleteRenderbuffers(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteRenderbuffers was not loaded") }
-    pub extern "C" fn DeleteRenderbuffersEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteRenderbuffersEXT was not loaded") }
-    pub extern "C" fn DeleteRenderbuffersOES(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteRenderbuffersOES was not loaded") }
-    pub extern "C" fn DeleteSamplers(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteSamplers was not loaded") }
-    pub extern "C" fn DeleteShader(_: GLuint) -> c_void { fail!("DeleteShader was not loaded") }
-    pub extern "C" fn DeleteSync(_: GLsync) -> c_void { fail!("DeleteSync was not loaded") }
-    pub extern "C" fn DeleteSyncAPPLE(_: GLsync) -> c_void { fail!("DeleteSyncAPPLE was not loaded") }
-    pub extern "C" fn DeleteTextures(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteTextures was not loaded") }
-    pub extern "C" fn DeleteTexturesEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteTexturesEXT was not loaded") }
-    pub extern "C" fn DeleteTransformFeedbacks(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteTransformFeedbacks was not loaded") }
-    pub extern "C" fn DeleteTransformFeedbacksNV(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteTransformFeedbacksNV was not loaded") }
-    pub extern "C" fn DeleteVertexArrays(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteVertexArrays was not loaded") }
-    pub extern "C" fn DeleteVertexArraysAPPLE(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteVertexArraysAPPLE was not loaded") }
-    pub extern "C" fn DeleteVertexArraysOES(_: GLsizei, _: *GLuint) -> c_void { fail!("DeleteVertexArraysOES was not loaded") }
-    pub extern "C" fn DeleteVertexShaderEXT(_: GLuint) -> c_void { fail!("DeleteVertexShaderEXT was not loaded") }
-    pub extern "C" fn DepthBoundsEXT(_: GLclampd, _: GLclampd) -> c_void { fail!("DepthBoundsEXT was not loaded") }
-    pub extern "C" fn DepthBoundsdNV(_: GLdouble, _: GLdouble) -> c_void { fail!("DepthBoundsdNV was not loaded") }
-    pub extern "C" fn DepthFunc(_: GLenum) -> c_void { fail!("DepthFunc was not loaded") }
-    pub extern "C" fn DepthMask(_: GLboolean) -> c_void { fail!("DepthMask was not loaded") }
-    pub extern "C" fn DepthRange(_: GLdouble, _: GLdouble) -> c_void { fail!("DepthRange was not loaded") }
-    pub extern "C" fn DepthRangeArrayv(_: GLuint, _: GLsizei, _: *GLdouble) -> c_void { fail!("DepthRangeArrayv was not loaded") }
-    pub extern "C" fn DepthRangeIndexed(_: GLuint, _: GLdouble, _: GLdouble) -> c_void { fail!("DepthRangeIndexed was not loaded") }
-    pub extern "C" fn DepthRangedNV(_: GLdouble, _: GLdouble) -> c_void { fail!("DepthRangedNV was not loaded") }
-    pub extern "C" fn DepthRangef(_: GLfloat, _: GLfloat) -> c_void { fail!("DepthRangef was not loaded") }
-    pub extern "C" fn DepthRangefOES(_: GLclampf, _: GLclampf) -> c_void { fail!("DepthRangefOES was not loaded") }
-    pub extern "C" fn DepthRangex(_: GLfixed, _: GLfixed) -> c_void { fail!("DepthRangex was not loaded") }
-    pub extern "C" fn DepthRangexOES(_: GLfixed, _: GLfixed) -> c_void { fail!("DepthRangexOES was not loaded") }
-    pub extern "C" fn DetachObjectARB(_: GLhandleARB, _: GLhandleARB) -> c_void { fail!("DetachObjectARB was not loaded") }
-    pub extern "C" fn DetachShader(_: GLuint, _: GLuint) -> c_void { fail!("DetachShader was not loaded") }
-    pub extern "C" fn DetailTexFuncSGIS(_: GLenum, _: GLsizei, _: *GLfloat) -> c_void { fail!("DetailTexFuncSGIS was not loaded") }
-    pub extern "C" fn Disable(_: GLenum) -> c_void { fail!("Disable was not loaded") }
-    pub extern "C" fn DisableClientState(_: GLenum) -> c_void { fail!("DisableClientState was not loaded") }
-    pub extern "C" fn DisableClientStateIndexedEXT(_: GLenum, _: GLuint) -> c_void { fail!("DisableClientStateIndexedEXT was not loaded") }
-    pub extern "C" fn DisableClientStateiEXT(_: GLenum, _: GLuint) -> c_void { fail!("DisableClientStateiEXT was not loaded") }
-    pub extern "C" fn DisableDriverControlQCOM(_: GLuint) -> c_void { fail!("DisableDriverControlQCOM was not loaded") }
-    pub extern "C" fn DisableIndexedEXT(_: GLenum, _: GLuint) -> c_void { fail!("DisableIndexedEXT was not loaded") }
-    pub extern "C" fn DisableVariantClientStateEXT(_: GLuint) -> c_void { fail!("DisableVariantClientStateEXT was not loaded") }
-    pub extern "C" fn DisableVertexArrayAttribEXT(_: GLuint, _: GLuint) -> c_void { fail!("DisableVertexArrayAttribEXT was not loaded") }
-    pub extern "C" fn DisableVertexArrayEXT(_: GLuint, _: GLenum) -> c_void { fail!("DisableVertexArrayEXT was not loaded") }
-    pub extern "C" fn DisableVertexAttribAPPLE(_: GLuint, _: GLenum) -> c_void { fail!("DisableVertexAttribAPPLE was not loaded") }
-    pub extern "C" fn DisableVertexAttribArray(_: GLuint) -> c_void { fail!("DisableVertexAttribArray was not loaded") }
-    pub extern "C" fn DisableVertexAttribArrayARB(_: GLuint) -> c_void { fail!("DisableVertexAttribArrayARB was not loaded") }
-    pub extern "C" fn Disablei(_: GLenum, _: GLuint) -> c_void { fail!("Disablei was not loaded") }
-    pub extern "C" fn DiscardFramebufferEXT(_: GLenum, _: GLsizei, _: *GLenum) -> c_void { fail!("DiscardFramebufferEXT was not loaded") }
-    pub extern "C" fn DispatchCompute(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("DispatchCompute was not loaded") }
-    pub extern "C" fn DispatchComputeGroupSizeARB(_: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("DispatchComputeGroupSizeARB was not loaded") }
-    pub extern "C" fn DispatchComputeIndirect(_: GLintptr) -> c_void { fail!("DispatchComputeIndirect was not loaded") }
-    pub extern "C" fn DrawArrays(_: GLenum, _: GLint, _: GLsizei) -> c_void { fail!("DrawArrays was not loaded") }
-    pub extern "C" fn DrawArraysEXT(_: GLenum, _: GLint, _: GLsizei) -> c_void { fail!("DrawArraysEXT was not loaded") }
-    pub extern "C" fn DrawArraysIndirect(_: GLenum, _: *GLvoid) -> c_void { fail!("DrawArraysIndirect was not loaded") }
-    pub extern "C" fn DrawArraysInstanced(_: GLenum, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("DrawArraysInstanced was not loaded") }
-    pub extern "C" fn DrawArraysInstancedANGLE(_: GLenum, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("DrawArraysInstancedANGLE was not loaded") }
-    pub extern "C" fn DrawArraysInstancedARB(_: GLenum, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("DrawArraysInstancedARB was not loaded") }
-    pub extern "C" fn DrawArraysInstancedBaseInstance(_: GLenum, _: GLint, _: GLsizei, _: GLsizei, _: GLuint) -> c_void { fail!("DrawArraysInstancedBaseInstance was not loaded") }
-    pub extern "C" fn DrawArraysInstancedEXT(_: GLenum, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("DrawArraysInstancedEXT was not loaded") }
-    pub extern "C" fn DrawArraysInstancedNV(_: GLenum, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("DrawArraysInstancedNV was not loaded") }
-    pub extern "C" fn DrawBuffer(_: GLenum) -> c_void { fail!("DrawBuffer was not loaded") }
-    pub extern "C" fn DrawBuffers(_: GLsizei, _: *GLenum) -> c_void { fail!("DrawBuffers was not loaded") }
-    pub extern "C" fn DrawBuffersARB(_: GLsizei, _: *GLenum) -> c_void { fail!("DrawBuffersARB was not loaded") }
-    pub extern "C" fn DrawBuffersATI(_: GLsizei, _: *GLenum) -> c_void { fail!("DrawBuffersATI was not loaded") }
-    pub extern "C" fn DrawBuffersEXT(_: GLsizei, _: *GLenum) -> c_void { fail!("DrawBuffersEXT was not loaded") }
-    pub extern "C" fn DrawBuffersIndexedEXT(_: GLint, _: *GLenum, _: *GLint) -> c_void { fail!("DrawBuffersIndexedEXT was not loaded") }
-    pub extern "C" fn DrawBuffersNV(_: GLsizei, _: *GLenum) -> c_void { fail!("DrawBuffersNV was not loaded") }
-    pub extern "C" fn DrawElementArrayAPPLE(_: GLenum, _: GLint, _: GLsizei) -> c_void { fail!("DrawElementArrayAPPLE was not loaded") }
-    pub extern "C" fn DrawElementArrayATI(_: GLenum, _: GLsizei) -> c_void { fail!("DrawElementArrayATI was not loaded") }
-    pub extern "C" fn DrawElements(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("DrawElements was not loaded") }
-    pub extern "C" fn DrawElementsBaseVertex(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid, _: GLint) -> c_void { fail!("DrawElementsBaseVertex was not loaded") }
-    pub extern "C" fn DrawElementsIndirect(_: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("DrawElementsIndirect was not loaded") }
-    pub extern "C" fn DrawElementsInstanced(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid, _: GLsizei) -> c_void { fail!("DrawElementsInstanced was not loaded") }
-    pub extern "C" fn DrawElementsInstancedANGLE(_: GLenum, _: GLsizei, _: GLenum, _: *c_void, _: GLsizei) -> c_void { fail!("DrawElementsInstancedANGLE was not loaded") }
-    pub extern "C" fn DrawElementsInstancedARB(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid, _: GLsizei) -> c_void { fail!("DrawElementsInstancedARB was not loaded") }
-    pub extern "C" fn DrawElementsInstancedBaseInstance(_: GLenum, _: GLsizei, _: GLenum, _: *c_void, _: GLsizei, _: GLuint) -> c_void { fail!("DrawElementsInstancedBaseInstance was not loaded") }
-    pub extern "C" fn DrawElementsInstancedBaseVertex(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid, _: GLsizei, _: GLint) -> c_void { fail!("DrawElementsInstancedBaseVertex was not loaded") }
-    pub extern "C" fn DrawElementsInstancedBaseVertexBaseInstance(_: GLenum, _: GLsizei, _: GLenum, _: *c_void, _: GLsizei, _: GLint, _: GLuint) -> c_void { fail!("DrawElementsInstancedBaseVertexBaseInstance was not loaded") }
-    pub extern "C" fn DrawElementsInstancedEXT(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid, _: GLsizei) -> c_void { fail!("DrawElementsInstancedEXT was not loaded") }
-    pub extern "C" fn DrawElementsInstancedNV(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid, _: GLsizei) -> c_void { fail!("DrawElementsInstancedNV was not loaded") }
-    pub extern "C" fn DrawMeshArraysSUN(_: GLenum, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("DrawMeshArraysSUN was not loaded") }
-    pub extern "C" fn DrawPixels(_: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("DrawPixels was not loaded") }
-    pub extern "C" fn DrawRangeElementArrayAPPLE(_: GLenum, _: GLuint, _: GLuint, _: GLint, _: GLsizei) -> c_void { fail!("DrawRangeElementArrayAPPLE was not loaded") }
-    pub extern "C" fn DrawRangeElementArrayATI(_: GLenum, _: GLuint, _: GLuint, _: GLsizei) -> c_void { fail!("DrawRangeElementArrayATI was not loaded") }
-    pub extern "C" fn DrawRangeElements(_: GLenum, _: GLuint, _: GLuint, _: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("DrawRangeElements was not loaded") }
-    pub extern "C" fn DrawRangeElementsBaseVertex(_: GLenum, _: GLuint, _: GLuint, _: GLsizei, _: GLenum, _: *GLvoid, _: GLint) -> c_void { fail!("DrawRangeElementsBaseVertex was not loaded") }
-    pub extern "C" fn DrawRangeElementsEXT(_: GLenum, _: GLuint, _: GLuint, _: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("DrawRangeElementsEXT was not loaded") }
-    pub extern "C" fn DrawTexfOES(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("DrawTexfOES was not loaded") }
-    pub extern "C" fn DrawTexfvOES(_: *GLfloat) -> c_void { fail!("DrawTexfvOES was not loaded") }
-    pub extern "C" fn DrawTexiOES(_: GLint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("DrawTexiOES was not loaded") }
-    pub extern "C" fn DrawTexivOES(_: *GLint) -> c_void { fail!("DrawTexivOES was not loaded") }
-    pub extern "C" fn DrawTexsOES(_: GLshort, _: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("DrawTexsOES was not loaded") }
-    pub extern "C" fn DrawTexsvOES(_: *GLshort) -> c_void { fail!("DrawTexsvOES was not loaded") }
-    pub extern "C" fn DrawTextureNV(_: GLuint, _: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("DrawTextureNV was not loaded") }
-    pub extern "C" fn DrawTexxOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("DrawTexxOES was not loaded") }
-    pub extern "C" fn DrawTexxvOES(_: *GLfixed) -> c_void { fail!("DrawTexxvOES was not loaded") }
-    pub extern "C" fn DrawTransformFeedback(_: GLenum, _: GLuint) -> c_void { fail!("DrawTransformFeedback was not loaded") }
-    pub extern "C" fn DrawTransformFeedbackInstanced(_: GLenum, _: GLuint, _: GLsizei) -> c_void { fail!("DrawTransformFeedbackInstanced was not loaded") }
-    pub extern "C" fn DrawTransformFeedbackNV(_: GLenum, _: GLuint) -> c_void { fail!("DrawTransformFeedbackNV was not loaded") }
-    pub extern "C" fn DrawTransformFeedbackStream(_: GLenum, _: GLuint, _: GLuint) -> c_void { fail!("DrawTransformFeedbackStream was not loaded") }
-    pub extern "C" fn DrawTransformFeedbackStreamInstanced(_: GLenum, _: GLuint, _: GLuint, _: GLsizei) -> c_void { fail!("DrawTransformFeedbackStreamInstanced was not loaded") }
-    pub extern "C" fn EGLImageTargetRenderbufferStorageOES(_: GLenum, _: GLeglImageOES) -> c_void { fail!("EGLImageTargetRenderbufferStorageOES was not loaded") }
-    pub extern "C" fn EGLImageTargetTexture2DOES(_: GLenum, _: GLeglImageOES) -> c_void { fail!("EGLImageTargetTexture2DOES was not loaded") }
-    pub extern "C" fn EdgeFlag(_: GLboolean) -> c_void { fail!("EdgeFlag was not loaded") }
-    pub extern "C" fn EdgeFlagFormatNV(_: GLsizei) -> c_void { fail!("EdgeFlagFormatNV was not loaded") }
-    pub extern "C" fn EdgeFlagPointer(_: GLsizei, _: *GLvoid) -> c_void { fail!("EdgeFlagPointer was not loaded") }
-    pub extern "C" fn EdgeFlagPointerEXT(_: GLsizei, _: GLsizei, _: *GLboolean) -> c_void { fail!("EdgeFlagPointerEXT was not loaded") }
-    pub extern "C" fn EdgeFlagPointerListIBM(_: GLint, _: **GLboolean, _: GLint) -> c_void { fail!("EdgeFlagPointerListIBM was not loaded") }
-    pub extern "C" fn EdgeFlagv(_: *GLboolean) -> c_void { fail!("EdgeFlagv was not loaded") }
-    pub extern "C" fn ElementPointerAPPLE(_: GLenum, _: *GLvoid) -> c_void { fail!("ElementPointerAPPLE was not loaded") }
-    pub extern "C" fn ElementPointerATI(_: GLenum, _: *GLvoid) -> c_void { fail!("ElementPointerATI was not loaded") }
-    pub extern "C" fn Enable(_: GLenum) -> c_void { fail!("Enable was not loaded") }
-    pub extern "C" fn EnableClientState(_: GLenum) -> c_void { fail!("EnableClientState was not loaded") }
-    pub extern "C" fn EnableClientStateIndexedEXT(_: GLenum, _: GLuint) -> c_void { fail!("EnableClientStateIndexedEXT was not loaded") }
-    pub extern "C" fn EnableClientStateiEXT(_: GLenum, _: GLuint) -> c_void { fail!("EnableClientStateiEXT was not loaded") }
-    pub extern "C" fn EnableDriverControlQCOM(_: GLuint) -> c_void { fail!("EnableDriverControlQCOM was not loaded") }
-    pub extern "C" fn EnableIndexedEXT(_: GLenum, _: GLuint) -> c_void { fail!("EnableIndexedEXT was not loaded") }
-    pub extern "C" fn EnableVariantClientStateEXT(_: GLuint) -> c_void { fail!("EnableVariantClientStateEXT was not loaded") }
-    pub extern "C" fn EnableVertexArrayAttribEXT(_: GLuint, _: GLuint) -> c_void { fail!("EnableVertexArrayAttribEXT was not loaded") }
-    pub extern "C" fn EnableVertexArrayEXT(_: GLuint, _: GLenum) -> c_void { fail!("EnableVertexArrayEXT was not loaded") }
-    pub extern "C" fn EnableVertexAttribAPPLE(_: GLuint, _: GLenum) -> c_void { fail!("EnableVertexAttribAPPLE was not loaded") }
-    pub extern "C" fn EnableVertexAttribArray(_: GLuint) -> c_void { fail!("EnableVertexAttribArray was not loaded") }
-    pub extern "C" fn EnableVertexAttribArrayARB(_: GLuint) -> c_void { fail!("EnableVertexAttribArrayARB was not loaded") }
-    pub extern "C" fn Enablei(_: GLenum, _: GLuint) -> c_void { fail!("Enablei was not loaded") }
-    pub extern "C" fn End() -> c_void { fail!("End was not loaded") }
-    pub extern "C" fn EndConditionalRender() -> c_void { fail!("EndConditionalRender was not loaded") }
-    pub extern "C" fn EndConditionalRenderNV() -> c_void { fail!("EndConditionalRenderNV was not loaded") }
-    pub extern "C" fn EndConditionalRenderNVX() -> c_void { fail!("EndConditionalRenderNVX was not loaded") }
-    pub extern "C" fn EndFragmentShaderATI() -> c_void { fail!("EndFragmentShaderATI was not loaded") }
-    pub extern "C" fn EndList() -> c_void { fail!("EndList was not loaded") }
-    pub extern "C" fn EndOcclusionQueryNV() -> c_void { fail!("EndOcclusionQueryNV was not loaded") }
-    pub extern "C" fn EndPerfMonitorAMD(_: GLuint) -> c_void { fail!("EndPerfMonitorAMD was not loaded") }
-    pub extern "C" fn EndQuery(_: GLenum) -> c_void { fail!("EndQuery was not loaded") }
-    pub extern "C" fn EndQueryARB(_: GLenum) -> c_void { fail!("EndQueryARB was not loaded") }
-    pub extern "C" fn EndQueryEXT(_: GLenum) -> c_void { fail!("EndQueryEXT was not loaded") }
-    pub extern "C" fn EndQueryIndexed(_: GLenum, _: GLuint) -> c_void { fail!("EndQueryIndexed was not loaded") }
-    pub extern "C" fn EndTilingQCOM(_: GLbitfield) -> c_void { fail!("EndTilingQCOM was not loaded") }
-    pub extern "C" fn EndTransformFeedback() -> c_void { fail!("EndTransformFeedback was not loaded") }
-    pub extern "C" fn EndTransformFeedbackEXT() -> c_void { fail!("EndTransformFeedbackEXT was not loaded") }
-    pub extern "C" fn EndTransformFeedbackNV() -> c_void { fail!("EndTransformFeedbackNV was not loaded") }
-    pub extern "C" fn EndVertexShaderEXT() -> c_void { fail!("EndVertexShaderEXT was not loaded") }
-    pub extern "C" fn EndVideoCaptureNV(_: GLuint) -> c_void { fail!("EndVideoCaptureNV was not loaded") }
-    pub extern "C" fn EvalCoord1d(_: GLdouble) -> c_void { fail!("EvalCoord1d was not loaded") }
-    pub extern "C" fn EvalCoord1dv(_: *GLdouble) -> c_void { fail!("EvalCoord1dv was not loaded") }
-    pub extern "C" fn EvalCoord1f(_: GLfloat) -> c_void { fail!("EvalCoord1f was not loaded") }
-    pub extern "C" fn EvalCoord1fv(_: *GLfloat) -> c_void { fail!("EvalCoord1fv was not loaded") }
-    pub extern "C" fn EvalCoord1xOES(_: GLfixed) -> c_void { fail!("EvalCoord1xOES was not loaded") }
-    pub extern "C" fn EvalCoord1xvOES(_: *GLfixed) -> c_void { fail!("EvalCoord1xvOES was not loaded") }
-    pub extern "C" fn EvalCoord2d(_: GLdouble, _: GLdouble) -> c_void { fail!("EvalCoord2d was not loaded") }
-    pub extern "C" fn EvalCoord2dv(_: *GLdouble) -> c_void { fail!("EvalCoord2dv was not loaded") }
-    pub extern "C" fn EvalCoord2f(_: GLfloat, _: GLfloat) -> c_void { fail!("EvalCoord2f was not loaded") }
-    pub extern "C" fn EvalCoord2fv(_: *GLfloat) -> c_void { fail!("EvalCoord2fv was not loaded") }
-    pub extern "C" fn EvalCoord2xOES(_: GLfixed, _: GLfixed) -> c_void { fail!("EvalCoord2xOES was not loaded") }
-    pub extern "C" fn EvalCoord2xvOES(_: *GLfixed) -> c_void { fail!("EvalCoord2xvOES was not loaded") }
-    pub extern "C" fn EvalMapsNV(_: GLenum, _: GLenum) -> c_void { fail!("EvalMapsNV was not loaded") }
-    pub extern "C" fn EvalMesh1(_: GLenum, _: GLint, _: GLint) -> c_void { fail!("EvalMesh1 was not loaded") }
-    pub extern "C" fn EvalMesh2(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("EvalMesh2 was not loaded") }
-    pub extern "C" fn EvalPoint1(_: GLint) -> c_void { fail!("EvalPoint1 was not loaded") }
-    pub extern "C" fn EvalPoint2(_: GLint, _: GLint) -> c_void { fail!("EvalPoint2 was not loaded") }
-    pub extern "C" fn ExecuteProgramNV(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("ExecuteProgramNV was not loaded") }
-    pub extern "C" fn ExtGetBufferPointervQCOM(_: GLenum, _: **GLvoid) -> c_void { fail!("ExtGetBufferPointervQCOM was not loaded") }
-    pub extern "C" fn ExtGetBuffersQCOM(_: *GLuint, _: GLint, _: *GLint) -> c_void { fail!("ExtGetBuffersQCOM was not loaded") }
-    pub extern "C" fn ExtGetFramebuffersQCOM(_: *GLuint, _: GLint, _: *GLint) -> c_void { fail!("ExtGetFramebuffersQCOM was not loaded") }
-    pub extern "C" fn ExtGetProgramBinarySourceQCOM(_: GLuint, _: GLenum, _: *GLchar, _: *GLint) -> c_void { fail!("ExtGetProgramBinarySourceQCOM was not loaded") }
-    pub extern "C" fn ExtGetProgramsQCOM(_: *GLuint, _: GLint, _: *GLint) -> c_void { fail!("ExtGetProgramsQCOM was not loaded") }
-    pub extern "C" fn ExtGetRenderbuffersQCOM(_: *GLuint, _: GLint, _: *GLint) -> c_void { fail!("ExtGetRenderbuffersQCOM was not loaded") }
-    pub extern "C" fn ExtGetShadersQCOM(_: *GLuint, _: GLint, _: *GLint) -> c_void { fail!("ExtGetShadersQCOM was not loaded") }
-    pub extern "C" fn ExtGetTexLevelParameterivQCOM(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: *GLint) -> c_void { fail!("ExtGetTexLevelParameterivQCOM was not loaded") }
-    pub extern "C" fn ExtGetTexSubImageQCOM(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ExtGetTexSubImageQCOM was not loaded") }
-    pub extern "C" fn ExtGetTexturesQCOM(_: *GLuint, _: GLint, _: *GLint) -> c_void { fail!("ExtGetTexturesQCOM was not loaded") }
-    pub extern "C" fn ExtIsProgramBinaryQCOM(_: GLuint) -> GLboolean { fail!("ExtIsProgramBinaryQCOM was not loaded") }
-    pub extern "C" fn ExtTexObjectStateOverrideiQCOM(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("ExtTexObjectStateOverrideiQCOM was not loaded") }
-    pub extern "C" fn ExtractComponentEXT(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ExtractComponentEXT was not loaded") }
-    pub extern "C" fn FeedbackBuffer(_: GLsizei, _: GLenum, _: *GLfloat) -> c_void { fail!("FeedbackBuffer was not loaded") }
-    pub extern "C" fn FeedbackBufferxOES(_: GLsizei, _: GLenum, _: *GLfixed) -> c_void { fail!("FeedbackBufferxOES was not loaded") }
-    pub extern "C" fn FenceSync(_: GLenum, _: GLbitfield) -> GLsync { fail!("FenceSync was not loaded") }
-    pub extern "C" fn FenceSyncAPPLE(_: GLenum, _: GLbitfield) -> GLsync { fail!("FenceSyncAPPLE was not loaded") }
-    pub extern "C" fn FinalCombinerInputNV(_: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("FinalCombinerInputNV was not loaded") }
-    pub extern "C" fn Finish() -> c_void { fail!("Finish was not loaded") }
-    pub extern "C" fn FinishAsyncSGIX(_: *GLuint) -> GLint { fail!("FinishAsyncSGIX was not loaded") }
-    pub extern "C" fn FinishFenceAPPLE(_: GLuint) -> c_void { fail!("FinishFenceAPPLE was not loaded") }
-    pub extern "C" fn FinishFenceNV(_: GLuint) -> c_void { fail!("FinishFenceNV was not loaded") }
-    pub extern "C" fn FinishObjectAPPLE(_: GLenum, _: GLint) -> c_void { fail!("FinishObjectAPPLE was not loaded") }
-    pub extern "C" fn FinishTextureSUNX() -> c_void { fail!("FinishTextureSUNX was not loaded") }
-    pub extern "C" fn Flush() -> c_void { fail!("Flush was not loaded") }
-    pub extern "C" fn FlushMappedBufferRange(_: GLenum, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("FlushMappedBufferRange was not loaded") }
-    pub extern "C" fn FlushMappedBufferRangeAPPLE(_: GLenum, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("FlushMappedBufferRangeAPPLE was not loaded") }
-    pub extern "C" fn FlushMappedBufferRangeEXT(_: GLenum, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("FlushMappedBufferRangeEXT was not loaded") }
-    pub extern "C" fn FlushMappedNamedBufferRangeEXT(_: GLuint, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("FlushMappedNamedBufferRangeEXT was not loaded") }
-    pub extern "C" fn FlushPixelDataRangeNV(_: GLenum) -> c_void { fail!("FlushPixelDataRangeNV was not loaded") }
-    pub extern "C" fn FlushRasterSGIX() -> c_void { fail!("FlushRasterSGIX was not loaded") }
-    pub extern "C" fn FlushStaticDataIBM(_: GLenum) -> c_void { fail!("FlushStaticDataIBM was not loaded") }
-    pub extern "C" fn FlushVertexArrayRangeAPPLE(_: GLsizei, _: *GLvoid) -> c_void { fail!("FlushVertexArrayRangeAPPLE was not loaded") }
-    pub extern "C" fn FlushVertexArrayRangeNV() -> c_void { fail!("FlushVertexArrayRangeNV was not loaded") }
-    pub extern "C" fn FogCoordFormatNV(_: GLenum, _: GLsizei) -> c_void { fail!("FogCoordFormatNV was not loaded") }
-    pub extern "C" fn FogCoordPointer(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("FogCoordPointer was not loaded") }
-    pub extern "C" fn FogCoordPointerEXT(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("FogCoordPointerEXT was not loaded") }
-    pub extern "C" fn FogCoordPointerListIBM(_: GLenum, _: GLint, _: **GLvoid, _: GLint) -> c_void { fail!("FogCoordPointerListIBM was not loaded") }
-    pub extern "C" fn FogCoordd(_: GLdouble) -> c_void { fail!("FogCoordd was not loaded") }
-    pub extern "C" fn FogCoorddEXT(_: GLdouble) -> c_void { fail!("FogCoorddEXT was not loaded") }
-    pub extern "C" fn FogCoorddv(_: *GLdouble) -> c_void { fail!("FogCoorddv was not loaded") }
-    pub extern "C" fn FogCoorddvEXT(_: *GLdouble) -> c_void { fail!("FogCoorddvEXT was not loaded") }
-    pub extern "C" fn FogCoordf(_: GLfloat) -> c_void { fail!("FogCoordf was not loaded") }
-    pub extern "C" fn FogCoordfEXT(_: GLfloat) -> c_void { fail!("FogCoordfEXT was not loaded") }
-    pub extern "C" fn FogCoordfv(_: *GLfloat) -> c_void { fail!("FogCoordfv was not loaded") }
-    pub extern "C" fn FogCoordfvEXT(_: *GLfloat) -> c_void { fail!("FogCoordfvEXT was not loaded") }
-    pub extern "C" fn FogCoordhNV(_: GLhalfNV) -> c_void { fail!("FogCoordhNV was not loaded") }
-    pub extern "C" fn FogCoordhvNV(_: *GLhalfNV) -> c_void { fail!("FogCoordhvNV was not loaded") }
-    pub extern "C" fn FogFuncSGIS(_: GLsizei, _: *GLfloat) -> c_void { fail!("FogFuncSGIS was not loaded") }
-    pub extern "C" fn Fogf(_: GLenum, _: GLfloat) -> c_void { fail!("Fogf was not loaded") }
-    pub extern "C" fn Fogfv(_: GLenum, _: *GLfloat) -> c_void { fail!("Fogfv was not loaded") }
-    pub extern "C" fn Fogi(_: GLenum, _: GLint) -> c_void { fail!("Fogi was not loaded") }
-    pub extern "C" fn Fogiv(_: GLenum, _: *GLint) -> c_void { fail!("Fogiv was not loaded") }
-    pub extern "C" fn Fogx(_: GLenum, _: GLfixed) -> c_void { fail!("Fogx was not loaded") }
-    pub extern "C" fn FogxOES(_: GLenum, _: GLfixed) -> c_void { fail!("FogxOES was not loaded") }
-    pub extern "C" fn Fogxv(_: GLenum, _: *GLfixed) -> c_void { fail!("Fogxv was not loaded") }
-    pub extern "C" fn FogxvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("FogxvOES was not loaded") }
-    pub extern "C" fn FragmentColorMaterialSGIX(_: GLenum, _: GLenum) -> c_void { fail!("FragmentColorMaterialSGIX was not loaded") }
-    pub extern "C" fn FragmentLightModelfSGIX(_: GLenum, _: GLfloat) -> c_void { fail!("FragmentLightModelfSGIX was not loaded") }
-    pub extern "C" fn FragmentLightModelfvSGIX(_: GLenum, _: *GLfloat) -> c_void { fail!("FragmentLightModelfvSGIX was not loaded") }
-    pub extern "C" fn FragmentLightModeliSGIX(_: GLenum, _: GLint) -> c_void { fail!("FragmentLightModeliSGIX was not loaded") }
-    pub extern "C" fn FragmentLightModelivSGIX(_: GLenum, _: *GLint) -> c_void { fail!("FragmentLightModelivSGIX was not loaded") }
-    pub extern "C" fn FragmentLightfSGIX(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("FragmentLightfSGIX was not loaded") }
-    pub extern "C" fn FragmentLightfvSGIX(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("FragmentLightfvSGIX was not loaded") }
-    pub extern "C" fn FragmentLightiSGIX(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("FragmentLightiSGIX was not loaded") }
-    pub extern "C" fn FragmentLightivSGIX(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("FragmentLightivSGIX was not loaded") }
-    pub extern "C" fn FragmentMaterialfSGIX(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("FragmentMaterialfSGIX was not loaded") }
-    pub extern "C" fn FragmentMaterialfvSGIX(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("FragmentMaterialfvSGIX was not loaded") }
-    pub extern "C" fn FragmentMaterialiSGIX(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("FragmentMaterialiSGIX was not loaded") }
-    pub extern "C" fn FragmentMaterialivSGIX(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("FragmentMaterialivSGIX was not loaded") }
-    pub extern "C" fn FrameTerminatorGREMEDY() -> c_void { fail!("FrameTerminatorGREMEDY was not loaded") }
-    pub extern "C" fn FrameZoomSGIX(_: GLint) -> c_void { fail!("FrameZoomSGIX was not loaded") }
-    pub extern "C" fn FramebufferDrawBufferEXT(_: GLuint, _: GLenum) -> c_void { fail!("FramebufferDrawBufferEXT was not loaded") }
-    pub extern "C" fn FramebufferDrawBuffersEXT(_: GLuint, _: GLsizei, _: *GLenum) -> c_void { fail!("FramebufferDrawBuffersEXT was not loaded") }
-    pub extern "C" fn FramebufferParameteri(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("FramebufferParameteri was not loaded") }
-    pub extern "C" fn FramebufferReadBufferEXT(_: GLuint, _: GLenum) -> c_void { fail!("FramebufferReadBufferEXT was not loaded") }
-    pub extern "C" fn FramebufferRenderbuffer(_: GLenum, _: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("FramebufferRenderbuffer was not loaded") }
-    pub extern "C" fn FramebufferRenderbufferEXT(_: GLenum, _: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("FramebufferRenderbufferEXT was not loaded") }
-    pub extern "C" fn FramebufferRenderbufferOES(_: GLenum, _: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("FramebufferRenderbufferOES was not loaded") }
-    pub extern "C" fn FramebufferTexture(_: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTexture was not loaded") }
-    pub extern "C" fn FramebufferTexture1D(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTexture1D was not loaded") }
-    pub extern "C" fn FramebufferTexture1DEXT(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTexture1DEXT was not loaded") }
-    pub extern "C" fn FramebufferTexture2D(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTexture2D was not loaded") }
-    pub extern "C" fn FramebufferTexture2DEXT(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTexture2DEXT was not loaded") }
-    pub extern "C" fn FramebufferTexture2DMultisampleEXT(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLsizei) -> c_void { fail!("FramebufferTexture2DMultisampleEXT was not loaded") }
-    pub extern "C" fn FramebufferTexture2DMultisampleIMG(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLsizei) -> c_void { fail!("FramebufferTexture2DMultisampleIMG was not loaded") }
-    pub extern "C" fn FramebufferTexture2DOES(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTexture2DOES was not loaded") }
-    pub extern "C" fn FramebufferTexture3D(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("FramebufferTexture3D was not loaded") }
-    pub extern "C" fn FramebufferTexture3DEXT(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("FramebufferTexture3DEXT was not loaded") }
-    pub extern "C" fn FramebufferTexture3DOES(_: GLenum, _: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("FramebufferTexture3DOES was not loaded") }
-    pub extern "C" fn FramebufferTextureARB(_: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTextureARB was not loaded") }
-    pub extern "C" fn FramebufferTextureEXT(_: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("FramebufferTextureEXT was not loaded") }
-    pub extern "C" fn FramebufferTextureFaceARB(_: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLenum) -> c_void { fail!("FramebufferTextureFaceARB was not loaded") }
-    pub extern "C" fn FramebufferTextureFaceEXT(_: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLenum) -> c_void { fail!("FramebufferTextureFaceEXT was not loaded") }
-    pub extern "C" fn FramebufferTextureLayer(_: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("FramebufferTextureLayer was not loaded") }
-    pub extern "C" fn FramebufferTextureLayerARB(_: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("FramebufferTextureLayerARB was not loaded") }
-    pub extern "C" fn FramebufferTextureLayerEXT(_: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("FramebufferTextureLayerEXT was not loaded") }
-    pub extern "C" fn FreeObjectBufferATI(_: GLuint) -> c_void { fail!("FreeObjectBufferATI was not loaded") }
-    pub extern "C" fn FrontFace(_: GLenum) -> c_void { fail!("FrontFace was not loaded") }
-    pub extern "C" fn Frustum(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Frustum was not loaded") }
-    pub extern "C" fn Frustumf(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Frustumf was not loaded") }
-    pub extern "C" fn FrustumfOES(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("FrustumfOES was not loaded") }
-    pub extern "C" fn Frustumx(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Frustumx was not loaded") }
-    pub extern "C" fn FrustumxOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("FrustumxOES was not loaded") }
-    pub extern "C" fn GenAsyncMarkersSGIX(_: GLsizei) -> GLuint { fail!("GenAsyncMarkersSGIX was not loaded") }
-    pub extern "C" fn GenBuffers(_: GLsizei, _: *GLuint) -> c_void { fail!("GenBuffers was not loaded") }
-    pub extern "C" fn GenBuffersARB(_: GLsizei, _: *GLuint) -> c_void { fail!("GenBuffersARB was not loaded") }
-    pub extern "C" fn GenFencesAPPLE(_: GLsizei, _: *GLuint) -> c_void { fail!("GenFencesAPPLE was not loaded") }
-    pub extern "C" fn GenFencesNV(_: GLsizei, _: *GLuint) -> c_void { fail!("GenFencesNV was not loaded") }
-    pub extern "C" fn GenFragmentShadersATI(_: GLuint) -> GLuint { fail!("GenFragmentShadersATI was not loaded") }
-    pub extern "C" fn GenFramebuffers(_: GLsizei, _: *GLuint) -> c_void { fail!("GenFramebuffers was not loaded") }
-    pub extern "C" fn GenFramebuffersEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("GenFramebuffersEXT was not loaded") }
-    pub extern "C" fn GenFramebuffersOES(_: GLsizei, _: *GLuint) -> c_void { fail!("GenFramebuffersOES was not loaded") }
-    pub extern "C" fn GenLists(_: GLsizei) -> GLuint { fail!("GenLists was not loaded") }
-    pub extern "C" fn GenNamesAMD(_: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("GenNamesAMD was not loaded") }
-    pub extern "C" fn GenOcclusionQueriesNV(_: GLsizei, _: *GLuint) -> c_void { fail!("GenOcclusionQueriesNV was not loaded") }
-    pub extern "C" fn GenPathsNV(_: GLsizei) -> GLuint { fail!("GenPathsNV was not loaded") }
-    pub extern "C" fn GenPerfMonitorsAMD(_: GLsizei, _: *GLuint) -> c_void { fail!("GenPerfMonitorsAMD was not loaded") }
-    pub extern "C" fn GenProgramPipelines(_: GLsizei, _: *GLuint) -> c_void { fail!("GenProgramPipelines was not loaded") }
-    pub extern "C" fn GenProgramPipelinesEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("GenProgramPipelinesEXT was not loaded") }
-    pub extern "C" fn GenProgramsARB(_: GLsizei, _: *GLuint) -> c_void { fail!("GenProgramsARB was not loaded") }
-    pub extern "C" fn GenProgramsNV(_: GLsizei, _: *GLuint) -> c_void { fail!("GenProgramsNV was not loaded") }
-    pub extern "C" fn GenQueries(_: GLsizei, _: *GLuint) -> c_void { fail!("GenQueries was not loaded") }
-    pub extern "C" fn GenQueriesARB(_: GLsizei, _: *GLuint) -> c_void { fail!("GenQueriesARB was not loaded") }
-    pub extern "C" fn GenQueriesEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("GenQueriesEXT was not loaded") }
-    pub extern "C" fn GenRenderbuffers(_: GLsizei, _: *GLuint) -> c_void { fail!("GenRenderbuffers was not loaded") }
-    pub extern "C" fn GenRenderbuffersEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("GenRenderbuffersEXT was not loaded") }
-    pub extern "C" fn GenRenderbuffersOES(_: GLsizei, _: *GLuint) -> c_void { fail!("GenRenderbuffersOES was not loaded") }
-    pub extern "C" fn GenSamplers(_: GLsizei, _: *GLuint) -> c_void { fail!("GenSamplers was not loaded") }
-    pub extern "C" fn GenSymbolsEXT(_: GLenum, _: GLenum, _: GLenum, _: GLuint) -> GLuint { fail!("GenSymbolsEXT was not loaded") }
-    pub extern "C" fn GenTextures(_: GLsizei, _: *GLuint) -> c_void { fail!("GenTextures was not loaded") }
-    pub extern "C" fn GenTexturesEXT(_: GLsizei, _: *GLuint) -> c_void { fail!("GenTexturesEXT was not loaded") }
-    pub extern "C" fn GenTransformFeedbacks(_: GLsizei, _: *GLuint) -> c_void { fail!("GenTransformFeedbacks was not loaded") }
-    pub extern "C" fn GenTransformFeedbacksNV(_: GLsizei, _: *GLuint) -> c_void { fail!("GenTransformFeedbacksNV was not loaded") }
-    pub extern "C" fn GenVertexArrays(_: GLsizei, _: *GLuint) -> c_void { fail!("GenVertexArrays was not loaded") }
-    pub extern "C" fn GenVertexArraysAPPLE(_: GLsizei, _: *GLuint) -> c_void { fail!("GenVertexArraysAPPLE was not loaded") }
-    pub extern "C" fn GenVertexArraysOES(_: GLsizei, _: *GLuint) -> c_void { fail!("GenVertexArraysOES was not loaded") }
-    pub extern "C" fn GenVertexShadersEXT(_: GLuint) -> GLuint { fail!("GenVertexShadersEXT was not loaded") }
-    pub extern "C" fn GenerateMipmap(_: GLenum) -> c_void { fail!("GenerateMipmap was not loaded") }
-    pub extern "C" fn GenerateMipmapEXT(_: GLenum) -> c_void { fail!("GenerateMipmapEXT was not loaded") }
-    pub extern "C" fn GenerateMipmapOES(_: GLenum) -> c_void { fail!("GenerateMipmapOES was not loaded") }
-    pub extern "C" fn GenerateMultiTexMipmapEXT(_: GLenum, _: GLenum) -> c_void { fail!("GenerateMultiTexMipmapEXT was not loaded") }
-    pub extern "C" fn GenerateTextureMipmapEXT(_: GLuint, _: GLenum) -> c_void { fail!("GenerateTextureMipmapEXT was not loaded") }
-    pub extern "C" fn GetActiveAtomicCounterBufferiv(_: GLuint, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetActiveAtomicCounterBufferiv was not loaded") }
-    pub extern "C" fn GetActiveAttrib(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLint, _: *GLenum, _: *GLchar) -> c_void { fail!("GetActiveAttrib was not loaded") }
-    pub extern "C" fn GetActiveAttribARB(_: GLhandleARB, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLint, _: *GLenum, _: *GLcharARB) -> c_void { fail!("GetActiveAttribARB was not loaded") }
-    pub extern "C" fn GetActiveSubroutineName(_: GLuint, _: GLenum, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetActiveSubroutineName was not loaded") }
-    pub extern "C" fn GetActiveSubroutineUniformName(_: GLuint, _: GLenum, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetActiveSubroutineUniformName was not loaded") }
-    pub extern "C" fn GetActiveSubroutineUniformiv(_: GLuint, _: GLenum, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetActiveSubroutineUniformiv was not loaded") }
-    pub extern "C" fn GetActiveUniform(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLint, _: *GLenum, _: *GLchar) -> c_void { fail!("GetActiveUniform was not loaded") }
-    pub extern "C" fn GetActiveUniformARB(_: GLhandleARB, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLint, _: *GLenum, _: *GLcharARB) -> c_void { fail!("GetActiveUniformARB was not loaded") }
-    pub extern "C" fn GetActiveUniformBlockName(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetActiveUniformBlockName was not loaded") }
-    pub extern "C" fn GetActiveUniformBlockiv(_: GLuint, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetActiveUniformBlockiv was not loaded") }
-    pub extern "C" fn GetActiveUniformName(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetActiveUniformName was not loaded") }
-    pub extern "C" fn GetActiveUniformsiv(_: GLuint, _: GLsizei, _: *GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetActiveUniformsiv was not loaded") }
-    pub extern "C" fn GetActiveVaryingNV(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLsizei, _: *GLenum, _: *GLchar) -> c_void { fail!("GetActiveVaryingNV was not loaded") }
-    pub extern "C" fn GetArrayObjectfvATI(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetArrayObjectfvATI was not loaded") }
-    pub extern "C" fn GetArrayObjectivATI(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetArrayObjectivATI was not loaded") }
-    pub extern "C" fn GetAttachedObjectsARB(_: GLhandleARB, _: GLsizei, _: *GLsizei, _: *GLhandleARB) -> c_void { fail!("GetAttachedObjectsARB was not loaded") }
-    pub extern "C" fn GetAttachedShaders(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLuint) -> c_void { fail!("GetAttachedShaders was not loaded") }
-    pub extern "C" fn GetAttribLocation(_: GLuint, _: *GLchar) -> GLint { fail!("GetAttribLocation was not loaded") }
-    pub extern "C" fn GetAttribLocationARB(_: GLhandleARB, _: *GLcharARB) -> GLint { fail!("GetAttribLocationARB was not loaded") }
-    pub extern "C" fn GetBooleanIndexedvEXT(_: GLenum, _: GLuint, _: *GLboolean) -> c_void { fail!("GetBooleanIndexedvEXT was not loaded") }
-    pub extern "C" fn GetBooleani_v(_: GLenum, _: GLuint, _: *GLboolean) -> c_void { fail!("GetBooleani_v was not loaded") }
-    pub extern "C" fn GetBooleanv(_: GLenum, _: *GLboolean) -> c_void { fail!("GetBooleanv was not loaded") }
-    pub extern "C" fn GetBufferParameteri64v(_: GLenum, _: GLenum, _: *GLint64) -> c_void { fail!("GetBufferParameteri64v was not loaded") }
-    pub extern "C" fn GetBufferParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetBufferParameteriv was not loaded") }
-    pub extern "C" fn GetBufferParameterivARB(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetBufferParameterivARB was not loaded") }
-    pub extern "C" fn GetBufferParameterui64vNV(_: GLenum, _: GLenum, _: *GLuint64EXT) -> c_void { fail!("GetBufferParameterui64vNV was not loaded") }
-    pub extern "C" fn GetBufferPointerv(_: GLenum, _: GLenum, _: **GLvoid) -> c_void { fail!("GetBufferPointerv was not loaded") }
-    pub extern "C" fn GetBufferPointervARB(_: GLenum, _: GLenum, _: **GLvoid) -> c_void { fail!("GetBufferPointervARB was not loaded") }
-    pub extern "C" fn GetBufferPointervOES(_: GLenum, _: GLenum, _: **GLvoid) -> c_void { fail!("GetBufferPointervOES was not loaded") }
-    pub extern "C" fn GetBufferSubData(_: GLenum, _: GLintptr, _: GLsizeiptr, _: *GLvoid) -> c_void { fail!("GetBufferSubData was not loaded") }
-    pub extern "C" fn GetBufferSubDataARB(_: GLenum, _: GLintptrARB, _: GLsizeiptrARB, _: *GLvoid) -> c_void { fail!("GetBufferSubDataARB was not loaded") }
-    pub extern "C" fn GetClipPlane(_: GLenum, _: *GLdouble) -> c_void { fail!("GetClipPlane was not loaded") }
-    pub extern "C" fn GetClipPlanef(_: GLenum, _: *GLfloat) -> c_void { fail!("GetClipPlanef was not loaded") }
-    pub extern "C" fn GetClipPlanefOES(_: GLenum, _: *GLfloat) -> c_void { fail!("GetClipPlanefOES was not loaded") }
-    pub extern "C" fn GetClipPlanex(_: GLenum, _: *GLfixed) -> c_void { fail!("GetClipPlanex was not loaded") }
-    pub extern "C" fn GetClipPlanexOES(_: GLenum, _: *GLfixed) -> c_void { fail!("GetClipPlanexOES was not loaded") }
-    pub extern "C" fn GetColorTable(_: GLenum, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetColorTable was not loaded") }
-    pub extern "C" fn GetColorTableEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetColorTableEXT was not loaded") }
-    pub extern "C" fn GetColorTableParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetColorTableParameterfv was not loaded") }
-    pub extern "C" fn GetColorTableParameterfvEXT(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetColorTableParameterfvEXT was not loaded") }
-    pub extern "C" fn GetColorTableParameterfvSGI(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetColorTableParameterfvSGI was not loaded") }
-    pub extern "C" fn GetColorTableParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetColorTableParameteriv was not loaded") }
-    pub extern "C" fn GetColorTableParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetColorTableParameterivEXT was not loaded") }
-    pub extern "C" fn GetColorTableParameterivSGI(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetColorTableParameterivSGI was not loaded") }
-    pub extern "C" fn GetColorTableSGI(_: GLenum, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetColorTableSGI was not loaded") }
-    pub extern "C" fn GetCombinerInputParameterfvNV(_: GLenum, _: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetCombinerInputParameterfvNV was not loaded") }
-    pub extern "C" fn GetCombinerInputParameterivNV(_: GLenum, _: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetCombinerInputParameterivNV was not loaded") }
-    pub extern "C" fn GetCombinerOutputParameterfvNV(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetCombinerOutputParameterfvNV was not loaded") }
-    pub extern "C" fn GetCombinerOutputParameterivNV(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetCombinerOutputParameterivNV was not loaded") }
-    pub extern "C" fn GetCombinerStageParameterfvNV(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetCombinerStageParameterfvNV was not loaded") }
-    pub extern "C" fn GetCompressedMultiTexImageEXT(_: GLenum, _: GLenum, _: GLint, _: *GLvoid) -> c_void { fail!("GetCompressedMultiTexImageEXT was not loaded") }
-    pub extern "C" fn GetCompressedTexImage(_: GLenum, _: GLint, _: *GLvoid) -> c_void { fail!("GetCompressedTexImage was not loaded") }
-    pub extern "C" fn GetCompressedTexImageARB(_: GLenum, _: GLint, _: *GLvoid) -> c_void { fail!("GetCompressedTexImageARB was not loaded") }
-    pub extern "C" fn GetCompressedTextureImageEXT(_: GLuint, _: GLenum, _: GLint, _: *GLvoid) -> c_void { fail!("GetCompressedTextureImageEXT was not loaded") }
-    pub extern "C" fn GetConvolutionFilter(_: GLenum, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetConvolutionFilter was not loaded") }
-    pub extern "C" fn GetConvolutionFilterEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetConvolutionFilterEXT was not loaded") }
-    pub extern "C" fn GetConvolutionParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetConvolutionParameterfv was not loaded") }
-    pub extern "C" fn GetConvolutionParameterfvEXT(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetConvolutionParameterfvEXT was not loaded") }
-    pub extern "C" fn GetConvolutionParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetConvolutionParameteriv was not loaded") }
-    pub extern "C" fn GetConvolutionParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetConvolutionParameterivEXT was not loaded") }
-    pub extern "C" fn GetConvolutionParameterxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetConvolutionParameterxvOES was not loaded") }
-    pub extern "C" fn GetDebugMessageLog(_: GLuint, _: GLsizei, _: *GLenum, _: *GLenum, _: *GLuint, _: *GLenum, _: *GLsizei, _: *GLchar) -> GLuint { fail!("GetDebugMessageLog was not loaded") }
-    pub extern "C" fn GetDebugMessageLogAMD(_: GLuint, _: GLsizei, _: *GLenum, _: *GLuint, _: *GLuint, _: *GLsizei, _: *GLchar) -> GLuint { fail!("GetDebugMessageLogAMD was not loaded") }
-    pub extern "C" fn GetDebugMessageLogARB(_: GLuint, _: GLsizei, _: *GLenum, _: *GLenum, _: *GLuint, _: *GLenum, _: *GLsizei, _: *GLchar) -> GLuint { fail!("GetDebugMessageLogARB was not loaded") }
-    pub extern "C" fn GetDebugMessageLogKHR(_: GLuint, _: GLsizei, _: *GLenum, _: *GLenum, _: *GLuint, _: *GLenum, _: *GLsizei, _: *GLchar) -> GLuint { fail!("GetDebugMessageLogKHR was not loaded") }
-    pub extern "C" fn GetDetailTexFuncSGIS(_: GLenum, _: *GLfloat) -> c_void { fail!("GetDetailTexFuncSGIS was not loaded") }
-    pub extern "C" fn GetDoubleIndexedvEXT(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("GetDoubleIndexedvEXT was not loaded") }
-    pub extern "C" fn GetDoublei_v(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("GetDoublei_v was not loaded") }
-    pub extern "C" fn GetDoublei_vEXT(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("GetDoublei_vEXT was not loaded") }
-    pub extern "C" fn GetDoublev(_: GLenum, _: *GLdouble) -> c_void { fail!("GetDoublev was not loaded") }
-    pub extern "C" fn GetDriverControlStringQCOM(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetDriverControlStringQCOM was not loaded") }
-    pub extern "C" fn GetDriverControlsQCOM(_: *GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("GetDriverControlsQCOM was not loaded") }
-    pub extern "C" fn GetError() -> GLenum { fail!("GetError was not loaded") }
-    pub extern "C" fn GetFenceivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetFenceivNV was not loaded") }
-    pub extern "C" fn GetFinalCombinerInputParameterfvNV(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetFinalCombinerInputParameterfvNV was not loaded") }
-    pub extern "C" fn GetFinalCombinerInputParameterivNV(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetFinalCombinerInputParameterivNV was not loaded") }
-    pub extern "C" fn GetFixedv(_: GLenum, _: *GLfixed) -> c_void { fail!("GetFixedv was not loaded") }
-    pub extern "C" fn GetFixedvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("GetFixedvOES was not loaded") }
-    pub extern "C" fn GetFloatIndexedvEXT(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetFloatIndexedvEXT was not loaded") }
-    pub extern "C" fn GetFloati_v(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetFloati_v was not loaded") }
-    pub extern "C" fn GetFloati_vEXT(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetFloati_vEXT was not loaded") }
-    pub extern "C" fn GetFloatv(_: GLenum, _: *GLfloat) -> c_void { fail!("GetFloatv was not loaded") }
-    pub extern "C" fn GetFogFuncSGIS(_: *GLfloat) -> c_void { fail!("GetFogFuncSGIS was not loaded") }
-    pub extern "C" fn GetFragDataIndex(_: GLuint, _: *GLchar) -> GLint { fail!("GetFragDataIndex was not loaded") }
-    pub extern "C" fn GetFragDataLocation(_: GLuint, _: *GLchar) -> GLint { fail!("GetFragDataLocation was not loaded") }
-    pub extern "C" fn GetFragDataLocationEXT(_: GLuint, _: *GLchar) -> GLint { fail!("GetFragDataLocationEXT was not loaded") }
-    pub extern "C" fn GetFragmentLightfvSGIX(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetFragmentLightfvSGIX was not loaded") }
-    pub extern "C" fn GetFragmentLightivSGIX(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetFragmentLightivSGIX was not loaded") }
-    pub extern "C" fn GetFragmentMaterialfvSGIX(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetFragmentMaterialfvSGIX was not loaded") }
-    pub extern "C" fn GetFragmentMaterialivSGIX(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetFragmentMaterialivSGIX was not loaded") }
-    pub extern "C" fn GetFramebufferAttachmentParameteriv(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetFramebufferAttachmentParameteriv was not loaded") }
-    pub extern "C" fn GetFramebufferAttachmentParameterivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetFramebufferAttachmentParameterivEXT was not loaded") }
-    pub extern "C" fn GetFramebufferAttachmentParameterivOES(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetFramebufferAttachmentParameterivOES was not loaded") }
-    pub extern "C" fn GetFramebufferParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetFramebufferParameteriv was not loaded") }
-    pub extern "C" fn GetFramebufferParameterivEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetFramebufferParameterivEXT was not loaded") }
-    pub extern "C" fn GetGraphicsResetStatusARB() -> GLenum { fail!("GetGraphicsResetStatusARB was not loaded") }
-    pub extern "C" fn GetGraphicsResetStatusEXT() -> GLenum { fail!("GetGraphicsResetStatusEXT was not loaded") }
-    pub extern "C" fn GetHandleARB(_: GLenum) -> GLhandleARB { fail!("GetHandleARB was not loaded") }
-    pub extern "C" fn GetHistogram(_: GLenum, _: GLboolean, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetHistogram was not loaded") }
-    pub extern "C" fn GetHistogramEXT(_: GLenum, _: GLboolean, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetHistogramEXT was not loaded") }
-    pub extern "C" fn GetHistogramParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetHistogramParameterfv was not loaded") }
-    pub extern "C" fn GetHistogramParameterfvEXT(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetHistogramParameterfvEXT was not loaded") }
-    pub extern "C" fn GetHistogramParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetHistogramParameteriv was not loaded") }
-    pub extern "C" fn GetHistogramParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetHistogramParameterivEXT was not loaded") }
-    pub extern "C" fn GetHistogramParameterxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetHistogramParameterxvOES was not loaded") }
-    pub extern "C" fn GetImageHandleARB(_: GLuint, _: GLint, _: GLboolean, _: GLint, _: GLenum) -> GLuint64 { fail!("GetImageHandleARB was not loaded") }
-    pub extern "C" fn GetImageHandleNV(_: GLuint, _: GLint, _: GLboolean, _: GLint, _: GLenum) -> GLuint64 { fail!("GetImageHandleNV was not loaded") }
-    pub extern "C" fn GetImageTransformParameterfvHP(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetImageTransformParameterfvHP was not loaded") }
-    pub extern "C" fn GetImageTransformParameterivHP(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetImageTransformParameterivHP was not loaded") }
-    pub extern "C" fn GetInfoLogARB(_: GLhandleARB, _: GLsizei, _: *GLsizei, _: *GLcharARB) -> c_void { fail!("GetInfoLogARB was not loaded") }
-    pub extern "C" fn GetInstrumentsSGIX() -> GLint { fail!("GetInstrumentsSGIX was not loaded") }
-    pub extern "C" fn GetInteger64i_v(_: GLenum, _: GLuint, _: *GLint64) -> c_void { fail!("GetInteger64i_v was not loaded") }
-    pub extern "C" fn GetInteger64v(_: GLenum, _: *GLint64) -> c_void { fail!("GetInteger64v was not loaded") }
-    pub extern "C" fn GetInteger64vAPPLE(_: GLenum, _: *GLint64) -> c_void { fail!("GetInteger64vAPPLE was not loaded") }
-    pub extern "C" fn GetIntegerIndexedvEXT(_: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("GetIntegerIndexedvEXT was not loaded") }
-    pub extern "C" fn GetIntegeri_v(_: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("GetIntegeri_v was not loaded") }
-    pub extern "C" fn GetIntegeri_vEXT(_: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("GetIntegeri_vEXT was not loaded") }
-    pub extern "C" fn GetIntegerui64i_vNV(_: GLenum, _: GLuint, _: *GLuint64EXT) -> c_void { fail!("GetIntegerui64i_vNV was not loaded") }
-    pub extern "C" fn GetIntegerui64vNV(_: GLenum, _: *GLuint64EXT) -> c_void { fail!("GetIntegerui64vNV was not loaded") }
-    pub extern "C" fn GetIntegerv(_: GLenum, _: *GLint) -> c_void { fail!("GetIntegerv was not loaded") }
-    pub extern "C" fn GetInternalformati64v(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLint64) -> c_void { fail!("GetInternalformati64v was not loaded") }
-    pub extern "C" fn GetInternalformativ(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLint) -> c_void { fail!("GetInternalformativ was not loaded") }
-    pub extern "C" fn GetInvariantBooleanvEXT(_: GLuint, _: GLenum, _: *GLboolean) -> c_void { fail!("GetInvariantBooleanvEXT was not loaded") }
-    pub extern "C" fn GetInvariantFloatvEXT(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetInvariantFloatvEXT was not loaded") }
-    pub extern "C" fn GetInvariantIntegervEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetInvariantIntegervEXT was not loaded") }
-    pub extern "C" fn GetLightfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetLightfv was not loaded") }
-    pub extern "C" fn GetLightiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetLightiv was not loaded") }
-    pub extern "C" fn GetLightx(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetLightx was not loaded") }
-    pub extern "C" fn GetLightxOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetLightxOES was not loaded") }
-    pub extern "C" fn GetLightxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetLightxv was not loaded") }
-    pub extern "C" fn GetLightxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetLightxvOES was not loaded") }
-    pub extern "C" fn GetListParameterfvSGIX(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetListParameterfvSGIX was not loaded") }
-    pub extern "C" fn GetListParameterivSGIX(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetListParameterivSGIX was not loaded") }
-    pub extern "C" fn GetLocalConstantBooleanvEXT(_: GLuint, _: GLenum, _: *GLboolean) -> c_void { fail!("GetLocalConstantBooleanvEXT was not loaded") }
-    pub extern "C" fn GetLocalConstantFloatvEXT(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetLocalConstantFloatvEXT was not loaded") }
-    pub extern "C" fn GetLocalConstantIntegervEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetLocalConstantIntegervEXT was not loaded") }
-    pub extern "C" fn GetMapAttribParameterfvNV(_: GLenum, _: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMapAttribParameterfvNV was not loaded") }
-    pub extern "C" fn GetMapAttribParameterivNV(_: GLenum, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetMapAttribParameterivNV was not loaded") }
-    pub extern "C" fn GetMapControlPointsNV(_: GLenum, _: GLuint, _: GLenum, _: GLsizei, _: GLsizei, _: GLboolean, _: *GLvoid) -> c_void { fail!("GetMapControlPointsNV was not loaded") }
-    pub extern "C" fn GetMapParameterfvNV(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMapParameterfvNV was not loaded") }
-    pub extern "C" fn GetMapParameterivNV(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMapParameterivNV was not loaded") }
-    pub extern "C" fn GetMapdv(_: GLenum, _: GLenum, _: *GLdouble) -> c_void { fail!("GetMapdv was not loaded") }
-    pub extern "C" fn GetMapfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMapfv was not loaded") }
-    pub extern "C" fn GetMapiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMapiv was not loaded") }
-    pub extern "C" fn GetMapxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetMapxvOES was not loaded") }
-    pub extern "C" fn GetMaterialfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMaterialfv was not loaded") }
-    pub extern "C" fn GetMaterialiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMaterialiv was not loaded") }
-    pub extern "C" fn GetMaterialx(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("GetMaterialx was not loaded") }
-    pub extern "C" fn GetMaterialxOES(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("GetMaterialxOES was not loaded") }
-    pub extern "C" fn GetMaterialxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetMaterialxv was not loaded") }
-    pub extern "C" fn GetMaterialxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetMaterialxvOES was not loaded") }
-    pub extern "C" fn GetMinmax(_: GLenum, _: GLboolean, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetMinmax was not loaded") }
-    pub extern "C" fn GetMinmaxEXT(_: GLenum, _: GLboolean, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetMinmaxEXT was not loaded") }
-    pub extern "C" fn GetMinmaxParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMinmaxParameterfv was not loaded") }
-    pub extern "C" fn GetMinmaxParameterfvEXT(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMinmaxParameterfvEXT was not loaded") }
-    pub extern "C" fn GetMinmaxParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMinmaxParameteriv was not loaded") }
-    pub extern "C" fn GetMinmaxParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMinmaxParameterivEXT was not loaded") }
-    pub extern "C" fn GetMultiTexEnvfvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMultiTexEnvfvEXT was not loaded") }
-    pub extern "C" fn GetMultiTexEnvivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMultiTexEnvivEXT was not loaded") }
-    pub extern "C" fn GetMultiTexGendvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLdouble) -> c_void { fail!("GetMultiTexGendvEXT was not loaded") }
-    pub extern "C" fn GetMultiTexGenfvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMultiTexGenfvEXT was not loaded") }
-    pub extern "C" fn GetMultiTexGenivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMultiTexGenivEXT was not loaded") }
-    pub extern "C" fn GetMultiTexImageEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetMultiTexImageEXT was not loaded") }
-    pub extern "C" fn GetMultiTexLevelParameterfvEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMultiTexLevelParameterfvEXT was not loaded") }
-    pub extern "C" fn GetMultiTexLevelParameterivEXT(_: GLenum, _: GLenum, _: GLint, _: GLenum, _: *GLint) -> c_void { fail!("GetMultiTexLevelParameterivEXT was not loaded") }
-    pub extern "C" fn GetMultiTexParameterIivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMultiTexParameterIivEXT was not loaded") }
-    pub extern "C" fn GetMultiTexParameterIuivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("GetMultiTexParameterIuivEXT was not loaded") }
-    pub extern "C" fn GetMultiTexParameterfvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetMultiTexParameterfvEXT was not loaded") }
-    pub extern "C" fn GetMultiTexParameterivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetMultiTexParameterivEXT was not loaded") }
-    pub extern "C" fn GetMultisamplefv(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetMultisamplefv was not loaded") }
-    pub extern "C" fn GetMultisamplefvNV(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetMultisamplefvNV was not loaded") }
-    pub extern "C" fn GetNamedBufferParameterivEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetNamedBufferParameterivEXT was not loaded") }
-    pub extern "C" fn GetNamedBufferParameterui64vNV(_: GLuint, _: GLenum, _: *GLuint64EXT) -> c_void { fail!("GetNamedBufferParameterui64vNV was not loaded") }
-    pub extern "C" fn GetNamedBufferPointervEXT(_: GLuint, _: GLenum, _: **GLvoid) -> c_void { fail!("GetNamedBufferPointervEXT was not loaded") }
-    pub extern "C" fn GetNamedBufferSubDataEXT(_: GLuint, _: GLintptr, _: GLsizeiptr, _: *GLvoid) -> c_void { fail!("GetNamedBufferSubDataEXT was not loaded") }
-    pub extern "C" fn GetNamedFramebufferAttachmentParameterivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetNamedFramebufferAttachmentParameterivEXT was not loaded") }
-    pub extern "C" fn GetNamedFramebufferParameterivEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetNamedFramebufferParameterivEXT was not loaded") }
-    pub extern "C" fn GetNamedProgramLocalParameterIivEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("GetNamedProgramLocalParameterIivEXT was not loaded") }
-    pub extern "C" fn GetNamedProgramLocalParameterIuivEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("GetNamedProgramLocalParameterIuivEXT was not loaded") }
-    pub extern "C" fn GetNamedProgramLocalParameterdvEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("GetNamedProgramLocalParameterdvEXT was not loaded") }
-    pub extern "C" fn GetNamedProgramLocalParameterfvEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetNamedProgramLocalParameterfvEXT was not loaded") }
-    pub extern "C" fn GetNamedProgramStringEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetNamedProgramStringEXT was not loaded") }
-    pub extern "C" fn GetNamedProgramivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetNamedProgramivEXT was not loaded") }
-    pub extern "C" fn GetNamedRenderbufferParameterivEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetNamedRenderbufferParameterivEXT was not loaded") }
-    pub extern "C" fn GetNamedStringARB(_: GLint, _: *GLchar, _: GLsizei, _: *GLint, _: *GLchar) -> c_void { fail!("GetNamedStringARB was not loaded") }
-    pub extern "C" fn GetNamedStringivARB(_: GLint, _: *GLchar, _: GLenum, _: *GLint) -> c_void { fail!("GetNamedStringivARB was not loaded") }
-    pub extern "C" fn GetObjectBufferfvATI(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetObjectBufferfvATI was not loaded") }
-    pub extern "C" fn GetObjectBufferivATI(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetObjectBufferivATI was not loaded") }
-    pub extern "C" fn GetObjectLabel(_: GLenum, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetObjectLabel was not loaded") }
-    pub extern "C" fn GetObjectLabelEXT(_: GLenum, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetObjectLabelEXT was not loaded") }
-    pub extern "C" fn GetObjectLabelKHR(_: GLenum, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetObjectLabelKHR was not loaded") }
-    pub extern "C" fn GetObjectParameterfvARB(_: GLhandleARB, _: GLenum, _: *GLfloat) -> c_void { fail!("GetObjectParameterfvARB was not loaded") }
-    pub extern "C" fn GetObjectParameterivAPPLE(_: GLenum, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetObjectParameterivAPPLE was not loaded") }
-    pub extern "C" fn GetObjectParameterivARB(_: GLhandleARB, _: GLenum, _: *GLint) -> c_void { fail!("GetObjectParameterivARB was not loaded") }
-    pub extern "C" fn GetObjectPtrLabel(_: *c_void, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetObjectPtrLabel was not loaded") }
-    pub extern "C" fn GetObjectPtrLabelKHR(_: *c_void, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetObjectPtrLabelKHR was not loaded") }
-    pub extern "C" fn GetOcclusionQueryivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetOcclusionQueryivNV was not loaded") }
-    pub extern "C" fn GetOcclusionQueryuivNV(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetOcclusionQueryuivNV was not loaded") }
-    pub extern "C" fn GetPathColorGenfvNV(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetPathColorGenfvNV was not loaded") }
-    pub extern "C" fn GetPathColorGenivNV(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetPathColorGenivNV was not loaded") }
-    pub extern "C" fn GetPathCommandsNV(_: GLuint, _: *GLubyte) -> c_void { fail!("GetPathCommandsNV was not loaded") }
-    pub extern "C" fn GetPathCoordsNV(_: GLuint, _: *GLfloat) -> c_void { fail!("GetPathCoordsNV was not loaded") }
-    pub extern "C" fn GetPathDashArrayNV(_: GLuint, _: *GLfloat) -> c_void { fail!("GetPathDashArrayNV was not loaded") }
-    pub extern "C" fn GetPathLengthNV(_: GLuint, _: GLsizei, _: GLsizei) -> GLfloat { fail!("GetPathLengthNV was not loaded") }
-    pub extern "C" fn GetPathMetricRangeNV(_: GLbitfield, _: GLuint, _: GLsizei, _: GLsizei, _: *GLfloat) -> c_void { fail!("GetPathMetricRangeNV was not loaded") }
-    pub extern "C" fn GetPathMetricsNV(_: GLbitfield, _: GLsizei, _: GLenum, _: *GLvoid, _: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("GetPathMetricsNV was not loaded") }
-    pub extern "C" fn GetPathParameterfvNV(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetPathParameterfvNV was not loaded") }
-    pub extern "C" fn GetPathParameterivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetPathParameterivNV was not loaded") }
-    pub extern "C" fn GetPathSpacingNV(_: GLenum, _: GLsizei, _: GLenum, _: *GLvoid, _: GLuint, _: GLfloat, _: GLfloat, _: GLenum, _: *GLfloat) -> c_void { fail!("GetPathSpacingNV was not loaded") }
-    pub extern "C" fn GetPathTexGenfvNV(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetPathTexGenfvNV was not loaded") }
-    pub extern "C" fn GetPathTexGenivNV(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetPathTexGenivNV was not loaded") }
-    pub extern "C" fn GetPerfMonitorCounterDataAMD(_: GLuint, _: GLenum, _: GLsizei, _: *GLuint, _: *GLint) -> c_void { fail!("GetPerfMonitorCounterDataAMD was not loaded") }
-    pub extern "C" fn GetPerfMonitorCounterInfoAMD(_: GLuint, _: GLuint, _: GLenum, _: *GLvoid) -> c_void { fail!("GetPerfMonitorCounterInfoAMD was not loaded") }
-    pub extern "C" fn GetPerfMonitorCounterStringAMD(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetPerfMonitorCounterStringAMD was not loaded") }
-    pub extern "C" fn GetPerfMonitorCountersAMD(_: GLuint, _: *GLint, _: *GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("GetPerfMonitorCountersAMD was not loaded") }
-    pub extern "C" fn GetPerfMonitorGroupStringAMD(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetPerfMonitorGroupStringAMD was not loaded") }
-    pub extern "C" fn GetPerfMonitorGroupsAMD(_: *GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("GetPerfMonitorGroupsAMD was not loaded") }
-    pub extern "C" fn GetPixelMapfv(_: GLenum, _: *GLfloat) -> c_void { fail!("GetPixelMapfv was not loaded") }
-    pub extern "C" fn GetPixelMapuiv(_: GLenum, _: *GLuint) -> c_void { fail!("GetPixelMapuiv was not loaded") }
-    pub extern "C" fn GetPixelMapusv(_: GLenum, _: *GLushort) -> c_void { fail!("GetPixelMapusv was not loaded") }
-    pub extern "C" fn GetPixelMapxv(_: GLenum, _: GLint, _: *GLfixed) -> c_void { fail!("GetPixelMapxv was not loaded") }
-    pub extern "C" fn GetPixelTexGenParameterfvSGIS(_: GLenum, _: *GLfloat) -> c_void { fail!("GetPixelTexGenParameterfvSGIS was not loaded") }
-    pub extern "C" fn GetPixelTexGenParameterivSGIS(_: GLenum, _: *GLint) -> c_void { fail!("GetPixelTexGenParameterivSGIS was not loaded") }
-    pub extern "C" fn GetPixelTransformParameterfvEXT(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetPixelTransformParameterfvEXT was not loaded") }
-    pub extern "C" fn GetPixelTransformParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetPixelTransformParameterivEXT was not loaded") }
-    pub extern "C" fn GetPointerIndexedvEXT(_: GLenum, _: GLuint, _: **GLvoid) -> c_void { fail!("GetPointerIndexedvEXT was not loaded") }
-    pub extern "C" fn GetPointeri_vEXT(_: GLenum, _: GLuint, _: **GLvoid) -> c_void { fail!("GetPointeri_vEXT was not loaded") }
-    pub extern "C" fn GetPointerv(_: GLenum, _: **GLvoid) -> c_void { fail!("GetPointerv was not loaded") }
-    pub extern "C" fn GetPointervEXT(_: GLenum, _: **GLvoid) -> c_void { fail!("GetPointervEXT was not loaded") }
-    pub extern "C" fn GetPointervKHR(_: GLenum, _: **GLvoid) -> c_void { fail!("GetPointervKHR was not loaded") }
-    pub extern "C" fn GetPolygonStipple(_: *GLubyte) -> c_void { fail!("GetPolygonStipple was not loaded") }
-    pub extern "C" fn GetProgramBinary(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLenum, _: *GLvoid) -> c_void { fail!("GetProgramBinary was not loaded") }
-    pub extern "C" fn GetProgramBinaryOES(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLenum, _: *GLvoid) -> c_void { fail!("GetProgramBinaryOES was not loaded") }
-    pub extern "C" fn GetProgramEnvParameterIivNV(_: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("GetProgramEnvParameterIivNV was not loaded") }
-    pub extern "C" fn GetProgramEnvParameterIuivNV(_: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("GetProgramEnvParameterIuivNV was not loaded") }
-    pub extern "C" fn GetProgramEnvParameterdvARB(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("GetProgramEnvParameterdvARB was not loaded") }
-    pub extern "C" fn GetProgramEnvParameterfvARB(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetProgramEnvParameterfvARB was not loaded") }
-    pub extern "C" fn GetProgramInfoLog(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetProgramInfoLog was not loaded") }
-    pub extern "C" fn GetProgramInterfaceiv(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetProgramInterfaceiv was not loaded") }
-    pub extern "C" fn GetProgramLocalParameterIivNV(_: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("GetProgramLocalParameterIivNV was not loaded") }
-    pub extern "C" fn GetProgramLocalParameterIuivNV(_: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("GetProgramLocalParameterIuivNV was not loaded") }
-    pub extern "C" fn GetProgramLocalParameterdvARB(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("GetProgramLocalParameterdvARB was not loaded") }
-    pub extern "C" fn GetProgramLocalParameterfvARB(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("GetProgramLocalParameterfvARB was not loaded") }
-    pub extern "C" fn GetProgramNamedParameterdvNV(_: GLuint, _: GLsizei, _: *GLubyte, _: *GLdouble) -> c_void { fail!("GetProgramNamedParameterdvNV was not loaded") }
-    pub extern "C" fn GetProgramNamedParameterfvNV(_: GLuint, _: GLsizei, _: *GLubyte, _: *GLfloat) -> c_void { fail!("GetProgramNamedParameterfvNV was not loaded") }
-    pub extern "C" fn GetProgramParameterdvNV(_: GLenum, _: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("GetProgramParameterdvNV was not loaded") }
-    pub extern "C" fn GetProgramParameterfvNV(_: GLenum, _: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetProgramParameterfvNV was not loaded") }
-    pub extern "C" fn GetProgramPipelineInfoLog(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetProgramPipelineInfoLog was not loaded") }
-    pub extern "C" fn GetProgramPipelineInfoLogEXT(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetProgramPipelineInfoLogEXT was not loaded") }
-    pub extern "C" fn GetProgramPipelineiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetProgramPipelineiv was not loaded") }
-    pub extern "C" fn GetProgramPipelineivEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetProgramPipelineivEXT was not loaded") }
-    pub extern "C" fn GetProgramResourceIndex(_: GLuint, _: GLenum, _: *GLchar) -> GLuint { fail!("GetProgramResourceIndex was not loaded") }
-    pub extern "C" fn GetProgramResourceLocation(_: GLuint, _: GLenum, _: *GLchar) -> GLint { fail!("GetProgramResourceLocation was not loaded") }
-    pub extern "C" fn GetProgramResourceLocationIndex(_: GLuint, _: GLenum, _: *GLchar) -> GLint { fail!("GetProgramResourceLocationIndex was not loaded") }
-    pub extern "C" fn GetProgramResourceName(_: GLuint, _: GLenum, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetProgramResourceName was not loaded") }
-    pub extern "C" fn GetProgramResourceiv(_: GLuint, _: GLenum, _: GLuint, _: GLsizei, _: *GLenum, _: GLsizei, _: *GLsizei, _: *GLint) -> c_void { fail!("GetProgramResourceiv was not loaded") }
-    pub extern "C" fn GetProgramStageiv(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetProgramStageiv was not loaded") }
-    pub extern "C" fn GetProgramStringARB(_: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetProgramStringARB was not loaded") }
-    pub extern "C" fn GetProgramStringNV(_: GLuint, _: GLenum, _: *GLubyte) -> c_void { fail!("GetProgramStringNV was not loaded") }
-    pub extern "C" fn GetProgramSubroutineParameteruivNV(_: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("GetProgramSubroutineParameteruivNV was not loaded") }
-    pub extern "C" fn GetProgramiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetProgramiv was not loaded") }
-    pub extern "C" fn GetProgramivARB(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetProgramivARB was not loaded") }
-    pub extern "C" fn GetProgramivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetProgramivNV was not loaded") }
-    pub extern "C" fn GetQueryIndexediv(_: GLenum, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetQueryIndexediv was not loaded") }
-    pub extern "C" fn GetQueryObjecti64v(_: GLuint, _: GLenum, _: *GLint64) -> c_void { fail!("GetQueryObjecti64v was not loaded") }
-    pub extern "C" fn GetQueryObjecti64vEXT(_: GLuint, _: GLenum, _: *GLint64) -> c_void { fail!("GetQueryObjecti64vEXT was not loaded") }
-    pub extern "C" fn GetQueryObjectiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetQueryObjectiv was not loaded") }
-    pub extern "C" fn GetQueryObjectivARB(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetQueryObjectivARB was not loaded") }
-    pub extern "C" fn GetQueryObjectivEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetQueryObjectivEXT was not loaded") }
-    pub extern "C" fn GetQueryObjectui64v(_: GLuint, _: GLenum, _: *GLuint64) -> c_void { fail!("GetQueryObjectui64v was not loaded") }
-    pub extern "C" fn GetQueryObjectui64vEXT(_: GLuint, _: GLenum, _: *GLuint64) -> c_void { fail!("GetQueryObjectui64vEXT was not loaded") }
-    pub extern "C" fn GetQueryObjectuiv(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetQueryObjectuiv was not loaded") }
-    pub extern "C" fn GetQueryObjectuivARB(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetQueryObjectuivARB was not loaded") }
-    pub extern "C" fn GetQueryObjectuivEXT(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetQueryObjectuivEXT was not loaded") }
-    pub extern "C" fn GetQueryiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetQueryiv was not loaded") }
-    pub extern "C" fn GetQueryivARB(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetQueryivARB was not loaded") }
-    pub extern "C" fn GetQueryivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetQueryivEXT was not loaded") }
-    pub extern "C" fn GetRenderbufferParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetRenderbufferParameteriv was not loaded") }
-    pub extern "C" fn GetRenderbufferParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetRenderbufferParameterivEXT was not loaded") }
-    pub extern "C" fn GetRenderbufferParameterivOES(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetRenderbufferParameterivOES was not loaded") }
-    pub extern "C" fn GetSamplerParameterIiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetSamplerParameterIiv was not loaded") }
-    pub extern "C" fn GetSamplerParameterIuiv(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetSamplerParameterIuiv was not loaded") }
-    pub extern "C" fn GetSamplerParameterfv(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetSamplerParameterfv was not loaded") }
-    pub extern "C" fn GetSamplerParameteriv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetSamplerParameteriv was not loaded") }
-    pub extern "C" fn GetSeparableFilter(_: GLenum, _: GLenum, _: GLenum, _: *GLvoid, _: *GLvoid, _: *GLvoid) -> c_void { fail!("GetSeparableFilter was not loaded") }
-    pub extern "C" fn GetSeparableFilterEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLvoid, _: *GLvoid, _: *GLvoid) -> c_void { fail!("GetSeparableFilterEXT was not loaded") }
-    pub extern "C" fn GetShaderInfoLog(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetShaderInfoLog was not loaded") }
-    pub extern "C" fn GetShaderPrecisionFormat(_: GLenum, _: GLenum, _: *GLint, _: *GLint) -> c_void { fail!("GetShaderPrecisionFormat was not loaded") }
-    pub extern "C" fn GetShaderSource(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetShaderSource was not loaded") }
-    pub extern "C" fn GetShaderSourceARB(_: GLhandleARB, _: GLsizei, _: *GLsizei, _: *GLcharARB) -> c_void { fail!("GetShaderSourceARB was not loaded") }
-    pub extern "C" fn GetShaderiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetShaderiv was not loaded") }
-    pub extern "C" fn GetSharpenTexFuncSGIS(_: GLenum, _: *GLfloat) -> c_void { fail!("GetSharpenTexFuncSGIS was not loaded") }
-    pub extern "C" fn GetString(_: GLenum) -> *GLubyte { fail!("GetString was not loaded") }
-    pub extern "C" fn GetStringi(_: GLenum, _: GLuint) -> *GLubyte { fail!("GetStringi was not loaded") }
-    pub extern "C" fn GetSubroutineIndex(_: GLuint, _: GLenum, _: *GLchar) -> GLuint { fail!("GetSubroutineIndex was not loaded") }
-    pub extern "C" fn GetSubroutineUniformLocation(_: GLuint, _: GLenum, _: *GLchar) -> GLint { fail!("GetSubroutineUniformLocation was not loaded") }
-    pub extern "C" fn GetSynciv(_: GLsync, _: GLenum, _: GLsizei, _: *GLsizei, _: *GLint) -> c_void { fail!("GetSynciv was not loaded") }
-    pub extern "C" fn GetSyncivAPPLE(_: GLsync, _: GLenum, _: GLsizei, _: *GLsizei, _: *GLint) -> c_void { fail!("GetSyncivAPPLE was not loaded") }
-    pub extern "C" fn GetTexBumpParameterfvATI(_: GLenum, _: *GLfloat) -> c_void { fail!("GetTexBumpParameterfvATI was not loaded") }
-    pub extern "C" fn GetTexBumpParameterivATI(_: GLenum, _: *GLint) -> c_void { fail!("GetTexBumpParameterivATI was not loaded") }
-    pub extern "C" fn GetTexEnvfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTexEnvfv was not loaded") }
-    pub extern "C" fn GetTexEnviv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTexEnviv was not loaded") }
-    pub extern "C" fn GetTexEnvxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetTexEnvxv was not loaded") }
-    pub extern "C" fn GetTexEnvxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetTexEnvxvOES was not loaded") }
-    pub extern "C" fn GetTexFilterFuncSGIS(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTexFilterFuncSGIS was not loaded") }
-    pub extern "C" fn GetTexGendv(_: GLenum, _: GLenum, _: *GLdouble) -> c_void { fail!("GetTexGendv was not loaded") }
-    pub extern "C" fn GetTexGenfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTexGenfv was not loaded") }
-    pub extern "C" fn GetTexGenfvOES(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTexGenfvOES was not loaded") }
-    pub extern "C" fn GetTexGeniv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTexGeniv was not loaded") }
-    pub extern "C" fn GetTexGenivOES(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTexGenivOES was not loaded") }
-    pub extern "C" fn GetTexGenxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetTexGenxvOES was not loaded") }
-    pub extern "C" fn GetTexImage(_: GLenum, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetTexImage was not loaded") }
-    pub extern "C" fn GetTexLevelParameterfv(_: GLenum, _: GLint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTexLevelParameterfv was not loaded") }
-    pub extern "C" fn GetTexLevelParameteriv(_: GLenum, _: GLint, _: GLenum, _: *GLint) -> c_void { fail!("GetTexLevelParameteriv was not loaded") }
-    pub extern "C" fn GetTexLevelParameterxvOES(_: GLenum, _: GLint, _: GLenum, _: *GLfixed) -> c_void { fail!("GetTexLevelParameterxvOES was not loaded") }
-    pub extern "C" fn GetTexParameterIiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTexParameterIiv was not loaded") }
-    pub extern "C" fn GetTexParameterIivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTexParameterIivEXT was not loaded") }
-    pub extern "C" fn GetTexParameterIuiv(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("GetTexParameterIuiv was not loaded") }
-    pub extern "C" fn GetTexParameterIuivEXT(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("GetTexParameterIuivEXT was not loaded") }
-    pub extern "C" fn GetTexParameterPointervAPPLE(_: GLenum, _: GLenum, _: **GLvoid) -> c_void { fail!("GetTexParameterPointervAPPLE was not loaded") }
-    pub extern "C" fn GetTexParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTexParameterfv was not loaded") }
-    pub extern "C" fn GetTexParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTexParameteriv was not loaded") }
-    pub extern "C" fn GetTexParameterxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetTexParameterxv was not loaded") }
-    pub extern "C" fn GetTexParameterxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("GetTexParameterxvOES was not loaded") }
-    pub extern "C" fn GetTextureHandleARB(_: GLuint) -> GLuint64 { fail!("GetTextureHandleARB was not loaded") }
-    pub extern "C" fn GetTextureHandleNV(_: GLuint) -> GLuint64 { fail!("GetTextureHandleNV was not loaded") }
-    pub extern "C" fn GetTextureImageEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("GetTextureImageEXT was not loaded") }
-    pub extern "C" fn GetTextureLevelParameterfvEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTextureLevelParameterfvEXT was not loaded") }
-    pub extern "C" fn GetTextureLevelParameterivEXT(_: GLuint, _: GLenum, _: GLint, _: GLenum, _: *GLint) -> c_void { fail!("GetTextureLevelParameterivEXT was not loaded") }
-    pub extern "C" fn GetTextureParameterIivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTextureParameterIivEXT was not loaded") }
-    pub extern "C" fn GetTextureParameterIuivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("GetTextureParameterIuivEXT was not loaded") }
-    pub extern "C" fn GetTextureParameterfvEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("GetTextureParameterfvEXT was not loaded") }
-    pub extern "C" fn GetTextureParameterivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("GetTextureParameterivEXT was not loaded") }
-    pub extern "C" fn GetTextureSamplerHandleARB(_: GLuint, _: GLuint) -> GLuint64 { fail!("GetTextureSamplerHandleARB was not loaded") }
-    pub extern "C" fn GetTextureSamplerHandleNV(_: GLuint, _: GLuint) -> GLuint64 { fail!("GetTextureSamplerHandleNV was not loaded") }
-    pub extern "C" fn GetTrackMatrixivNV(_: GLenum, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetTrackMatrixivNV was not loaded") }
-    pub extern "C" fn GetTransformFeedbackVarying(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLsizei, _: *GLenum, _: *GLchar) -> c_void { fail!("GetTransformFeedbackVarying was not loaded") }
-    pub extern "C" fn GetTransformFeedbackVaryingEXT(_: GLuint, _: GLuint, _: GLsizei, _: *GLsizei, _: *GLsizei, _: *GLenum, _: *GLchar) -> c_void { fail!("GetTransformFeedbackVaryingEXT was not loaded") }
-    pub extern "C" fn GetTransformFeedbackVaryingNV(_: GLuint, _: GLuint, _: *GLint) -> c_void { fail!("GetTransformFeedbackVaryingNV was not loaded") }
-    pub extern "C" fn GetTranslatedShaderSourceANGLE(_: GLuint, _: GLsizei, _: *GLsizei, _: *GLchar) -> c_void { fail!("GetTranslatedShaderSourceANGLE was not loaded") }
-    pub extern "C" fn GetUniformBlockIndex(_: GLuint, _: *GLchar) -> GLuint { fail!("GetUniformBlockIndex was not loaded") }
-    pub extern "C" fn GetUniformBufferSizeEXT(_: GLuint, _: GLint) -> GLint { fail!("GetUniformBufferSizeEXT was not loaded") }
-    pub extern "C" fn GetUniformIndices(_: GLuint, _: GLsizei, _: **GLchar, _: *GLuint) -> c_void { fail!("GetUniformIndices was not loaded") }
-    pub extern "C" fn GetUniformLocation(_: GLuint, _: *GLchar) -> GLint { fail!("GetUniformLocation was not loaded") }
-    pub extern "C" fn GetUniformLocationARB(_: GLhandleARB, _: *GLcharARB) -> GLint { fail!("GetUniformLocationARB was not loaded") }
-    pub extern "C" fn GetUniformOffsetEXT(_: GLuint, _: GLint) -> GLintptr { fail!("GetUniformOffsetEXT was not loaded") }
-    pub extern "C" fn GetUniformSubroutineuiv(_: GLenum, _: GLint, _: *GLuint) -> c_void { fail!("GetUniformSubroutineuiv was not loaded") }
-    pub extern "C" fn GetUniformdv(_: GLuint, _: GLint, _: *GLdouble) -> c_void { fail!("GetUniformdv was not loaded") }
-    pub extern "C" fn GetUniformfv(_: GLuint, _: GLint, _: *GLfloat) -> c_void { fail!("GetUniformfv was not loaded") }
-    pub extern "C" fn GetUniformfvARB(_: GLhandleARB, _: GLint, _: *GLfloat) -> c_void { fail!("GetUniformfvARB was not loaded") }
-    pub extern "C" fn GetUniformi64vNV(_: GLuint, _: GLint, _: *GLint64EXT) -> c_void { fail!("GetUniformi64vNV was not loaded") }
-    pub extern "C" fn GetUniformiv(_: GLuint, _: GLint, _: *GLint) -> c_void { fail!("GetUniformiv was not loaded") }
-    pub extern "C" fn GetUniformivARB(_: GLhandleARB, _: GLint, _: *GLint) -> c_void { fail!("GetUniformivARB was not loaded") }
-    pub extern "C" fn GetUniformui64vNV(_: GLuint, _: GLint, _: *GLuint64EXT) -> c_void { fail!("GetUniformui64vNV was not loaded") }
-    pub extern "C" fn GetUniformuiv(_: GLuint, _: GLint, _: *GLuint) -> c_void { fail!("GetUniformuiv was not loaded") }
-    pub extern "C" fn GetUniformuivEXT(_: GLuint, _: GLint, _: *GLuint) -> c_void { fail!("GetUniformuivEXT was not loaded") }
-    pub extern "C" fn GetVariantArrayObjectfvATI(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetVariantArrayObjectfvATI was not loaded") }
-    pub extern "C" fn GetVariantArrayObjectivATI(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVariantArrayObjectivATI was not loaded") }
-    pub extern "C" fn GetVariantBooleanvEXT(_: GLuint, _: GLenum, _: *GLboolean) -> c_void { fail!("GetVariantBooleanvEXT was not loaded") }
-    pub extern "C" fn GetVariantFloatvEXT(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetVariantFloatvEXT was not loaded") }
-    pub extern "C" fn GetVariantIntegervEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVariantIntegervEXT was not loaded") }
-    pub extern "C" fn GetVariantPointervEXT(_: GLuint, _: GLenum, _: **GLvoid) -> c_void { fail!("GetVariantPointervEXT was not loaded") }
-    pub extern "C" fn GetVaryingLocationNV(_: GLuint, _: *GLchar) -> GLint { fail!("GetVaryingLocationNV was not loaded") }
-    pub extern "C" fn GetVertexArrayIntegeri_vEXT(_: GLuint, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexArrayIntegeri_vEXT was not loaded") }
-    pub extern "C" fn GetVertexArrayIntegervEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexArrayIntegervEXT was not loaded") }
-    pub extern "C" fn GetVertexArrayPointeri_vEXT(_: GLuint, _: GLuint, _: GLenum, _: **GLvoid) -> c_void { fail!("GetVertexArrayPointeri_vEXT was not loaded") }
-    pub extern "C" fn GetVertexArrayPointervEXT(_: GLuint, _: GLenum, _: **GLvoid) -> c_void { fail!("GetVertexArrayPointervEXT was not loaded") }
-    pub extern "C" fn GetVertexAttribArrayObjectfvATI(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetVertexAttribArrayObjectfvATI was not loaded") }
-    pub extern "C" fn GetVertexAttribArrayObjectivATI(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexAttribArrayObjectivATI was not loaded") }
-    pub extern "C" fn GetVertexAttribIiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexAttribIiv was not loaded") }
-    pub extern "C" fn GetVertexAttribIivEXT(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexAttribIivEXT was not loaded") }
-    pub extern "C" fn GetVertexAttribIuiv(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetVertexAttribIuiv was not loaded") }
-    pub extern "C" fn GetVertexAttribIuivEXT(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetVertexAttribIuivEXT was not loaded") }
-    pub extern "C" fn GetVertexAttribLdv(_: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("GetVertexAttribLdv was not loaded") }
-    pub extern "C" fn GetVertexAttribLdvEXT(_: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("GetVertexAttribLdvEXT was not loaded") }
-    pub extern "C" fn GetVertexAttribLi64vNV(_: GLuint, _: GLenum, _: *GLint64EXT) -> c_void { fail!("GetVertexAttribLi64vNV was not loaded") }
-    pub extern "C" fn GetVertexAttribLui64vARB(_: GLuint, _: GLenum, _: *GLuint64EXT) -> c_void { fail!("GetVertexAttribLui64vARB was not loaded") }
-    pub extern "C" fn GetVertexAttribLui64vNV(_: GLuint, _: GLenum, _: *GLuint64EXT) -> c_void { fail!("GetVertexAttribLui64vNV was not loaded") }
-    pub extern "C" fn GetVertexAttribPointerv(_: GLuint, _: GLenum, _: **GLvoid) -> c_void { fail!("GetVertexAttribPointerv was not loaded") }
-    pub extern "C" fn GetVertexAttribPointervARB(_: GLuint, _: GLenum, _: **GLvoid) -> c_void { fail!("GetVertexAttribPointervARB was not loaded") }
-    pub extern "C" fn GetVertexAttribPointervNV(_: GLuint, _: GLenum, _: **GLvoid) -> c_void { fail!("GetVertexAttribPointervNV was not loaded") }
-    pub extern "C" fn GetVertexAttribdv(_: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("GetVertexAttribdv was not loaded") }
-    pub extern "C" fn GetVertexAttribdvARB(_: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("GetVertexAttribdvARB was not loaded") }
-    pub extern "C" fn GetVertexAttribdvNV(_: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("GetVertexAttribdvNV was not loaded") }
-    pub extern "C" fn GetVertexAttribfv(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetVertexAttribfv was not loaded") }
-    pub extern "C" fn GetVertexAttribfvARB(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetVertexAttribfvARB was not loaded") }
-    pub extern "C" fn GetVertexAttribfvNV(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetVertexAttribfvNV was not loaded") }
-    pub extern "C" fn GetVertexAttribiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexAttribiv was not loaded") }
-    pub extern "C" fn GetVertexAttribivARB(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexAttribivARB was not loaded") }
-    pub extern "C" fn GetVertexAttribivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVertexAttribivNV was not loaded") }
-    pub extern "C" fn GetVideoCaptureStreamdvNV(_: GLuint, _: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("GetVideoCaptureStreamdvNV was not loaded") }
-    pub extern "C" fn GetVideoCaptureStreamfvNV(_: GLuint, _: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("GetVideoCaptureStreamfvNV was not loaded") }
-    pub extern "C" fn GetVideoCaptureStreamivNV(_: GLuint, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVideoCaptureStreamivNV was not loaded") }
-    pub extern "C" fn GetVideoCaptureivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVideoCaptureivNV was not loaded") }
-    pub extern "C" fn GetVideoi64vNV(_: GLuint, _: GLenum, _: *GLint64EXT) -> c_void { fail!("GetVideoi64vNV was not loaded") }
-    pub extern "C" fn GetVideoivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("GetVideoivNV was not loaded") }
-    pub extern "C" fn GetVideoui64vNV(_: GLuint, _: GLenum, _: *GLuint64EXT) -> c_void { fail!("GetVideoui64vNV was not loaded") }
-    pub extern "C" fn GetVideouivNV(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("GetVideouivNV was not loaded") }
-    pub extern "C" fn GetnColorTableARB(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("GetnColorTableARB was not loaded") }
-    pub extern "C" fn GetnCompressedTexImageARB(_: GLenum, _: GLint, _: GLsizei, _: *GLvoid) -> c_void { fail!("GetnCompressedTexImageARB was not loaded") }
-    pub extern "C" fn GetnConvolutionFilterARB(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("GetnConvolutionFilterARB was not loaded") }
-    pub extern "C" fn GetnHistogramARB(_: GLenum, _: GLboolean, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("GetnHistogramARB was not loaded") }
-    pub extern "C" fn GetnMapdvARB(_: GLenum, _: GLenum, _: GLsizei, _: *GLdouble) -> c_void { fail!("GetnMapdvARB was not loaded") }
-    pub extern "C" fn GetnMapfvARB(_: GLenum, _: GLenum, _: GLsizei, _: *GLfloat) -> c_void { fail!("GetnMapfvARB was not loaded") }
-    pub extern "C" fn GetnMapivARB(_: GLenum, _: GLenum, _: GLsizei, _: *GLint) -> c_void { fail!("GetnMapivARB was not loaded") }
-    pub extern "C" fn GetnMinmaxARB(_: GLenum, _: GLboolean, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("GetnMinmaxARB was not loaded") }
-    pub extern "C" fn GetnPixelMapfvARB(_: GLenum, _: GLsizei, _: *GLfloat) -> c_void { fail!("GetnPixelMapfvARB was not loaded") }
-    pub extern "C" fn GetnPixelMapuivARB(_: GLenum, _: GLsizei, _: *GLuint) -> c_void { fail!("GetnPixelMapuivARB was not loaded") }
-    pub extern "C" fn GetnPixelMapusvARB(_: GLenum, _: GLsizei, _: *GLushort) -> c_void { fail!("GetnPixelMapusvARB was not loaded") }
-    pub extern "C" fn GetnPolygonStippleARB(_: GLsizei, _: *GLubyte) -> c_void { fail!("GetnPolygonStippleARB was not loaded") }
-    pub extern "C" fn GetnSeparableFilterARB(_: GLenum, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid, _: GLsizei, _: *GLvoid, _: *GLvoid) -> c_void { fail!("GetnSeparableFilterARB was not loaded") }
-    pub extern "C" fn GetnTexImageARB(_: GLenum, _: GLint, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("GetnTexImageARB was not loaded") }
-    pub extern "C" fn GetnUniformdvARB(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("GetnUniformdvARB was not loaded") }
-    pub extern "C" fn GetnUniformfvARB(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("GetnUniformfvARB was not loaded") }
-    pub extern "C" fn GetnUniformfvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("GetnUniformfvEXT was not loaded") }
-    pub extern "C" fn GetnUniformivARB(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("GetnUniformivARB was not loaded") }
-    pub extern "C" fn GetnUniformivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("GetnUniformivEXT was not loaded") }
-    pub extern "C" fn GetnUniformuivARB(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("GetnUniformuivARB was not loaded") }
-    pub extern "C" fn GlobalAlphaFactorbSUN(_: GLbyte) -> c_void { fail!("GlobalAlphaFactorbSUN was not loaded") }
-    pub extern "C" fn GlobalAlphaFactordSUN(_: GLdouble) -> c_void { fail!("GlobalAlphaFactordSUN was not loaded") }
-    pub extern "C" fn GlobalAlphaFactorfSUN(_: GLfloat) -> c_void { fail!("GlobalAlphaFactorfSUN was not loaded") }
-    pub extern "C" fn GlobalAlphaFactoriSUN(_: GLint) -> c_void { fail!("GlobalAlphaFactoriSUN was not loaded") }
-    pub extern "C" fn GlobalAlphaFactorsSUN(_: GLshort) -> c_void { fail!("GlobalAlphaFactorsSUN was not loaded") }
-    pub extern "C" fn GlobalAlphaFactorubSUN(_: GLubyte) -> c_void { fail!("GlobalAlphaFactorubSUN was not loaded") }
-    pub extern "C" fn GlobalAlphaFactoruiSUN(_: GLuint) -> c_void { fail!("GlobalAlphaFactoruiSUN was not loaded") }
-    pub extern "C" fn GlobalAlphaFactorusSUN(_: GLushort) -> c_void { fail!("GlobalAlphaFactorusSUN was not loaded") }
-    pub extern "C" fn Hint(_: GLenum, _: GLenum) -> c_void { fail!("Hint was not loaded") }
-    pub extern "C" fn HintPGI(_: GLenum, _: GLint) -> c_void { fail!("HintPGI was not loaded") }
-    pub extern "C" fn Histogram(_: GLenum, _: GLsizei, _: GLenum, _: GLboolean) -> c_void { fail!("Histogram was not loaded") }
-    pub extern "C" fn HistogramEXT(_: GLenum, _: GLsizei, _: GLenum, _: GLboolean) -> c_void { fail!("HistogramEXT was not loaded") }
-    pub extern "C" fn IglooInterfaceSGIX(_: GLenum, _: *GLvoid) -> c_void { fail!("IglooInterfaceSGIX was not loaded") }
-    pub extern "C" fn ImageTransformParameterfHP(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("ImageTransformParameterfHP was not loaded") }
-    pub extern "C" fn ImageTransformParameterfvHP(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("ImageTransformParameterfvHP was not loaded") }
-    pub extern "C" fn ImageTransformParameteriHP(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("ImageTransformParameteriHP was not loaded") }
-    pub extern "C" fn ImageTransformParameterivHP(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("ImageTransformParameterivHP was not loaded") }
-    pub extern "C" fn ImportSyncEXT(_: GLenum, _: GLintptr, _: GLbitfield) -> GLsync { fail!("ImportSyncEXT was not loaded") }
-    pub extern "C" fn IndexFormatNV(_: GLenum, _: GLsizei) -> c_void { fail!("IndexFormatNV was not loaded") }
-    pub extern "C" fn IndexFuncEXT(_: GLenum, _: GLclampf) -> c_void { fail!("IndexFuncEXT was not loaded") }
-    pub extern "C" fn IndexMask(_: GLuint) -> c_void { fail!("IndexMask was not loaded") }
-    pub extern "C" fn IndexMaterialEXT(_: GLenum, _: GLenum) -> c_void { fail!("IndexMaterialEXT was not loaded") }
-    pub extern "C" fn IndexPointer(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("IndexPointer was not loaded") }
-    pub extern "C" fn IndexPointerEXT(_: GLenum, _: GLsizei, _: GLsizei, _: *GLvoid) -> c_void { fail!("IndexPointerEXT was not loaded") }
-    pub extern "C" fn IndexPointerListIBM(_: GLenum, _: GLint, _: **GLvoid, _: GLint) -> c_void { fail!("IndexPointerListIBM was not loaded") }
-    pub extern "C" fn Indexd(_: GLdouble) -> c_void { fail!("Indexd was not loaded") }
-    pub extern "C" fn Indexdv(_: *GLdouble) -> c_void { fail!("Indexdv was not loaded") }
-    pub extern "C" fn Indexf(_: GLfloat) -> c_void { fail!("Indexf was not loaded") }
-    pub extern "C" fn Indexfv(_: *GLfloat) -> c_void { fail!("Indexfv was not loaded") }
-    pub extern "C" fn Indexi(_: GLint) -> c_void { fail!("Indexi was not loaded") }
-    pub extern "C" fn Indexiv(_: *GLint) -> c_void { fail!("Indexiv was not loaded") }
-    pub extern "C" fn Indexs(_: GLshort) -> c_void { fail!("Indexs was not loaded") }
-    pub extern "C" fn Indexsv(_: *GLshort) -> c_void { fail!("Indexsv was not loaded") }
-    pub extern "C" fn Indexub(_: GLubyte) -> c_void { fail!("Indexub was not loaded") }
-    pub extern "C" fn Indexubv(_: *GLubyte) -> c_void { fail!("Indexubv was not loaded") }
-    pub extern "C" fn IndexxOES(_: GLfixed) -> c_void { fail!("IndexxOES was not loaded") }
-    pub extern "C" fn IndexxvOES(_: *GLfixed) -> c_void { fail!("IndexxvOES was not loaded") }
-    pub extern "C" fn InitNames() -> c_void { fail!("InitNames was not loaded") }
-    pub extern "C" fn InsertComponentEXT(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("InsertComponentEXT was not loaded") }
-    pub extern "C" fn InsertEventMarkerEXT(_: GLsizei, _: *GLchar) -> c_void { fail!("InsertEventMarkerEXT was not loaded") }
-    pub extern "C" fn InstrumentsBufferSGIX(_: GLsizei, _: *GLint) -> c_void { fail!("InstrumentsBufferSGIX was not loaded") }
-    pub extern "C" fn InterleavedArrays(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("InterleavedArrays was not loaded") }
-    pub extern "C" fn InterpolatePathsNV(_: GLuint, _: GLuint, _: GLuint, _: GLfloat) -> c_void { fail!("InterpolatePathsNV was not loaded") }
-    pub extern "C" fn InvalidateBufferData(_: GLuint) -> c_void { fail!("InvalidateBufferData was not loaded") }
-    pub extern "C" fn InvalidateBufferSubData(_: GLuint, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("InvalidateBufferSubData was not loaded") }
-    pub extern "C" fn InvalidateFramebuffer(_: GLenum, _: GLsizei, _: *GLenum) -> c_void { fail!("InvalidateFramebuffer was not loaded") }
-    pub extern "C" fn InvalidateSubFramebuffer(_: GLenum, _: GLsizei, _: *GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("InvalidateSubFramebuffer was not loaded") }
-    pub extern "C" fn InvalidateTexImage(_: GLuint, _: GLint) -> c_void { fail!("InvalidateTexImage was not loaded") }
-    pub extern "C" fn InvalidateTexSubImage(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei) -> c_void { fail!("InvalidateTexSubImage was not loaded") }
-    pub extern "C" fn IsAsyncMarkerSGIX(_: GLuint) -> GLboolean { fail!("IsAsyncMarkerSGIX was not loaded") }
-    pub extern "C" fn IsBuffer(_: GLuint) -> GLboolean { fail!("IsBuffer was not loaded") }
-    pub extern "C" fn IsBufferARB(_: GLuint) -> GLboolean { fail!("IsBufferARB was not loaded") }
-    pub extern "C" fn IsBufferResidentNV(_: GLenum) -> GLboolean { fail!("IsBufferResidentNV was not loaded") }
-    pub extern "C" fn IsEnabled(_: GLenum) -> GLboolean { fail!("IsEnabled was not loaded") }
-    pub extern "C" fn IsEnabledIndexedEXT(_: GLenum, _: GLuint) -> GLboolean { fail!("IsEnabledIndexedEXT was not loaded") }
-    pub extern "C" fn IsEnabledi(_: GLenum, _: GLuint) -> GLboolean { fail!("IsEnabledi was not loaded") }
-    pub extern "C" fn IsFenceAPPLE(_: GLuint) -> GLboolean { fail!("IsFenceAPPLE was not loaded") }
-    pub extern "C" fn IsFenceNV(_: GLuint) -> GLboolean { fail!("IsFenceNV was not loaded") }
-    pub extern "C" fn IsFramebuffer(_: GLuint) -> GLboolean { fail!("IsFramebuffer was not loaded") }
-    pub extern "C" fn IsFramebufferEXT(_: GLuint) -> GLboolean { fail!("IsFramebufferEXT was not loaded") }
-    pub extern "C" fn IsFramebufferOES(_: GLuint) -> GLboolean { fail!("IsFramebufferOES was not loaded") }
-    pub extern "C" fn IsImageHandleResidentARB(_: GLuint64) -> GLboolean { fail!("IsImageHandleResidentARB was not loaded") }
-    pub extern "C" fn IsImageHandleResidentNV(_: GLuint64) -> GLboolean { fail!("IsImageHandleResidentNV was not loaded") }
-    pub extern "C" fn IsList(_: GLuint) -> GLboolean { fail!("IsList was not loaded") }
-    pub extern "C" fn IsNameAMD(_: GLenum, _: GLuint) -> GLboolean { fail!("IsNameAMD was not loaded") }
-    pub extern "C" fn IsNamedBufferResidentNV(_: GLuint) -> GLboolean { fail!("IsNamedBufferResidentNV was not loaded") }
-    pub extern "C" fn IsNamedStringARB(_: GLint, _: *GLchar) -> GLboolean { fail!("IsNamedStringARB was not loaded") }
-    pub extern "C" fn IsObjectBufferATI(_: GLuint) -> GLboolean { fail!("IsObjectBufferATI was not loaded") }
-    pub extern "C" fn IsOcclusionQueryNV(_: GLuint) -> GLboolean { fail!("IsOcclusionQueryNV was not loaded") }
-    pub extern "C" fn IsPathNV(_: GLuint) -> GLboolean { fail!("IsPathNV was not loaded") }
-    pub extern "C" fn IsPointInFillPathNV(_: GLuint, _: GLuint, _: GLfloat, _: GLfloat) -> GLboolean { fail!("IsPointInFillPathNV was not loaded") }
-    pub extern "C" fn IsPointInStrokePathNV(_: GLuint, _: GLfloat, _: GLfloat) -> GLboolean { fail!("IsPointInStrokePathNV was not loaded") }
-    pub extern "C" fn IsProgram(_: GLuint) -> GLboolean { fail!("IsProgram was not loaded") }
-    pub extern "C" fn IsProgramARB(_: GLuint) -> GLboolean { fail!("IsProgramARB was not loaded") }
-    pub extern "C" fn IsProgramNV(_: GLuint) -> GLboolean { fail!("IsProgramNV was not loaded") }
-    pub extern "C" fn IsProgramPipeline(_: GLuint) -> GLboolean { fail!("IsProgramPipeline was not loaded") }
-    pub extern "C" fn IsProgramPipelineEXT(_: GLuint) -> GLboolean { fail!("IsProgramPipelineEXT was not loaded") }
-    pub extern "C" fn IsQuery(_: GLuint) -> GLboolean { fail!("IsQuery was not loaded") }
-    pub extern "C" fn IsQueryARB(_: GLuint) -> GLboolean { fail!("IsQueryARB was not loaded") }
-    pub extern "C" fn IsQueryEXT(_: GLuint) -> GLboolean { fail!("IsQueryEXT was not loaded") }
-    pub extern "C" fn IsRenderbuffer(_: GLuint) -> GLboolean { fail!("IsRenderbuffer was not loaded") }
-    pub extern "C" fn IsRenderbufferEXT(_: GLuint) -> GLboolean { fail!("IsRenderbufferEXT was not loaded") }
-    pub extern "C" fn IsRenderbufferOES(_: GLuint) -> GLboolean { fail!("IsRenderbufferOES was not loaded") }
-    pub extern "C" fn IsSampler(_: GLuint) -> GLboolean { fail!("IsSampler was not loaded") }
-    pub extern "C" fn IsShader(_: GLuint) -> GLboolean { fail!("IsShader was not loaded") }
-    pub extern "C" fn IsSync(_: GLsync) -> GLboolean { fail!("IsSync was not loaded") }
-    pub extern "C" fn IsSyncAPPLE(_: GLsync) -> GLboolean { fail!("IsSyncAPPLE was not loaded") }
-    pub extern "C" fn IsTexture(_: GLuint) -> GLboolean { fail!("IsTexture was not loaded") }
-    pub extern "C" fn IsTextureEXT(_: GLuint) -> GLboolean { fail!("IsTextureEXT was not loaded") }
-    pub extern "C" fn IsTextureHandleResidentARB(_: GLuint64) -> GLboolean { fail!("IsTextureHandleResidentARB was not loaded") }
-    pub extern "C" fn IsTextureHandleResidentNV(_: GLuint64) -> GLboolean { fail!("IsTextureHandleResidentNV was not loaded") }
-    pub extern "C" fn IsTransformFeedback(_: GLuint) -> GLboolean { fail!("IsTransformFeedback was not loaded") }
-    pub extern "C" fn IsTransformFeedbackNV(_: GLuint) -> GLboolean { fail!("IsTransformFeedbackNV was not loaded") }
-    pub extern "C" fn IsVariantEnabledEXT(_: GLuint, _: GLenum) -> GLboolean { fail!("IsVariantEnabledEXT was not loaded") }
-    pub extern "C" fn IsVertexArray(_: GLuint) -> GLboolean { fail!("IsVertexArray was not loaded") }
-    pub extern "C" fn IsVertexArrayAPPLE(_: GLuint) -> GLboolean { fail!("IsVertexArrayAPPLE was not loaded") }
-    pub extern "C" fn IsVertexArrayOES(_: GLuint) -> GLboolean { fail!("IsVertexArrayOES was not loaded") }
-    pub extern "C" fn IsVertexAttribEnabledAPPLE(_: GLuint, _: GLenum) -> GLboolean { fail!("IsVertexAttribEnabledAPPLE was not loaded") }
-    pub extern "C" fn LabelObjectEXT(_: GLenum, _: GLuint, _: GLsizei, _: *GLchar) -> c_void { fail!("LabelObjectEXT was not loaded") }
-    pub extern "C" fn LightEnviSGIX(_: GLenum, _: GLint) -> c_void { fail!("LightEnviSGIX was not loaded") }
-    pub extern "C" fn LightModelf(_: GLenum, _: GLfloat) -> c_void { fail!("LightModelf was not loaded") }
-    pub extern "C" fn LightModelfv(_: GLenum, _: *GLfloat) -> c_void { fail!("LightModelfv was not loaded") }
-    pub extern "C" fn LightModeli(_: GLenum, _: GLint) -> c_void { fail!("LightModeli was not loaded") }
-    pub extern "C" fn LightModeliv(_: GLenum, _: *GLint) -> c_void { fail!("LightModeliv was not loaded") }
-    pub extern "C" fn LightModelx(_: GLenum, _: GLfixed) -> c_void { fail!("LightModelx was not loaded") }
-    pub extern "C" fn LightModelxOES(_: GLenum, _: GLfixed) -> c_void { fail!("LightModelxOES was not loaded") }
-    pub extern "C" fn LightModelxv(_: GLenum, _: *GLfixed) -> c_void { fail!("LightModelxv was not loaded") }
-    pub extern "C" fn LightModelxvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("LightModelxvOES was not loaded") }
-    pub extern "C" fn Lightf(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("Lightf was not loaded") }
-    pub extern "C" fn Lightfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("Lightfv was not loaded") }
-    pub extern "C" fn Lighti(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("Lighti was not loaded") }
-    pub extern "C" fn Lightiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("Lightiv was not loaded") }
-    pub extern "C" fn Lightx(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("Lightx was not loaded") }
-    pub extern "C" fn LightxOES(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("LightxOES was not loaded") }
-    pub extern "C" fn Lightxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("Lightxv was not loaded") }
-    pub extern "C" fn LightxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("LightxvOES was not loaded") }
-    pub extern "C" fn LineStipple(_: GLint, _: GLushort) -> c_void { fail!("LineStipple was not loaded") }
-    pub extern "C" fn LineWidth(_: GLfloat) -> c_void { fail!("LineWidth was not loaded") }
-    pub extern "C" fn LineWidthx(_: GLfixed) -> c_void { fail!("LineWidthx was not loaded") }
-    pub extern "C" fn LineWidthxOES(_: GLfixed) -> c_void { fail!("LineWidthxOES was not loaded") }
-    pub extern "C" fn LinkProgram(_: GLuint) -> c_void { fail!("LinkProgram was not loaded") }
-    pub extern "C" fn LinkProgramARB(_: GLhandleARB) -> c_void { fail!("LinkProgramARB was not loaded") }
-    pub extern "C" fn ListBase(_: GLuint) -> c_void { fail!("ListBase was not loaded") }
-    pub extern "C" fn ListParameterfSGIX(_: GLuint, _: GLenum, _: GLfloat) -> c_void { fail!("ListParameterfSGIX was not loaded") }
-    pub extern "C" fn ListParameterfvSGIX(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("ListParameterfvSGIX was not loaded") }
-    pub extern "C" fn ListParameteriSGIX(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("ListParameteriSGIX was not loaded") }
-    pub extern "C" fn ListParameterivSGIX(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("ListParameterivSGIX was not loaded") }
-    pub extern "C" fn LoadIdentity() -> c_void { fail!("LoadIdentity was not loaded") }
-    pub extern "C" fn LoadIdentityDeformationMapSGIX(_: GLbitfield) -> c_void { fail!("LoadIdentityDeformationMapSGIX was not loaded") }
-    pub extern "C" fn LoadMatrixd(_: *GLdouble) -> c_void { fail!("LoadMatrixd was not loaded") }
-    pub extern "C" fn LoadMatrixf(_: *GLfloat) -> c_void { fail!("LoadMatrixf was not loaded") }
-    pub extern "C" fn LoadMatrixx(_: *GLfixed) -> c_void { fail!("LoadMatrixx was not loaded") }
-    pub extern "C" fn LoadMatrixxOES(_: *GLfixed) -> c_void { fail!("LoadMatrixxOES was not loaded") }
-    pub extern "C" fn LoadName(_: GLuint) -> c_void { fail!("LoadName was not loaded") }
-    pub extern "C" fn LoadPaletteFromModelViewMatrixOES() -> c_void { fail!("LoadPaletteFromModelViewMatrixOES was not loaded") }
-    pub extern "C" fn LoadProgramNV(_: GLenum, _: GLuint, _: GLsizei, _: *GLubyte) -> c_void { fail!("LoadProgramNV was not loaded") }
-    pub extern "C" fn LoadTransposeMatrixd(_: *GLdouble) -> c_void { fail!("LoadTransposeMatrixd was not loaded") }
-    pub extern "C" fn LoadTransposeMatrixdARB(_: *GLdouble) -> c_void { fail!("LoadTransposeMatrixdARB was not loaded") }
-    pub extern "C" fn LoadTransposeMatrixf(_: *GLfloat) -> c_void { fail!("LoadTransposeMatrixf was not loaded") }
-    pub extern "C" fn LoadTransposeMatrixfARB(_: *GLfloat) -> c_void { fail!("LoadTransposeMatrixfARB was not loaded") }
-    pub extern "C" fn LoadTransposeMatrixxOES(_: *GLfixed) -> c_void { fail!("LoadTransposeMatrixxOES was not loaded") }
-    pub extern "C" fn LockArraysEXT(_: GLint, _: GLsizei) -> c_void { fail!("LockArraysEXT was not loaded") }
-    pub extern "C" fn LogicOp(_: GLenum) -> c_void { fail!("LogicOp was not loaded") }
-    pub extern "C" fn MakeBufferNonResidentNV(_: GLenum) -> c_void { fail!("MakeBufferNonResidentNV was not loaded") }
-    pub extern "C" fn MakeBufferResidentNV(_: GLenum, _: GLenum) -> c_void { fail!("MakeBufferResidentNV was not loaded") }
-    pub extern "C" fn MakeImageHandleNonResidentARB(_: GLuint64) -> c_void { fail!("MakeImageHandleNonResidentARB was not loaded") }
-    pub extern "C" fn MakeImageHandleNonResidentNV(_: GLuint64) -> c_void { fail!("MakeImageHandleNonResidentNV was not loaded") }
-    pub extern "C" fn MakeImageHandleResidentARB(_: GLuint64, _: GLenum) -> c_void { fail!("MakeImageHandleResidentARB was not loaded") }
-    pub extern "C" fn MakeImageHandleResidentNV(_: GLuint64, _: GLenum) -> c_void { fail!("MakeImageHandleResidentNV was not loaded") }
-    pub extern "C" fn MakeNamedBufferNonResidentNV(_: GLuint) -> c_void { fail!("MakeNamedBufferNonResidentNV was not loaded") }
-    pub extern "C" fn MakeNamedBufferResidentNV(_: GLuint, _: GLenum) -> c_void { fail!("MakeNamedBufferResidentNV was not loaded") }
-    pub extern "C" fn MakeTextureHandleNonResidentARB(_: GLuint64) -> c_void { fail!("MakeTextureHandleNonResidentARB was not loaded") }
-    pub extern "C" fn MakeTextureHandleNonResidentNV(_: GLuint64) -> c_void { fail!("MakeTextureHandleNonResidentNV was not loaded") }
-    pub extern "C" fn MakeTextureHandleResidentARB(_: GLuint64) -> c_void { fail!("MakeTextureHandleResidentARB was not loaded") }
-    pub extern "C" fn MakeTextureHandleResidentNV(_: GLuint64) -> c_void { fail!("MakeTextureHandleResidentNV was not loaded") }
-    pub extern "C" fn Map1d(_: GLenum, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: *GLdouble) -> c_void { fail!("Map1d was not loaded") }
-    pub extern "C" fn Map1f(_: GLenum, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: *GLfloat) -> c_void { fail!("Map1f was not loaded") }
-    pub extern "C" fn Map1xOES(_: GLenum, _: GLfixed, _: GLfixed, _: GLint, _: GLint, _: GLfixed) -> c_void { fail!("Map1xOES was not loaded") }
-    pub extern "C" fn Map2d(_: GLenum, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: *GLdouble) -> c_void { fail!("Map2d was not loaded") }
-    pub extern "C" fn Map2f(_: GLenum, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: *GLfloat) -> c_void { fail!("Map2f was not loaded") }
-    pub extern "C" fn Map2xOES(_: GLenum, _: GLfixed, _: GLfixed, _: GLint, _: GLint, _: GLfixed, _: GLfixed, _: GLint, _: GLint, _: GLfixed) -> c_void { fail!("Map2xOES was not loaded") }
-    pub extern "C" fn MapBuffer(_: GLenum, _: GLenum) -> *c_void { fail!("MapBuffer was not loaded") }
-    pub extern "C" fn MapBufferARB(_: GLenum, _: GLenum) -> *c_void { fail!("MapBufferARB was not loaded") }
-    pub extern "C" fn MapBufferOES(_: GLenum, _: GLenum) -> *c_void { fail!("MapBufferOES was not loaded") }
-    pub extern "C" fn MapBufferRange(_: GLenum, _: GLintptr, _: GLsizeiptr, _: GLbitfield) -> *c_void { fail!("MapBufferRange was not loaded") }
-    pub extern "C" fn MapBufferRangeEXT(_: GLenum, _: GLintptr, _: GLsizeiptr, _: GLbitfield) -> *c_void { fail!("MapBufferRangeEXT was not loaded") }
-    pub extern "C" fn MapControlPointsNV(_: GLenum, _: GLuint, _: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLint, _: GLboolean, _: *GLvoid) -> c_void { fail!("MapControlPointsNV was not loaded") }
-    pub extern "C" fn MapGrid1d(_: GLint, _: GLdouble, _: GLdouble) -> c_void { fail!("MapGrid1d was not loaded") }
-    pub extern "C" fn MapGrid1f(_: GLint, _: GLfloat, _: GLfloat) -> c_void { fail!("MapGrid1f was not loaded") }
-    pub extern "C" fn MapGrid1xOES(_: GLint, _: GLfixed, _: GLfixed) -> c_void { fail!("MapGrid1xOES was not loaded") }
-    pub extern "C" fn MapGrid2d(_: GLint, _: GLdouble, _: GLdouble, _: GLint, _: GLdouble, _: GLdouble) -> c_void { fail!("MapGrid2d was not loaded") }
-    pub extern "C" fn MapGrid2f(_: GLint, _: GLfloat, _: GLfloat, _: GLint, _: GLfloat, _: GLfloat) -> c_void { fail!("MapGrid2f was not loaded") }
-    pub extern "C" fn MapGrid2xOES(_: GLint, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("MapGrid2xOES was not loaded") }
-    pub extern "C" fn MapNamedBufferEXT(_: GLuint, _: GLenum) -> *c_void { fail!("MapNamedBufferEXT was not loaded") }
-    pub extern "C" fn MapNamedBufferRangeEXT(_: GLuint, _: GLintptr, _: GLsizeiptr, _: GLbitfield) -> *c_void { fail!("MapNamedBufferRangeEXT was not loaded") }
-    pub extern "C" fn MapObjectBufferATI(_: GLuint) -> *c_void { fail!("MapObjectBufferATI was not loaded") }
-    pub extern "C" fn MapParameterfvNV(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("MapParameterfvNV was not loaded") }
-    pub extern "C" fn MapParameterivNV(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("MapParameterivNV was not loaded") }
-    pub extern "C" fn MapTexture2DINTEL(_: GLuint, _: GLint, _: GLbitfield, _: *GLint, _: *GLenum) -> *c_void { fail!("MapTexture2DINTEL was not loaded") }
-    pub extern "C" fn MapVertexAttrib1dAPPLE(_: GLuint, _: GLuint, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: *GLdouble) -> c_void { fail!("MapVertexAttrib1dAPPLE was not loaded") }
-    pub extern "C" fn MapVertexAttrib1fAPPLE(_: GLuint, _: GLuint, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: *GLfloat) -> c_void { fail!("MapVertexAttrib1fAPPLE was not loaded") }
-    pub extern "C" fn MapVertexAttrib2dAPPLE(_: GLuint, _: GLuint, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: GLdouble, _: GLdouble, _: GLint, _: GLint, _: *GLdouble) -> c_void { fail!("MapVertexAttrib2dAPPLE was not loaded") }
-    pub extern "C" fn MapVertexAttrib2fAPPLE(_: GLuint, _: GLuint, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: GLfloat, _: GLfloat, _: GLint, _: GLint, _: *GLfloat) -> c_void { fail!("MapVertexAttrib2fAPPLE was not loaded") }
-    pub extern "C" fn Materialf(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("Materialf was not loaded") }
-    pub extern "C" fn Materialfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("Materialfv was not loaded") }
-    pub extern "C" fn Materiali(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("Materiali was not loaded") }
-    pub extern "C" fn Materialiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("Materialiv was not loaded") }
-    pub extern "C" fn Materialx(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("Materialx was not loaded") }
-    pub extern "C" fn MaterialxOES(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("MaterialxOES was not loaded") }
-    pub extern "C" fn Materialxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("Materialxv was not loaded") }
-    pub extern "C" fn MaterialxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("MaterialxvOES was not loaded") }
-    pub extern "C" fn MatrixFrustumEXT(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MatrixFrustumEXT was not loaded") }
-    pub extern "C" fn MatrixIndexPointerARB(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("MatrixIndexPointerARB was not loaded") }
-    pub extern "C" fn MatrixIndexPointerOES(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("MatrixIndexPointerOES was not loaded") }
-    pub extern "C" fn MatrixIndexubvARB(_: GLint, _: *GLubyte) -> c_void { fail!("MatrixIndexubvARB was not loaded") }
-    pub extern "C" fn MatrixIndexuivARB(_: GLint, _: *GLuint) -> c_void { fail!("MatrixIndexuivARB was not loaded") }
-    pub extern "C" fn MatrixIndexusvARB(_: GLint, _: *GLushort) -> c_void { fail!("MatrixIndexusvARB was not loaded") }
-    pub extern "C" fn MatrixLoadIdentityEXT(_: GLenum) -> c_void { fail!("MatrixLoadIdentityEXT was not loaded") }
-    pub extern "C" fn MatrixLoadTransposedEXT(_: GLenum, _: *GLdouble) -> c_void { fail!("MatrixLoadTransposedEXT was not loaded") }
-    pub extern "C" fn MatrixLoadTransposefEXT(_: GLenum, _: *GLfloat) -> c_void { fail!("MatrixLoadTransposefEXT was not loaded") }
-    pub extern "C" fn MatrixLoaddEXT(_: GLenum, _: *GLdouble) -> c_void { fail!("MatrixLoaddEXT was not loaded") }
-    pub extern "C" fn MatrixLoadfEXT(_: GLenum, _: *GLfloat) -> c_void { fail!("MatrixLoadfEXT was not loaded") }
-    pub extern "C" fn MatrixMode(_: GLenum) -> c_void { fail!("MatrixMode was not loaded") }
-    pub extern "C" fn MatrixMultTransposedEXT(_: GLenum, _: *GLdouble) -> c_void { fail!("MatrixMultTransposedEXT was not loaded") }
-    pub extern "C" fn MatrixMultTransposefEXT(_: GLenum, _: *GLfloat) -> c_void { fail!("MatrixMultTransposefEXT was not loaded") }
-    pub extern "C" fn MatrixMultdEXT(_: GLenum, _: *GLdouble) -> c_void { fail!("MatrixMultdEXT was not loaded") }
-    pub extern "C" fn MatrixMultfEXT(_: GLenum, _: *GLfloat) -> c_void { fail!("MatrixMultfEXT was not loaded") }
-    pub extern "C" fn MatrixOrthoEXT(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MatrixOrthoEXT was not loaded") }
-    pub extern "C" fn MatrixPopEXT(_: GLenum) -> c_void { fail!("MatrixPopEXT was not loaded") }
-    pub extern "C" fn MatrixPushEXT(_: GLenum) -> c_void { fail!("MatrixPushEXT was not loaded") }
-    pub extern "C" fn MatrixRotatedEXT(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MatrixRotatedEXT was not loaded") }
-    pub extern "C" fn MatrixRotatefEXT(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("MatrixRotatefEXT was not loaded") }
-    pub extern "C" fn MatrixScaledEXT(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MatrixScaledEXT was not loaded") }
-    pub extern "C" fn MatrixScalefEXT(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("MatrixScalefEXT was not loaded") }
-    pub extern "C" fn MatrixTranslatedEXT(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MatrixTranslatedEXT was not loaded") }
-    pub extern "C" fn MatrixTranslatefEXT(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("MatrixTranslatefEXT was not loaded") }
-    pub extern "C" fn MemoryBarrier(_: GLbitfield) -> c_void { fail!("MemoryBarrier was not loaded") }
-    pub extern "C" fn MemoryBarrierEXT(_: GLbitfield) -> c_void { fail!("MemoryBarrierEXT was not loaded") }
-    pub extern "C" fn MinSampleShading(_: GLfloat) -> c_void { fail!("MinSampleShading was not loaded") }
-    pub extern "C" fn MinSampleShadingARB(_: GLfloat) -> c_void { fail!("MinSampleShadingARB was not loaded") }
-    pub extern "C" fn Minmax(_: GLenum, _: GLenum, _: GLboolean) -> c_void { fail!("Minmax was not loaded") }
-    pub extern "C" fn MinmaxEXT(_: GLenum, _: GLenum, _: GLboolean) -> c_void { fail!("MinmaxEXT was not loaded") }
-    pub extern "C" fn MultMatrixd(_: *GLdouble) -> c_void { fail!("MultMatrixd was not loaded") }
-    pub extern "C" fn MultMatrixf(_: *GLfloat) -> c_void { fail!("MultMatrixf was not loaded") }
-    pub extern "C" fn MultMatrixx(_: *GLfixed) -> c_void { fail!("MultMatrixx was not loaded") }
-    pub extern "C" fn MultMatrixxOES(_: *GLfixed) -> c_void { fail!("MultMatrixxOES was not loaded") }
-    pub extern "C" fn MultTransposeMatrixd(_: *GLdouble) -> c_void { fail!("MultTransposeMatrixd was not loaded") }
-    pub extern "C" fn MultTransposeMatrixdARB(_: *GLdouble) -> c_void { fail!("MultTransposeMatrixdARB was not loaded") }
-    pub extern "C" fn MultTransposeMatrixf(_: *GLfloat) -> c_void { fail!("MultTransposeMatrixf was not loaded") }
-    pub extern "C" fn MultTransposeMatrixfARB(_: *GLfloat) -> c_void { fail!("MultTransposeMatrixfARB was not loaded") }
-    pub extern "C" fn MultTransposeMatrixxOES(_: *GLfixed) -> c_void { fail!("MultTransposeMatrixxOES was not loaded") }
-    pub extern "C" fn MultiDrawArrays(_: GLenum, _: *GLint, _: *GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawArrays was not loaded") }
-    pub extern "C" fn MultiDrawArraysEXT(_: GLenum, _: *GLint, _: *GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawArraysEXT was not loaded") }
-    pub extern "C" fn MultiDrawArraysIndirect(_: GLenum, _: *c_void, _: GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawArraysIndirect was not loaded") }
-    pub extern "C" fn MultiDrawArraysIndirectAMD(_: GLenum, _: *GLvoid, _: GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawArraysIndirectAMD was not loaded") }
-    pub extern "C" fn MultiDrawArraysIndirectBindlessNV(_: GLenum, _: *GLvoid, _: GLsizei, _: GLsizei, _: GLint) -> c_void { fail!("MultiDrawArraysIndirectBindlessNV was not loaded") }
-    pub extern "C" fn MultiDrawElementsIndirectBindlessNV(_: GLenum, _: GLenum, _: *GLvoid, _: GLsizei, _: GLsizei, _: GLint) -> c_void { fail!("MultiDrawElementsIndirectBindlessNV was not loaded") }
-    pub extern "C" fn MultiDrawArraysIndirectCountARB(_: GLenum, _: GLintptr, _: GLintptr, _: GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawArraysIndirectCountARB was not loaded") }
-    pub extern "C" fn MultiDrawElementArrayAPPLE(_: GLenum, _: *GLint, _: *GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawElementArrayAPPLE was not loaded") }
-    pub extern "C" fn MultiDrawElements(_: GLenum, _: *GLsizei, _: GLenum, _: **GLvoid, _: GLsizei) -> c_void { fail!("MultiDrawElements was not loaded") }
-    pub extern "C" fn MultiDrawElementsBaseVertex(_: GLenum, _: *GLsizei, _: GLenum, _: **GLvoid, _: GLsizei, _: *GLint) -> c_void { fail!("MultiDrawElementsBaseVertex was not loaded") }
-    pub extern "C" fn MultiDrawElementsEXT(_: GLenum, _: *GLsizei, _: GLenum, _: **GLvoid, _: GLsizei) -> c_void { fail!("MultiDrawElementsEXT was not loaded") }
-    pub extern "C" fn MultiDrawElementsIndirect(_: GLenum, _: GLenum, _: *c_void, _: GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawElementsIndirect was not loaded") }
-    pub extern "C" fn MultiDrawElementsIndirectAMD(_: GLenum, _: GLenum, _: *GLvoid, _: GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawElementsIndirectAMD was not loaded") }
-    pub extern "C" fn MultiDrawElementsIndirectCountARB(_: GLenum, _: GLenum, _: GLintptr, _: GLintptr, _: GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawElementsIndirectCountARB was not loaded") }
-    pub extern "C" fn MultiDrawRangeElementArrayAPPLE(_: GLenum, _: GLuint, _: GLuint, _: *GLint, _: *GLsizei, _: GLsizei) -> c_void { fail!("MultiDrawRangeElementArrayAPPLE was not loaded") }
-    pub extern "C" fn MultiModeDrawArraysIBM(_: *GLenum, _: *GLint, _: *GLsizei, _: GLsizei, _: GLint) -> c_void { fail!("MultiModeDrawArraysIBM was not loaded") }
-    pub extern "C" fn MultiModeDrawElementsIBM(_: *GLenum, _: *GLsizei, _: GLenum, _: **GLvoid, _: GLsizei, _: GLint) -> c_void { fail!("MultiModeDrawElementsIBM was not loaded") }
-    pub extern "C" fn MultiTexBufferEXT(_: GLenum, _: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("MultiTexBufferEXT was not loaded") }
-    pub extern "C" fn MultiTexCoord1bOES(_: GLenum, _: GLbyte) -> c_void { fail!("MultiTexCoord1bOES was not loaded") }
-    pub extern "C" fn MultiTexCoord1bvOES(_: GLenum, _: *GLbyte) -> c_void { fail!("MultiTexCoord1bvOES was not loaded") }
-    pub extern "C" fn MultiTexCoord1d(_: GLenum, _: GLdouble) -> c_void { fail!("MultiTexCoord1d was not loaded") }
-    pub extern "C" fn MultiTexCoord1dARB(_: GLenum, _: GLdouble) -> c_void { fail!("MultiTexCoord1dARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1dv(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord1dv was not loaded") }
-    pub extern "C" fn MultiTexCoord1dvARB(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord1dvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1f(_: GLenum, _: GLfloat) -> c_void { fail!("MultiTexCoord1f was not loaded") }
-    pub extern "C" fn MultiTexCoord1fARB(_: GLenum, _: GLfloat) -> c_void { fail!("MultiTexCoord1fARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1fv(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord1fv was not loaded") }
-    pub extern "C" fn MultiTexCoord1fvARB(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord1fvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1hNV(_: GLenum, _: GLhalfNV) -> c_void { fail!("MultiTexCoord1hNV was not loaded") }
-    pub extern "C" fn MultiTexCoord1hvNV(_: GLenum, _: *GLhalfNV) -> c_void { fail!("MultiTexCoord1hvNV was not loaded") }
-    pub extern "C" fn MultiTexCoord1i(_: GLenum, _: GLint) -> c_void { fail!("MultiTexCoord1i was not loaded") }
-    pub extern "C" fn MultiTexCoord1iARB(_: GLenum, _: GLint) -> c_void { fail!("MultiTexCoord1iARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1iv(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord1iv was not loaded") }
-    pub extern "C" fn MultiTexCoord1ivARB(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord1ivARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1s(_: GLenum, _: GLshort) -> c_void { fail!("MultiTexCoord1s was not loaded") }
-    pub extern "C" fn MultiTexCoord1sARB(_: GLenum, _: GLshort) -> c_void { fail!("MultiTexCoord1sARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1sv(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord1sv was not loaded") }
-    pub extern "C" fn MultiTexCoord1svARB(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord1svARB was not loaded") }
-    pub extern "C" fn MultiTexCoord1xOES(_: GLenum, _: GLfixed) -> c_void { fail!("MultiTexCoord1xOES was not loaded") }
-    pub extern "C" fn MultiTexCoord1xvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("MultiTexCoord1xvOES was not loaded") }
-    pub extern "C" fn MultiTexCoord2bOES(_: GLenum, _: GLbyte, _: GLbyte) -> c_void { fail!("MultiTexCoord2bOES was not loaded") }
-    pub extern "C" fn MultiTexCoord2bvOES(_: GLenum, _: *GLbyte) -> c_void { fail!("MultiTexCoord2bvOES was not loaded") }
-    pub extern "C" fn MultiTexCoord2d(_: GLenum, _: GLdouble, _: GLdouble) -> c_void { fail!("MultiTexCoord2d was not loaded") }
-    pub extern "C" fn MultiTexCoord2dARB(_: GLenum, _: GLdouble, _: GLdouble) -> c_void { fail!("MultiTexCoord2dARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2dv(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord2dv was not loaded") }
-    pub extern "C" fn MultiTexCoord2dvARB(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord2dvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2f(_: GLenum, _: GLfloat, _: GLfloat) -> c_void { fail!("MultiTexCoord2f was not loaded") }
-    pub extern "C" fn MultiTexCoord2fARB(_: GLenum, _: GLfloat, _: GLfloat) -> c_void { fail!("MultiTexCoord2fARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2fv(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord2fv was not loaded") }
-    pub extern "C" fn MultiTexCoord2fvARB(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord2fvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2hNV(_: GLenum, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("MultiTexCoord2hNV was not loaded") }
-    pub extern "C" fn MultiTexCoord2hvNV(_: GLenum, _: *GLhalfNV) -> c_void { fail!("MultiTexCoord2hvNV was not loaded") }
-    pub extern "C" fn MultiTexCoord2i(_: GLenum, _: GLint, _: GLint) -> c_void { fail!("MultiTexCoord2i was not loaded") }
-    pub extern "C" fn MultiTexCoord2iARB(_: GLenum, _: GLint, _: GLint) -> c_void { fail!("MultiTexCoord2iARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2iv(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord2iv was not loaded") }
-    pub extern "C" fn MultiTexCoord2ivARB(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord2ivARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2s(_: GLenum, _: GLshort, _: GLshort) -> c_void { fail!("MultiTexCoord2s was not loaded") }
-    pub extern "C" fn MultiTexCoord2sARB(_: GLenum, _: GLshort, _: GLshort) -> c_void { fail!("MultiTexCoord2sARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2sv(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord2sv was not loaded") }
-    pub extern "C" fn MultiTexCoord2svARB(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord2svARB was not loaded") }
-    pub extern "C" fn MultiTexCoord2xOES(_: GLenum, _: GLfixed, _: GLfixed) -> c_void { fail!("MultiTexCoord2xOES was not loaded") }
-    pub extern "C" fn MultiTexCoord2xvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("MultiTexCoord2xvOES was not loaded") }
-    pub extern "C" fn MultiTexCoord3bOES(_: GLenum, _: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("MultiTexCoord3bOES was not loaded") }
-    pub extern "C" fn MultiTexCoord3bvOES(_: GLenum, _: *GLbyte) -> c_void { fail!("MultiTexCoord3bvOES was not loaded") }
-    pub extern "C" fn MultiTexCoord3d(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MultiTexCoord3d was not loaded") }
-    pub extern "C" fn MultiTexCoord3dARB(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MultiTexCoord3dARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3dv(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord3dv was not loaded") }
-    pub extern "C" fn MultiTexCoord3dvARB(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord3dvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3f(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("MultiTexCoord3f was not loaded") }
-    pub extern "C" fn MultiTexCoord3fARB(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("MultiTexCoord3fARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3fv(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord3fv was not loaded") }
-    pub extern "C" fn MultiTexCoord3fvARB(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord3fvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3hNV(_: GLenum, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("MultiTexCoord3hNV was not loaded") }
-    pub extern "C" fn MultiTexCoord3hvNV(_: GLenum, _: *GLhalfNV) -> c_void { fail!("MultiTexCoord3hvNV was not loaded") }
-    pub extern "C" fn MultiTexCoord3i(_: GLenum, _: GLint, _: GLint, _: GLint) -> c_void { fail!("MultiTexCoord3i was not loaded") }
-    pub extern "C" fn MultiTexCoord3iARB(_: GLenum, _: GLint, _: GLint, _: GLint) -> c_void { fail!("MultiTexCoord3iARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3iv(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord3iv was not loaded") }
-    pub extern "C" fn MultiTexCoord3ivARB(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord3ivARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3s(_: GLenum, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("MultiTexCoord3s was not loaded") }
-    pub extern "C" fn MultiTexCoord3sARB(_: GLenum, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("MultiTexCoord3sARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3sv(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord3sv was not loaded") }
-    pub extern "C" fn MultiTexCoord3svARB(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord3svARB was not loaded") }
-    pub extern "C" fn MultiTexCoord3xOES(_: GLenum, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("MultiTexCoord3xOES was not loaded") }
-    pub extern "C" fn MultiTexCoord3xvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("MultiTexCoord3xvOES was not loaded") }
-    pub extern "C" fn MultiTexCoord4bOES(_: GLenum, _: GLbyte, _: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("MultiTexCoord4bOES was not loaded") }
-    pub extern "C" fn MultiTexCoord4bvOES(_: GLenum, _: *GLbyte) -> c_void { fail!("MultiTexCoord4bvOES was not loaded") }
-    pub extern "C" fn MultiTexCoord4d(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MultiTexCoord4d was not loaded") }
-    pub extern "C" fn MultiTexCoord4dARB(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("MultiTexCoord4dARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4dv(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord4dv was not loaded") }
-    pub extern "C" fn MultiTexCoord4dvARB(_: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexCoord4dvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4f(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("MultiTexCoord4f was not loaded") }
-    pub extern "C" fn MultiTexCoord4fARB(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("MultiTexCoord4fARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4fv(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord4fv was not loaded") }
-    pub extern "C" fn MultiTexCoord4fvARB(_: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexCoord4fvARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4hNV(_: GLenum, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("MultiTexCoord4hNV was not loaded") }
-    pub extern "C" fn MultiTexCoord4hvNV(_: GLenum, _: *GLhalfNV) -> c_void { fail!("MultiTexCoord4hvNV was not loaded") }
-    pub extern "C" fn MultiTexCoord4i(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("MultiTexCoord4i was not loaded") }
-    pub extern "C" fn MultiTexCoord4iARB(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("MultiTexCoord4iARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4iv(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord4iv was not loaded") }
-    pub extern "C" fn MultiTexCoord4ivARB(_: GLenum, _: *GLint) -> c_void { fail!("MultiTexCoord4ivARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4s(_: GLenum, _: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("MultiTexCoord4s was not loaded") }
-    pub extern "C" fn MultiTexCoord4sARB(_: GLenum, _: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("MultiTexCoord4sARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4sv(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord4sv was not loaded") }
-    pub extern "C" fn MultiTexCoord4svARB(_: GLenum, _: *GLshort) -> c_void { fail!("MultiTexCoord4svARB was not loaded") }
-    pub extern "C" fn MultiTexCoord4x(_: GLenum, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("MultiTexCoord4x was not loaded") }
-    pub extern "C" fn MultiTexCoord4xOES(_: GLenum, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("MultiTexCoord4xOES was not loaded") }
-    pub extern "C" fn MultiTexCoord4xvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("MultiTexCoord4xvOES was not loaded") }
-    pub extern "C" fn MultiTexCoordP1ui(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("MultiTexCoordP1ui was not loaded") }
-    pub extern "C" fn MultiTexCoordP1uiv(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("MultiTexCoordP1uiv was not loaded") }
-    pub extern "C" fn MultiTexCoordP2ui(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("MultiTexCoordP2ui was not loaded") }
-    pub extern "C" fn MultiTexCoordP2uiv(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("MultiTexCoordP2uiv was not loaded") }
-    pub extern "C" fn MultiTexCoordP3ui(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("MultiTexCoordP3ui was not loaded") }
-    pub extern "C" fn MultiTexCoordP3uiv(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("MultiTexCoordP3uiv was not loaded") }
-    pub extern "C" fn MultiTexCoordP4ui(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("MultiTexCoordP4ui was not loaded") }
-    pub extern "C" fn MultiTexCoordP4uiv(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("MultiTexCoordP4uiv was not loaded") }
-    pub extern "C" fn MultiTexCoordPointerEXT(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("MultiTexCoordPointerEXT was not loaded") }
-    pub extern "C" fn MultiTexEnvfEXT(_: GLenum, _: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("MultiTexEnvfEXT was not loaded") }
-    pub extern "C" fn MultiTexEnvfvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexEnvfvEXT was not loaded") }
-    pub extern "C" fn MultiTexEnviEXT(_: GLenum, _: GLenum, _: GLenum, _: GLint) -> c_void { fail!("MultiTexEnviEXT was not loaded") }
-    pub extern "C" fn MultiTexEnvivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("MultiTexEnvivEXT was not loaded") }
-    pub extern "C" fn MultiTexGendEXT(_: GLenum, _: GLenum, _: GLenum, _: GLdouble) -> c_void { fail!("MultiTexGendEXT was not loaded") }
-    pub extern "C" fn MultiTexGendvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLdouble) -> c_void { fail!("MultiTexGendvEXT was not loaded") }
-    pub extern "C" fn MultiTexGenfEXT(_: GLenum, _: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("MultiTexGenfEXT was not loaded") }
-    pub extern "C" fn MultiTexGenfvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexGenfvEXT was not loaded") }
-    pub extern "C" fn MultiTexGeniEXT(_: GLenum, _: GLenum, _: GLenum, _: GLint) -> c_void { fail!("MultiTexGeniEXT was not loaded") }
-    pub extern "C" fn MultiTexGenivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("MultiTexGenivEXT was not loaded") }
-    pub extern "C" fn MultiTexImage1DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("MultiTexImage1DEXT was not loaded") }
-    pub extern "C" fn MultiTexImage2DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("MultiTexImage2DEXT was not loaded") }
-    pub extern "C" fn MultiTexImage3DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("MultiTexImage3DEXT was not loaded") }
-    pub extern "C" fn MultiTexParameterIivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("MultiTexParameterIivEXT was not loaded") }
-    pub extern "C" fn MultiTexParameterIuivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("MultiTexParameterIuivEXT was not loaded") }
-    pub extern "C" fn MultiTexParameterfEXT(_: GLenum, _: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("MultiTexParameterfEXT was not loaded") }
-    pub extern "C" fn MultiTexParameterfvEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("MultiTexParameterfvEXT was not loaded") }
-    pub extern "C" fn MultiTexParameteriEXT(_: GLenum, _: GLenum, _: GLenum, _: GLint) -> c_void { fail!("MultiTexParameteriEXT was not loaded") }
-    pub extern "C" fn MultiTexParameterivEXT(_: GLenum, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("MultiTexParameterivEXT was not loaded") }
-    pub extern "C" fn MultiTexRenderbufferEXT(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("MultiTexRenderbufferEXT was not loaded") }
-    pub extern "C" fn MultiTexSubImage1DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("MultiTexSubImage1DEXT was not loaded") }
-    pub extern "C" fn MultiTexSubImage2DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("MultiTexSubImage2DEXT was not loaded") }
-    pub extern "C" fn MultiTexSubImage3DEXT(_: GLenum, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("MultiTexSubImage3DEXT was not loaded") }
-    pub extern "C" fn NamedBufferDataEXT(_: GLuint, _: GLsizeiptr, _: *GLvoid, _: GLenum) -> c_void { fail!("NamedBufferDataEXT was not loaded") }
-    pub extern "C" fn NamedBufferStorageEXT(_: GLuint, _: GLsizeiptr, _: *c_void, _: GLbitfield) -> c_void { fail!("NamedBufferStorageEXT was not loaded") }
-    pub extern "C" fn NamedBufferSubDataEXT(_: GLuint, _: GLintptr, _: GLsizeiptr, _: *GLvoid) -> c_void { fail!("NamedBufferSubDataEXT was not loaded") }
-    pub extern "C" fn NamedCopyBufferSubDataEXT(_: GLuint, _: GLuint, _: GLintptr, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("NamedCopyBufferSubDataEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferParameteriEXT(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("NamedFramebufferParameteriEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferRenderbufferEXT(_: GLuint, _: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("NamedFramebufferRenderbufferEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferTexture1DEXT(_: GLuint, _: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("NamedFramebufferTexture1DEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferTexture2DEXT(_: GLuint, _: GLenum, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("NamedFramebufferTexture2DEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferTexture3DEXT(_: GLuint, _: GLenum, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("NamedFramebufferTexture3DEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferTextureEXT(_: GLuint, _: GLenum, _: GLuint, _: GLint) -> c_void { fail!("NamedFramebufferTextureEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferTextureFaceEXT(_: GLuint, _: GLenum, _: GLuint, _: GLint, _: GLenum) -> c_void { fail!("NamedFramebufferTextureFaceEXT was not loaded") }
-    pub extern "C" fn NamedFramebufferTextureLayerEXT(_: GLuint, _: GLenum, _: GLuint, _: GLint, _: GLint) -> c_void { fail!("NamedFramebufferTextureLayerEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameter4dEXT(_: GLuint, _: GLenum, _: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("NamedProgramLocalParameter4dEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameter4dvEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("NamedProgramLocalParameter4dvEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameter4fEXT(_: GLuint, _: GLenum, _: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("NamedProgramLocalParameter4fEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameter4fvEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("NamedProgramLocalParameter4fvEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameterI4iEXT(_: GLuint, _: GLenum, _: GLuint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("NamedProgramLocalParameterI4iEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameterI4ivEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("NamedProgramLocalParameterI4ivEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameterI4uiEXT(_: GLuint, _: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("NamedProgramLocalParameterI4uiEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameterI4uivEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("NamedProgramLocalParameterI4uivEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParameters4fvEXT(_: GLuint, _: GLenum, _: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("NamedProgramLocalParameters4fvEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParametersI4ivEXT(_: GLuint, _: GLenum, _: GLuint, _: GLsizei, _: *GLint) -> c_void { fail!("NamedProgramLocalParametersI4ivEXT was not loaded") }
-    pub extern "C" fn NamedProgramLocalParametersI4uivEXT(_: GLuint, _: GLenum, _: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("NamedProgramLocalParametersI4uivEXT was not loaded") }
-    pub extern "C" fn NamedProgramStringEXT(_: GLuint, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("NamedProgramStringEXT was not loaded") }
-    pub extern "C" fn NamedRenderbufferStorageEXT(_: GLuint, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("NamedRenderbufferStorageEXT was not loaded") }
-    pub extern "C" fn NamedRenderbufferStorageMultisampleCoverageEXT(_: GLuint, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("NamedRenderbufferStorageMultisampleCoverageEXT was not loaded") }
-    pub extern "C" fn NamedRenderbufferStorageMultisampleEXT(_: GLuint, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("NamedRenderbufferStorageMultisampleEXT was not loaded") }
-    pub extern "C" fn NamedStringARB(_: GLenum, _: GLint, _: *GLchar, _: GLint, _: *GLchar) -> c_void { fail!("NamedStringARB was not loaded") }
-    pub extern "C" fn NewList(_: GLuint, _: GLenum) -> c_void { fail!("NewList was not loaded") }
-    pub extern "C" fn NewObjectBufferATI(_: GLsizei, _: *GLvoid, _: GLenum) -> GLuint { fail!("NewObjectBufferATI was not loaded") }
-    pub extern "C" fn Normal3b(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("Normal3b was not loaded") }
-    pub extern "C" fn Normal3bv(_: *GLbyte) -> c_void { fail!("Normal3bv was not loaded") }
-    pub extern "C" fn Normal3d(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Normal3d was not loaded") }
-    pub extern "C" fn Normal3dv(_: *GLdouble) -> c_void { fail!("Normal3dv was not loaded") }
-    pub extern "C" fn Normal3f(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Normal3f was not loaded") }
-    pub extern "C" fn Normal3fVertex3fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Normal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn Normal3fVertex3fvSUN(_: *GLfloat, _: *GLfloat) -> c_void { fail!("Normal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn Normal3fv(_: *GLfloat) -> c_void { fail!("Normal3fv was not loaded") }
-    pub extern "C" fn Normal3hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("Normal3hNV was not loaded") }
-    pub extern "C" fn Normal3hvNV(_: *GLhalfNV) -> c_void { fail!("Normal3hvNV was not loaded") }
-    pub extern "C" fn Normal3i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("Normal3i was not loaded") }
-    pub extern "C" fn Normal3iv(_: *GLint) -> c_void { fail!("Normal3iv was not loaded") }
-    pub extern "C" fn Normal3s(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Normal3s was not loaded") }
-    pub extern "C" fn Normal3sv(_: *GLshort) -> c_void { fail!("Normal3sv was not loaded") }
-    pub extern "C" fn Normal3x(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Normal3x was not loaded") }
-    pub extern "C" fn Normal3xOES(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Normal3xOES was not loaded") }
-    pub extern "C" fn Normal3xvOES(_: *GLfixed) -> c_void { fail!("Normal3xvOES was not loaded") }
-    pub extern "C" fn NormalFormatNV(_: GLenum, _: GLsizei) -> c_void { fail!("NormalFormatNV was not loaded") }
-    pub extern "C" fn NormalP3ui(_: GLenum, _: GLuint) -> c_void { fail!("NormalP3ui was not loaded") }
-    pub extern "C" fn NormalP3uiv(_: GLenum, _: *GLuint) -> c_void { fail!("NormalP3uiv was not loaded") }
-    pub extern "C" fn NormalPointer(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("NormalPointer was not loaded") }
-    pub extern "C" fn NormalPointerEXT(_: GLenum, _: GLsizei, _: GLsizei, _: *GLvoid) -> c_void { fail!("NormalPointerEXT was not loaded") }
-    pub extern "C" fn NormalPointerListIBM(_: GLenum, _: GLint, _: **GLvoid, _: GLint) -> c_void { fail!("NormalPointerListIBM was not loaded") }
-    pub extern "C" fn NormalPointervINTEL(_: GLenum, _: **GLvoid) -> c_void { fail!("NormalPointervINTEL was not loaded") }
-    pub extern "C" fn NormalStream3bATI(_: GLenum, _: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("NormalStream3bATI was not loaded") }
-    pub extern "C" fn NormalStream3bvATI(_: GLenum, _: *GLbyte) -> c_void { fail!("NormalStream3bvATI was not loaded") }
-    pub extern "C" fn NormalStream3dATI(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("NormalStream3dATI was not loaded") }
-    pub extern "C" fn NormalStream3dvATI(_: GLenum, _: *GLdouble) -> c_void { fail!("NormalStream3dvATI was not loaded") }
-    pub extern "C" fn NormalStream3fATI(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("NormalStream3fATI was not loaded") }
-    pub extern "C" fn NormalStream3fvATI(_: GLenum, _: *GLfloat) -> c_void { fail!("NormalStream3fvATI was not loaded") }
-    pub extern "C" fn NormalStream3iATI(_: GLenum, _: GLint, _: GLint, _: GLint) -> c_void { fail!("NormalStream3iATI was not loaded") }
-    pub extern "C" fn NormalStream3ivATI(_: GLenum, _: *GLint) -> c_void { fail!("NormalStream3ivATI was not loaded") }
-    pub extern "C" fn NormalStream3sATI(_: GLenum, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("NormalStream3sATI was not loaded") }
-    pub extern "C" fn NormalStream3svATI(_: GLenum, _: *GLshort) -> c_void { fail!("NormalStream3svATI was not loaded") }
-    pub extern "C" fn ObjectLabel(_: GLenum, _: GLuint, _: GLsizei, _: *GLchar) -> c_void { fail!("ObjectLabel was not loaded") }
-    pub extern "C" fn ObjectLabelKHR(_: GLenum, _: GLuint, _: GLsizei, _: *GLchar) -> c_void { fail!("ObjectLabelKHR was not loaded") }
-    pub extern "C" fn ObjectPtrLabel(_: *c_void, _: GLsizei, _: *GLchar) -> c_void { fail!("ObjectPtrLabel was not loaded") }
-    pub extern "C" fn ObjectPtrLabelKHR(_: *c_void, _: GLsizei, _: *GLchar) -> c_void { fail!("ObjectPtrLabelKHR was not loaded") }
-    pub extern "C" fn ObjectPurgeableAPPLE(_: GLenum, _: GLuint, _: GLenum) -> GLenum { fail!("ObjectPurgeableAPPLE was not loaded") }
-    pub extern "C" fn ObjectUnpurgeableAPPLE(_: GLenum, _: GLuint, _: GLenum) -> GLenum { fail!("ObjectUnpurgeableAPPLE was not loaded") }
-    pub extern "C" fn Ortho(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Ortho was not loaded") }
-    pub extern "C" fn Orthof(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Orthof was not loaded") }
-    pub extern "C" fn OrthofOES(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("OrthofOES was not loaded") }
-    pub extern "C" fn Orthox(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Orthox was not loaded") }
-    pub extern "C" fn OrthoxOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("OrthoxOES was not loaded") }
-    pub extern "C" fn PNTrianglesfATI(_: GLenum, _: GLfloat) -> c_void { fail!("PNTrianglesfATI was not loaded") }
-    pub extern "C" fn PNTrianglesiATI(_: GLenum, _: GLint) -> c_void { fail!("PNTrianglesiATI was not loaded") }
-    pub extern "C" fn PassTexCoordATI(_: GLuint, _: GLuint, _: GLenum) -> c_void { fail!("PassTexCoordATI was not loaded") }
-    pub extern "C" fn PassThrough(_: GLfloat) -> c_void { fail!("PassThrough was not loaded") }
-    pub extern "C" fn PassThroughxOES(_: GLfixed) -> c_void { fail!("PassThroughxOES was not loaded") }
-    pub extern "C" fn PatchParameterfv(_: GLenum, _: *GLfloat) -> c_void { fail!("PatchParameterfv was not loaded") }
-    pub extern "C" fn PatchParameteri(_: GLenum, _: GLint) -> c_void { fail!("PatchParameteri was not loaded") }
-    pub extern "C" fn PathColorGenNV(_: GLenum, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("PathColorGenNV was not loaded") }
-    pub extern "C" fn PathCommandsNV(_: GLuint, _: GLsizei, _: *GLubyte, _: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("PathCommandsNV was not loaded") }
-    pub extern "C" fn PathCoordsNV(_: GLuint, _: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("PathCoordsNV was not loaded") }
-    pub extern "C" fn PathCoverDepthFuncNV(_: GLenum) -> c_void { fail!("PathCoverDepthFuncNV was not loaded") }
-    pub extern "C" fn PathDashArrayNV(_: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("PathDashArrayNV was not loaded") }
-    pub extern "C" fn PathFogGenNV(_: GLenum) -> c_void { fail!("PathFogGenNV was not loaded") }
-    pub extern "C" fn PathGlyphRangeNV(_: GLuint, _: GLenum, _: *GLvoid, _: GLbitfield, _: GLuint, _: GLsizei, _: GLenum, _: GLuint, _: GLfloat) -> c_void { fail!("PathGlyphRangeNV was not loaded") }
-    pub extern "C" fn PathGlyphsNV(_: GLuint, _: GLenum, _: *GLvoid, _: GLbitfield, _: GLsizei, _: GLenum, _: *GLvoid, _: GLenum, _: GLuint, _: GLfloat) -> c_void { fail!("PathGlyphsNV was not loaded") }
-    pub extern "C" fn PathParameterfNV(_: GLuint, _: GLenum, _: GLfloat) -> c_void { fail!("PathParameterfNV was not loaded") }
-    pub extern "C" fn PathParameterfvNV(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("PathParameterfvNV was not loaded") }
-    pub extern "C" fn PathParameteriNV(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("PathParameteriNV was not loaded") }
-    pub extern "C" fn PathParameterivNV(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("PathParameterivNV was not loaded") }
-    pub extern "C" fn PathStencilDepthOffsetNV(_: GLfloat, _: GLfloat) -> c_void { fail!("PathStencilDepthOffsetNV was not loaded") }
-    pub extern "C" fn PathStencilFuncNV(_: GLenum, _: GLint, _: GLuint) -> c_void { fail!("PathStencilFuncNV was not loaded") }
-    pub extern "C" fn PathStringNV(_: GLuint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("PathStringNV was not loaded") }
-    pub extern "C" fn PathSubCommandsNV(_: GLuint, _: GLsizei, _: GLsizei, _: GLsizei, _: *GLubyte, _: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("PathSubCommandsNV was not loaded") }
-    pub extern "C" fn PathSubCoordsNV(_: GLuint, _: GLsizei, _: GLsizei, _: GLenum, _: *GLvoid) -> c_void { fail!("PathSubCoordsNV was not loaded") }
-    pub extern "C" fn PathTexGenNV(_: GLenum, _: GLenum, _: GLint, _: *GLfloat) -> c_void { fail!("PathTexGenNV was not loaded") }
-    pub extern "C" fn PauseTransformFeedback() -> c_void { fail!("PauseTransformFeedback was not loaded") }
-    pub extern "C" fn PauseTransformFeedbackNV() -> c_void { fail!("PauseTransformFeedbackNV was not loaded") }
-    pub extern "C" fn PixelDataRangeNV(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("PixelDataRangeNV was not loaded") }
-    pub extern "C" fn PixelMapfv(_: GLenum, _: GLsizei, _: *GLfloat) -> c_void { fail!("PixelMapfv was not loaded") }
-    pub extern "C" fn PixelMapuiv(_: GLenum, _: GLsizei, _: *GLuint) -> c_void { fail!("PixelMapuiv was not loaded") }
-    pub extern "C" fn PixelMapusv(_: GLenum, _: GLsizei, _: *GLushort) -> c_void { fail!("PixelMapusv was not loaded") }
-    pub extern "C" fn PixelMapx(_: GLenum, _: GLint, _: *GLfixed) -> c_void { fail!("PixelMapx was not loaded") }
-    pub extern "C" fn PixelStoref(_: GLenum, _: GLfloat) -> c_void { fail!("PixelStoref was not loaded") }
-    pub extern "C" fn PixelStorei(_: GLenum, _: GLint) -> c_void { fail!("PixelStorei was not loaded") }
-    pub extern "C" fn PixelStorex(_: GLenum, _: GLfixed) -> c_void { fail!("PixelStorex was not loaded") }
-    pub extern "C" fn PixelTexGenParameterfSGIS(_: GLenum, _: GLfloat) -> c_void { fail!("PixelTexGenParameterfSGIS was not loaded") }
-    pub extern "C" fn PixelTexGenParameterfvSGIS(_: GLenum, _: *GLfloat) -> c_void { fail!("PixelTexGenParameterfvSGIS was not loaded") }
-    pub extern "C" fn PixelTexGenParameteriSGIS(_: GLenum, _: GLint) -> c_void { fail!("PixelTexGenParameteriSGIS was not loaded") }
-    pub extern "C" fn PixelTexGenParameterivSGIS(_: GLenum, _: *GLint) -> c_void { fail!("PixelTexGenParameterivSGIS was not loaded") }
-    pub extern "C" fn PixelTexGenSGIX(_: GLenum) -> c_void { fail!("PixelTexGenSGIX was not loaded") }
-    pub extern "C" fn PixelTransferf(_: GLenum, _: GLfloat) -> c_void { fail!("PixelTransferf was not loaded") }
-    pub extern "C" fn PixelTransferi(_: GLenum, _: GLint) -> c_void { fail!("PixelTransferi was not loaded") }
-    pub extern "C" fn PixelTransferxOES(_: GLenum, _: GLfixed) -> c_void { fail!("PixelTransferxOES was not loaded") }
-    pub extern "C" fn PixelTransformParameterfEXT(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("PixelTransformParameterfEXT was not loaded") }
-    pub extern "C" fn PixelTransformParameterfvEXT(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("PixelTransformParameterfvEXT was not loaded") }
-    pub extern "C" fn PixelTransformParameteriEXT(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("PixelTransformParameteriEXT was not loaded") }
-    pub extern "C" fn PixelTransformParameterivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("PixelTransformParameterivEXT was not loaded") }
-    pub extern "C" fn PixelZoom(_: GLfloat, _: GLfloat) -> c_void { fail!("PixelZoom was not loaded") }
-    pub extern "C" fn PixelZoomxOES(_: GLfixed, _: GLfixed) -> c_void { fail!("PixelZoomxOES was not loaded") }
-    pub extern "C" fn PointAlongPathNV(_: GLuint, _: GLsizei, _: GLsizei, _: GLfloat, _: *GLfloat, _: *GLfloat, _: *GLfloat, _: *GLfloat) -> GLboolean { fail!("PointAlongPathNV was not loaded") }
-    pub extern "C" fn PointParameterf(_: GLenum, _: GLfloat) -> c_void { fail!("PointParameterf was not loaded") }
-    pub extern "C" fn PointParameterfARB(_: GLenum, _: GLfloat) -> c_void { fail!("PointParameterfARB was not loaded") }
-    pub extern "C" fn PointParameterfEXT(_: GLenum, _: GLfloat) -> c_void { fail!("PointParameterfEXT was not loaded") }
-    pub extern "C" fn PointParameterfSGIS(_: GLenum, _: GLfloat) -> c_void { fail!("PointParameterfSGIS was not loaded") }
-    pub extern "C" fn PointParameterfv(_: GLenum, _: *GLfloat) -> c_void { fail!("PointParameterfv was not loaded") }
-    pub extern "C" fn PointParameterfvARB(_: GLenum, _: *GLfloat) -> c_void { fail!("PointParameterfvARB was not loaded") }
-    pub extern "C" fn PointParameterfvEXT(_: GLenum, _: *GLfloat) -> c_void { fail!("PointParameterfvEXT was not loaded") }
-    pub extern "C" fn PointParameterfvSGIS(_: GLenum, _: *GLfloat) -> c_void { fail!("PointParameterfvSGIS was not loaded") }
-    pub extern "C" fn PointParameteri(_: GLenum, _: GLint) -> c_void { fail!("PointParameteri was not loaded") }
-    pub extern "C" fn PointParameteriNV(_: GLenum, _: GLint) -> c_void { fail!("PointParameteriNV was not loaded") }
-    pub extern "C" fn PointParameteriv(_: GLenum, _: *GLint) -> c_void { fail!("PointParameteriv was not loaded") }
-    pub extern "C" fn PointParameterivNV(_: GLenum, _: *GLint) -> c_void { fail!("PointParameterivNV was not loaded") }
-    pub extern "C" fn PointParameterx(_: GLenum, _: GLfixed) -> c_void { fail!("PointParameterx was not loaded") }
-    pub extern "C" fn PointParameterxOES(_: GLenum, _: GLfixed) -> c_void { fail!("PointParameterxOES was not loaded") }
-    pub extern "C" fn PointParameterxv(_: GLenum, _: *GLfixed) -> c_void { fail!("PointParameterxv was not loaded") }
-    pub extern "C" fn PointParameterxvOES(_: GLenum, _: *GLfixed) -> c_void { fail!("PointParameterxvOES was not loaded") }
-    pub extern "C" fn PointSize(_: GLfloat) -> c_void { fail!("PointSize was not loaded") }
-    pub extern "C" fn PointSizePointerOES(_: GLenum, _: GLsizei, _: *c_void) -> c_void { fail!("PointSizePointerOES was not loaded") }
-    pub extern "C" fn PointSizex(_: GLfixed) -> c_void { fail!("PointSizex was not loaded") }
-    pub extern "C" fn PointSizexOES(_: GLfixed) -> c_void { fail!("PointSizexOES was not loaded") }
-    pub extern "C" fn PollAsyncSGIX(_: *GLuint) -> GLint { fail!("PollAsyncSGIX was not loaded") }
-    pub extern "C" fn PollInstrumentsSGIX(_: *GLint) -> GLint { fail!("PollInstrumentsSGIX was not loaded") }
-    pub extern "C" fn PolygonMode(_: GLenum, _: GLenum) -> c_void { fail!("PolygonMode was not loaded") }
-    pub extern "C" fn PolygonOffset(_: GLfloat, _: GLfloat) -> c_void { fail!("PolygonOffset was not loaded") }
-    pub extern "C" fn PolygonOffsetEXT(_: GLfloat, _: GLfloat) -> c_void { fail!("PolygonOffsetEXT was not loaded") }
-    pub extern "C" fn PolygonOffsetx(_: GLfixed, _: GLfixed) -> c_void { fail!("PolygonOffsetx was not loaded") }
-    pub extern "C" fn PolygonOffsetxOES(_: GLfixed, _: GLfixed) -> c_void { fail!("PolygonOffsetxOES was not loaded") }
-    pub extern "C" fn PolygonStipple(_: *GLubyte) -> c_void { fail!("PolygonStipple was not loaded") }
-    pub extern "C" fn PopAttrib() -> c_void { fail!("PopAttrib was not loaded") }
-    pub extern "C" fn PopClientAttrib() -> c_void { fail!("PopClientAttrib was not loaded") }
-    pub extern "C" fn PopDebugGroup() -> c_void { fail!("PopDebugGroup was not loaded") }
-    pub extern "C" fn PopDebugGroupKHR() -> c_void { fail!("PopDebugGroupKHR was not loaded") }
-    pub extern "C" fn PopGroupMarkerEXT() -> c_void { fail!("PopGroupMarkerEXT was not loaded") }
-    pub extern "C" fn PopMatrix() -> c_void { fail!("PopMatrix was not loaded") }
-    pub extern "C" fn PopName() -> c_void { fail!("PopName was not loaded") }
-    pub extern "C" fn PresentFrameDualFillNV(_: GLuint, _: GLuint64EXT, _: GLuint, _: GLuint, _: GLenum, _: GLenum, _: GLuint, _: GLenum, _: GLuint, _: GLenum, _: GLuint, _: GLenum, _: GLuint) -> c_void { fail!("PresentFrameDualFillNV was not loaded") }
-    pub extern "C" fn PresentFrameKeyedNV(_: GLuint, _: GLuint64EXT, _: GLuint, _: GLuint, _: GLenum, _: GLenum, _: GLuint, _: GLuint, _: GLenum, _: GLuint, _: GLuint) -> c_void { fail!("PresentFrameKeyedNV was not loaded") }
-    pub extern "C" fn PrimitiveRestartIndex(_: GLuint) -> c_void { fail!("PrimitiveRestartIndex was not loaded") }
-    pub extern "C" fn PrimitiveRestartIndexNV(_: GLuint) -> c_void { fail!("PrimitiveRestartIndexNV was not loaded") }
-    pub extern "C" fn PrimitiveRestartNV() -> c_void { fail!("PrimitiveRestartNV was not loaded") }
-    pub extern "C" fn PrioritizeTextures(_: GLsizei, _: *GLuint, _: *GLfloat) -> c_void { fail!("PrioritizeTextures was not loaded") }
-    pub extern "C" fn PrioritizeTexturesEXT(_: GLsizei, _: *GLuint, _: *GLclampf) -> c_void { fail!("PrioritizeTexturesEXT was not loaded") }
-    pub extern "C" fn PrioritizeTexturesxOES(_: GLsizei, _: *GLuint, _: *GLfixed) -> c_void { fail!("PrioritizeTexturesxOES was not loaded") }
-    pub extern "C" fn ProgramBinary(_: GLuint, _: GLenum, _: *GLvoid, _: GLsizei) -> c_void { fail!("ProgramBinary was not loaded") }
-    pub extern "C" fn ProgramBinaryOES(_: GLuint, _: GLenum, _: *GLvoid, _: GLint) -> c_void { fail!("ProgramBinaryOES was not loaded") }
-    pub extern "C" fn ProgramBufferParametersIivNV(_: GLenum, _: GLuint, _: GLuint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramBufferParametersIivNV was not loaded") }
-    pub extern "C" fn ProgramBufferParametersIuivNV(_: GLenum, _: GLuint, _: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramBufferParametersIuivNV was not loaded") }
-    pub extern "C" fn ProgramBufferParametersfvNV(_: GLenum, _: GLuint, _: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramBufferParametersfvNV was not loaded") }
-    pub extern "C" fn ProgramEnvParameter4dARB(_: GLenum, _: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramEnvParameter4dARB was not loaded") }
-    pub extern "C" fn ProgramEnvParameter4dvARB(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("ProgramEnvParameter4dvARB was not loaded") }
-    pub extern "C" fn ProgramEnvParameter4fARB(_: GLenum, _: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramEnvParameter4fARB was not loaded") }
-    pub extern "C" fn ProgramEnvParameter4fvARB(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("ProgramEnvParameter4fvARB was not loaded") }
-    pub extern "C" fn ProgramEnvParameterI4iNV(_: GLenum, _: GLuint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramEnvParameterI4iNV was not loaded") }
-    pub extern "C" fn ProgramEnvParameterI4ivNV(_: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("ProgramEnvParameterI4ivNV was not loaded") }
-    pub extern "C" fn ProgramEnvParameterI4uiNV(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramEnvParameterI4uiNV was not loaded") }
-    pub extern "C" fn ProgramEnvParameterI4uivNV(_: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("ProgramEnvParameterI4uivNV was not loaded") }
-    pub extern "C" fn ProgramEnvParameters4fvEXT(_: GLenum, _: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramEnvParameters4fvEXT was not loaded") }
-    pub extern "C" fn ProgramEnvParametersI4ivNV(_: GLenum, _: GLuint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramEnvParametersI4ivNV was not loaded") }
-    pub extern "C" fn ProgramEnvParametersI4uivNV(_: GLenum, _: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramEnvParametersI4uivNV was not loaded") }
-    pub extern "C" fn ProgramLocalParameter4dARB(_: GLenum, _: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramLocalParameter4dARB was not loaded") }
-    pub extern "C" fn ProgramLocalParameter4dvARB(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("ProgramLocalParameter4dvARB was not loaded") }
-    pub extern "C" fn ProgramLocalParameter4fARB(_: GLenum, _: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramLocalParameter4fARB was not loaded") }
-    pub extern "C" fn ProgramLocalParameter4fvARB(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("ProgramLocalParameter4fvARB was not loaded") }
-    pub extern "C" fn ProgramLocalParameterI4iNV(_: GLenum, _: GLuint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramLocalParameterI4iNV was not loaded") }
-    pub extern "C" fn ProgramLocalParameterI4ivNV(_: GLenum, _: GLuint, _: *GLint) -> c_void { fail!("ProgramLocalParameterI4ivNV was not loaded") }
-    pub extern "C" fn ProgramLocalParameterI4uiNV(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramLocalParameterI4uiNV was not loaded") }
-    pub extern "C" fn ProgramLocalParameterI4uivNV(_: GLenum, _: GLuint, _: *GLuint) -> c_void { fail!("ProgramLocalParameterI4uivNV was not loaded") }
-    pub extern "C" fn ProgramLocalParameters4fvEXT(_: GLenum, _: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramLocalParameters4fvEXT was not loaded") }
-    pub extern "C" fn ProgramLocalParametersI4ivNV(_: GLenum, _: GLuint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramLocalParametersI4ivNV was not loaded") }
-    pub extern "C" fn ProgramLocalParametersI4uivNV(_: GLenum, _: GLuint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramLocalParametersI4uivNV was not loaded") }
-    pub extern "C" fn ProgramNamedParameter4dNV(_: GLuint, _: GLsizei, _: *GLubyte, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramNamedParameter4dNV was not loaded") }
-    pub extern "C" fn ProgramNamedParameter4dvNV(_: GLuint, _: GLsizei, _: *GLubyte, _: *GLdouble) -> c_void { fail!("ProgramNamedParameter4dvNV was not loaded") }
-    pub extern "C" fn ProgramNamedParameter4fNV(_: GLuint, _: GLsizei, _: *GLubyte, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramNamedParameter4fNV was not loaded") }
-    pub extern "C" fn ProgramNamedParameter4fvNV(_: GLuint, _: GLsizei, _: *GLubyte, _: *GLfloat) -> c_void { fail!("ProgramNamedParameter4fvNV was not loaded") }
-    pub extern "C" fn ProgramParameter4dNV(_: GLenum, _: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramParameter4dNV was not loaded") }
-    pub extern "C" fn ProgramParameter4dvNV(_: GLenum, _: GLuint, _: *GLdouble) -> c_void { fail!("ProgramParameter4dvNV was not loaded") }
-    pub extern "C" fn ProgramParameter4fNV(_: GLenum, _: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramParameter4fNV was not loaded") }
-    pub extern "C" fn ProgramParameter4fvNV(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("ProgramParameter4fvNV was not loaded") }
-    pub extern "C" fn ProgramParameteri(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("ProgramParameteri was not loaded") }
-    pub extern "C" fn ProgramParameteriARB(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("ProgramParameteriARB was not loaded") }
-    pub extern "C" fn ProgramParameteriEXT(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("ProgramParameteriEXT was not loaded") }
-    pub extern "C" fn ProgramParameters4dvNV(_: GLenum, _: GLuint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramParameters4dvNV was not loaded") }
-    pub extern "C" fn ProgramParameters4fvNV(_: GLenum, _: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramParameters4fvNV was not loaded") }
-    pub extern "C" fn ProgramStringARB(_: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("ProgramStringARB was not loaded") }
-    pub extern "C" fn ProgramSubroutineParametersuivNV(_: GLenum, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramSubroutineParametersuivNV was not loaded") }
-    pub extern "C" fn ProgramUniform1d(_: GLuint, _: GLint, _: GLdouble) -> c_void { fail!("ProgramUniform1d was not loaded") }
-    pub extern "C" fn ProgramUniform1dEXT(_: GLuint, _: GLint, _: GLdouble) -> c_void { fail!("ProgramUniform1dEXT was not loaded") }
-    pub extern "C" fn ProgramUniform1dv(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform1dv was not loaded") }
-    pub extern "C" fn ProgramUniform1dvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform1dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform1f(_: GLuint, _: GLint, _: GLfloat) -> c_void { fail!("ProgramUniform1f was not loaded") }
-    pub extern "C" fn ProgramUniform1fEXT(_: GLuint, _: GLint, _: GLfloat) -> c_void { fail!("ProgramUniform1fEXT was not loaded") }
-    pub extern "C" fn ProgramUniform1fv(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform1fv was not loaded") }
-    pub extern "C" fn ProgramUniform1fvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform1fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform1i(_: GLuint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform1i was not loaded") }
-    pub extern "C" fn ProgramUniform1i64NV(_: GLuint, _: GLint, _: GLint64EXT) -> c_void { fail!("ProgramUniform1i64NV was not loaded") }
-    pub extern "C" fn ProgramUniform1i64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("ProgramUniform1i64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform1iEXT(_: GLuint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform1iEXT was not loaded") }
-    pub extern "C" fn ProgramUniform1iv(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform1iv was not loaded") }
-    pub extern "C" fn ProgramUniform1ivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform1ivEXT was not loaded") }
-    pub extern "C" fn ProgramUniform1ui(_: GLuint, _: GLint, _: GLuint) -> c_void { fail!("ProgramUniform1ui was not loaded") }
-    pub extern "C" fn ProgramUniform1ui64NV(_: GLuint, _: GLint, _: GLuint64EXT) -> c_void { fail!("ProgramUniform1ui64NV was not loaded") }
-    pub extern "C" fn ProgramUniform1ui64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("ProgramUniform1ui64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform1uiEXT(_: GLuint, _: GLint, _: GLuint) -> c_void { fail!("ProgramUniform1uiEXT was not loaded") }
-    pub extern "C" fn ProgramUniform1uiv(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform1uiv was not loaded") }
-    pub extern "C" fn ProgramUniform1uivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform1uivEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2d(_: GLuint, _: GLint, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramUniform2d was not loaded") }
-    pub extern "C" fn ProgramUniform2dEXT(_: GLuint, _: GLint, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramUniform2dEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2dv(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform2dv was not loaded") }
-    pub extern "C" fn ProgramUniform2dvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform2dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2f(_: GLuint, _: GLint, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramUniform2f was not loaded") }
-    pub extern "C" fn ProgramUniform2fEXT(_: GLuint, _: GLint, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramUniform2fEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2fv(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform2fv was not loaded") }
-    pub extern "C" fn ProgramUniform2fvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform2fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2i(_: GLuint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform2i was not loaded") }
-    pub extern "C" fn ProgramUniform2i64NV(_: GLuint, _: GLint, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("ProgramUniform2i64NV was not loaded") }
-    pub extern "C" fn ProgramUniform2i64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("ProgramUniform2i64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform2iEXT(_: GLuint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform2iEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2iv(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform2iv was not loaded") }
-    pub extern "C" fn ProgramUniform2ivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform2ivEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2ui(_: GLuint, _: GLint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramUniform2ui was not loaded") }
-    pub extern "C" fn ProgramUniform2ui64NV(_: GLuint, _: GLint, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("ProgramUniform2ui64NV was not loaded") }
-    pub extern "C" fn ProgramUniform2ui64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("ProgramUniform2ui64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform2uiEXT(_: GLuint, _: GLint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramUniform2uiEXT was not loaded") }
-    pub extern "C" fn ProgramUniform2uiv(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform2uiv was not loaded") }
-    pub extern "C" fn ProgramUniform2uivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform2uivEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3d(_: GLuint, _: GLint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramUniform3d was not loaded") }
-    pub extern "C" fn ProgramUniform3dEXT(_: GLuint, _: GLint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramUniform3dEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3dv(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform3dv was not loaded") }
-    pub extern "C" fn ProgramUniform3dvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform3dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3f(_: GLuint, _: GLint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramUniform3f was not loaded") }
-    pub extern "C" fn ProgramUniform3fEXT(_: GLuint, _: GLint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramUniform3fEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3fv(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform3fv was not loaded") }
-    pub extern "C" fn ProgramUniform3fvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform3fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3i(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform3i was not loaded") }
-    pub extern "C" fn ProgramUniform3i64NV(_: GLuint, _: GLint, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("ProgramUniform3i64NV was not loaded") }
-    pub extern "C" fn ProgramUniform3i64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("ProgramUniform3i64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform3iEXT(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform3iEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3iv(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform3iv was not loaded") }
-    pub extern "C" fn ProgramUniform3ivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform3ivEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3ui(_: GLuint, _: GLint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramUniform3ui was not loaded") }
-    pub extern "C" fn ProgramUniform3ui64NV(_: GLuint, _: GLint, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("ProgramUniform3ui64NV was not loaded") }
-    pub extern "C" fn ProgramUniform3ui64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("ProgramUniform3ui64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform3uiEXT(_: GLuint, _: GLint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramUniform3uiEXT was not loaded") }
-    pub extern "C" fn ProgramUniform3uiv(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform3uiv was not loaded") }
-    pub extern "C" fn ProgramUniform3uivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform3uivEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4d(_: GLuint, _: GLint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramUniform4d was not loaded") }
-    pub extern "C" fn ProgramUniform4dEXT(_: GLuint, _: GLint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("ProgramUniform4dEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4dv(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform4dv was not loaded") }
-    pub extern "C" fn ProgramUniform4dvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("ProgramUniform4dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4f(_: GLuint, _: GLint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramUniform4f was not loaded") }
-    pub extern "C" fn ProgramUniform4fEXT(_: GLuint, _: GLint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ProgramUniform4fEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4fv(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform4fv was not loaded") }
-    pub extern "C" fn ProgramUniform4fvEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ProgramUniform4fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4i(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform4i was not loaded") }
-    pub extern "C" fn ProgramUniform4i64NV(_: GLuint, _: GLint, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("ProgramUniform4i64NV was not loaded") }
-    pub extern "C" fn ProgramUniform4i64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("ProgramUniform4i64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform4iEXT(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("ProgramUniform4iEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4iv(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform4iv was not loaded") }
-    pub extern "C" fn ProgramUniform4ivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("ProgramUniform4ivEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4ui(_: GLuint, _: GLint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramUniform4ui was not loaded") }
-    pub extern "C" fn ProgramUniform4ui64NV(_: GLuint, _: GLint, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("ProgramUniform4ui64NV was not loaded") }
-    pub extern "C" fn ProgramUniform4ui64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("ProgramUniform4ui64vNV was not loaded") }
-    pub extern "C" fn ProgramUniform4uiEXT(_: GLuint, _: GLint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ProgramUniform4uiEXT was not loaded") }
-    pub extern "C" fn ProgramUniform4uiv(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform4uiv was not loaded") }
-    pub extern "C" fn ProgramUniform4uivEXT(_: GLuint, _: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("ProgramUniform4uivEXT was not loaded") }
-    pub extern "C" fn ProgramUniformHandleui64ARB(_: GLuint, _: GLint, _: GLuint64) -> c_void { fail!("ProgramUniformHandleui64ARB was not loaded") }
-    pub extern "C" fn ProgramUniformHandleui64NV(_: GLuint, _: GLint, _: GLuint64) -> c_void { fail!("ProgramUniformHandleui64NV was not loaded") }
-    pub extern "C" fn ProgramUniformHandleui64vARB(_: GLuint, _: GLint, _: GLsizei, _: *GLuint64) -> c_void { fail!("ProgramUniformHandleui64vARB was not loaded") }
-    pub extern "C" fn ProgramUniformHandleui64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLuint64) -> c_void { fail!("ProgramUniformHandleui64vNV was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix2dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix2dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix2fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix2fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x3dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix2x3dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x3dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix2x3dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x3fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix2x3fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x3fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix2x3fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x4dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix2x4dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x4dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix2x4dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x4fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix2x4fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix2x4fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix2x4fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix3dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix3dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix3fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix3fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x2dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix3x2dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x2dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix3x2dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x2fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix3x2fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x2fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix3x2fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x4dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix3x4dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x4dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix3x4dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x4fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix3x4fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix3x4fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix3x4fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix4dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix4dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix4fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix4fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x2dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix4x2dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x2dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix4x2dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x2fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix4x2fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x2fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix4x2fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x3dv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix4x3dv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x3dvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("ProgramUniformMatrix4x3dvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x3fv(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix4x3fv was not loaded") }
-    pub extern "C" fn ProgramUniformMatrix4x3fvEXT(_: GLuint, _: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("ProgramUniformMatrix4x3fvEXT was not loaded") }
-    pub extern "C" fn ProgramUniformui64NV(_: GLuint, _: GLint, _: GLuint64EXT) -> c_void { fail!("ProgramUniformui64NV was not loaded") }
-    pub extern "C" fn ProgramUniformui64vNV(_: GLuint, _: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("ProgramUniformui64vNV was not loaded") }
-    pub extern "C" fn ProgramVertexLimitNV(_: GLenum, _: GLint) -> c_void { fail!("ProgramVertexLimitNV was not loaded") }
-    pub extern "C" fn ProvokingVertex(_: GLenum) -> c_void { fail!("ProvokingVertex was not loaded") }
-    pub extern "C" fn ProvokingVertexEXT(_: GLenum) -> c_void { fail!("ProvokingVertexEXT was not loaded") }
-    pub extern "C" fn PushAttrib(_: GLbitfield) -> c_void { fail!("PushAttrib was not loaded") }
-    pub extern "C" fn PushClientAttrib(_: GLbitfield) -> c_void { fail!("PushClientAttrib was not loaded") }
-    pub extern "C" fn PushClientAttribDefaultEXT(_: GLbitfield) -> c_void { fail!("PushClientAttribDefaultEXT was not loaded") }
-    pub extern "C" fn PushDebugGroup(_: GLenum, _: GLuint, _: GLsizei, _: *GLchar) -> c_void { fail!("PushDebugGroup was not loaded") }
-    pub extern "C" fn PushDebugGroupKHR(_: GLenum, _: GLuint, _: GLsizei, _: *GLchar) -> c_void { fail!("PushDebugGroupKHR was not loaded") }
-    pub extern "C" fn PushGroupMarkerEXT(_: GLsizei, _: *GLchar) -> c_void { fail!("PushGroupMarkerEXT was not loaded") }
-    pub extern "C" fn PushMatrix() -> c_void { fail!("PushMatrix was not loaded") }
-    pub extern "C" fn PushName(_: GLuint) -> c_void { fail!("PushName was not loaded") }
-    pub extern "C" fn QueryCounter(_: GLuint, _: GLenum) -> c_void { fail!("QueryCounter was not loaded") }
-    pub extern "C" fn QueryCounterEXT(_: GLuint, _: GLenum) -> c_void { fail!("QueryCounterEXT was not loaded") }
-    pub extern "C" fn QueryMatrixxOES(_: *GLfixed, _: *GLint) -> GLbitfield { fail!("QueryMatrixxOES was not loaded") }
-    pub extern "C" fn RasterPos2d(_: GLdouble, _: GLdouble) -> c_void { fail!("RasterPos2d was not loaded") }
-    pub extern "C" fn RasterPos2dv(_: *GLdouble) -> c_void { fail!("RasterPos2dv was not loaded") }
-    pub extern "C" fn RasterPos2f(_: GLfloat, _: GLfloat) -> c_void { fail!("RasterPos2f was not loaded") }
-    pub extern "C" fn RasterPos2fv(_: *GLfloat) -> c_void { fail!("RasterPos2fv was not loaded") }
-    pub extern "C" fn RasterPos2i(_: GLint, _: GLint) -> c_void { fail!("RasterPos2i was not loaded") }
-    pub extern "C" fn RasterPos2iv(_: *GLint) -> c_void { fail!("RasterPos2iv was not loaded") }
-    pub extern "C" fn RasterPos2s(_: GLshort, _: GLshort) -> c_void { fail!("RasterPos2s was not loaded") }
-    pub extern "C" fn RasterPos2sv(_: *GLshort) -> c_void { fail!("RasterPos2sv was not loaded") }
-    pub extern "C" fn RasterPos2xOES(_: GLfixed, _: GLfixed) -> c_void { fail!("RasterPos2xOES was not loaded") }
-    pub extern "C" fn RasterPos2xvOES(_: *GLfixed) -> c_void { fail!("RasterPos2xvOES was not loaded") }
-    pub extern "C" fn RasterPos3d(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("RasterPos3d was not loaded") }
-    pub extern "C" fn RasterPos3dv(_: *GLdouble) -> c_void { fail!("RasterPos3dv was not loaded") }
-    pub extern "C" fn RasterPos3f(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("RasterPos3f was not loaded") }
-    pub extern "C" fn RasterPos3fv(_: *GLfloat) -> c_void { fail!("RasterPos3fv was not loaded") }
-    pub extern "C" fn RasterPos3i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("RasterPos3i was not loaded") }
-    pub extern "C" fn RasterPos3iv(_: *GLint) -> c_void { fail!("RasterPos3iv was not loaded") }
-    pub extern "C" fn RasterPos3s(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("RasterPos3s was not loaded") }
-    pub extern "C" fn RasterPos3sv(_: *GLshort) -> c_void { fail!("RasterPos3sv was not loaded") }
-    pub extern "C" fn RasterPos3xOES(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("RasterPos3xOES was not loaded") }
-    pub extern "C" fn RasterPos3xvOES(_: *GLfixed) -> c_void { fail!("RasterPos3xvOES was not loaded") }
-    pub extern "C" fn RasterPos4d(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("RasterPos4d was not loaded") }
-    pub extern "C" fn RasterPos4dv(_: *GLdouble) -> c_void { fail!("RasterPos4dv was not loaded") }
-    pub extern "C" fn RasterPos4f(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("RasterPos4f was not loaded") }
-    pub extern "C" fn RasterPos4fv(_: *GLfloat) -> c_void { fail!("RasterPos4fv was not loaded") }
-    pub extern "C" fn RasterPos4i(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("RasterPos4i was not loaded") }
-    pub extern "C" fn RasterPos4iv(_: *GLint) -> c_void { fail!("RasterPos4iv was not loaded") }
-    pub extern "C" fn RasterPos4s(_: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("RasterPos4s was not loaded") }
-    pub extern "C" fn RasterPos4sv(_: *GLshort) -> c_void { fail!("RasterPos4sv was not loaded") }
-    pub extern "C" fn RasterPos4xOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("RasterPos4xOES was not loaded") }
-    pub extern "C" fn RasterPos4xvOES(_: *GLfixed) -> c_void { fail!("RasterPos4xvOES was not loaded") }
-    pub extern "C" fn ReadBuffer(_: GLenum) -> c_void { fail!("ReadBuffer was not loaded") }
-    pub extern "C" fn ReadBufferIndexedEXT(_: GLenum, _: GLint) -> c_void { fail!("ReadBufferIndexedEXT was not loaded") }
-    pub extern "C" fn ReadBufferNV(_: GLenum) -> c_void { fail!("ReadBufferNV was not loaded") }
-    pub extern "C" fn ReadInstrumentsSGIX(_: GLint) -> c_void { fail!("ReadInstrumentsSGIX was not loaded") }
-    pub extern "C" fn ReadPixels(_: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("ReadPixels was not loaded") }
-    pub extern "C" fn ReadnPixelsARB(_: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("ReadnPixelsARB was not loaded") }
-    pub extern "C" fn ReadnPixelsEXT(_: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("ReadnPixelsEXT was not loaded") }
-    pub extern "C" fn Rectd(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Rectd was not loaded") }
-    pub extern "C" fn Rectdv(_: *GLdouble, _: *GLdouble) -> c_void { fail!("Rectdv was not loaded") }
-    pub extern "C" fn Rectf(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Rectf was not loaded") }
-    pub extern "C" fn Rectfv(_: *GLfloat, _: *GLfloat) -> c_void { fail!("Rectfv was not loaded") }
-    pub extern "C" fn Recti(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("Recti was not loaded") }
-    pub extern "C" fn Rectiv(_: *GLint, _: *GLint) -> c_void { fail!("Rectiv was not loaded") }
-    pub extern "C" fn Rects(_: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Rects was not loaded") }
-    pub extern "C" fn Rectsv(_: *GLshort, _: *GLshort) -> c_void { fail!("Rectsv was not loaded") }
-    pub extern "C" fn RectxOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("RectxOES was not loaded") }
-    pub extern "C" fn RectxvOES(_: *GLfixed, _: *GLfixed) -> c_void { fail!("RectxvOES was not loaded") }
-    pub extern "C" fn ReferencePlaneSGIX(_: *GLdouble) -> c_void { fail!("ReferencePlaneSGIX was not loaded") }
-    pub extern "C" fn ReleaseShaderCompiler() -> c_void { fail!("ReleaseShaderCompiler was not loaded") }
-    pub extern "C" fn RenderMode(_: GLenum) -> GLint { fail!("RenderMode was not loaded") }
-    pub extern "C" fn RenderbufferStorage(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorage was not loaded") }
-    pub extern "C" fn RenderbufferStorageEXT(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageEXT was not loaded") }
-    pub extern "C" fn RenderbufferStorageMultisample(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageMultisample was not loaded") }
-    pub extern "C" fn RenderbufferStorageMultisampleANGLE(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageMultisampleANGLE was not loaded") }
-    pub extern "C" fn RenderbufferStorageMultisampleAPPLE(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageMultisampleAPPLE was not loaded") }
-    pub extern "C" fn RenderbufferStorageMultisampleCoverageNV(_: GLenum, _: GLsizei, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageMultisampleCoverageNV was not loaded") }
-    pub extern "C" fn RenderbufferStorageMultisampleEXT(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageMultisampleEXT was not loaded") }
-    pub extern "C" fn RenderbufferStorageMultisampleIMG(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageMultisampleIMG was not loaded") }
-    pub extern "C" fn RenderbufferStorageMultisampleNV(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageMultisampleNV was not loaded") }
-    pub extern "C" fn RenderbufferStorageOES(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("RenderbufferStorageOES was not loaded") }
-    pub extern "C" fn ReplacementCodePointerSUN(_: GLenum, _: GLsizei, _: **GLvoid) -> c_void { fail!("ReplacementCodePointerSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeubSUN(_: GLubyte) -> c_void { fail!("ReplacementCodeubSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeubvSUN(_: *GLubyte) -> c_void { fail!("ReplacementCodeubvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiColor3fVertex3fSUN(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiColor3fVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiColor3fVertex3fvSUN(_: *GLuint, _: *GLfloat, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiColor3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiColor4fNormal3fVertex3fSUN(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiColor4fNormal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiColor4fNormal3fVertex3fvSUN(_: *GLuint, _: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiColor4fNormal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiColor4ubVertex3fSUN(_: GLuint, _: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiColor4ubVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiColor4ubVertex3fvSUN(_: *GLuint, _: *GLubyte, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiColor4ubVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiNormal3fVertex3fSUN(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiNormal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiNormal3fVertex3fvSUN(_: *GLuint, _: *GLfloat, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiNormal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiSUN(_: GLuint) -> c_void { fail!("ReplacementCodeuiSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN(_: *GLuint, _: *GLfloat, _: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiTexCoord2fNormal3fVertex3fSUN(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiTexCoord2fNormal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN(_: *GLuint, _: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiTexCoord2fVertex3fSUN(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiTexCoord2fVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiTexCoord2fVertex3fvSUN(_: *GLuint, _: *GLfloat, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiTexCoord2fVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiVertex3fSUN(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ReplacementCodeuiVertex3fSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuiVertex3fvSUN(_: *GLuint, _: *GLfloat) -> c_void { fail!("ReplacementCodeuiVertex3fvSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeuivSUN(_: *GLuint) -> c_void { fail!("ReplacementCodeuivSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeusSUN(_: GLushort) -> c_void { fail!("ReplacementCodeusSUN was not loaded") }
-    pub extern "C" fn ReplacementCodeusvSUN(_: *GLushort) -> c_void { fail!("ReplacementCodeusvSUN was not loaded") }
-    pub extern "C" fn RequestResidentProgramsNV(_: GLsizei, _: *GLuint) -> c_void { fail!("RequestResidentProgramsNV was not loaded") }
-    pub extern "C" fn ResetHistogram(_: GLenum) -> c_void { fail!("ResetHistogram was not loaded") }
-    pub extern "C" fn ResetHistogramEXT(_: GLenum) -> c_void { fail!("ResetHistogramEXT was not loaded") }
-    pub extern "C" fn ResetMinmax(_: GLenum) -> c_void { fail!("ResetMinmax was not loaded") }
-    pub extern "C" fn ResetMinmaxEXT(_: GLenum) -> c_void { fail!("ResetMinmaxEXT was not loaded") }
-    pub extern "C" fn ResizeBuffersMESA() -> c_void { fail!("ResizeBuffersMESA was not loaded") }
-    pub extern "C" fn ResolveMultisampleFramebufferAPPLE() -> c_void { fail!("ResolveMultisampleFramebufferAPPLE was not loaded") }
-    pub extern "C" fn ResumeTransformFeedback() -> c_void { fail!("ResumeTransformFeedback was not loaded") }
-    pub extern "C" fn ResumeTransformFeedbackNV() -> c_void { fail!("ResumeTransformFeedbackNV was not loaded") }
-    pub extern "C" fn Rotated(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Rotated was not loaded") }
-    pub extern "C" fn Rotatef(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Rotatef was not loaded") }
-    pub extern "C" fn Rotatex(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Rotatex was not loaded") }
-    pub extern "C" fn RotatexOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("RotatexOES was not loaded") }
-    pub extern "C" fn SampleCoverage(_: GLfloat, _: GLboolean) -> c_void { fail!("SampleCoverage was not loaded") }
-    pub extern "C" fn SampleCoverageARB(_: GLfloat, _: GLboolean) -> c_void { fail!("SampleCoverageARB was not loaded") }
-    pub extern "C" fn SampleCoverageOES(_: GLfixed, _: GLboolean) -> c_void { fail!("SampleCoverageOES was not loaded") }
-    pub extern "C" fn SampleCoveragex(_: GLclampx, _: GLboolean) -> c_void { fail!("SampleCoveragex was not loaded") }
-    pub extern "C" fn SampleCoveragexOES(_: GLclampx, _: GLboolean) -> c_void { fail!("SampleCoveragexOES was not loaded") }
-    pub extern "C" fn SampleMapATI(_: GLuint, _: GLuint, _: GLenum) -> c_void { fail!("SampleMapATI was not loaded") }
-    pub extern "C" fn SampleMaskEXT(_: GLclampf, _: GLboolean) -> c_void { fail!("SampleMaskEXT was not loaded") }
-    pub extern "C" fn SampleMaskIndexedNV(_: GLuint, _: GLbitfield) -> c_void { fail!("SampleMaskIndexedNV was not loaded") }
-    pub extern "C" fn SampleMaskSGIS(_: GLclampf, _: GLboolean) -> c_void { fail!("SampleMaskSGIS was not loaded") }
-    pub extern "C" fn SampleMaski(_: GLuint, _: GLbitfield) -> c_void { fail!("SampleMaski was not loaded") }
-    pub extern "C" fn SamplePatternEXT(_: GLenum) -> c_void { fail!("SamplePatternEXT was not loaded") }
-    pub extern "C" fn SamplePatternSGIS(_: GLenum) -> c_void { fail!("SamplePatternSGIS was not loaded") }
-    pub extern "C" fn SamplerParameterIiv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("SamplerParameterIiv was not loaded") }
-    pub extern "C" fn SamplerParameterIuiv(_: GLuint, _: GLenum, _: *GLuint) -> c_void { fail!("SamplerParameterIuiv was not loaded") }
-    pub extern "C" fn SamplerParameterf(_: GLuint, _: GLenum, _: GLfloat) -> c_void { fail!("SamplerParameterf was not loaded") }
-    pub extern "C" fn SamplerParameterfv(_: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("SamplerParameterfv was not loaded") }
-    pub extern "C" fn SamplerParameteri(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("SamplerParameteri was not loaded") }
-    pub extern "C" fn SamplerParameteriv(_: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("SamplerParameteriv was not loaded") }
-    pub extern "C" fn Scaled(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Scaled was not loaded") }
-    pub extern "C" fn Scalef(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Scalef was not loaded") }
-    pub extern "C" fn Scalex(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Scalex was not loaded") }
-    pub extern "C" fn ScalexOES(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("ScalexOES was not loaded") }
-    pub extern "C" fn Scissor(_: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("Scissor was not loaded") }
-    pub extern "C" fn ScissorArrayv(_: GLuint, _: GLsizei, _: *GLint) -> c_void { fail!("ScissorArrayv was not loaded") }
-    pub extern "C" fn ScissorIndexed(_: GLuint, _: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("ScissorIndexed was not loaded") }
-    pub extern "C" fn ScissorIndexedv(_: GLuint, _: *GLint) -> c_void { fail!("ScissorIndexedv was not loaded") }
-    pub extern "C" fn SecondaryColor3b(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("SecondaryColor3b was not loaded") }
-    pub extern "C" fn SecondaryColor3bEXT(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("SecondaryColor3bEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3bv(_: *GLbyte) -> c_void { fail!("SecondaryColor3bv was not loaded") }
-    pub extern "C" fn SecondaryColor3bvEXT(_: *GLbyte) -> c_void { fail!("SecondaryColor3bvEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3d(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("SecondaryColor3d was not loaded") }
-    pub extern "C" fn SecondaryColor3dEXT(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("SecondaryColor3dEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3dv(_: *GLdouble) -> c_void { fail!("SecondaryColor3dv was not loaded") }
-    pub extern "C" fn SecondaryColor3dvEXT(_: *GLdouble) -> c_void { fail!("SecondaryColor3dvEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3f(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("SecondaryColor3f was not loaded") }
-    pub extern "C" fn SecondaryColor3fEXT(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("SecondaryColor3fEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3fv(_: *GLfloat) -> c_void { fail!("SecondaryColor3fv was not loaded") }
-    pub extern "C" fn SecondaryColor3fvEXT(_: *GLfloat) -> c_void { fail!("SecondaryColor3fvEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("SecondaryColor3hNV was not loaded") }
-    pub extern "C" fn SecondaryColor3hvNV(_: *GLhalfNV) -> c_void { fail!("SecondaryColor3hvNV was not loaded") }
-    pub extern "C" fn SecondaryColor3i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("SecondaryColor3i was not loaded") }
-    pub extern "C" fn SecondaryColor3iEXT(_: GLint, _: GLint, _: GLint) -> c_void { fail!("SecondaryColor3iEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3iv(_: *GLint) -> c_void { fail!("SecondaryColor3iv was not loaded") }
-    pub extern "C" fn SecondaryColor3ivEXT(_: *GLint) -> c_void { fail!("SecondaryColor3ivEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3s(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("SecondaryColor3s was not loaded") }
-    pub extern "C" fn SecondaryColor3sEXT(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("SecondaryColor3sEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3sv(_: *GLshort) -> c_void { fail!("SecondaryColor3sv was not loaded") }
-    pub extern "C" fn SecondaryColor3svEXT(_: *GLshort) -> c_void { fail!("SecondaryColor3svEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3ub(_: GLubyte, _: GLubyte, _: GLubyte) -> c_void { fail!("SecondaryColor3ub was not loaded") }
-    pub extern "C" fn SecondaryColor3ubEXT(_: GLubyte, _: GLubyte, _: GLubyte) -> c_void { fail!("SecondaryColor3ubEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3ubv(_: *GLubyte) -> c_void { fail!("SecondaryColor3ubv was not loaded") }
-    pub extern "C" fn SecondaryColor3ubvEXT(_: *GLubyte) -> c_void { fail!("SecondaryColor3ubvEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3ui(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("SecondaryColor3ui was not loaded") }
-    pub extern "C" fn SecondaryColor3uiEXT(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("SecondaryColor3uiEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3uiv(_: *GLuint) -> c_void { fail!("SecondaryColor3uiv was not loaded") }
-    pub extern "C" fn SecondaryColor3uivEXT(_: *GLuint) -> c_void { fail!("SecondaryColor3uivEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3us(_: GLushort, _: GLushort, _: GLushort) -> c_void { fail!("SecondaryColor3us was not loaded") }
-    pub extern "C" fn SecondaryColor3usEXT(_: GLushort, _: GLushort, _: GLushort) -> c_void { fail!("SecondaryColor3usEXT was not loaded") }
-    pub extern "C" fn SecondaryColor3usv(_: *GLushort) -> c_void { fail!("SecondaryColor3usv was not loaded") }
-    pub extern "C" fn SecondaryColor3usvEXT(_: *GLushort) -> c_void { fail!("SecondaryColor3usvEXT was not loaded") }
-    pub extern "C" fn SecondaryColorFormatNV(_: GLint, _: GLenum, _: GLsizei) -> c_void { fail!("SecondaryColorFormatNV was not loaded") }
-    pub extern "C" fn SecondaryColorP3ui(_: GLenum, _: GLuint) -> c_void { fail!("SecondaryColorP3ui was not loaded") }
-    pub extern "C" fn SecondaryColorP3uiv(_: GLenum, _: *GLuint) -> c_void { fail!("SecondaryColorP3uiv was not loaded") }
-    pub extern "C" fn SecondaryColorPointer(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("SecondaryColorPointer was not loaded") }
-    pub extern "C" fn SecondaryColorPointerEXT(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("SecondaryColorPointerEXT was not loaded") }
-    pub extern "C" fn SecondaryColorPointerListIBM(_: GLint, _: GLenum, _: GLint, _: **GLvoid, _: GLint) -> c_void { fail!("SecondaryColorPointerListIBM was not loaded") }
-    pub extern "C" fn SelectBuffer(_: GLsizei, _: *GLuint) -> c_void { fail!("SelectBuffer was not loaded") }
-    pub extern "C" fn SelectPerfMonitorCountersAMD(_: GLuint, _: GLboolean, _: GLuint, _: GLint, _: *GLuint) -> c_void { fail!("SelectPerfMonitorCountersAMD was not loaded") }
-    pub extern "C" fn SeparableFilter2D(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid, _: *GLvoid) -> c_void { fail!("SeparableFilter2D was not loaded") }
-    pub extern "C" fn SeparableFilter2DEXT(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid, _: *GLvoid) -> c_void { fail!("SeparableFilter2DEXT was not loaded") }
-    pub extern "C" fn SetFenceAPPLE(_: GLuint) -> c_void { fail!("SetFenceAPPLE was not loaded") }
-    pub extern "C" fn SetFenceNV(_: GLuint, _: GLenum) -> c_void { fail!("SetFenceNV was not loaded") }
-    pub extern "C" fn SetFragmentShaderConstantATI(_: GLuint, _: *GLfloat) -> c_void { fail!("SetFragmentShaderConstantATI was not loaded") }
-    pub extern "C" fn SetInvariantEXT(_: GLuint, _: GLenum, _: *GLvoid) -> c_void { fail!("SetInvariantEXT was not loaded") }
-    pub extern "C" fn SetLocalConstantEXT(_: GLuint, _: GLenum, _: *GLvoid) -> c_void { fail!("SetLocalConstantEXT was not loaded") }
-    pub extern "C" fn SetMultisamplefvAMD(_: GLenum, _: GLuint, _: *GLfloat) -> c_void { fail!("SetMultisamplefvAMD was not loaded") }
-    pub extern "C" fn ShadeModel(_: GLenum) -> c_void { fail!("ShadeModel was not loaded") }
-    pub extern "C" fn ShaderBinary(_: GLsizei, _: *GLuint, _: GLenum, _: *GLvoid, _: GLsizei) -> c_void { fail!("ShaderBinary was not loaded") }
-    pub extern "C" fn ShaderOp1EXT(_: GLenum, _: GLuint, _: GLuint) -> c_void { fail!("ShaderOp1EXT was not loaded") }
-    pub extern "C" fn ShaderOp2EXT(_: GLenum, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ShaderOp2EXT was not loaded") }
-    pub extern "C" fn ShaderOp3EXT(_: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ShaderOp3EXT was not loaded") }
-    pub extern "C" fn ShaderSource(_: GLuint, _: GLsizei, _: **GLchar, _: *GLint) -> c_void { fail!("ShaderSource was not loaded") }
-    pub extern "C" fn ShaderSourceARB(_: GLhandleARB, _: GLsizei, _: **GLcharARB, _: *GLint) -> c_void { fail!("ShaderSourceARB was not loaded") }
-    pub extern "C" fn ShaderStorageBlockBinding(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("ShaderStorageBlockBinding was not loaded") }
-    pub extern "C" fn SharpenTexFuncSGIS(_: GLenum, _: GLsizei, _: *GLfloat) -> c_void { fail!("SharpenTexFuncSGIS was not loaded") }
-    pub extern "C" fn SpriteParameterfSGIX(_: GLenum, _: GLfloat) -> c_void { fail!("SpriteParameterfSGIX was not loaded") }
-    pub extern "C" fn SpriteParameterfvSGIX(_: GLenum, _: *GLfloat) -> c_void { fail!("SpriteParameterfvSGIX was not loaded") }
-    pub extern "C" fn SpriteParameteriSGIX(_: GLenum, _: GLint) -> c_void { fail!("SpriteParameteriSGIX was not loaded") }
-    pub extern "C" fn SpriteParameterivSGIX(_: GLenum, _: *GLint) -> c_void { fail!("SpriteParameterivSGIX was not loaded") }
-    pub extern "C" fn StartInstrumentsSGIX() -> c_void { fail!("StartInstrumentsSGIX was not loaded") }
-    pub extern "C" fn StartTilingQCOM(_: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLbitfield) -> c_void { fail!("StartTilingQCOM was not loaded") }
-    pub extern "C" fn StencilClearTagEXT(_: GLsizei, _: GLuint) -> c_void { fail!("StencilClearTagEXT was not loaded") }
-    pub extern "C" fn StencilFillPathInstancedNV(_: GLsizei, _: GLenum, _: *GLvoid, _: GLuint, _: GLenum, _: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("StencilFillPathInstancedNV was not loaded") }
-    pub extern "C" fn StencilFillPathNV(_: GLuint, _: GLenum, _: GLuint) -> c_void { fail!("StencilFillPathNV was not loaded") }
-    pub extern "C" fn StencilFunc(_: GLenum, _: GLint, _: GLuint) -> c_void { fail!("StencilFunc was not loaded") }
-    pub extern "C" fn StencilFuncSeparate(_: GLenum, _: GLenum, _: GLint, _: GLuint) -> c_void { fail!("StencilFuncSeparate was not loaded") }
-    pub extern "C" fn StencilFuncSeparateATI(_: GLenum, _: GLenum, _: GLint, _: GLuint) -> c_void { fail!("StencilFuncSeparateATI was not loaded") }
-    pub extern "C" fn StencilMask(_: GLuint) -> c_void { fail!("StencilMask was not loaded") }
-    pub extern "C" fn StencilMaskSeparate(_: GLenum, _: GLuint) -> c_void { fail!("StencilMaskSeparate was not loaded") }
-    pub extern "C" fn StencilOp(_: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("StencilOp was not loaded") }
-    pub extern "C" fn StencilOpSeparate(_: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("StencilOpSeparate was not loaded") }
-    pub extern "C" fn StencilOpSeparateATI(_: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("StencilOpSeparateATI was not loaded") }
-    pub extern "C" fn StencilOpValueAMD(_: GLenum, _: GLuint) -> c_void { fail!("StencilOpValueAMD was not loaded") }
-    pub extern "C" fn StencilStrokePathInstancedNV(_: GLsizei, _: GLenum, _: *GLvoid, _: GLuint, _: GLint, _: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("StencilStrokePathInstancedNV was not loaded") }
-    pub extern "C" fn StencilStrokePathNV(_: GLuint, _: GLint, _: GLuint) -> c_void { fail!("StencilStrokePathNV was not loaded") }
-    pub extern "C" fn StopInstrumentsSGIX(_: GLint) -> c_void { fail!("StopInstrumentsSGIX was not loaded") }
-    pub extern "C" fn StringMarkerGREMEDY(_: GLsizei, _: *GLvoid) -> c_void { fail!("StringMarkerGREMEDY was not loaded") }
-    pub extern "C" fn SwizzleEXT(_: GLuint, _: GLuint, _: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("SwizzleEXT was not loaded") }
-    pub extern "C" fn SyncTextureINTEL(_: GLuint) -> c_void { fail!("SyncTextureINTEL was not loaded") }
-    pub extern "C" fn TagSampleBufferSGIX() -> c_void { fail!("TagSampleBufferSGIX was not loaded") }
-    pub extern "C" fn Tangent3bEXT(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("Tangent3bEXT was not loaded") }
-    pub extern "C" fn Tangent3bvEXT(_: *GLbyte) -> c_void { fail!("Tangent3bvEXT was not loaded") }
-    pub extern "C" fn Tangent3dEXT(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Tangent3dEXT was not loaded") }
-    pub extern "C" fn Tangent3dvEXT(_: *GLdouble) -> c_void { fail!("Tangent3dvEXT was not loaded") }
-    pub extern "C" fn Tangent3fEXT(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Tangent3fEXT was not loaded") }
-    pub extern "C" fn Tangent3fvEXT(_: *GLfloat) -> c_void { fail!("Tangent3fvEXT was not loaded") }
-    pub extern "C" fn Tangent3iEXT(_: GLint, _: GLint, _: GLint) -> c_void { fail!("Tangent3iEXT was not loaded") }
-    pub extern "C" fn Tangent3ivEXT(_: *GLint) -> c_void { fail!("Tangent3ivEXT was not loaded") }
-    pub extern "C" fn Tangent3sEXT(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Tangent3sEXT was not loaded") }
-    pub extern "C" fn Tangent3svEXT(_: *GLshort) -> c_void { fail!("Tangent3svEXT was not loaded") }
-    pub extern "C" fn TangentPointerEXT(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("TangentPointerEXT was not loaded") }
-    pub extern "C" fn TbufferMask3DFX(_: GLuint) -> c_void { fail!("TbufferMask3DFX was not loaded") }
-    pub extern "C" fn TessellationFactorAMD(_: GLfloat) -> c_void { fail!("TessellationFactorAMD was not loaded") }
-    pub extern "C" fn TessellationModeAMD(_: GLenum) -> c_void { fail!("TessellationModeAMD was not loaded") }
-    pub extern "C" fn TestFenceAPPLE(_: GLuint) -> GLboolean { fail!("TestFenceAPPLE was not loaded") }
-    pub extern "C" fn TestFenceNV(_: GLuint) -> GLboolean { fail!("TestFenceNV was not loaded") }
-    pub extern "C" fn TestObjectAPPLE(_: GLenum, _: GLuint) -> GLboolean { fail!("TestObjectAPPLE was not loaded") }
-    pub extern "C" fn TexBuffer(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("TexBuffer was not loaded") }
-    pub extern "C" fn TexBufferARB(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("TexBufferARB was not loaded") }
-    pub extern "C" fn TexBufferEXT(_: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("TexBufferEXT was not loaded") }
-    pub extern "C" fn TexBufferRange(_: GLenum, _: GLenum, _: GLuint, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("TexBufferRange was not loaded") }
-    pub extern "C" fn TexBumpParameterfvATI(_: GLenum, _: *GLfloat) -> c_void { fail!("TexBumpParameterfvATI was not loaded") }
-    pub extern "C" fn TexBumpParameterivATI(_: GLenum, _: *GLint) -> c_void { fail!("TexBumpParameterivATI was not loaded") }
-    pub extern "C" fn TexCoord1bOES(_: GLbyte) -> c_void { fail!("TexCoord1bOES was not loaded") }
-    pub extern "C" fn TexCoord1bvOES(_: *GLbyte) -> c_void { fail!("TexCoord1bvOES was not loaded") }
-    pub extern "C" fn TexCoord1d(_: GLdouble) -> c_void { fail!("TexCoord1d was not loaded") }
-    pub extern "C" fn TexCoord1dv(_: *GLdouble) -> c_void { fail!("TexCoord1dv was not loaded") }
-    pub extern "C" fn TexCoord1f(_: GLfloat) -> c_void { fail!("TexCoord1f was not loaded") }
-    pub extern "C" fn TexCoord1fv(_: *GLfloat) -> c_void { fail!("TexCoord1fv was not loaded") }
-    pub extern "C" fn TexCoord1hNV(_: GLhalfNV) -> c_void { fail!("TexCoord1hNV was not loaded") }
-    pub extern "C" fn TexCoord1hvNV(_: *GLhalfNV) -> c_void { fail!("TexCoord1hvNV was not loaded") }
-    pub extern "C" fn TexCoord1i(_: GLint) -> c_void { fail!("TexCoord1i was not loaded") }
-    pub extern "C" fn TexCoord1iv(_: *GLint) -> c_void { fail!("TexCoord1iv was not loaded") }
-    pub extern "C" fn TexCoord1s(_: GLshort) -> c_void { fail!("TexCoord1s was not loaded") }
-    pub extern "C" fn TexCoord1sv(_: *GLshort) -> c_void { fail!("TexCoord1sv was not loaded") }
-    pub extern "C" fn TexCoord1xOES(_: GLfixed) -> c_void { fail!("TexCoord1xOES was not loaded") }
-    pub extern "C" fn TexCoord1xvOES(_: *GLfixed) -> c_void { fail!("TexCoord1xvOES was not loaded") }
-    pub extern "C" fn TexCoord2bOES(_: GLbyte, _: GLbyte) -> c_void { fail!("TexCoord2bOES was not loaded") }
-    pub extern "C" fn TexCoord2bvOES(_: *GLbyte) -> c_void { fail!("TexCoord2bvOES was not loaded") }
-    pub extern "C" fn TexCoord2d(_: GLdouble, _: GLdouble) -> c_void { fail!("TexCoord2d was not loaded") }
-    pub extern "C" fn TexCoord2dv(_: *GLdouble) -> c_void { fail!("TexCoord2dv was not loaded") }
-    pub extern "C" fn TexCoord2f(_: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord2f was not loaded") }
-    pub extern "C" fn TexCoord2fColor3fVertex3fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord2fColor3fVertex3fSUN was not loaded") }
-    pub extern "C" fn TexCoord2fColor3fVertex3fvSUN(_: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("TexCoord2fColor3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn TexCoord2fColor4fNormal3fVertex3fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord2fColor4fNormal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn TexCoord2fColor4fNormal3fVertex3fvSUN(_: *GLfloat, _: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("TexCoord2fColor4fNormal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn TexCoord2fColor4ubVertex3fSUN(_: GLfloat, _: GLfloat, _: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord2fColor4ubVertex3fSUN was not loaded") }
-    pub extern "C" fn TexCoord2fColor4ubVertex3fvSUN(_: *GLfloat, _: *GLubyte, _: *GLfloat) -> c_void { fail!("TexCoord2fColor4ubVertex3fvSUN was not loaded") }
-    pub extern "C" fn TexCoord2fNormal3fVertex3fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord2fNormal3fVertex3fSUN was not loaded") }
-    pub extern "C" fn TexCoord2fNormal3fVertex3fvSUN(_: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("TexCoord2fNormal3fVertex3fvSUN was not loaded") }
-    pub extern "C" fn TexCoord2fVertex3fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord2fVertex3fSUN was not loaded") }
-    pub extern "C" fn TexCoord2fVertex3fvSUN(_: *GLfloat, _: *GLfloat) -> c_void { fail!("TexCoord2fVertex3fvSUN was not loaded") }
-    pub extern "C" fn TexCoord2fv(_: *GLfloat) -> c_void { fail!("TexCoord2fv was not loaded") }
-    pub extern "C" fn TexCoord2hNV(_: GLhalfNV, _: GLhalfNV) -> c_void { fail!("TexCoord2hNV was not loaded") }
-    pub extern "C" fn TexCoord2hvNV(_: *GLhalfNV) -> c_void { fail!("TexCoord2hvNV was not loaded") }
-    pub extern "C" fn TexCoord2i(_: GLint, _: GLint) -> c_void { fail!("TexCoord2i was not loaded") }
-    pub extern "C" fn TexCoord2iv(_: *GLint) -> c_void { fail!("TexCoord2iv was not loaded") }
-    pub extern "C" fn TexCoord2s(_: GLshort, _: GLshort) -> c_void { fail!("TexCoord2s was not loaded") }
-    pub extern "C" fn TexCoord2sv(_: *GLshort) -> c_void { fail!("TexCoord2sv was not loaded") }
-    pub extern "C" fn TexCoord2xOES(_: GLfixed, _: GLfixed) -> c_void { fail!("TexCoord2xOES was not loaded") }
-    pub extern "C" fn TexCoord2xvOES(_: *GLfixed) -> c_void { fail!("TexCoord2xvOES was not loaded") }
-    pub extern "C" fn TexCoord3bOES(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("TexCoord3bOES was not loaded") }
-    pub extern "C" fn TexCoord3bvOES(_: *GLbyte) -> c_void { fail!("TexCoord3bvOES was not loaded") }
-    pub extern "C" fn TexCoord3d(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("TexCoord3d was not loaded") }
-    pub extern "C" fn TexCoord3dv(_: *GLdouble) -> c_void { fail!("TexCoord3dv was not loaded") }
-    pub extern "C" fn TexCoord3f(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord3f was not loaded") }
-    pub extern "C" fn TexCoord3fv(_: *GLfloat) -> c_void { fail!("TexCoord3fv was not loaded") }
-    pub extern "C" fn TexCoord3hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("TexCoord3hNV was not loaded") }
-    pub extern "C" fn TexCoord3hvNV(_: *GLhalfNV) -> c_void { fail!("TexCoord3hvNV was not loaded") }
-    pub extern "C" fn TexCoord3i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("TexCoord3i was not loaded") }
-    pub extern "C" fn TexCoord3iv(_: *GLint) -> c_void { fail!("TexCoord3iv was not loaded") }
-    pub extern "C" fn TexCoord3s(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("TexCoord3s was not loaded") }
-    pub extern "C" fn TexCoord3sv(_: *GLshort) -> c_void { fail!("TexCoord3sv was not loaded") }
-    pub extern "C" fn TexCoord3xOES(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("TexCoord3xOES was not loaded") }
-    pub extern "C" fn TexCoord3xvOES(_: *GLfixed) -> c_void { fail!("TexCoord3xvOES was not loaded") }
-    pub extern "C" fn TexCoord4bOES(_: GLbyte, _: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("TexCoord4bOES was not loaded") }
-    pub extern "C" fn TexCoord4bvOES(_: *GLbyte) -> c_void { fail!("TexCoord4bvOES was not loaded") }
-    pub extern "C" fn TexCoord4d(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("TexCoord4d was not loaded") }
-    pub extern "C" fn TexCoord4dv(_: *GLdouble) -> c_void { fail!("TexCoord4dv was not loaded") }
-    pub extern "C" fn TexCoord4f(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord4f was not loaded") }
-    pub extern "C" fn TexCoord4fColor4fNormal3fVertex4fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord4fColor4fNormal3fVertex4fSUN was not loaded") }
-    pub extern "C" fn TexCoord4fColor4fNormal3fVertex4fvSUN(_: *GLfloat, _: *GLfloat, _: *GLfloat, _: *GLfloat) -> c_void { fail!("TexCoord4fColor4fNormal3fVertex4fvSUN was not loaded") }
-    pub extern "C" fn TexCoord4fVertex4fSUN(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("TexCoord4fVertex4fSUN was not loaded") }
-    pub extern "C" fn TexCoord4fVertex4fvSUN(_: *GLfloat, _: *GLfloat) -> c_void { fail!("TexCoord4fVertex4fvSUN was not loaded") }
-    pub extern "C" fn TexCoord4fv(_: *GLfloat) -> c_void { fail!("TexCoord4fv was not loaded") }
-    pub extern "C" fn TexCoord4hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("TexCoord4hNV was not loaded") }
-    pub extern "C" fn TexCoord4hvNV(_: *GLhalfNV) -> c_void { fail!("TexCoord4hvNV was not loaded") }
-    pub extern "C" fn TexCoord4i(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("TexCoord4i was not loaded") }
-    pub extern "C" fn TexCoord4iv(_: *GLint) -> c_void { fail!("TexCoord4iv was not loaded") }
-    pub extern "C" fn TexCoord4s(_: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("TexCoord4s was not loaded") }
-    pub extern "C" fn TexCoord4sv(_: *GLshort) -> c_void { fail!("TexCoord4sv was not loaded") }
-    pub extern "C" fn TexCoord4xOES(_: GLfixed, _: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("TexCoord4xOES was not loaded") }
-    pub extern "C" fn TexCoord4xvOES(_: *GLfixed) -> c_void { fail!("TexCoord4xvOES was not loaded") }
-    pub extern "C" fn TexCoordFormatNV(_: GLint, _: GLenum, _: GLsizei) -> c_void { fail!("TexCoordFormatNV was not loaded") }
-    pub extern "C" fn TexCoordP1ui(_: GLenum, _: GLuint) -> c_void { fail!("TexCoordP1ui was not loaded") }
-    pub extern "C" fn TexCoordP1uiv(_: GLenum, _: *GLuint) -> c_void { fail!("TexCoordP1uiv was not loaded") }
-    pub extern "C" fn TexCoordP2ui(_: GLenum, _: GLuint) -> c_void { fail!("TexCoordP2ui was not loaded") }
-    pub extern "C" fn TexCoordP2uiv(_: GLenum, _: *GLuint) -> c_void { fail!("TexCoordP2uiv was not loaded") }
-    pub extern "C" fn TexCoordP3ui(_: GLenum, _: GLuint) -> c_void { fail!("TexCoordP3ui was not loaded") }
-    pub extern "C" fn TexCoordP3uiv(_: GLenum, _: *GLuint) -> c_void { fail!("TexCoordP3uiv was not loaded") }
-    pub extern "C" fn TexCoordP4ui(_: GLenum, _: GLuint) -> c_void { fail!("TexCoordP4ui was not loaded") }
-    pub extern "C" fn TexCoordP4uiv(_: GLenum, _: *GLuint) -> c_void { fail!("TexCoordP4uiv was not loaded") }
-    pub extern "C" fn TexCoordPointer(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("TexCoordPointer was not loaded") }
-    pub extern "C" fn TexCoordPointerEXT(_: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: *GLvoid) -> c_void { fail!("TexCoordPointerEXT was not loaded") }
-    pub extern "C" fn TexCoordPointerListIBM(_: GLint, _: GLenum, _: GLint, _: **GLvoid, _: GLint) -> c_void { fail!("TexCoordPointerListIBM was not loaded") }
-    pub extern "C" fn TexCoordPointervINTEL(_: GLint, _: GLenum, _: **GLvoid) -> c_void { fail!("TexCoordPointervINTEL was not loaded") }
-    pub extern "C" fn TexEnvf(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("TexEnvf was not loaded") }
-    pub extern "C" fn TexEnvfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("TexEnvfv was not loaded") }
-    pub extern "C" fn TexEnvi(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("TexEnvi was not loaded") }
-    pub extern "C" fn TexEnviv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TexEnviv was not loaded") }
-    pub extern "C" fn TexEnvx(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("TexEnvx was not loaded") }
-    pub extern "C" fn TexEnvxOES(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("TexEnvxOES was not loaded") }
-    pub extern "C" fn TexEnvxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("TexEnvxv was not loaded") }
-    pub extern "C" fn TexEnvxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("TexEnvxvOES was not loaded") }
-    pub extern "C" fn TexFilterFuncSGIS(_: GLenum, _: GLenum, _: GLsizei, _: *GLfloat) -> c_void { fail!("TexFilterFuncSGIS was not loaded") }
-    pub extern "C" fn TexGend(_: GLenum, _: GLenum, _: GLdouble) -> c_void { fail!("TexGend was not loaded") }
-    pub extern "C" fn TexGendv(_: GLenum, _: GLenum, _: *GLdouble) -> c_void { fail!("TexGendv was not loaded") }
-    pub extern "C" fn TexGenf(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("TexGenf was not loaded") }
-    pub extern "C" fn TexGenfOES(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("TexGenfOES was not loaded") }
-    pub extern "C" fn TexGenfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("TexGenfv was not loaded") }
-    pub extern "C" fn TexGenfvOES(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("TexGenfvOES was not loaded") }
-    pub extern "C" fn TexGeni(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("TexGeni was not loaded") }
-    pub extern "C" fn TexGeniOES(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("TexGeniOES was not loaded") }
-    pub extern "C" fn TexGeniv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TexGeniv was not loaded") }
-    pub extern "C" fn TexGenivOES(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TexGenivOES was not loaded") }
-    pub extern "C" fn TexGenxOES(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("TexGenxOES was not loaded") }
-    pub extern "C" fn TexGenxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("TexGenxvOES was not loaded") }
-    pub extern "C" fn TexImage1D(_: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexImage1D was not loaded") }
-    pub extern "C" fn TexImage2D(_: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexImage2D was not loaded") }
-    pub extern "C" fn TexImage2DMultisample(_: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexImage2DMultisample was not loaded") }
-    pub extern "C" fn TexImage2DMultisampleCoverageNV(_: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexImage2DMultisampleCoverageNV was not loaded") }
-    pub extern "C" fn TexImage3D(_: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexImage3D was not loaded") }
-    pub extern "C" fn TexImage3DEXT(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexImage3DEXT was not loaded") }
-    pub extern "C" fn TexImage3DMultisample(_: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexImage3DMultisample was not loaded") }
-    pub extern "C" fn TexImage3DMultisampleCoverageNV(_: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexImage3DMultisampleCoverageNV was not loaded") }
-    pub extern "C" fn TexImage3DOES(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexImage3DOES was not loaded") }
-    pub extern "C" fn TexImage4DSGIS(_: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexImage4DSGIS was not loaded") }
-    pub extern "C" fn TexPageCommitmentARB(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexPageCommitmentARB was not loaded") }
-    pub extern "C" fn TexParameterIiv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TexParameterIiv was not loaded") }
-    pub extern "C" fn TexParameterIivEXT(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TexParameterIivEXT was not loaded") }
-    pub extern "C" fn TexParameterIuiv(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("TexParameterIuiv was not loaded") }
-    pub extern "C" fn TexParameterIuivEXT(_: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("TexParameterIuivEXT was not loaded") }
-    pub extern "C" fn TexParameterf(_: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("TexParameterf was not loaded") }
-    pub extern "C" fn TexParameterfv(_: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("TexParameterfv was not loaded") }
-    pub extern "C" fn TexParameteri(_: GLenum, _: GLenum, _: GLint) -> c_void { fail!("TexParameteri was not loaded") }
-    pub extern "C" fn TexParameteriv(_: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TexParameteriv was not loaded") }
-    pub extern "C" fn TexParameterx(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("TexParameterx was not loaded") }
-    pub extern "C" fn TexParameterxOES(_: GLenum, _: GLenum, _: GLfixed) -> c_void { fail!("TexParameterxOES was not loaded") }
-    pub extern "C" fn TexParameterxv(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("TexParameterxv was not loaded") }
-    pub extern "C" fn TexParameterxvOES(_: GLenum, _: GLenum, _: *GLfixed) -> c_void { fail!("TexParameterxvOES was not loaded") }
-    pub extern "C" fn TexRenderbufferNV(_: GLenum, _: GLuint) -> c_void { fail!("TexRenderbufferNV was not loaded") }
-    pub extern "C" fn TexStorage1D(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei) -> c_void { fail!("TexStorage1D was not loaded") }
-    pub extern "C" fn TexStorage1DEXT(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei) -> c_void { fail!("TexStorage1DEXT was not loaded") }
-    pub extern "C" fn TexStorage2D(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("TexStorage2D was not loaded") }
-    pub extern "C" fn TexStorage2DEXT(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("TexStorage2DEXT was not loaded") }
-    pub extern "C" fn TexStorage2DMultisample(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexStorage2DMultisample was not loaded") }
-    pub extern "C" fn TexStorage3D(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei) -> c_void { fail!("TexStorage3D was not loaded") }
-    pub extern "C" fn TexStorage3DEXT(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei) -> c_void { fail!("TexStorage3DEXT was not loaded") }
-    pub extern "C" fn TexStorage3DMultisample(_: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexStorage3DMultisample was not loaded") }
-    pub extern "C" fn TexStorageSparseAMD(_: GLenum, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLsizei, _: GLbitfield) -> c_void { fail!("TexStorageSparseAMD was not loaded") }
-    pub extern "C" fn TexSubImage1D(_: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage1D was not loaded") }
-    pub extern "C" fn TexSubImage1DEXT(_: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage1DEXT was not loaded") }
-    pub extern "C" fn TexSubImage2D(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage2D was not loaded") }
-    pub extern "C" fn TexSubImage2DEXT(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage2DEXT was not loaded") }
-    pub extern "C" fn TexSubImage3D(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage3D was not loaded") }
-    pub extern "C" fn TexSubImage3DEXT(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage3DEXT was not loaded") }
-    pub extern "C" fn TexSubImage3DOES(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage3DOES was not loaded") }
-    pub extern "C" fn TexSubImage4DSGIS(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TexSubImage4DSGIS was not loaded") }
-    pub extern "C" fn TextureBarrierNV() -> c_void { fail!("TextureBarrierNV was not loaded") }
-    pub extern "C" fn TextureBufferEXT(_: GLuint, _: GLenum, _: GLenum, _: GLuint) -> c_void { fail!("TextureBufferEXT was not loaded") }
-    pub extern "C" fn TextureBufferRangeEXT(_: GLuint, _: GLenum, _: GLenum, _: GLuint, _: GLintptr, _: GLsizeiptr) -> c_void { fail!("TextureBufferRangeEXT was not loaded") }
-    pub extern "C" fn TextureColorMaskSGIS(_: GLboolean, _: GLboolean, _: GLboolean, _: GLboolean) -> c_void { fail!("TextureColorMaskSGIS was not loaded") }
-    pub extern "C" fn TextureImage1DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TextureImage1DEXT was not loaded") }
-    pub extern "C" fn TextureImage2DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TextureImage2DEXT was not loaded") }
-    pub extern "C" fn TextureImage2DMultisampleCoverageNV(_: GLuint, _: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TextureImage2DMultisampleCoverageNV was not loaded") }
-    pub extern "C" fn TextureImage2DMultisampleNV(_: GLuint, _: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TextureImage2DMultisampleNV was not loaded") }
-    pub extern "C" fn TextureImage3DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLint, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TextureImage3DEXT was not loaded") }
-    pub extern "C" fn TextureImage3DMultisampleCoverageNV(_: GLuint, _: GLenum, _: GLsizei, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TextureImage3DMultisampleCoverageNV was not loaded") }
-    pub extern "C" fn TextureImage3DMultisampleNV(_: GLuint, _: GLenum, _: GLsizei, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TextureImage3DMultisampleNV was not loaded") }
-    pub extern "C" fn TextureLightEXT(_: GLenum) -> c_void { fail!("TextureLightEXT was not loaded") }
-    pub extern "C" fn TextureMaterialEXT(_: GLenum, _: GLenum) -> c_void { fail!("TextureMaterialEXT was not loaded") }
-    pub extern "C" fn TextureNormalEXT(_: GLenum) -> c_void { fail!("TextureNormalEXT was not loaded") }
-    pub extern "C" fn TexturePageCommitmentEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TexturePageCommitmentEXT was not loaded") }
-    pub extern "C" fn TextureParameterIivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TextureParameterIivEXT was not loaded") }
-    pub extern "C" fn TextureParameterIuivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLuint) -> c_void { fail!("TextureParameterIuivEXT was not loaded") }
-    pub extern "C" fn TextureParameterfEXT(_: GLuint, _: GLenum, _: GLenum, _: GLfloat) -> c_void { fail!("TextureParameterfEXT was not loaded") }
-    pub extern "C" fn TextureParameterfvEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLfloat) -> c_void { fail!("TextureParameterfvEXT was not loaded") }
-    pub extern "C" fn TextureParameteriEXT(_: GLuint, _: GLenum, _: GLenum, _: GLint) -> c_void { fail!("TextureParameteriEXT was not loaded") }
-    pub extern "C" fn TextureParameterivEXT(_: GLuint, _: GLenum, _: GLenum, _: *GLint) -> c_void { fail!("TextureParameterivEXT was not loaded") }
-    pub extern "C" fn TextureRangeAPPLE(_: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("TextureRangeAPPLE was not loaded") }
-    pub extern "C" fn TextureRenderbufferEXT(_: GLuint, _: GLenum, _: GLuint) -> c_void { fail!("TextureRenderbufferEXT was not loaded") }
-    pub extern "C" fn TextureStorage1DEXT(_: GLuint, _: GLenum, _: GLsizei, _: GLenum, _: GLsizei) -> c_void { fail!("TextureStorage1DEXT was not loaded") }
-    pub extern "C" fn TextureStorage2DEXT(_: GLuint, _: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei) -> c_void { fail!("TextureStorage2DEXT was not loaded") }
-    pub extern "C" fn TextureStorage2DMultisampleEXT(_: GLuint, _: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TextureStorage2DMultisampleEXT was not loaded") }
-    pub extern "C" fn TextureStorage3DEXT(_: GLuint, _: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei) -> c_void { fail!("TextureStorage3DEXT was not loaded") }
-    pub extern "C" fn TextureStorage3DMultisampleEXT(_: GLuint, _: GLenum, _: GLsizei, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLboolean) -> c_void { fail!("TextureStorage3DMultisampleEXT was not loaded") }
-    pub extern "C" fn TextureStorageSparseAMD(_: GLuint, _: GLenum, _: GLenum, _: GLsizei, _: GLsizei, _: GLsizei, _: GLsizei, _: GLbitfield) -> c_void { fail!("TextureStorageSparseAMD was not loaded") }
-    pub extern "C" fn TextureSubImage1DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TextureSubImage1DEXT was not loaded") }
-    pub extern "C" fn TextureSubImage2DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TextureSubImage2DEXT was not loaded") }
-    pub extern "C" fn TextureSubImage3DEXT(_: GLuint, _: GLenum, _: GLint, _: GLint, _: GLint, _: GLint, _: GLsizei, _: GLsizei, _: GLsizei, _: GLenum, _: GLenum, _: *GLvoid) -> c_void { fail!("TextureSubImage3DEXT was not loaded") }
-    pub extern "C" fn TextureView(_: GLuint, _: GLenum, _: GLuint, _: GLenum, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("TextureView was not loaded") }
-    pub extern "C" fn TrackMatrixNV(_: GLenum, _: GLuint, _: GLenum, _: GLenum) -> c_void { fail!("TrackMatrixNV was not loaded") }
-    pub extern "C" fn TransformFeedbackAttribsNV(_: GLuint, _: *GLint, _: GLenum) -> c_void { fail!("TransformFeedbackAttribsNV was not loaded") }
-    pub extern "C" fn TransformFeedbackStreamAttribsNV(_: GLsizei, _: *GLint, _: GLsizei, _: *GLint, _: GLenum) -> c_void { fail!("TransformFeedbackStreamAttribsNV was not loaded") }
-    pub extern "C" fn TransformFeedbackVaryings(_: GLuint, _: GLsizei, _: **GLchar, _: GLenum) -> c_void { fail!("TransformFeedbackVaryings was not loaded") }
-    pub extern "C" fn TransformFeedbackVaryingsEXT(_: GLuint, _: GLsizei, _: **GLchar, _: GLenum) -> c_void { fail!("TransformFeedbackVaryingsEXT was not loaded") }
-    pub extern "C" fn TransformFeedbackVaryingsNV(_: GLuint, _: GLsizei, _: *GLint, _: GLenum) -> c_void { fail!("TransformFeedbackVaryingsNV was not loaded") }
-    pub extern "C" fn TransformPathNV(_: GLuint, _: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("TransformPathNV was not loaded") }
-    pub extern "C" fn Translated(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Translated was not loaded") }
-    pub extern "C" fn Translatef(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Translatef was not loaded") }
-    pub extern "C" fn Translatex(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Translatex was not loaded") }
-    pub extern "C" fn TranslatexOES(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("TranslatexOES was not loaded") }
-    pub extern "C" fn Uniform1d(_: GLint, _: GLdouble) -> c_void { fail!("Uniform1d was not loaded") }
-    pub extern "C" fn Uniform1dv(_: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("Uniform1dv was not loaded") }
-    pub extern "C" fn Uniform1f(_: GLint, _: GLfloat) -> c_void { fail!("Uniform1f was not loaded") }
-    pub extern "C" fn Uniform1fARB(_: GLint, _: GLfloat) -> c_void { fail!("Uniform1fARB was not loaded") }
-    pub extern "C" fn Uniform1fv(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform1fv was not loaded") }
-    pub extern "C" fn Uniform1fvARB(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform1fvARB was not loaded") }
-    pub extern "C" fn Uniform1i(_: GLint, _: GLint) -> c_void { fail!("Uniform1i was not loaded") }
-    pub extern "C" fn Uniform1i64NV(_: GLint, _: GLint64EXT) -> c_void { fail!("Uniform1i64NV was not loaded") }
-    pub extern "C" fn Uniform1i64vNV(_: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("Uniform1i64vNV was not loaded") }
-    pub extern "C" fn Uniform1iARB(_: GLint, _: GLint) -> c_void { fail!("Uniform1iARB was not loaded") }
-    pub extern "C" fn Uniform1iv(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform1iv was not loaded") }
-    pub extern "C" fn Uniform1ivARB(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform1ivARB was not loaded") }
-    pub extern "C" fn Uniform1ui(_: GLint, _: GLuint) -> c_void { fail!("Uniform1ui was not loaded") }
-    pub extern "C" fn Uniform1ui64NV(_: GLint, _: GLuint64EXT) -> c_void { fail!("Uniform1ui64NV was not loaded") }
-    pub extern "C" fn Uniform1ui64vNV(_: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("Uniform1ui64vNV was not loaded") }
-    pub extern "C" fn Uniform1uiEXT(_: GLint, _: GLuint) -> c_void { fail!("Uniform1uiEXT was not loaded") }
-    pub extern "C" fn Uniform1uiv(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform1uiv was not loaded") }
-    pub extern "C" fn Uniform1uivEXT(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform1uivEXT was not loaded") }
-    pub extern "C" fn Uniform2d(_: GLint, _: GLdouble, _: GLdouble) -> c_void { fail!("Uniform2d was not loaded") }
-    pub extern "C" fn Uniform2dv(_: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("Uniform2dv was not loaded") }
-    pub extern "C" fn Uniform2f(_: GLint, _: GLfloat, _: GLfloat) -> c_void { fail!("Uniform2f was not loaded") }
-    pub extern "C" fn Uniform2fARB(_: GLint, _: GLfloat, _: GLfloat) -> c_void { fail!("Uniform2fARB was not loaded") }
-    pub extern "C" fn Uniform2fv(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform2fv was not loaded") }
-    pub extern "C" fn Uniform2fvARB(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform2fvARB was not loaded") }
-    pub extern "C" fn Uniform2i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("Uniform2i was not loaded") }
-    pub extern "C" fn Uniform2i64NV(_: GLint, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("Uniform2i64NV was not loaded") }
-    pub extern "C" fn Uniform2i64vNV(_: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("Uniform2i64vNV was not loaded") }
-    pub extern "C" fn Uniform2iARB(_: GLint, _: GLint, _: GLint) -> c_void { fail!("Uniform2iARB was not loaded") }
-    pub extern "C" fn Uniform2iv(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform2iv was not loaded") }
-    pub extern "C" fn Uniform2ivARB(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform2ivARB was not loaded") }
-    pub extern "C" fn Uniform2ui(_: GLint, _: GLuint, _: GLuint) -> c_void { fail!("Uniform2ui was not loaded") }
-    pub extern "C" fn Uniform2ui64NV(_: GLint, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("Uniform2ui64NV was not loaded") }
-    pub extern "C" fn Uniform2ui64vNV(_: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("Uniform2ui64vNV was not loaded") }
-    pub extern "C" fn Uniform2uiEXT(_: GLint, _: GLuint, _: GLuint) -> c_void { fail!("Uniform2uiEXT was not loaded") }
-    pub extern "C" fn Uniform2uiv(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform2uiv was not loaded") }
-    pub extern "C" fn Uniform2uivEXT(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform2uivEXT was not loaded") }
-    pub extern "C" fn Uniform3d(_: GLint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Uniform3d was not loaded") }
-    pub extern "C" fn Uniform3dv(_: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("Uniform3dv was not loaded") }
-    pub extern "C" fn Uniform3f(_: GLint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Uniform3f was not loaded") }
-    pub extern "C" fn Uniform3fARB(_: GLint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Uniform3fARB was not loaded") }
-    pub extern "C" fn Uniform3fv(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform3fv was not loaded") }
-    pub extern "C" fn Uniform3fvARB(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform3fvARB was not loaded") }
-    pub extern "C" fn Uniform3i(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("Uniform3i was not loaded") }
-    pub extern "C" fn Uniform3i64NV(_: GLint, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("Uniform3i64NV was not loaded") }
-    pub extern "C" fn Uniform3i64vNV(_: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("Uniform3i64vNV was not loaded") }
-    pub extern "C" fn Uniform3iARB(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("Uniform3iARB was not loaded") }
-    pub extern "C" fn Uniform3iv(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform3iv was not loaded") }
-    pub extern "C" fn Uniform3ivARB(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform3ivARB was not loaded") }
-    pub extern "C" fn Uniform3ui(_: GLint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("Uniform3ui was not loaded") }
-    pub extern "C" fn Uniform3ui64NV(_: GLint, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("Uniform3ui64NV was not loaded") }
-    pub extern "C" fn Uniform3ui64vNV(_: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("Uniform3ui64vNV was not loaded") }
-    pub extern "C" fn Uniform3uiEXT(_: GLint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("Uniform3uiEXT was not loaded") }
-    pub extern "C" fn Uniform3uiv(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform3uiv was not loaded") }
-    pub extern "C" fn Uniform3uivEXT(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform3uivEXT was not loaded") }
-    pub extern "C" fn Uniform4d(_: GLint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Uniform4d was not loaded") }
-    pub extern "C" fn Uniform4dv(_: GLint, _: GLsizei, _: *GLdouble) -> c_void { fail!("Uniform4dv was not loaded") }
-    pub extern "C" fn Uniform4f(_: GLint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Uniform4f was not loaded") }
-    pub extern "C" fn Uniform4fARB(_: GLint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Uniform4fARB was not loaded") }
-    pub extern "C" fn Uniform4fv(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform4fv was not loaded") }
-    pub extern "C" fn Uniform4fvARB(_: GLint, _: GLsizei, _: *GLfloat) -> c_void { fail!("Uniform4fvARB was not loaded") }
-    pub extern "C" fn Uniform4i(_: GLint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("Uniform4i was not loaded") }
-    pub extern "C" fn Uniform4i64NV(_: GLint, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("Uniform4i64NV was not loaded") }
-    pub extern "C" fn Uniform4i64vNV(_: GLint, _: GLsizei, _: *GLint64EXT) -> c_void { fail!("Uniform4i64vNV was not loaded") }
-    pub extern "C" fn Uniform4iARB(_: GLint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("Uniform4iARB was not loaded") }
-    pub extern "C" fn Uniform4iv(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform4iv was not loaded") }
-    pub extern "C" fn Uniform4ivARB(_: GLint, _: GLsizei, _: *GLint) -> c_void { fail!("Uniform4ivARB was not loaded") }
-    pub extern "C" fn Uniform4ui(_: GLint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("Uniform4ui was not loaded") }
-    pub extern "C" fn Uniform4ui64NV(_: GLint, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("Uniform4ui64NV was not loaded") }
-    pub extern "C" fn Uniform4ui64vNV(_: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("Uniform4ui64vNV was not loaded") }
-    pub extern "C" fn Uniform4uiEXT(_: GLint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("Uniform4uiEXT was not loaded") }
-    pub extern "C" fn Uniform4uiv(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform4uiv was not loaded") }
-    pub extern "C" fn Uniform4uivEXT(_: GLint, _: GLsizei, _: *GLuint) -> c_void { fail!("Uniform4uivEXT was not loaded") }
-    pub extern "C" fn UniformBlockBinding(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("UniformBlockBinding was not loaded") }
-    pub extern "C" fn UniformBufferEXT(_: GLuint, _: GLint, _: GLuint) -> c_void { fail!("UniformBufferEXT was not loaded") }
-    pub extern "C" fn UniformHandleui64ARB(_: GLint, _: GLuint64) -> c_void { fail!("UniformHandleui64ARB was not loaded") }
-    pub extern "C" fn UniformHandleui64NV(_: GLint, _: GLuint64) -> c_void { fail!("UniformHandleui64NV was not loaded") }
-    pub extern "C" fn UniformHandleui64vARB(_: GLint, _: GLsizei, _: *GLuint64) -> c_void { fail!("UniformHandleui64vARB was not loaded") }
-    pub extern "C" fn UniformHandleui64vNV(_: GLint, _: GLsizei, _: *GLuint64) -> c_void { fail!("UniformHandleui64vNV was not loaded") }
-    pub extern "C" fn UniformMatrix2dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix2dv was not loaded") }
-    pub extern "C" fn UniformMatrix2fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix2fv was not loaded") }
-    pub extern "C" fn UniformMatrix2fvARB(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix2fvARB was not loaded") }
-    pub extern "C" fn UniformMatrix2x3dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix2x3dv was not loaded") }
-    pub extern "C" fn UniformMatrix2x3fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix2x3fv was not loaded") }
-    pub extern "C" fn UniformMatrix2x4dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix2x4dv was not loaded") }
-    pub extern "C" fn UniformMatrix2x4fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix2x4fv was not loaded") }
-    pub extern "C" fn UniformMatrix3dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix3dv was not loaded") }
-    pub extern "C" fn UniformMatrix3fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix3fv was not loaded") }
-    pub extern "C" fn UniformMatrix3fvARB(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix3fvARB was not loaded") }
-    pub extern "C" fn UniformMatrix3x2dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix3x2dv was not loaded") }
-    pub extern "C" fn UniformMatrix3x2fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix3x2fv was not loaded") }
-    pub extern "C" fn UniformMatrix3x4dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix3x4dv was not loaded") }
-    pub extern "C" fn UniformMatrix3x4fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix3x4fv was not loaded") }
-    pub extern "C" fn UniformMatrix4dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix4dv was not loaded") }
-    pub extern "C" fn UniformMatrix4fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix4fv was not loaded") }
-    pub extern "C" fn UniformMatrix4fvARB(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix4fvARB was not loaded") }
-    pub extern "C" fn UniformMatrix4x2dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix4x2dv was not loaded") }
-    pub extern "C" fn UniformMatrix4x2fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix4x2fv was not loaded") }
-    pub extern "C" fn UniformMatrix4x3dv(_: GLint, _: GLsizei, _: GLboolean, _: *GLdouble) -> c_void { fail!("UniformMatrix4x3dv was not loaded") }
-    pub extern "C" fn UniformMatrix4x3fv(_: GLint, _: GLsizei, _: GLboolean, _: *GLfloat) -> c_void { fail!("UniformMatrix4x3fv was not loaded") }
-    pub extern "C" fn UniformSubroutinesuiv(_: GLenum, _: GLsizei, _: *GLuint) -> c_void { fail!("UniformSubroutinesuiv was not loaded") }
-    pub extern "C" fn Uniformui64NV(_: GLint, _: GLuint64EXT) -> c_void { fail!("Uniformui64NV was not loaded") }
-    pub extern "C" fn Uniformui64vNV(_: GLint, _: GLsizei, _: *GLuint64EXT) -> c_void { fail!("Uniformui64vNV was not loaded") }
-    pub extern "C" fn UnlockArraysEXT() -> c_void { fail!("UnlockArraysEXT was not loaded") }
-    pub extern "C" fn UnmapBuffer(_: GLenum) -> GLboolean { fail!("UnmapBuffer was not loaded") }
-    pub extern "C" fn UnmapBufferARB(_: GLenum) -> GLboolean { fail!("UnmapBufferARB was not loaded") }
-    pub extern "C" fn UnmapBufferOES(_: GLenum) -> GLboolean { fail!("UnmapBufferOES was not loaded") }
-    pub extern "C" fn UnmapNamedBufferEXT(_: GLuint) -> GLboolean { fail!("UnmapNamedBufferEXT was not loaded") }
-    pub extern "C" fn UnmapObjectBufferATI(_: GLuint) -> c_void { fail!("UnmapObjectBufferATI was not loaded") }
-    pub extern "C" fn UnmapTexture2DINTEL(_: GLuint, _: GLint) -> c_void { fail!("UnmapTexture2DINTEL was not loaded") }
-    pub extern "C" fn UpdateObjectBufferATI(_: GLuint, _: GLuint, _: GLsizei, _: *GLvoid, _: GLenum) -> c_void { fail!("UpdateObjectBufferATI was not loaded") }
-    pub extern "C" fn UseProgram(_: GLuint) -> c_void { fail!("UseProgram was not loaded") }
-    pub extern "C" fn UseProgramObjectARB(_: GLhandleARB) -> c_void { fail!("UseProgramObjectARB was not loaded") }
-    pub extern "C" fn UseProgramStages(_: GLuint, _: GLbitfield, _: GLuint) -> c_void { fail!("UseProgramStages was not loaded") }
-    pub extern "C" fn UseProgramStagesEXT(_: GLuint, _: GLbitfield, _: GLuint) -> c_void { fail!("UseProgramStagesEXT was not loaded") }
-    pub extern "C" fn UseShaderProgramEXT(_: GLenum, _: GLuint) -> c_void { fail!("UseShaderProgramEXT was not loaded") }
-    pub extern "C" fn VDPAUFiniNV() -> c_void { fail!("VDPAUFiniNV was not loaded") }
-    pub extern "C" fn VDPAUGetSurfaceivNV(_: GLvdpauSurfaceNV, _: GLenum, _: GLsizei, _: *GLsizei, _: *GLint) -> c_void { fail!("VDPAUGetSurfaceivNV was not loaded") }
-    pub extern "C" fn VDPAUInitNV(_: *GLvoid, _: *GLvoid) -> c_void { fail!("VDPAUInitNV was not loaded") }
-    pub extern "C" fn VDPAUIsSurfaceNV(_: GLvdpauSurfaceNV) -> c_void { fail!("VDPAUIsSurfaceNV was not loaded") }
-    pub extern "C" fn VDPAUMapSurfacesNV(_: GLsizei, _: *GLvdpauSurfaceNV) -> c_void { fail!("VDPAUMapSurfacesNV was not loaded") }
-    pub extern "C" fn VDPAURegisterOutputSurfaceNV(_: *GLvoid, _: GLenum, _: GLsizei, _: *GLuint) -> GLvdpauSurfaceNV { fail!("VDPAURegisterOutputSurfaceNV was not loaded") }
-    pub extern "C" fn VDPAURegisterVideoSurfaceNV(_: *GLvoid, _: GLenum, _: GLsizei, _: *GLuint) -> GLvdpauSurfaceNV { fail!("VDPAURegisterVideoSurfaceNV was not loaded") }
-    pub extern "C" fn VDPAUSurfaceAccessNV(_: GLvdpauSurfaceNV, _: GLenum) -> c_void { fail!("VDPAUSurfaceAccessNV was not loaded") }
-    pub extern "C" fn VDPAUUnmapSurfacesNV(_: GLsizei, _: *GLvdpauSurfaceNV) -> c_void { fail!("VDPAUUnmapSurfacesNV was not loaded") }
-    pub extern "C" fn VDPAUUnregisterSurfaceNV(_: GLvdpauSurfaceNV) -> c_void { fail!("VDPAUUnregisterSurfaceNV was not loaded") }
-    pub extern "C" fn ValidateProgram(_: GLuint) -> c_void { fail!("ValidateProgram was not loaded") }
-    pub extern "C" fn ValidateProgramARB(_: GLhandleARB) -> c_void { fail!("ValidateProgramARB was not loaded") }
-    pub extern "C" fn ValidateProgramPipeline(_: GLuint) -> c_void { fail!("ValidateProgramPipeline was not loaded") }
-    pub extern "C" fn ValidateProgramPipelineEXT(_: GLuint) -> c_void { fail!("ValidateProgramPipelineEXT was not loaded") }
-    pub extern "C" fn VariantArrayObjectATI(_: GLuint, _: GLenum, _: GLsizei, _: GLuint, _: GLuint) -> c_void { fail!("VariantArrayObjectATI was not loaded") }
-    pub extern "C" fn VariantPointerEXT(_: GLuint, _: GLenum, _: GLuint, _: *GLvoid) -> c_void { fail!("VariantPointerEXT was not loaded") }
-    pub extern "C" fn VariantbvEXT(_: GLuint, _: *GLbyte) -> c_void { fail!("VariantbvEXT was not loaded") }
-    pub extern "C" fn VariantdvEXT(_: GLuint, _: *GLdouble) -> c_void { fail!("VariantdvEXT was not loaded") }
-    pub extern "C" fn VariantfvEXT(_: GLuint, _: *GLfloat) -> c_void { fail!("VariantfvEXT was not loaded") }
-    pub extern "C" fn VariantivEXT(_: GLuint, _: *GLint) -> c_void { fail!("VariantivEXT was not loaded") }
-    pub extern "C" fn VariantsvEXT(_: GLuint, _: *GLshort) -> c_void { fail!("VariantsvEXT was not loaded") }
-    pub extern "C" fn VariantubvEXT(_: GLuint, _: *GLubyte) -> c_void { fail!("VariantubvEXT was not loaded") }
-    pub extern "C" fn VariantuivEXT(_: GLuint, _: *GLuint) -> c_void { fail!("VariantuivEXT was not loaded") }
-    pub extern "C" fn VariantusvEXT(_: GLuint, _: *GLushort) -> c_void { fail!("VariantusvEXT was not loaded") }
-    pub extern "C" fn Vertex2bOES(_: GLbyte) -> c_void { fail!("Vertex2bOES was not loaded") }
-    pub extern "C" fn Vertex2bvOES(_: *GLbyte) -> c_void { fail!("Vertex2bvOES was not loaded") }
-    pub extern "C" fn Vertex2d(_: GLdouble, _: GLdouble) -> c_void { fail!("Vertex2d was not loaded") }
-    pub extern "C" fn Vertex2dv(_: *GLdouble) -> c_void { fail!("Vertex2dv was not loaded") }
-    pub extern "C" fn Vertex2f(_: GLfloat, _: GLfloat) -> c_void { fail!("Vertex2f was not loaded") }
-    pub extern "C" fn Vertex2fv(_: *GLfloat) -> c_void { fail!("Vertex2fv was not loaded") }
-    pub extern "C" fn Vertex2hNV(_: GLhalfNV, _: GLhalfNV) -> c_void { fail!("Vertex2hNV was not loaded") }
-    pub extern "C" fn Vertex2hvNV(_: *GLhalfNV) -> c_void { fail!("Vertex2hvNV was not loaded") }
-    pub extern "C" fn Vertex2i(_: GLint, _: GLint) -> c_void { fail!("Vertex2i was not loaded") }
-    pub extern "C" fn Vertex2iv(_: *GLint) -> c_void { fail!("Vertex2iv was not loaded") }
-    pub extern "C" fn Vertex2s(_: GLshort, _: GLshort) -> c_void { fail!("Vertex2s was not loaded") }
-    pub extern "C" fn Vertex2sv(_: *GLshort) -> c_void { fail!("Vertex2sv was not loaded") }
-    pub extern "C" fn Vertex2xOES(_: GLfixed) -> c_void { fail!("Vertex2xOES was not loaded") }
-    pub extern "C" fn Vertex2xvOES(_: *GLfixed) -> c_void { fail!("Vertex2xvOES was not loaded") }
-    pub extern "C" fn Vertex3bOES(_: GLbyte, _: GLbyte) -> c_void { fail!("Vertex3bOES was not loaded") }
-    pub extern "C" fn Vertex3bvOES(_: *GLbyte) -> c_void { fail!("Vertex3bvOES was not loaded") }
-    pub extern "C" fn Vertex3d(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Vertex3d was not loaded") }
-    pub extern "C" fn Vertex3dv(_: *GLdouble) -> c_void { fail!("Vertex3dv was not loaded") }
-    pub extern "C" fn Vertex3f(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Vertex3f was not loaded") }
-    pub extern "C" fn Vertex3fv(_: *GLfloat) -> c_void { fail!("Vertex3fv was not loaded") }
-    pub extern "C" fn Vertex3hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("Vertex3hNV was not loaded") }
-    pub extern "C" fn Vertex3hvNV(_: *GLhalfNV) -> c_void { fail!("Vertex3hvNV was not loaded") }
-    pub extern "C" fn Vertex3i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("Vertex3i was not loaded") }
-    pub extern "C" fn Vertex3iv(_: *GLint) -> c_void { fail!("Vertex3iv was not loaded") }
-    pub extern "C" fn Vertex3s(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Vertex3s was not loaded") }
-    pub extern "C" fn Vertex3sv(_: *GLshort) -> c_void { fail!("Vertex3sv was not loaded") }
-    pub extern "C" fn Vertex3xOES(_: GLfixed, _: GLfixed) -> c_void { fail!("Vertex3xOES was not loaded") }
-    pub extern "C" fn Vertex3xvOES(_: *GLfixed) -> c_void { fail!("Vertex3xvOES was not loaded") }
-    pub extern "C" fn Vertex4bOES(_: GLbyte, _: GLbyte, _: GLbyte) -> c_void { fail!("Vertex4bOES was not loaded") }
-    pub extern "C" fn Vertex4bvOES(_: *GLbyte) -> c_void { fail!("Vertex4bvOES was not loaded") }
-    pub extern "C" fn Vertex4d(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("Vertex4d was not loaded") }
-    pub extern "C" fn Vertex4dv(_: *GLdouble) -> c_void { fail!("Vertex4dv was not loaded") }
-    pub extern "C" fn Vertex4f(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("Vertex4f was not loaded") }
-    pub extern "C" fn Vertex4fv(_: *GLfloat) -> c_void { fail!("Vertex4fv was not loaded") }
-    pub extern "C" fn Vertex4hNV(_: GLhalfNV, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("Vertex4hNV was not loaded") }
-    pub extern "C" fn Vertex4hvNV(_: *GLhalfNV) -> c_void { fail!("Vertex4hvNV was not loaded") }
-    pub extern "C" fn Vertex4i(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("Vertex4i was not loaded") }
-    pub extern "C" fn Vertex4iv(_: *GLint) -> c_void { fail!("Vertex4iv was not loaded") }
-    pub extern "C" fn Vertex4s(_: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("Vertex4s was not loaded") }
-    pub extern "C" fn Vertex4sv(_: *GLshort) -> c_void { fail!("Vertex4sv was not loaded") }
-    pub extern "C" fn Vertex4xOES(_: GLfixed, _: GLfixed, _: GLfixed) -> c_void { fail!("Vertex4xOES was not loaded") }
-    pub extern "C" fn Vertex4xvOES(_: *GLfixed) -> c_void { fail!("Vertex4xvOES was not loaded") }
-    pub extern "C" fn VertexArrayBindVertexBufferEXT(_: GLuint, _: GLuint, _: GLuint, _: GLintptr, _: GLsizei) -> c_void { fail!("VertexArrayBindVertexBufferEXT was not loaded") }
-    pub extern "C" fn VertexArrayColorOffsetEXT(_: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayColorOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayEdgeFlagOffsetEXT(_: GLuint, _: GLuint, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayEdgeFlagOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayFogCoordOffsetEXT(_: GLuint, _: GLuint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayFogCoordOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayIndexOffsetEXT(_: GLuint, _: GLuint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayIndexOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayMultiTexCoordOffsetEXT(_: GLuint, _: GLuint, _: GLenum, _: GLint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayMultiTexCoordOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayNormalOffsetEXT(_: GLuint, _: GLuint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayNormalOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayParameteriAPPLE(_: GLenum, _: GLint) -> c_void { fail!("VertexArrayParameteriAPPLE was not loaded") }
-    pub extern "C" fn VertexArrayRangeAPPLE(_: GLsizei, _: *GLvoid) -> c_void { fail!("VertexArrayRangeAPPLE was not loaded") }
-    pub extern "C" fn VertexArrayRangeNV(_: GLsizei, _: *GLvoid) -> c_void { fail!("VertexArrayRangeNV was not loaded") }
-    pub extern "C" fn VertexArraySecondaryColorOffsetEXT(_: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArraySecondaryColorOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayTexCoordOffsetEXT(_: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayTexCoordOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexAttribBindingEXT(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexArrayVertexAttribBindingEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexAttribFormatEXT(_: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLboolean, _: GLuint) -> c_void { fail!("VertexArrayVertexAttribFormatEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexAttribIFormatEXT(_: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLuint) -> c_void { fail!("VertexArrayVertexAttribIFormatEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexAttribIOffsetEXT(_: GLuint, _: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayVertexAttribIOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexAttribLFormatEXT(_: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLuint) -> c_void { fail!("VertexArrayVertexAttribLFormatEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexAttribLOffsetEXT(_: GLuint, _: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayVertexAttribLOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexAttribOffsetEXT(_: GLuint, _: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLboolean, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayVertexAttribOffsetEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexBindingDivisorEXT(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexArrayVertexBindingDivisorEXT was not loaded") }
-    pub extern "C" fn VertexArrayVertexOffsetEXT(_: GLuint, _: GLuint, _: GLint, _: GLenum, _: GLsizei, _: GLintptr) -> c_void { fail!("VertexArrayVertexOffsetEXT was not loaded") }
-    pub extern "C" fn VertexAttrib1d(_: GLuint, _: GLdouble) -> c_void { fail!("VertexAttrib1d was not loaded") }
-    pub extern "C" fn VertexAttrib1dARB(_: GLuint, _: GLdouble) -> c_void { fail!("VertexAttrib1dARB was not loaded") }
-    pub extern "C" fn VertexAttrib1dNV(_: GLuint, _: GLdouble) -> c_void { fail!("VertexAttrib1dNV was not loaded") }
-    pub extern "C" fn VertexAttrib1dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib1dv was not loaded") }
-    pub extern "C" fn VertexAttrib1dvARB(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib1dvARB was not loaded") }
-    pub extern "C" fn VertexAttrib1dvNV(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib1dvNV was not loaded") }
-    pub extern "C" fn VertexAttrib1f(_: GLuint, _: GLfloat) -> c_void { fail!("VertexAttrib1f was not loaded") }
-    pub extern "C" fn VertexAttrib1fARB(_: GLuint, _: GLfloat) -> c_void { fail!("VertexAttrib1fARB was not loaded") }
-    pub extern "C" fn VertexAttrib1fNV(_: GLuint, _: GLfloat) -> c_void { fail!("VertexAttrib1fNV was not loaded") }
-    pub extern "C" fn VertexAttrib1fv(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib1fv was not loaded") }
-    pub extern "C" fn VertexAttrib1fvARB(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib1fvARB was not loaded") }
-    pub extern "C" fn VertexAttrib1fvNV(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib1fvNV was not loaded") }
-    pub extern "C" fn VertexAttrib1hNV(_: GLuint, _: GLhalfNV) -> c_void { fail!("VertexAttrib1hNV was not loaded") }
-    pub extern "C" fn VertexAttrib1hvNV(_: GLuint, _: *GLhalfNV) -> c_void { fail!("VertexAttrib1hvNV was not loaded") }
-    pub extern "C" fn VertexAttrib1s(_: GLuint, _: GLshort) -> c_void { fail!("VertexAttrib1s was not loaded") }
-    pub extern "C" fn VertexAttrib1sARB(_: GLuint, _: GLshort) -> c_void { fail!("VertexAttrib1sARB was not loaded") }
-    pub extern "C" fn VertexAttrib1sNV(_: GLuint, _: GLshort) -> c_void { fail!("VertexAttrib1sNV was not loaded") }
-    pub extern "C" fn VertexAttrib1sv(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib1sv was not loaded") }
-    pub extern "C" fn VertexAttrib1svARB(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib1svARB was not loaded") }
-    pub extern "C" fn VertexAttrib1svNV(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib1svNV was not loaded") }
-    pub extern "C" fn VertexAttrib2d(_: GLuint, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib2d was not loaded") }
-    pub extern "C" fn VertexAttrib2dARB(_: GLuint, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib2dARB was not loaded") }
-    pub extern "C" fn VertexAttrib2dNV(_: GLuint, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib2dNV was not loaded") }
-    pub extern "C" fn VertexAttrib2dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib2dv was not loaded") }
-    pub extern "C" fn VertexAttrib2dvARB(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib2dvARB was not loaded") }
-    pub extern "C" fn VertexAttrib2dvNV(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib2dvNV was not loaded") }
-    pub extern "C" fn VertexAttrib2f(_: GLuint, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib2f was not loaded") }
-    pub extern "C" fn VertexAttrib2fARB(_: GLuint, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib2fARB was not loaded") }
-    pub extern "C" fn VertexAttrib2fNV(_: GLuint, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib2fNV was not loaded") }
-    pub extern "C" fn VertexAttrib2fv(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib2fv was not loaded") }
-    pub extern "C" fn VertexAttrib2fvARB(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib2fvARB was not loaded") }
-    pub extern "C" fn VertexAttrib2fvNV(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib2fvNV was not loaded") }
-    pub extern "C" fn VertexAttrib2hNV(_: GLuint, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("VertexAttrib2hNV was not loaded") }
-    pub extern "C" fn VertexAttrib2hvNV(_: GLuint, _: *GLhalfNV) -> c_void { fail!("VertexAttrib2hvNV was not loaded") }
-    pub extern "C" fn VertexAttrib2s(_: GLuint, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib2s was not loaded") }
-    pub extern "C" fn VertexAttrib2sARB(_: GLuint, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib2sARB was not loaded") }
-    pub extern "C" fn VertexAttrib2sNV(_: GLuint, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib2sNV was not loaded") }
-    pub extern "C" fn VertexAttrib2sv(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib2sv was not loaded") }
-    pub extern "C" fn VertexAttrib2svARB(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib2svARB was not loaded") }
-    pub extern "C" fn VertexAttrib2svNV(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib2svNV was not loaded") }
-    pub extern "C" fn VertexAttrib3d(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib3d was not loaded") }
-    pub extern "C" fn VertexAttrib3dARB(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib3dARB was not loaded") }
-    pub extern "C" fn VertexAttrib3dNV(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib3dNV was not loaded") }
-    pub extern "C" fn VertexAttrib3dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib3dv was not loaded") }
-    pub extern "C" fn VertexAttrib3dvARB(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib3dvARB was not loaded") }
-    pub extern "C" fn VertexAttrib3dvNV(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib3dvNV was not loaded") }
-    pub extern "C" fn VertexAttrib3f(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib3f was not loaded") }
-    pub extern "C" fn VertexAttrib3fARB(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib3fARB was not loaded") }
-    pub extern "C" fn VertexAttrib3fNV(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib3fNV was not loaded") }
-    pub extern "C" fn VertexAttrib3fv(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib3fv was not loaded") }
-    pub extern "C" fn VertexAttrib3fvARB(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib3fvARB was not loaded") }
-    pub extern "C" fn VertexAttrib3fvNV(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib3fvNV was not loaded") }
-    pub extern "C" fn VertexAttrib3hNV(_: GLuint, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("VertexAttrib3hNV was not loaded") }
-    pub extern "C" fn VertexAttrib3hvNV(_: GLuint, _: *GLhalfNV) -> c_void { fail!("VertexAttrib3hvNV was not loaded") }
-    pub extern "C" fn VertexAttrib3s(_: GLuint, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib3s was not loaded") }
-    pub extern "C" fn VertexAttrib3sARB(_: GLuint, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib3sARB was not loaded") }
-    pub extern "C" fn VertexAttrib3sNV(_: GLuint, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib3sNV was not loaded") }
-    pub extern "C" fn VertexAttrib3sv(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib3sv was not loaded") }
-    pub extern "C" fn VertexAttrib3svARB(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib3svARB was not loaded") }
-    pub extern "C" fn VertexAttrib3svNV(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib3svNV was not loaded") }
-    pub extern "C" fn VertexAttrib4Nbv(_: GLuint, _: *GLbyte) -> c_void { fail!("VertexAttrib4Nbv was not loaded") }
-    pub extern "C" fn VertexAttrib4NbvARB(_: GLuint, _: *GLbyte) -> c_void { fail!("VertexAttrib4NbvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4Niv(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttrib4Niv was not loaded") }
-    pub extern "C" fn VertexAttrib4NivARB(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttrib4NivARB was not loaded") }
-    pub extern "C" fn VertexAttrib4Nsv(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib4Nsv was not loaded") }
-    pub extern "C" fn VertexAttrib4NsvARB(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib4NsvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4Nub(_: GLuint, _: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte) -> c_void { fail!("VertexAttrib4Nub was not loaded") }
-    pub extern "C" fn VertexAttrib4NubARB(_: GLuint, _: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte) -> c_void { fail!("VertexAttrib4NubARB was not loaded") }
-    pub extern "C" fn VertexAttrib4Nubv(_: GLuint, _: *GLubyte) -> c_void { fail!("VertexAttrib4Nubv was not loaded") }
-    pub extern "C" fn VertexAttrib4NubvARB(_: GLuint, _: *GLubyte) -> c_void { fail!("VertexAttrib4NubvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4Nuiv(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttrib4Nuiv was not loaded") }
-    pub extern "C" fn VertexAttrib4NuivARB(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttrib4NuivARB was not loaded") }
-    pub extern "C" fn VertexAttrib4Nusv(_: GLuint, _: *GLushort) -> c_void { fail!("VertexAttrib4Nusv was not loaded") }
-    pub extern "C" fn VertexAttrib4NusvARB(_: GLuint, _: *GLushort) -> c_void { fail!("VertexAttrib4NusvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4bv(_: GLuint, _: *GLbyte) -> c_void { fail!("VertexAttrib4bv was not loaded") }
-    pub extern "C" fn VertexAttrib4bvARB(_: GLuint, _: *GLbyte) -> c_void { fail!("VertexAttrib4bvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4d(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib4d was not loaded") }
-    pub extern "C" fn VertexAttrib4dARB(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib4dARB was not loaded") }
-    pub extern "C" fn VertexAttrib4dNV(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttrib4dNV was not loaded") }
-    pub extern "C" fn VertexAttrib4dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib4dv was not loaded") }
-    pub extern "C" fn VertexAttrib4dvARB(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib4dvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4dvNV(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttrib4dvNV was not loaded") }
-    pub extern "C" fn VertexAttrib4f(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib4f was not loaded") }
-    pub extern "C" fn VertexAttrib4fARB(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib4fARB was not loaded") }
-    pub extern "C" fn VertexAttrib4fNV(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexAttrib4fNV was not loaded") }
-    pub extern "C" fn VertexAttrib4fv(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib4fv was not loaded") }
-    pub extern "C" fn VertexAttrib4fvARB(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib4fvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4fvNV(_: GLuint, _: *GLfloat) -> c_void { fail!("VertexAttrib4fvNV was not loaded") }
-    pub extern "C" fn VertexAttrib4hNV(_: GLuint, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV, _: GLhalfNV) -> c_void { fail!("VertexAttrib4hNV was not loaded") }
-    pub extern "C" fn VertexAttrib4hvNV(_: GLuint, _: *GLhalfNV) -> c_void { fail!("VertexAttrib4hvNV was not loaded") }
-    pub extern "C" fn VertexAttrib4iv(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttrib4iv was not loaded") }
-    pub extern "C" fn VertexAttrib4ivARB(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttrib4ivARB was not loaded") }
-    pub extern "C" fn VertexAttrib4s(_: GLuint, _: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib4s was not loaded") }
-    pub extern "C" fn VertexAttrib4sARB(_: GLuint, _: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib4sARB was not loaded") }
-    pub extern "C" fn VertexAttrib4sNV(_: GLuint, _: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexAttrib4sNV was not loaded") }
-    pub extern "C" fn VertexAttrib4sv(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib4sv was not loaded") }
-    pub extern "C" fn VertexAttrib4svARB(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib4svARB was not loaded") }
-    pub extern "C" fn VertexAttrib4svNV(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttrib4svNV was not loaded") }
-    pub extern "C" fn VertexAttrib4ubNV(_: GLuint, _: GLubyte, _: GLubyte, _: GLubyte, _: GLubyte) -> c_void { fail!("VertexAttrib4ubNV was not loaded") }
-    pub extern "C" fn VertexAttrib4ubv(_: GLuint, _: *GLubyte) -> c_void { fail!("VertexAttrib4ubv was not loaded") }
-    pub extern "C" fn VertexAttrib4ubvARB(_: GLuint, _: *GLubyte) -> c_void { fail!("VertexAttrib4ubvARB was not loaded") }
-    pub extern "C" fn VertexAttrib4ubvNV(_: GLuint, _: *GLubyte) -> c_void { fail!("VertexAttrib4ubvNV was not loaded") }
-    pub extern "C" fn VertexAttrib4uiv(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttrib4uiv was not loaded") }
-    pub extern "C" fn VertexAttrib4uivARB(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttrib4uivARB was not loaded") }
-    pub extern "C" fn VertexAttrib4usv(_: GLuint, _: *GLushort) -> c_void { fail!("VertexAttrib4usv was not loaded") }
-    pub extern "C" fn VertexAttrib4usvARB(_: GLuint, _: *GLushort) -> c_void { fail!("VertexAttrib4usvARB was not loaded") }
-    pub extern "C" fn VertexAttribArrayObjectATI(_: GLuint, _: GLint, _: GLenum, _: GLboolean, _: GLsizei, _: GLuint, _: GLuint) -> c_void { fail!("VertexAttribArrayObjectATI was not loaded") }
-    pub extern "C" fn VertexAttribBinding(_: GLuint, _: GLuint) -> c_void { fail!("VertexAttribBinding was not loaded") }
-    pub extern "C" fn VertexAttribDivisor(_: GLuint, _: GLuint) -> c_void { fail!("VertexAttribDivisor was not loaded") }
-    pub extern "C" fn VertexAttribDivisorANGLE(_: GLuint, _: GLuint) -> c_void { fail!("VertexAttribDivisorANGLE was not loaded") }
-    pub extern "C" fn VertexAttribDivisorARB(_: GLuint, _: GLuint) -> c_void { fail!("VertexAttribDivisorARB was not loaded") }
-    pub extern "C" fn VertexAttribDivisorNV(_: GLuint, _: GLuint) -> c_void { fail!("VertexAttribDivisorNV was not loaded") }
-    pub extern "C" fn VertexAttribFormat(_: GLuint, _: GLint, _: GLenum, _: GLboolean, _: GLuint) -> c_void { fail!("VertexAttribFormat was not loaded") }
-    pub extern "C" fn VertexAttribFormatNV(_: GLuint, _: GLint, _: GLenum, _: GLboolean, _: GLsizei) -> c_void { fail!("VertexAttribFormatNV was not loaded") }
-    pub extern "C" fn VertexAttribI1i(_: GLuint, _: GLint) -> c_void { fail!("VertexAttribI1i was not loaded") }
-    pub extern "C" fn VertexAttribI1iEXT(_: GLuint, _: GLint) -> c_void { fail!("VertexAttribI1iEXT was not loaded") }
-    pub extern "C" fn VertexAttribI1iv(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI1iv was not loaded") }
-    pub extern "C" fn VertexAttribI1ivEXT(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI1ivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI1ui(_: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI1ui was not loaded") }
-    pub extern "C" fn VertexAttribI1uiEXT(_: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI1uiEXT was not loaded") }
-    pub extern "C" fn VertexAttribI1uiv(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI1uiv was not loaded") }
-    pub extern "C" fn VertexAttribI1uivEXT(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI1uivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI2i(_: GLuint, _: GLint, _: GLint) -> c_void { fail!("VertexAttribI2i was not loaded") }
-    pub extern "C" fn VertexAttribI2iEXT(_: GLuint, _: GLint, _: GLint) -> c_void { fail!("VertexAttribI2iEXT was not loaded") }
-    pub extern "C" fn VertexAttribI2iv(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI2iv was not loaded") }
-    pub extern "C" fn VertexAttribI2ivEXT(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI2ivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI2ui(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI2ui was not loaded") }
-    pub extern "C" fn VertexAttribI2uiEXT(_: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI2uiEXT was not loaded") }
-    pub extern "C" fn VertexAttribI2uiv(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI2uiv was not loaded") }
-    pub extern "C" fn VertexAttribI2uivEXT(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI2uivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI3i(_: GLuint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("VertexAttribI3i was not loaded") }
-    pub extern "C" fn VertexAttribI3iEXT(_: GLuint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("VertexAttribI3iEXT was not loaded") }
-    pub extern "C" fn VertexAttribI3iv(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI3iv was not loaded") }
-    pub extern "C" fn VertexAttribI3ivEXT(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI3ivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI3ui(_: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI3ui was not loaded") }
-    pub extern "C" fn VertexAttribI3uiEXT(_: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI3uiEXT was not loaded") }
-    pub extern "C" fn VertexAttribI3uiv(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI3uiv was not loaded") }
-    pub extern "C" fn VertexAttribI3uivEXT(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI3uivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4bv(_: GLuint, _: *GLbyte) -> c_void { fail!("VertexAttribI4bv was not loaded") }
-    pub extern "C" fn VertexAttribI4bvEXT(_: GLuint, _: *GLbyte) -> c_void { fail!("VertexAttribI4bvEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4i(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("VertexAttribI4i was not loaded") }
-    pub extern "C" fn VertexAttribI4iEXT(_: GLuint, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("VertexAttribI4iEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4iv(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI4iv was not loaded") }
-    pub extern "C" fn VertexAttribI4ivEXT(_: GLuint, _: *GLint) -> c_void { fail!("VertexAttribI4ivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4sv(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttribI4sv was not loaded") }
-    pub extern "C" fn VertexAttribI4svEXT(_: GLuint, _: *GLshort) -> c_void { fail!("VertexAttribI4svEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4ubv(_: GLuint, _: *GLubyte) -> c_void { fail!("VertexAttribI4ubv was not loaded") }
-    pub extern "C" fn VertexAttribI4ubvEXT(_: GLuint, _: *GLubyte) -> c_void { fail!("VertexAttribI4ubvEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4ui(_: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI4ui was not loaded") }
-    pub extern "C" fn VertexAttribI4uiEXT(_: GLuint, _: GLuint, _: GLuint, _: GLuint, _: GLuint) -> c_void { fail!("VertexAttribI4uiEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4uiv(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI4uiv was not loaded") }
-    pub extern "C" fn VertexAttribI4uivEXT(_: GLuint, _: *GLuint) -> c_void { fail!("VertexAttribI4uivEXT was not loaded") }
-    pub extern "C" fn VertexAttribI4usv(_: GLuint, _: *GLushort) -> c_void { fail!("VertexAttribI4usv was not loaded") }
-    pub extern "C" fn VertexAttribI4usvEXT(_: GLuint, _: *GLushort) -> c_void { fail!("VertexAttribI4usvEXT was not loaded") }
-    pub extern "C" fn VertexAttribIFormat(_: GLuint, _: GLint, _: GLenum, _: GLuint) -> c_void { fail!("VertexAttribIFormat was not loaded") }
-    pub extern "C" fn VertexAttribIFormatNV(_: GLuint, _: GLint, _: GLenum, _: GLsizei) -> c_void { fail!("VertexAttribIFormatNV was not loaded") }
-    pub extern "C" fn VertexAttribIPointer(_: GLuint, _: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexAttribIPointer was not loaded") }
-    pub extern "C" fn VertexAttribIPointerEXT(_: GLuint, _: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexAttribIPointerEXT was not loaded") }
-    pub extern "C" fn VertexAttribL1d(_: GLuint, _: GLdouble) -> c_void { fail!("VertexAttribL1d was not loaded") }
-    pub extern "C" fn VertexAttribL1dEXT(_: GLuint, _: GLdouble) -> c_void { fail!("VertexAttribL1dEXT was not loaded") }
-    pub extern "C" fn VertexAttribL1dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL1dv was not loaded") }
-    pub extern "C" fn VertexAttribL1dvEXT(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL1dvEXT was not loaded") }
-    pub extern "C" fn VertexAttribL1i64NV(_: GLuint, _: GLint64EXT) -> c_void { fail!("VertexAttribL1i64NV was not loaded") }
-    pub extern "C" fn VertexAttribL1i64vNV(_: GLuint, _: *GLint64EXT) -> c_void { fail!("VertexAttribL1i64vNV was not loaded") }
-    pub extern "C" fn VertexAttribL1ui64ARB(_: GLuint, _: GLuint64EXT) -> c_void { fail!("VertexAttribL1ui64ARB was not loaded") }
-    pub extern "C" fn VertexAttribL1ui64NV(_: GLuint, _: GLuint64EXT) -> c_void { fail!("VertexAttribL1ui64NV was not loaded") }
-    pub extern "C" fn VertexAttribL1ui64vARB(_: GLuint, _: *GLuint64EXT) -> c_void { fail!("VertexAttribL1ui64vARB was not loaded") }
-    pub extern "C" fn VertexAttribL1ui64vNV(_: GLuint, _: *GLuint64EXT) -> c_void { fail!("VertexAttribL1ui64vNV was not loaded") }
-    pub extern "C" fn VertexAttribL2d(_: GLuint, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttribL2d was not loaded") }
-    pub extern "C" fn VertexAttribL2dEXT(_: GLuint, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttribL2dEXT was not loaded") }
-    pub extern "C" fn VertexAttribL2dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL2dv was not loaded") }
-    pub extern "C" fn VertexAttribL2dvEXT(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL2dvEXT was not loaded") }
-    pub extern "C" fn VertexAttribL2i64NV(_: GLuint, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("VertexAttribL2i64NV was not loaded") }
-    pub extern "C" fn VertexAttribL2i64vNV(_: GLuint, _: *GLint64EXT) -> c_void { fail!("VertexAttribL2i64vNV was not loaded") }
-    pub extern "C" fn VertexAttribL2ui64NV(_: GLuint, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("VertexAttribL2ui64NV was not loaded") }
-    pub extern "C" fn VertexAttribL2ui64vNV(_: GLuint, _: *GLuint64EXT) -> c_void { fail!("VertexAttribL2ui64vNV was not loaded") }
-    pub extern "C" fn VertexAttribL3d(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttribL3d was not loaded") }
-    pub extern "C" fn VertexAttribL3dEXT(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttribL3dEXT was not loaded") }
-    pub extern "C" fn VertexAttribL3dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL3dv was not loaded") }
-    pub extern "C" fn VertexAttribL3dvEXT(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL3dvEXT was not loaded") }
-    pub extern "C" fn VertexAttribL3i64NV(_: GLuint, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("VertexAttribL3i64NV was not loaded") }
-    pub extern "C" fn VertexAttribL3i64vNV(_: GLuint, _: *GLint64EXT) -> c_void { fail!("VertexAttribL3i64vNV was not loaded") }
-    pub extern "C" fn VertexAttribL3ui64NV(_: GLuint, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("VertexAttribL3ui64NV was not loaded") }
-    pub extern "C" fn VertexAttribL3ui64vNV(_: GLuint, _: *GLuint64EXT) -> c_void { fail!("VertexAttribL3ui64vNV was not loaded") }
-    pub extern "C" fn VertexAttribL4d(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttribL4d was not loaded") }
-    pub extern "C" fn VertexAttribL4dEXT(_: GLuint, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexAttribL4dEXT was not loaded") }
-    pub extern "C" fn VertexAttribL4dv(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL4dv was not loaded") }
-    pub extern "C" fn VertexAttribL4dvEXT(_: GLuint, _: *GLdouble) -> c_void { fail!("VertexAttribL4dvEXT was not loaded") }
-    pub extern "C" fn VertexAttribL4i64NV(_: GLuint, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT, _: GLint64EXT) -> c_void { fail!("VertexAttribL4i64NV was not loaded") }
-    pub extern "C" fn VertexAttribL4i64vNV(_: GLuint, _: *GLint64EXT) -> c_void { fail!("VertexAttribL4i64vNV was not loaded") }
-    pub extern "C" fn VertexAttribL4ui64NV(_: GLuint, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT, _: GLuint64EXT) -> c_void { fail!("VertexAttribL4ui64NV was not loaded") }
-    pub extern "C" fn VertexAttribL4ui64vNV(_: GLuint, _: *GLuint64EXT) -> c_void { fail!("VertexAttribL4ui64vNV was not loaded") }
-    pub extern "C" fn VertexAttribLFormat(_: GLuint, _: GLint, _: GLenum, _: GLuint) -> c_void { fail!("VertexAttribLFormat was not loaded") }
-    pub extern "C" fn VertexAttribLFormatNV(_: GLuint, _: GLint, _: GLenum, _: GLsizei) -> c_void { fail!("VertexAttribLFormatNV was not loaded") }
-    pub extern "C" fn VertexAttribLPointer(_: GLuint, _: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexAttribLPointer was not loaded") }
-    pub extern "C" fn VertexAttribLPointerEXT(_: GLuint, _: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexAttribLPointerEXT was not loaded") }
-    pub extern "C" fn VertexAttribP1ui(_: GLuint, _: GLenum, _: GLboolean, _: GLuint) -> c_void { fail!("VertexAttribP1ui was not loaded") }
-    pub extern "C" fn VertexAttribP1uiv(_: GLuint, _: GLenum, _: GLboolean, _: *GLuint) -> c_void { fail!("VertexAttribP1uiv was not loaded") }
-    pub extern "C" fn VertexAttribP2ui(_: GLuint, _: GLenum, _: GLboolean, _: GLuint) -> c_void { fail!("VertexAttribP2ui was not loaded") }
-    pub extern "C" fn VertexAttribP2uiv(_: GLuint, _: GLenum, _: GLboolean, _: *GLuint) -> c_void { fail!("VertexAttribP2uiv was not loaded") }
-    pub extern "C" fn VertexAttribP3ui(_: GLuint, _: GLenum, _: GLboolean, _: GLuint) -> c_void { fail!("VertexAttribP3ui was not loaded") }
-    pub extern "C" fn VertexAttribP3uiv(_: GLuint, _: GLenum, _: GLboolean, _: *GLuint) -> c_void { fail!("VertexAttribP3uiv was not loaded") }
-    pub extern "C" fn VertexAttribP4ui(_: GLuint, _: GLenum, _: GLboolean, _: GLuint) -> c_void { fail!("VertexAttribP4ui was not loaded") }
-    pub extern "C" fn VertexAttribP4uiv(_: GLuint, _: GLenum, _: GLboolean, _: *GLuint) -> c_void { fail!("VertexAttribP4uiv was not loaded") }
-    pub extern "C" fn VertexAttribParameteriAMD(_: GLuint, _: GLenum, _: GLint) -> c_void { fail!("VertexAttribParameteriAMD was not loaded") }
-    pub extern "C" fn VertexAttribPointer(_: GLuint, _: GLint, _: GLenum, _: GLboolean, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexAttribPointer was not loaded") }
-    pub extern "C" fn VertexAttribPointerARB(_: GLuint, _: GLint, _: GLenum, _: GLboolean, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexAttribPointerARB was not loaded") }
-    pub extern "C" fn VertexAttribPointerNV(_: GLuint, _: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexAttribPointerNV was not loaded") }
-    pub extern "C" fn VertexAttribs1dvNV(_: GLuint, _: GLsizei, _: *GLdouble) -> c_void { fail!("VertexAttribs1dvNV was not loaded") }
-    pub extern "C" fn VertexAttribs1fvNV(_: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("VertexAttribs1fvNV was not loaded") }
-    pub extern "C" fn VertexAttribs1hvNV(_: GLuint, _: GLsizei, _: *GLhalfNV) -> c_void { fail!("VertexAttribs1hvNV was not loaded") }
-    pub extern "C" fn VertexAttribs1svNV(_: GLuint, _: GLsizei, _: *GLshort) -> c_void { fail!("VertexAttribs1svNV was not loaded") }
-    pub extern "C" fn VertexAttribs2dvNV(_: GLuint, _: GLsizei, _: *GLdouble) -> c_void { fail!("VertexAttribs2dvNV was not loaded") }
-    pub extern "C" fn VertexAttribs2fvNV(_: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("VertexAttribs2fvNV was not loaded") }
-    pub extern "C" fn VertexAttribs2hvNV(_: GLuint, _: GLsizei, _: *GLhalfNV) -> c_void { fail!("VertexAttribs2hvNV was not loaded") }
-    pub extern "C" fn VertexAttribs2svNV(_: GLuint, _: GLsizei, _: *GLshort) -> c_void { fail!("VertexAttribs2svNV was not loaded") }
-    pub extern "C" fn VertexAttribs3dvNV(_: GLuint, _: GLsizei, _: *GLdouble) -> c_void { fail!("VertexAttribs3dvNV was not loaded") }
-    pub extern "C" fn VertexAttribs3fvNV(_: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("VertexAttribs3fvNV was not loaded") }
-    pub extern "C" fn VertexAttribs3hvNV(_: GLuint, _: GLsizei, _: *GLhalfNV) -> c_void { fail!("VertexAttribs3hvNV was not loaded") }
-    pub extern "C" fn VertexAttribs3svNV(_: GLuint, _: GLsizei, _: *GLshort) -> c_void { fail!("VertexAttribs3svNV was not loaded") }
-    pub extern "C" fn VertexAttribs4dvNV(_: GLuint, _: GLsizei, _: *GLdouble) -> c_void { fail!("VertexAttribs4dvNV was not loaded") }
-    pub extern "C" fn VertexAttribs4fvNV(_: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("VertexAttribs4fvNV was not loaded") }
-    pub extern "C" fn VertexAttribs4hvNV(_: GLuint, _: GLsizei, _: *GLhalfNV) -> c_void { fail!("VertexAttribs4hvNV was not loaded") }
-    pub extern "C" fn VertexAttribs4svNV(_: GLuint, _: GLsizei, _: *GLshort) -> c_void { fail!("VertexAttribs4svNV was not loaded") }
-    pub extern "C" fn VertexAttribs4ubvNV(_: GLuint, _: GLsizei, _: *GLubyte) -> c_void { fail!("VertexAttribs4ubvNV was not loaded") }
-    pub extern "C" fn VertexBindingDivisor(_: GLuint, _: GLuint) -> c_void { fail!("VertexBindingDivisor was not loaded") }
-    pub extern "C" fn VertexBlendARB(_: GLint) -> c_void { fail!("VertexBlendARB was not loaded") }
-    pub extern "C" fn VertexBlendEnvfATI(_: GLenum, _: GLfloat) -> c_void { fail!("VertexBlendEnvfATI was not loaded") }
-    pub extern "C" fn VertexBlendEnviATI(_: GLenum, _: GLint) -> c_void { fail!("VertexBlendEnviATI was not loaded") }
-    pub extern "C" fn VertexFormatNV(_: GLint, _: GLenum, _: GLsizei) -> c_void { fail!("VertexFormatNV was not loaded") }
-    pub extern "C" fn VertexP2ui(_: GLenum, _: GLuint) -> c_void { fail!("VertexP2ui was not loaded") }
-    pub extern "C" fn VertexP2uiv(_: GLenum, _: *GLuint) -> c_void { fail!("VertexP2uiv was not loaded") }
-    pub extern "C" fn VertexP3ui(_: GLenum, _: GLuint) -> c_void { fail!("VertexP3ui was not loaded") }
-    pub extern "C" fn VertexP3uiv(_: GLenum, _: *GLuint) -> c_void { fail!("VertexP3uiv was not loaded") }
-    pub extern "C" fn VertexP4ui(_: GLenum, _: GLuint) -> c_void { fail!("VertexP4ui was not loaded") }
-    pub extern "C" fn VertexP4uiv(_: GLenum, _: *GLuint) -> c_void { fail!("VertexP4uiv was not loaded") }
-    pub extern "C" fn VertexPointer(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexPointer was not loaded") }
-    pub extern "C" fn VertexPointerEXT(_: GLint, _: GLenum, _: GLsizei, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexPointerEXT was not loaded") }
-    pub extern "C" fn VertexPointerListIBM(_: GLint, _: GLenum, _: GLint, _: **GLvoid, _: GLint) -> c_void { fail!("VertexPointerListIBM was not loaded") }
-    pub extern "C" fn VertexPointervINTEL(_: GLint, _: GLenum, _: **GLvoid) -> c_void { fail!("VertexPointervINTEL was not loaded") }
-    pub extern "C" fn VertexStream1dATI(_: GLenum, _: GLdouble) -> c_void { fail!("VertexStream1dATI was not loaded") }
-    pub extern "C" fn VertexStream1dvATI(_: GLenum, _: *GLdouble) -> c_void { fail!("VertexStream1dvATI was not loaded") }
-    pub extern "C" fn VertexStream1fATI(_: GLenum, _: GLfloat) -> c_void { fail!("VertexStream1fATI was not loaded") }
-    pub extern "C" fn VertexStream1fvATI(_: GLenum, _: *GLfloat) -> c_void { fail!("VertexStream1fvATI was not loaded") }
-    pub extern "C" fn VertexStream1iATI(_: GLenum, _: GLint) -> c_void { fail!("VertexStream1iATI was not loaded") }
-    pub extern "C" fn VertexStream1ivATI(_: GLenum, _: *GLint) -> c_void { fail!("VertexStream1ivATI was not loaded") }
-    pub extern "C" fn VertexStream1sATI(_: GLenum, _: GLshort) -> c_void { fail!("VertexStream1sATI was not loaded") }
-    pub extern "C" fn VertexStream1svATI(_: GLenum, _: *GLshort) -> c_void { fail!("VertexStream1svATI was not loaded") }
-    pub extern "C" fn VertexStream2dATI(_: GLenum, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexStream2dATI was not loaded") }
-    pub extern "C" fn VertexStream2dvATI(_: GLenum, _: *GLdouble) -> c_void { fail!("VertexStream2dvATI was not loaded") }
-    pub extern "C" fn VertexStream2fATI(_: GLenum, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexStream2fATI was not loaded") }
-    pub extern "C" fn VertexStream2fvATI(_: GLenum, _: *GLfloat) -> c_void { fail!("VertexStream2fvATI was not loaded") }
-    pub extern "C" fn VertexStream2iATI(_: GLenum, _: GLint, _: GLint) -> c_void { fail!("VertexStream2iATI was not loaded") }
-    pub extern "C" fn VertexStream2ivATI(_: GLenum, _: *GLint) -> c_void { fail!("VertexStream2ivATI was not loaded") }
-    pub extern "C" fn VertexStream2sATI(_: GLenum, _: GLshort, _: GLshort) -> c_void { fail!("VertexStream2sATI was not loaded") }
-    pub extern "C" fn VertexStream2svATI(_: GLenum, _: *GLshort) -> c_void { fail!("VertexStream2svATI was not loaded") }
-    pub extern "C" fn VertexStream3dATI(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexStream3dATI was not loaded") }
-    pub extern "C" fn VertexStream3dvATI(_: GLenum, _: *GLdouble) -> c_void { fail!("VertexStream3dvATI was not loaded") }
-    pub extern "C" fn VertexStream3fATI(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexStream3fATI was not loaded") }
-    pub extern "C" fn VertexStream3fvATI(_: GLenum, _: *GLfloat) -> c_void { fail!("VertexStream3fvATI was not loaded") }
-    pub extern "C" fn VertexStream3iATI(_: GLenum, _: GLint, _: GLint, _: GLint) -> c_void { fail!("VertexStream3iATI was not loaded") }
-    pub extern "C" fn VertexStream3ivATI(_: GLenum, _: *GLint) -> c_void { fail!("VertexStream3ivATI was not loaded") }
-    pub extern "C" fn VertexStream3sATI(_: GLenum, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexStream3sATI was not loaded") }
-    pub extern "C" fn VertexStream3svATI(_: GLenum, _: *GLshort) -> c_void { fail!("VertexStream3svATI was not loaded") }
-    pub extern "C" fn VertexStream4dATI(_: GLenum, _: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("VertexStream4dATI was not loaded") }
-    pub extern "C" fn VertexStream4dvATI(_: GLenum, _: *GLdouble) -> c_void { fail!("VertexStream4dvATI was not loaded") }
-    pub extern "C" fn VertexStream4fATI(_: GLenum, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("VertexStream4fATI was not loaded") }
-    pub extern "C" fn VertexStream4fvATI(_: GLenum, _: *GLfloat) -> c_void { fail!("VertexStream4fvATI was not loaded") }
-    pub extern "C" fn VertexStream4iATI(_: GLenum, _: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("VertexStream4iATI was not loaded") }
-    pub extern "C" fn VertexStream4ivATI(_: GLenum, _: *GLint) -> c_void { fail!("VertexStream4ivATI was not loaded") }
-    pub extern "C" fn VertexStream4sATI(_: GLenum, _: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("VertexStream4sATI was not loaded") }
-    pub extern "C" fn VertexStream4svATI(_: GLenum, _: *GLshort) -> c_void { fail!("VertexStream4svATI was not loaded") }
-    pub extern "C" fn VertexWeightPointerEXT(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("VertexWeightPointerEXT was not loaded") }
-    pub extern "C" fn VertexWeightfEXT(_: GLfloat) -> c_void { fail!("VertexWeightfEXT was not loaded") }
-    pub extern "C" fn VertexWeightfvEXT(_: *GLfloat) -> c_void { fail!("VertexWeightfvEXT was not loaded") }
-    pub extern "C" fn VertexWeighthNV(_: GLhalfNV) -> c_void { fail!("VertexWeighthNV was not loaded") }
-    pub extern "C" fn VertexWeighthvNV(_: *GLhalfNV) -> c_void { fail!("VertexWeighthvNV was not loaded") }
-    pub extern "C" fn VideoCaptureNV(_: GLuint, _: *GLuint, _: *GLuint64EXT) -> GLenum { fail!("VideoCaptureNV was not loaded") }
-    pub extern "C" fn VideoCaptureStreamParameterdvNV(_: GLuint, _: GLuint, _: GLenum, _: *GLdouble) -> c_void { fail!("VideoCaptureStreamParameterdvNV was not loaded") }
-    pub extern "C" fn VideoCaptureStreamParameterfvNV(_: GLuint, _: GLuint, _: GLenum, _: *GLfloat) -> c_void { fail!("VideoCaptureStreamParameterfvNV was not loaded") }
-    pub extern "C" fn VideoCaptureStreamParameterivNV(_: GLuint, _: GLuint, _: GLenum, _: *GLint) -> c_void { fail!("VideoCaptureStreamParameterivNV was not loaded") }
-    pub extern "C" fn Viewport(_: GLint, _: GLint, _: GLsizei, _: GLsizei) -> c_void { fail!("Viewport was not loaded") }
-    pub extern "C" fn ViewportArrayv(_: GLuint, _: GLsizei, _: *GLfloat) -> c_void { fail!("ViewportArrayv was not loaded") }
-    pub extern "C" fn ViewportIndexedf(_: GLuint, _: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("ViewportIndexedf was not loaded") }
-    pub extern "C" fn ViewportIndexedfv(_: GLuint, _: *GLfloat) -> c_void { fail!("ViewportIndexedfv was not loaded") }
-    pub extern "C" fn WaitSync(_: GLsync, _: GLbitfield, _: GLuint64) -> c_void { fail!("WaitSync was not loaded") }
-    pub extern "C" fn WaitSyncAPPLE(_: GLsync, _: GLbitfield, _: GLuint64) -> c_void { fail!("WaitSyncAPPLE was not loaded") }
-    pub extern "C" fn WeightPathsNV(_: GLuint, _: GLsizei, _: *GLuint, _: *GLfloat) -> c_void { fail!("WeightPathsNV was not loaded") }
-    pub extern "C" fn WeightPointerARB(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("WeightPointerARB was not loaded") }
-    pub extern "C" fn WeightPointerOES(_: GLint, _: GLenum, _: GLsizei, _: *GLvoid) -> c_void { fail!("WeightPointerOES was not loaded") }
-    pub extern "C" fn WeightbvARB(_: GLint, _: *GLbyte) -> c_void { fail!("WeightbvARB was not loaded") }
-    pub extern "C" fn WeightdvARB(_: GLint, _: *GLdouble) -> c_void { fail!("WeightdvARB was not loaded") }
-    pub extern "C" fn WeightfvARB(_: GLint, _: *GLfloat) -> c_void { fail!("WeightfvARB was not loaded") }
-    pub extern "C" fn WeightivARB(_: GLint, _: *GLint) -> c_void { fail!("WeightivARB was not loaded") }
-    pub extern "C" fn WeightsvARB(_: GLint, _: *GLshort) -> c_void { fail!("WeightsvARB was not loaded") }
-    pub extern "C" fn WeightubvARB(_: GLint, _: *GLubyte) -> c_void { fail!("WeightubvARB was not loaded") }
-    pub extern "C" fn WeightuivARB(_: GLint, _: *GLuint) -> c_void { fail!("WeightuivARB was not loaded") }
-    pub extern "C" fn WeightusvARB(_: GLint, _: *GLushort) -> c_void { fail!("WeightusvARB was not loaded") }
-    pub extern "C" fn WindowPos2d(_: GLdouble, _: GLdouble) -> c_void { fail!("WindowPos2d was not loaded") }
-    pub extern "C" fn WindowPos2dARB(_: GLdouble, _: GLdouble) -> c_void { fail!("WindowPos2dARB was not loaded") }
-    pub extern "C" fn WindowPos2dMESA(_: GLdouble, _: GLdouble) -> c_void { fail!("WindowPos2dMESA was not loaded") }
-    pub extern "C" fn WindowPos2dv(_: *GLdouble) -> c_void { fail!("WindowPos2dv was not loaded") }
-    pub extern "C" fn WindowPos2dvARB(_: *GLdouble) -> c_void { fail!("WindowPos2dvARB was not loaded") }
-    pub extern "C" fn WindowPos2dvMESA(_: *GLdouble) -> c_void { fail!("WindowPos2dvMESA was not loaded") }
-    pub extern "C" fn WindowPos2f(_: GLfloat, _: GLfloat) -> c_void { fail!("WindowPos2f was not loaded") }
-    pub extern "C" fn WindowPos2fARB(_: GLfloat, _: GLfloat) -> c_void { fail!("WindowPos2fARB was not loaded") }
-    pub extern "C" fn WindowPos2fMESA(_: GLfloat, _: GLfloat) -> c_void { fail!("WindowPos2fMESA was not loaded") }
-    pub extern "C" fn WindowPos2fv(_: *GLfloat) -> c_void { fail!("WindowPos2fv was not loaded") }
-    pub extern "C" fn WindowPos2fvARB(_: *GLfloat) -> c_void { fail!("WindowPos2fvARB was not loaded") }
-    pub extern "C" fn WindowPos2fvMESA(_: *GLfloat) -> c_void { fail!("WindowPos2fvMESA was not loaded") }
-    pub extern "C" fn WindowPos2i(_: GLint, _: GLint) -> c_void { fail!("WindowPos2i was not loaded") }
-    pub extern "C" fn WindowPos2iARB(_: GLint, _: GLint) -> c_void { fail!("WindowPos2iARB was not loaded") }
-    pub extern "C" fn WindowPos2iMESA(_: GLint, _: GLint) -> c_void { fail!("WindowPos2iMESA was not loaded") }
-    pub extern "C" fn WindowPos2iv(_: *GLint) -> c_void { fail!("WindowPos2iv was not loaded") }
-    pub extern "C" fn WindowPos2ivARB(_: *GLint) -> c_void { fail!("WindowPos2ivARB was not loaded") }
-    pub extern "C" fn WindowPos2ivMESA(_: *GLint) -> c_void { fail!("WindowPos2ivMESA was not loaded") }
-    pub extern "C" fn WindowPos2s(_: GLshort, _: GLshort) -> c_void { fail!("WindowPos2s was not loaded") }
-    pub extern "C" fn WindowPos2sARB(_: GLshort, _: GLshort) -> c_void { fail!("WindowPos2sARB was not loaded") }
-    pub extern "C" fn WindowPos2sMESA(_: GLshort, _: GLshort) -> c_void { fail!("WindowPos2sMESA was not loaded") }
-    pub extern "C" fn WindowPos2sv(_: *GLshort) -> c_void { fail!("WindowPos2sv was not loaded") }
-    pub extern "C" fn WindowPos2svARB(_: *GLshort) -> c_void { fail!("WindowPos2svARB was not loaded") }
-    pub extern "C" fn WindowPos2svMESA(_: *GLshort) -> c_void { fail!("WindowPos2svMESA was not loaded") }
-    pub extern "C" fn WindowPos3d(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("WindowPos3d was not loaded") }
-    pub extern "C" fn WindowPos3dARB(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("WindowPos3dARB was not loaded") }
-    pub extern "C" fn WindowPos3dMESA(_: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("WindowPos3dMESA was not loaded") }
-    pub extern "C" fn WindowPos3dv(_: *GLdouble) -> c_void { fail!("WindowPos3dv was not loaded") }
-    pub extern "C" fn WindowPos3dvARB(_: *GLdouble) -> c_void { fail!("WindowPos3dvARB was not loaded") }
-    pub extern "C" fn WindowPos3dvMESA(_: *GLdouble) -> c_void { fail!("WindowPos3dvMESA was not loaded") }
-    pub extern "C" fn WindowPos3f(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("WindowPos3f was not loaded") }
-    pub extern "C" fn WindowPos3fARB(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("WindowPos3fARB was not loaded") }
-    pub extern "C" fn WindowPos3fMESA(_: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("WindowPos3fMESA was not loaded") }
-    pub extern "C" fn WindowPos3fv(_: *GLfloat) -> c_void { fail!("WindowPos3fv was not loaded") }
-    pub extern "C" fn WindowPos3fvARB(_: *GLfloat) -> c_void { fail!("WindowPos3fvARB was not loaded") }
-    pub extern "C" fn WindowPos3fvMESA(_: *GLfloat) -> c_void { fail!("WindowPos3fvMESA was not loaded") }
-    pub extern "C" fn WindowPos3i(_: GLint, _: GLint, _: GLint) -> c_void { fail!("WindowPos3i was not loaded") }
-    pub extern "C" fn WindowPos3iARB(_: GLint, _: GLint, _: GLint) -> c_void { fail!("WindowPos3iARB was not loaded") }
-    pub extern "C" fn WindowPos3iMESA(_: GLint, _: GLint, _: GLint) -> c_void { fail!("WindowPos3iMESA was not loaded") }
-    pub extern "C" fn WindowPos3iv(_: *GLint) -> c_void { fail!("WindowPos3iv was not loaded") }
-    pub extern "C" fn WindowPos3ivARB(_: *GLint) -> c_void { fail!("WindowPos3ivARB was not loaded") }
-    pub extern "C" fn WindowPos3ivMESA(_: *GLint) -> c_void { fail!("WindowPos3ivMESA was not loaded") }
-    pub extern "C" fn WindowPos3s(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("WindowPos3s was not loaded") }
-    pub extern "C" fn WindowPos3sARB(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("WindowPos3sARB was not loaded") }
-    pub extern "C" fn WindowPos3sMESA(_: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("WindowPos3sMESA was not loaded") }
-    pub extern "C" fn WindowPos3sv(_: *GLshort) -> c_void { fail!("WindowPos3sv was not loaded") }
-    pub extern "C" fn WindowPos3svARB(_: *GLshort) -> c_void { fail!("WindowPos3svARB was not loaded") }
-    pub extern "C" fn WindowPos3svMESA(_: *GLshort) -> c_void { fail!("WindowPos3svMESA was not loaded") }
-    pub extern "C" fn WindowPos4dMESA(_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble) -> c_void { fail!("WindowPos4dMESA was not loaded") }
-    pub extern "C" fn WindowPos4dvMESA(_: *GLdouble) -> c_void { fail!("WindowPos4dvMESA was not loaded") }
-    pub extern "C" fn WindowPos4fMESA(_: GLfloat, _: GLfloat, _: GLfloat, _: GLfloat) -> c_void { fail!("WindowPos4fMESA was not loaded") }
-    pub extern "C" fn WindowPos4fvMESA(_: *GLfloat) -> c_void { fail!("WindowPos4fvMESA was not loaded") }
-    pub extern "C" fn WindowPos4iMESA(_: GLint, _: GLint, _: GLint, _: GLint) -> c_void { fail!("WindowPos4iMESA was not loaded") }
-    pub extern "C" fn WindowPos4ivMESA(_: *GLint) -> c_void { fail!("WindowPos4ivMESA was not loaded") }
-    pub extern "C" fn WindowPos4sMESA(_: GLshort, _: GLshort, _: GLshort, _: GLshort) -> c_void { fail!("WindowPos4sMESA was not loaded") }
-    pub extern "C" fn WindowPos4svMESA(_: *GLshort) -> c_void { fail!("WindowPos4svMESA was not loaded") }
-    pub extern "C" fn WriteMaskEXT(_: GLuint, _: GLuint, _: GLenum, _: GLenum, _: GLenum, _: GLenum) -> c_void { fail!("WriteMaskEXT was not loaded") }
+    macro_rules! failing(
+        (fn $name:ident()) => (pub extern "C" fn $name() { fail!(stringify!($name was not loaded)) });
+        (fn $name:ident() -> $ret_ty:ty) => (pub extern "C" fn $name() -> $ret_ty { fail!(stringify!($name was not loaded)) });
+        (fn $name:ident($($arg_ty:ty),*)) => (pub extern "C" fn $name($(_: $arg_ty),*) { fail!(stringify!($name was not loaded)) });
+        (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern "C" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });
+    )
+    
+    failing!(fn Accum(GLenum, GLfloat) -> c_void)
+    failing!(fn AccumxOES(GLenum, GLfixed) -> c_void)
+    failing!(fn ActiveProgramEXT(GLuint) -> c_void)
+    failing!(fn ActiveShaderProgram(GLuint, GLuint) -> c_void)
+    failing!(fn ActiveShaderProgramEXT(GLuint, GLuint) -> c_void)
+    failing!(fn ActiveStencilFaceEXT(GLenum) -> c_void)
+    failing!(fn ActiveTexture(GLenum) -> c_void)
+    failing!(fn ActiveTextureARB(GLenum) -> c_void)
+    failing!(fn ActiveVaryingNV(GLuint, *GLchar) -> c_void)
+    failing!(fn AlphaFragmentOp1ATI(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn AlphaFragmentOp2ATI(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn AlphaFragmentOp3ATI(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn AlphaFunc(GLenum, GLfloat) -> c_void)
+    failing!(fn AlphaFuncQCOM(GLenum, GLclampf) -> c_void)
+    failing!(fn AlphaFuncx(GLenum, GLfixed) -> c_void)
+    failing!(fn AlphaFuncxOES(GLenum, GLfixed) -> c_void)
+    failing!(fn ApplyTextureEXT(GLenum) -> c_void)
+    failing!(fn AreProgramsResidentNV(GLsizei, *GLuint, *GLboolean) -> GLboolean)
+    failing!(fn AreTexturesResident(GLsizei, *GLuint, *GLboolean) -> GLboolean)
+    failing!(fn AreTexturesResidentEXT(GLsizei, *GLuint, *GLboolean) -> GLboolean)
+    failing!(fn ArrayElement(GLint) -> c_void)
+    failing!(fn ArrayElementEXT(GLint) -> c_void)
+    failing!(fn ArrayObjectATI(GLenum, GLint, GLenum, GLsizei, GLuint, GLuint) -> c_void)
+    failing!(fn AsyncMarkerSGIX(GLuint) -> c_void)
+    failing!(fn AttachObjectARB(GLhandleARB, GLhandleARB) -> c_void)
+    failing!(fn AttachShader(GLuint, GLuint) -> c_void)
+    failing!(fn Begin(GLenum) -> c_void)
+    failing!(fn BeginConditionalRender(GLuint, GLenum) -> c_void)
+    failing!(fn BeginConditionalRenderNV(GLuint, GLenum) -> c_void)
+    failing!(fn BeginConditionalRenderNVX(GLuint) -> c_void)
+    failing!(fn BeginFragmentShaderATI() -> c_void)
+    failing!(fn BeginOcclusionQueryNV(GLuint) -> c_void)
+    failing!(fn BeginPerfMonitorAMD(GLuint) -> c_void)
+    failing!(fn BeginQuery(GLenum, GLuint) -> c_void)
+    failing!(fn BeginQueryARB(GLenum, GLuint) -> c_void)
+    failing!(fn BeginQueryEXT(GLenum, GLuint) -> c_void)
+    failing!(fn BeginQueryIndexed(GLenum, GLuint, GLuint) -> c_void)
+    failing!(fn BeginTransformFeedback(GLenum) -> c_void)
+    failing!(fn BeginTransformFeedbackEXT(GLenum) -> c_void)
+    failing!(fn BeginTransformFeedbackNV(GLenum) -> c_void)
+    failing!(fn BeginVertexShaderEXT() -> c_void)
+    failing!(fn BeginVideoCaptureNV(GLuint) -> c_void)
+    failing!(fn BindAttribLocation(GLuint, GLuint, *GLchar) -> c_void)
+    failing!(fn BindAttribLocationARB(GLhandleARB, GLuint, *GLcharARB) -> c_void)
+    failing!(fn BindBuffer(GLenum, GLuint) -> c_void)
+    failing!(fn BindBufferARB(GLenum, GLuint) -> c_void)
+    failing!(fn BindBufferBase(GLenum, GLuint, GLuint) -> c_void)
+    failing!(fn BindBufferBaseEXT(GLenum, GLuint, GLuint) -> c_void)
+    failing!(fn BindBufferBaseNV(GLenum, GLuint, GLuint) -> c_void)
+    failing!(fn BindBufferOffsetEXT(GLenum, GLuint, GLuint, GLintptr) -> c_void)
+    failing!(fn BindBufferOffsetNV(GLenum, GLuint, GLuint, GLintptr) -> c_void)
+    failing!(fn BindBufferRange(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn BindBufferRangeEXT(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn BindBufferRangeNV(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn BindBuffersBase(GLenum, GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn BindBuffersRange(GLenum, GLuint, GLsizei, *GLuint, *GLintptr, *GLsizeiptr) -> c_void)
+    failing!(fn BindFragDataLocation(GLuint, GLuint, *GLchar) -> c_void)
+    failing!(fn BindFragDataLocationEXT(GLuint, GLuint, *GLchar) -> c_void)
+    failing!(fn BindFragDataLocationIndexed(GLuint, GLuint, GLuint, *GLchar) -> c_void)
+    failing!(fn BindFragmentShaderATI(GLuint) -> c_void)
+    failing!(fn BindFramebuffer(GLenum, GLuint) -> c_void)
+    failing!(fn BindFramebufferEXT(GLenum, GLuint) -> c_void)
+    failing!(fn BindFramebufferOES(GLenum, GLuint) -> c_void)
+    failing!(fn BindImageTexture(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLenum) -> c_void)
+    failing!(fn BindImageTextureEXT(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLint) -> c_void)
+    failing!(fn BindImageTextures(GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn BindLightParameterEXT(GLenum, GLenum) -> GLuint)
+    failing!(fn BindMaterialParameterEXT(GLenum, GLenum) -> GLuint)
+    failing!(fn BindMultiTextureEXT(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn BindParameterEXT(GLenum) -> GLuint)
+    failing!(fn BindProgramARB(GLenum, GLuint) -> c_void)
+    failing!(fn BindProgramNV(GLenum, GLuint) -> c_void)
+    failing!(fn BindProgramPipeline(GLuint) -> c_void)
+    failing!(fn BindProgramPipelineEXT(GLuint) -> c_void)
+    failing!(fn BindRenderbuffer(GLenum, GLuint) -> c_void)
+    failing!(fn BindRenderbufferEXT(GLenum, GLuint) -> c_void)
+    failing!(fn BindRenderbufferOES(GLenum, GLuint) -> c_void)
+    failing!(fn BindSampler(GLuint, GLuint) -> c_void)
+    failing!(fn BindSamplers(GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn BindTexGenParameterEXT(GLenum, GLenum, GLenum) -> GLuint)
+    failing!(fn BindTexture(GLenum, GLuint) -> c_void)
+    failing!(fn BindTextureEXT(GLenum, GLuint) -> c_void)
+    failing!(fn BindTextureUnitParameterEXT(GLenum, GLenum) -> GLuint)
+    failing!(fn BindTextures(GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn BindTransformFeedback(GLenum, GLuint) -> c_void)
+    failing!(fn BindTransformFeedbackNV(GLenum, GLuint) -> c_void)
+    failing!(fn BindVertexArray(GLuint) -> c_void)
+    failing!(fn BindVertexArrayAPPLE(GLuint) -> c_void)
+    failing!(fn BindVertexArrayOES(GLuint) -> c_void)
+    failing!(fn BindVertexBuffer(GLuint, GLuint, GLintptr, GLsizei) -> c_void)
+    failing!(fn BindVertexBuffers(GLuint, GLsizei, *GLuint, *GLintptr, *GLsizei) -> c_void)
+    failing!(fn BindVertexShaderEXT(GLuint) -> c_void)
+    failing!(fn BindVideoCaptureStreamBufferNV(GLuint, GLuint, GLenum, GLintptrARB) -> c_void)
+    failing!(fn BindVideoCaptureStreamTextureNV(GLuint, GLuint, GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn Binormal3bEXT(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn Binormal3bvEXT(*GLbyte) -> c_void)
+    failing!(fn Binormal3dEXT(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Binormal3dvEXT(*GLdouble) -> c_void)
+    failing!(fn Binormal3fEXT(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Binormal3fvEXT(*GLfloat) -> c_void)
+    failing!(fn Binormal3iEXT(GLint, GLint, GLint) -> c_void)
+    failing!(fn Binormal3ivEXT(*GLint) -> c_void)
+    failing!(fn Binormal3sEXT(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Binormal3svEXT(*GLshort) -> c_void)
+    failing!(fn BinormalPointerEXT(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn Bitmap(GLsizei, GLsizei, GLfloat, GLfloat, GLfloat, GLfloat, *GLubyte) -> c_void)
+    failing!(fn BitmapxOES(GLsizei, GLsizei, GLfixed, GLfixed, GLfixed, GLfixed, *GLubyte) -> c_void)
+    failing!(fn BlendColor(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn BlendColorEXT(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn BlendColorxOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn BlendEquation(GLenum) -> c_void)
+    failing!(fn BlendEquationEXT(GLenum) -> c_void)
+    failing!(fn BlendEquationIndexedAMD(GLuint, GLenum) -> c_void)
+    failing!(fn BlendEquationOES(GLenum) -> c_void)
+    failing!(fn BlendEquationSeparate(GLenum, GLenum) -> c_void)
+    failing!(fn BlendEquationSeparateEXT(GLenum, GLenum) -> c_void)
+    failing!(fn BlendEquationSeparateIndexedAMD(GLuint, GLenum, GLenum) -> c_void)
+    failing!(fn BlendEquationSeparateOES(GLenum, GLenum) -> c_void)
+    failing!(fn BlendEquationSeparatei(GLuint, GLenum, GLenum) -> c_void)
+    failing!(fn BlendEquationSeparateiARB(GLuint, GLenum, GLenum) -> c_void)
+    failing!(fn BlendEquationi(GLuint, GLenum) -> c_void)
+    failing!(fn BlendEquationiARB(GLuint, GLenum) -> c_void)
+    failing!(fn BlendFunc(GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncIndexedAMD(GLuint, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncSeparate(GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncSeparateEXT(GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncSeparateINGR(GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncSeparateIndexedAMD(GLuint, GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncSeparateOES(GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncSeparatei(GLuint, GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFuncSeparateiARB(GLuint, GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFunci(GLuint, GLenum, GLenum) -> c_void)
+    failing!(fn BlendFunciARB(GLuint, GLenum, GLenum) -> c_void)
+    failing!(fn BlendParameteriNV(GLenum, GLint) -> c_void)
+    failing!(fn BlendBarrierNV() -> c_void)
+    failing!(fn BlitFramebuffer(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> c_void)
+    failing!(fn BlitFramebufferANGLE(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> c_void)
+    failing!(fn BlitFramebufferEXT(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> c_void)
+    failing!(fn BlitFramebufferNV(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> c_void)
+    failing!(fn BufferAddressRangeNV(GLenum, GLuint, GLuint64EXT, GLsizeiptr) -> c_void)
+    failing!(fn BufferData(GLenum, GLsizeiptr, *GLvoid, GLenum) -> c_void)
+    failing!(fn BufferDataARB(GLenum, GLsizeiptrARB, *GLvoid, GLenum) -> c_void)
+    failing!(fn BufferParameteriAPPLE(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn BufferStorage(GLenum, GLsizeiptr, *c_void, GLbitfield) -> c_void)
+    failing!(fn BufferSubData(GLenum, GLintptr, GLsizeiptr, *GLvoid) -> c_void)
+    failing!(fn BufferSubDataARB(GLenum, GLintptrARB, GLsizeiptrARB, *GLvoid) -> c_void)
+    failing!(fn CallList(GLuint) -> c_void)
+    failing!(fn CallLists(GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn CheckFramebufferStatus(GLenum) -> GLenum)
+    failing!(fn CheckFramebufferStatusEXT(GLenum) -> GLenum)
+    failing!(fn CheckFramebufferStatusOES(GLenum) -> GLenum)
+    failing!(fn CheckNamedFramebufferStatusEXT(GLuint, GLenum) -> GLenum)
+    failing!(fn ClampColor(GLenum, GLenum) -> c_void)
+    failing!(fn ClampColorARB(GLenum, GLenum) -> c_void)
+    failing!(fn Clear(GLbitfield) -> c_void)
+    failing!(fn ClearAccum(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ClearAccumxOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn ClearBufferData(GLenum, GLenum, GLenum, GLenum, *c_void) -> c_void)
+    failing!(fn ClearBufferSubData(GLenum, GLenum, GLintptr, GLsizeiptr, GLenum, GLenum, *c_void) -> c_void)
+    failing!(fn ClearBufferfi(GLenum, GLint, GLfloat, GLint) -> c_void)
+    failing!(fn ClearBufferfv(GLenum, GLint, *GLfloat) -> c_void)
+    failing!(fn ClearBufferiv(GLenum, GLint, *GLint) -> c_void)
+    failing!(fn ClearBufferuiv(GLenum, GLint, *GLuint) -> c_void)
+    failing!(fn ClearColor(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ClearColorIiEXT(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ClearColorIuiEXT(GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ClearColorx(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn ClearColorxOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn ClearDepth(GLdouble) -> c_void)
+    failing!(fn ClearDepthdNV(GLdouble) -> c_void)
+    failing!(fn ClearDepthf(GLfloat) -> c_void)
+    failing!(fn ClearDepthfOES(GLclampf) -> c_void)
+    failing!(fn ClearDepthx(GLfixed) -> c_void)
+    failing!(fn ClearDepthxOES(GLfixed) -> c_void)
+    failing!(fn ClearIndex(GLfloat) -> c_void)
+    failing!(fn ClearNamedBufferDataEXT(GLuint, GLenum, GLenum, GLenum, *c_void) -> c_void)
+    failing!(fn ClearNamedBufferSubDataEXT(GLuint, GLenum, GLenum, GLenum, GLsizeiptr, GLsizeiptr, *c_void) -> c_void)
+    failing!(fn ClearStencil(GLint) -> c_void)
+    failing!(fn ClearTexImage(GLuint, GLint, GLenum, GLenum, *c_void) -> c_void)
+    failing!(fn ClearTexSubImage(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *c_void) -> c_void)
+    failing!(fn ClientActiveTexture(GLenum) -> c_void)
+    failing!(fn ClientActiveTextureARB(GLenum) -> c_void)
+    failing!(fn ClientActiveVertexStreamATI(GLenum) -> c_void)
+    failing!(fn ClientAttribDefaultEXT(GLbitfield) -> c_void)
+    failing!(fn ClientWaitSync(GLsync, GLbitfield, GLuint64) -> GLenum)
+    failing!(fn ClientWaitSyncAPPLE(GLsync, GLbitfield, GLuint64) -> GLenum)
+    failing!(fn ClipControlARB(GLenum, GLenum) -> c_void)
+    failing!(fn ClipPlane(GLenum, *GLdouble) -> c_void)
+    failing!(fn ClipPlanef(GLenum, *GLfloat) -> c_void)
+    failing!(fn ClipPlanefIMG(GLenum, *GLfloat) -> c_void)
+    failing!(fn ClipPlanefOES(GLenum, *GLfloat) -> c_void)
+    failing!(fn ClipPlanex(GLenum, *GLfixed) -> c_void)
+    failing!(fn ClipPlanexIMG(GLenum, *GLfixed) -> c_void)
+    failing!(fn ClipPlanexOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn Color3b(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn Color3bv(*GLbyte) -> c_void)
+    failing!(fn Color3d(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Color3dv(*GLdouble) -> c_void)
+    failing!(fn Color3f(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Color3fVertex3fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Color3fVertex3fvSUN(*GLfloat, *GLfloat) -> c_void)
+    failing!(fn Color3fv(*GLfloat) -> c_void)
+    failing!(fn Color3hNV(GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn Color3hvNV(*GLhalfNV) -> c_void)
+    failing!(fn Color3i(GLint, GLint, GLint) -> c_void)
+    failing!(fn Color3iv(*GLint) -> c_void)
+    failing!(fn Color3s(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Color3sv(*GLshort) -> c_void)
+    failing!(fn Color3ub(GLubyte, GLubyte, GLubyte) -> c_void)
+    failing!(fn Color3ubv(*GLubyte) -> c_void)
+    failing!(fn Color3ui(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn Color3uiv(*GLuint) -> c_void)
+    failing!(fn Color3us(GLushort, GLushort, GLushort) -> c_void)
+    failing!(fn Color3usv(*GLushort) -> c_void)
+    failing!(fn Color3xOES(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Color3xvOES(*GLfixed) -> c_void)
+    failing!(fn Color4b(GLbyte, GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn Color4bv(*GLbyte) -> c_void)
+    failing!(fn Color4d(GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Color4dv(*GLdouble) -> c_void)
+    failing!(fn Color4f(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Color4fNormal3fVertex3fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Color4fNormal3fVertex3fvSUN(*GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn Color4fv(*GLfloat) -> c_void)
+    failing!(fn Color4hNV(GLhalfNV, GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn Color4hvNV(*GLhalfNV) -> c_void)
+    failing!(fn Color4i(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn Color4iv(*GLint) -> c_void)
+    failing!(fn Color4s(GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Color4sv(*GLshort) -> c_void)
+    failing!(fn Color4ub(GLubyte, GLubyte, GLubyte, GLubyte) -> c_void)
+    failing!(fn Color4ubVertex2fSUN(GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat) -> c_void)
+    failing!(fn Color4ubVertex2fvSUN(*GLubyte, *GLfloat) -> c_void)
+    failing!(fn Color4ubVertex3fSUN(GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Color4ubVertex3fvSUN(*GLubyte, *GLfloat) -> c_void)
+    failing!(fn Color4ubv(*GLubyte) -> c_void)
+    failing!(fn Color4ui(GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn Color4uiv(*GLuint) -> c_void)
+    failing!(fn Color4us(GLushort, GLushort, GLushort, GLushort) -> c_void)
+    failing!(fn Color4usv(*GLushort) -> c_void)
+    failing!(fn Color4x(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Color4xOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Color4xvOES(*GLfixed) -> c_void)
+    failing!(fn ColorFormatNV(GLint, GLenum, GLsizei) -> c_void)
+    failing!(fn ColorFragmentOp1ATI(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ColorFragmentOp2ATI(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ColorFragmentOp3ATI(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ColorMask(GLboolean, GLboolean, GLboolean, GLboolean) -> c_void)
+    failing!(fn ColorMaskIndexedEXT(GLuint, GLboolean, GLboolean, GLboolean, GLboolean) -> c_void)
+    failing!(fn ColorMaski(GLuint, GLboolean, GLboolean, GLboolean, GLboolean) -> c_void)
+    failing!(fn ColorMaterial(GLenum, GLenum) -> c_void)
+    failing!(fn ColorP3ui(GLenum, GLuint) -> c_void)
+    failing!(fn ColorP3uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn ColorP4ui(GLenum, GLuint) -> c_void)
+    failing!(fn ColorP4uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn ColorPointer(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn ColorPointerEXT(GLint, GLenum, GLsizei, GLsizei, *GLvoid) -> c_void)
+    failing!(fn ColorPointerListIBM(GLint, GLenum, GLint, **GLvoid, GLint) -> c_void)
+    failing!(fn ColorPointervINTEL(GLint, GLenum, **GLvoid) -> c_void)
+    failing!(fn ColorSubTable(GLenum, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ColorSubTableEXT(GLenum, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ColorTable(GLenum, GLenum, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ColorTableEXT(GLenum, GLenum, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ColorTableParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn ColorTableParameterfvSGI(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn ColorTableParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn ColorTableParameterivSGI(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn ColorTableSGI(GLenum, GLenum, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn CombinerInputNV(GLenum, GLenum, GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn CombinerOutputNV(GLenum, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum, GLboolean, GLboolean, GLboolean) -> c_void)
+    failing!(fn CombinerParameterfNV(GLenum, GLfloat) -> c_void)
+    failing!(fn CombinerParameterfvNV(GLenum, *GLfloat) -> c_void)
+    failing!(fn CombinerParameteriNV(GLenum, GLint) -> c_void)
+    failing!(fn CombinerParameterivNV(GLenum, *GLint) -> c_void)
+    failing!(fn CombinerStageParameterfvNV(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn CompileShader(GLuint) -> c_void)
+    failing!(fn CompileShaderARB(GLhandleARB) -> c_void)
+    failing!(fn CompileShaderIncludeARB(GLuint, GLsizei, **GLchar, *GLint) -> c_void)
+    failing!(fn CompressedMultiTexImage1DEXT(GLenum, GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedMultiTexImage2DEXT(GLenum, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedMultiTexImage3DEXT(GLenum, GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedMultiTexSubImage1DEXT(GLenum, GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedMultiTexSubImage2DEXT(GLenum, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedMultiTexSubImage3DEXT(GLenum, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexImage1D(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexImage1DARB(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexImage2D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexImage2DARB(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexImage3D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexImage3DARB(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexImage3DOES(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexSubImage1DARB(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexSubImage2DARB(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexSubImage3D(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexSubImage3DARB(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTexSubImage3DOES(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTextureImage1DEXT(GLuint, GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTextureImage2DEXT(GLuint, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTextureImage3DEXT(GLuint, GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTextureSubImage1DEXT(GLuint, GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTextureSubImage2DEXT(GLuint, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn CompressedTextureSubImage3DEXT(GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn ConvolutionFilter1D(GLenum, GLenum, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ConvolutionFilter1DEXT(GLenum, GLenum, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ConvolutionFilter2D(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ConvolutionFilter2DEXT(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ConvolutionParameterf(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn ConvolutionParameterfEXT(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn ConvolutionParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn ConvolutionParameterfvEXT(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn ConvolutionParameteri(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn ConvolutionParameteriEXT(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn ConvolutionParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn ConvolutionParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn ConvolutionParameterxOES(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn ConvolutionParameterxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn CopyBufferSubData(GLenum, GLenum, GLintptr, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn CopyColorSubTable(GLenum, GLsizei, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyColorSubTableEXT(GLenum, GLsizei, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyColorTable(GLenum, GLenum, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyColorTableSGI(GLenum, GLenum, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyConvolutionFilter1D(GLenum, GLenum, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyConvolutionFilter1DEXT(GLenum, GLenum, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyConvolutionFilter2D(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyConvolutionFilter2DEXT(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyImageSubData(GLuint, GLenum, GLint, GLint, GLint, GLint, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyImageSubDataNV(GLuint, GLenum, GLint, GLint, GLint, GLint, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyMultiTexImage1DEXT(GLenum, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint) -> c_void)
+    failing!(fn CopyMultiTexImage2DEXT(GLenum, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint) -> c_void)
+    failing!(fn CopyMultiTexSubImage1DEXT(GLenum, GLenum, GLint, GLint, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyMultiTexSubImage2DEXT(GLenum, GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyMultiTexSubImage3DEXT(GLenum, GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyPathNV(GLuint, GLuint) -> c_void)
+    failing!(fn CopyPixels(GLint, GLint, GLsizei, GLsizei, GLenum) -> c_void)
+    failing!(fn CopyTexImage1D(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint) -> c_void)
+    failing!(fn CopyTexImage1DEXT(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint) -> c_void)
+    failing!(fn CopyTexImage2D(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint) -> c_void)
+    failing!(fn CopyTexImage2DEXT(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint) -> c_void)
+    failing!(fn CopyTexSubImage1D(GLenum, GLint, GLint, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyTexSubImage1DEXT(GLenum, GLint, GLint, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyTexSubImage2D(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyTexSubImage2DEXT(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyTexSubImage3D(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyTexSubImage3DEXT(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyTexSubImage3DOES(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyTextureImage1DEXT(GLuint, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint) -> c_void)
+    failing!(fn CopyTextureImage2DEXT(GLuint, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint) -> c_void)
+    failing!(fn CopyTextureLevelsAPPLE(GLuint, GLuint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyTextureSubImage1DEXT(GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei) -> c_void)
+    failing!(fn CopyTextureSubImage2DEXT(GLuint, GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CopyTextureSubImage3DEXT(GLuint, GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn CoverFillPathInstancedNV(GLsizei, GLenum, *GLvoid, GLuint, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn CoverFillPathNV(GLuint, GLenum) -> c_void)
+    failing!(fn CoverStrokePathInstancedNV(GLsizei, GLenum, *GLvoid, GLuint, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn CoverStrokePathNV(GLuint, GLenum) -> c_void)
+    failing!(fn CoverageMaskNV(GLboolean) -> c_void)
+    failing!(fn CoverageOperationNV(GLenum) -> c_void)
+    failing!(fn CreateProgram() -> GLuint)
+    failing!(fn CreateProgramObjectARB() -> GLhandleARB)
+    failing!(fn CreateShader(GLenum) -> GLuint)
+    failing!(fn CreateShaderObjectARB(GLenum) -> GLhandleARB)
+    failing!(fn CreateShaderProgramEXT(GLenum, *GLchar) -> GLuint)
+    failing!(fn CreateShaderProgramv(GLenum, GLsizei, **GLchar) -> GLuint)
+    failing!(fn CreateShaderProgramvEXT(GLenum, GLsizei, **GLchar) -> GLuint)
+    failing!(fn CreateSyncFromCLeventARB(*_cl_context, *_cl_event, GLbitfield) -> GLsync)
+    failing!(fn CullFace(GLenum) -> c_void)
+    failing!(fn CullParameterdvEXT(GLenum, *GLdouble) -> c_void)
+    failing!(fn CullParameterfvEXT(GLenum, *GLfloat) -> c_void)
+    failing!(fn CurrentPaletteMatrixARB(GLint) -> c_void)
+    failing!(fn CurrentPaletteMatrixOES(GLuint) -> c_void)
+    failing!(fn DebugMessageCallback(GLDEBUGPROC, *c_void) -> c_void)
+    failing!(fn DebugMessageCallbackAMD(GLDEBUGPROCAMD, *c_void) -> c_void)
+    failing!(fn DebugMessageCallbackARB(GLDEBUGPROCARB, *c_void) -> c_void)
+    failing!(fn DebugMessageCallbackKHR(GLDEBUGPROCKHR, *c_void) -> c_void)
+    failing!(fn DebugMessageControl(GLenum, GLenum, GLenum, GLsizei, *GLuint, GLboolean) -> c_void)
+    failing!(fn DebugMessageControlARB(GLenum, GLenum, GLenum, GLsizei, *GLuint, GLboolean) -> c_void)
+    failing!(fn DebugMessageControlKHR(GLenum, GLenum, GLenum, GLsizei, *GLuint, GLboolean) -> c_void)
+    failing!(fn DebugMessageEnableAMD(GLenum, GLenum, GLsizei, *GLuint, GLboolean) -> c_void)
+    failing!(fn DebugMessageInsert(GLenum, GLenum, GLuint, GLenum, GLsizei, *GLchar) -> c_void)
+    failing!(fn DebugMessageInsertAMD(GLenum, GLenum, GLuint, GLsizei, *GLchar) -> c_void)
+    failing!(fn DebugMessageInsertARB(GLenum, GLenum, GLuint, GLenum, GLsizei, *GLchar) -> c_void)
+    failing!(fn DebugMessageInsertKHR(GLenum, GLenum, GLuint, GLenum, GLsizei, *GLchar) -> c_void)
+    failing!(fn DeformSGIX(GLbitfield) -> c_void)
+    failing!(fn DeformationMap3dSGIX(GLenum, GLdouble, GLdouble, GLint, GLint, GLdouble, GLdouble, GLint, GLint, GLdouble, GLdouble, GLint, GLint, *GLdouble) -> c_void)
+    failing!(fn DeformationMap3fSGIX(GLenum, GLfloat, GLfloat, GLint, GLint, GLfloat, GLfloat, GLint, GLint, GLfloat, GLfloat, GLint, GLint, *GLfloat) -> c_void)
+    failing!(fn DeleteAsyncMarkersSGIX(GLuint, GLsizei) -> c_void)
+    failing!(fn DeleteBuffers(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteBuffersARB(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteFencesAPPLE(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteFencesNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteFragmentShaderATI(GLuint) -> c_void)
+    failing!(fn DeleteFramebuffers(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteFramebuffersEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteFramebuffersOES(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteLists(GLuint, GLsizei) -> c_void)
+    failing!(fn DeleteNamedStringARB(GLint, *GLchar) -> c_void)
+    failing!(fn DeleteNamesAMD(GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn DeleteObjectARB(GLhandleARB) -> c_void)
+    failing!(fn DeleteOcclusionQueriesNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeletePathsNV(GLuint, GLsizei) -> c_void)
+    failing!(fn DeletePerfMonitorsAMD(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteProgram(GLuint) -> c_void)
+    failing!(fn DeleteProgramPipelines(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteProgramPipelinesEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteProgramsARB(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteProgramsNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteQueries(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteQueriesARB(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteQueriesEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteRenderbuffers(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteRenderbuffersEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteRenderbuffersOES(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteSamplers(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteShader(GLuint) -> c_void)
+    failing!(fn DeleteSync(GLsync) -> c_void)
+    failing!(fn DeleteSyncAPPLE(GLsync) -> c_void)
+    failing!(fn DeleteTextures(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteTexturesEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteTransformFeedbacks(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteTransformFeedbacksNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteVertexArrays(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteVertexArraysAPPLE(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteVertexArraysOES(GLsizei, *GLuint) -> c_void)
+    failing!(fn DeleteVertexShaderEXT(GLuint) -> c_void)
+    failing!(fn DepthBoundsEXT(GLclampd, GLclampd) -> c_void)
+    failing!(fn DepthBoundsdNV(GLdouble, GLdouble) -> c_void)
+    failing!(fn DepthFunc(GLenum) -> c_void)
+    failing!(fn DepthMask(GLboolean) -> c_void)
+    failing!(fn DepthRange(GLdouble, GLdouble) -> c_void)
+    failing!(fn DepthRangeArrayv(GLuint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn DepthRangeIndexed(GLuint, GLdouble, GLdouble) -> c_void)
+    failing!(fn DepthRangedNV(GLdouble, GLdouble) -> c_void)
+    failing!(fn DepthRangef(GLfloat, GLfloat) -> c_void)
+    failing!(fn DepthRangefOES(GLclampf, GLclampf) -> c_void)
+    failing!(fn DepthRangex(GLfixed, GLfixed) -> c_void)
+    failing!(fn DepthRangexOES(GLfixed, GLfixed) -> c_void)
+    failing!(fn DetachObjectARB(GLhandleARB, GLhandleARB) -> c_void)
+    failing!(fn DetachShader(GLuint, GLuint) -> c_void)
+    failing!(fn DetailTexFuncSGIS(GLenum, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Disable(GLenum) -> c_void)
+    failing!(fn DisableClientState(GLenum) -> c_void)
+    failing!(fn DisableClientStateIndexedEXT(GLenum, GLuint) -> c_void)
+    failing!(fn DisableClientStateiEXT(GLenum, GLuint) -> c_void)
+    failing!(fn DisableDriverControlQCOM(GLuint) -> c_void)
+    failing!(fn DisableIndexedEXT(GLenum, GLuint) -> c_void)
+    failing!(fn DisableVariantClientStateEXT(GLuint) -> c_void)
+    failing!(fn DisableVertexArrayAttribEXT(GLuint, GLuint) -> c_void)
+    failing!(fn DisableVertexArrayEXT(GLuint, GLenum) -> c_void)
+    failing!(fn DisableVertexAttribAPPLE(GLuint, GLenum) -> c_void)
+    failing!(fn DisableVertexAttribArray(GLuint) -> c_void)
+    failing!(fn DisableVertexAttribArrayARB(GLuint) -> c_void)
+    failing!(fn Disablei(GLenum, GLuint) -> c_void)
+    failing!(fn DiscardFramebufferEXT(GLenum, GLsizei, *GLenum) -> c_void)
+    failing!(fn DispatchCompute(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn DispatchComputeGroupSizeARB(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn DispatchComputeIndirect(GLintptr) -> c_void)
+    failing!(fn DrawArrays(GLenum, GLint, GLsizei) -> c_void)
+    failing!(fn DrawArraysEXT(GLenum, GLint, GLsizei) -> c_void)
+    failing!(fn DrawArraysIndirect(GLenum, *GLvoid) -> c_void)
+    failing!(fn DrawArraysInstanced(GLenum, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn DrawArraysInstancedANGLE(GLenum, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn DrawArraysInstancedARB(GLenum, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn DrawArraysInstancedBaseInstance(GLenum, GLint, GLsizei, GLsizei, GLuint) -> c_void)
+    failing!(fn DrawArraysInstancedEXT(GLenum, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn DrawArraysInstancedNV(GLenum, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn DrawBuffer(GLenum) -> c_void)
+    failing!(fn DrawBuffers(GLsizei, *GLenum) -> c_void)
+    failing!(fn DrawBuffersARB(GLsizei, *GLenum) -> c_void)
+    failing!(fn DrawBuffersATI(GLsizei, *GLenum) -> c_void)
+    failing!(fn DrawBuffersEXT(GLsizei, *GLenum) -> c_void)
+    failing!(fn DrawBuffersIndexedEXT(GLint, *GLenum, *GLint) -> c_void)
+    failing!(fn DrawBuffersNV(GLsizei, *GLenum) -> c_void)
+    failing!(fn DrawElementArrayAPPLE(GLenum, GLint, GLsizei) -> c_void)
+    failing!(fn DrawElementArrayATI(GLenum, GLsizei) -> c_void)
+    failing!(fn DrawElements(GLenum, GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn DrawElementsBaseVertex(GLenum, GLsizei, GLenum, *GLvoid, GLint) -> c_void)
+    failing!(fn DrawElementsIndirect(GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn DrawElementsInstanced(GLenum, GLsizei, GLenum, *GLvoid, GLsizei) -> c_void)
+    failing!(fn DrawElementsInstancedANGLE(GLenum, GLsizei, GLenum, *c_void, GLsizei) -> c_void)
+    failing!(fn DrawElementsInstancedARB(GLenum, GLsizei, GLenum, *GLvoid, GLsizei) -> c_void)
+    failing!(fn DrawElementsInstancedBaseInstance(GLenum, GLsizei, GLenum, *c_void, GLsizei, GLuint) -> c_void)
+    failing!(fn DrawElementsInstancedBaseVertex(GLenum, GLsizei, GLenum, *GLvoid, GLsizei, GLint) -> c_void)
+    failing!(fn DrawElementsInstancedBaseVertexBaseInstance(GLenum, GLsizei, GLenum, *c_void, GLsizei, GLint, GLuint) -> c_void)
+    failing!(fn DrawElementsInstancedEXT(GLenum, GLsizei, GLenum, *GLvoid, GLsizei) -> c_void)
+    failing!(fn DrawElementsInstancedNV(GLenum, GLsizei, GLenum, *GLvoid, GLsizei) -> c_void)
+    failing!(fn DrawMeshArraysSUN(GLenum, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn DrawPixels(GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn DrawRangeElementArrayAPPLE(GLenum, GLuint, GLuint, GLint, GLsizei) -> c_void)
+    failing!(fn DrawRangeElementArrayATI(GLenum, GLuint, GLuint, GLsizei) -> c_void)
+    failing!(fn DrawRangeElements(GLenum, GLuint, GLuint, GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn DrawRangeElementsBaseVertex(GLenum, GLuint, GLuint, GLsizei, GLenum, *GLvoid, GLint) -> c_void)
+    failing!(fn DrawRangeElementsEXT(GLenum, GLuint, GLuint, GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn DrawTexfOES(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn DrawTexfvOES(*GLfloat) -> c_void)
+    failing!(fn DrawTexiOES(GLint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn DrawTexivOES(*GLint) -> c_void)
+    failing!(fn DrawTexsOES(GLshort, GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn DrawTexsvOES(*GLshort) -> c_void)
+    failing!(fn DrawTextureNV(GLuint, GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn DrawTexxOES(GLfixed, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn DrawTexxvOES(*GLfixed) -> c_void)
+    failing!(fn DrawTransformFeedback(GLenum, GLuint) -> c_void)
+    failing!(fn DrawTransformFeedbackInstanced(GLenum, GLuint, GLsizei) -> c_void)
+    failing!(fn DrawTransformFeedbackNV(GLenum, GLuint) -> c_void)
+    failing!(fn DrawTransformFeedbackStream(GLenum, GLuint, GLuint) -> c_void)
+    failing!(fn DrawTransformFeedbackStreamInstanced(GLenum, GLuint, GLuint, GLsizei) -> c_void)
+    failing!(fn EGLImageTargetRenderbufferStorageOES(GLenum, GLeglImageOES) -> c_void)
+    failing!(fn EGLImageTargetTexture2DOES(GLenum, GLeglImageOES) -> c_void)
+    failing!(fn EdgeFlag(GLboolean) -> c_void)
+    failing!(fn EdgeFlagFormatNV(GLsizei) -> c_void)
+    failing!(fn EdgeFlagPointer(GLsizei, *GLvoid) -> c_void)
+    failing!(fn EdgeFlagPointerEXT(GLsizei, GLsizei, *GLboolean) -> c_void)
+    failing!(fn EdgeFlagPointerListIBM(GLint, **GLboolean, GLint) -> c_void)
+    failing!(fn EdgeFlagv(*GLboolean) -> c_void)
+    failing!(fn ElementPointerAPPLE(GLenum, *GLvoid) -> c_void)
+    failing!(fn ElementPointerATI(GLenum, *GLvoid) -> c_void)
+    failing!(fn Enable(GLenum) -> c_void)
+    failing!(fn EnableClientState(GLenum) -> c_void)
+    failing!(fn EnableClientStateIndexedEXT(GLenum, GLuint) -> c_void)
+    failing!(fn EnableClientStateiEXT(GLenum, GLuint) -> c_void)
+    failing!(fn EnableDriverControlQCOM(GLuint) -> c_void)
+    failing!(fn EnableIndexedEXT(GLenum, GLuint) -> c_void)
+    failing!(fn EnableVariantClientStateEXT(GLuint) -> c_void)
+    failing!(fn EnableVertexArrayAttribEXT(GLuint, GLuint) -> c_void)
+    failing!(fn EnableVertexArrayEXT(GLuint, GLenum) -> c_void)
+    failing!(fn EnableVertexAttribAPPLE(GLuint, GLenum) -> c_void)
+    failing!(fn EnableVertexAttribArray(GLuint) -> c_void)
+    failing!(fn EnableVertexAttribArrayARB(GLuint) -> c_void)
+    failing!(fn Enablei(GLenum, GLuint) -> c_void)
+    failing!(fn End() -> c_void)
+    failing!(fn EndConditionalRender() -> c_void)
+    failing!(fn EndConditionalRenderNV() -> c_void)
+    failing!(fn EndConditionalRenderNVX() -> c_void)
+    failing!(fn EndFragmentShaderATI() -> c_void)
+    failing!(fn EndList() -> c_void)
+    failing!(fn EndOcclusionQueryNV() -> c_void)
+    failing!(fn EndPerfMonitorAMD(GLuint) -> c_void)
+    failing!(fn EndQuery(GLenum) -> c_void)
+    failing!(fn EndQueryARB(GLenum) -> c_void)
+    failing!(fn EndQueryEXT(GLenum) -> c_void)
+    failing!(fn EndQueryIndexed(GLenum, GLuint) -> c_void)
+    failing!(fn EndTilingQCOM(GLbitfield) -> c_void)
+    failing!(fn EndTransformFeedback() -> c_void)
+    failing!(fn EndTransformFeedbackEXT() -> c_void)
+    failing!(fn EndTransformFeedbackNV() -> c_void)
+    failing!(fn EndVertexShaderEXT() -> c_void)
+    failing!(fn EndVideoCaptureNV(GLuint) -> c_void)
+    failing!(fn EvalCoord1d(GLdouble) -> c_void)
+    failing!(fn EvalCoord1dv(*GLdouble) -> c_void)
+    failing!(fn EvalCoord1f(GLfloat) -> c_void)
+    failing!(fn EvalCoord1fv(*GLfloat) -> c_void)
+    failing!(fn EvalCoord1xOES(GLfixed) -> c_void)
+    failing!(fn EvalCoord1xvOES(*GLfixed) -> c_void)
+    failing!(fn EvalCoord2d(GLdouble, GLdouble) -> c_void)
+    failing!(fn EvalCoord2dv(*GLdouble) -> c_void)
+    failing!(fn EvalCoord2f(GLfloat, GLfloat) -> c_void)
+    failing!(fn EvalCoord2fv(*GLfloat) -> c_void)
+    failing!(fn EvalCoord2xOES(GLfixed, GLfixed) -> c_void)
+    failing!(fn EvalCoord2xvOES(*GLfixed) -> c_void)
+    failing!(fn EvalMapsNV(GLenum, GLenum) -> c_void)
+    failing!(fn EvalMesh1(GLenum, GLint, GLint) -> c_void)
+    failing!(fn EvalMesh2(GLenum, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn EvalPoint1(GLint) -> c_void)
+    failing!(fn EvalPoint2(GLint, GLint) -> c_void)
+    failing!(fn ExecuteProgramNV(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn ExtGetBufferPointervQCOM(GLenum, **GLvoid) -> c_void)
+    failing!(fn ExtGetBuffersQCOM(*GLuint, GLint, *GLint) -> c_void)
+    failing!(fn ExtGetFramebuffersQCOM(*GLuint, GLint, *GLint) -> c_void)
+    failing!(fn ExtGetProgramBinarySourceQCOM(GLuint, GLenum, *GLchar, *GLint) -> c_void)
+    failing!(fn ExtGetProgramsQCOM(*GLuint, GLint, *GLint) -> c_void)
+    failing!(fn ExtGetRenderbuffersQCOM(*GLuint, GLint, *GLint) -> c_void)
+    failing!(fn ExtGetShadersQCOM(*GLuint, GLint, *GLint) -> c_void)
+    failing!(fn ExtGetTexLevelParameterivQCOM(GLuint, GLenum, GLint, GLenum, *GLint) -> c_void)
+    failing!(fn ExtGetTexSubImageQCOM(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ExtGetTexturesQCOM(*GLuint, GLint, *GLint) -> c_void)
+    failing!(fn ExtIsProgramBinaryQCOM(GLuint) -> GLboolean)
+    failing!(fn ExtTexObjectStateOverrideiQCOM(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn ExtractComponentEXT(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn FeedbackBuffer(GLsizei, GLenum, *GLfloat) -> c_void)
+    failing!(fn FeedbackBufferxOES(GLsizei, GLenum, *GLfixed) -> c_void)
+    failing!(fn FenceSync(GLenum, GLbitfield) -> GLsync)
+    failing!(fn FenceSyncAPPLE(GLenum, GLbitfield) -> GLsync)
+    failing!(fn FinalCombinerInputNV(GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn Finish() -> c_void)
+    failing!(fn FinishAsyncSGIX(*GLuint) -> GLint)
+    failing!(fn FinishFenceAPPLE(GLuint) -> c_void)
+    failing!(fn FinishFenceNV(GLuint) -> c_void)
+    failing!(fn FinishObjectAPPLE(GLenum, GLint) -> c_void)
+    failing!(fn FinishTextureSUNX() -> c_void)
+    failing!(fn Flush() -> c_void)
+    failing!(fn FlushMappedBufferRange(GLenum, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn FlushMappedBufferRangeAPPLE(GLenum, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn FlushMappedBufferRangeEXT(GLenum, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn FlushMappedNamedBufferRangeEXT(GLuint, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn FlushPixelDataRangeNV(GLenum) -> c_void)
+    failing!(fn FlushRasterSGIX() -> c_void)
+    failing!(fn FlushStaticDataIBM(GLenum) -> c_void)
+    failing!(fn FlushVertexArrayRangeAPPLE(GLsizei, *GLvoid) -> c_void)
+    failing!(fn FlushVertexArrayRangeNV() -> c_void)
+    failing!(fn FogCoordFormatNV(GLenum, GLsizei) -> c_void)
+    failing!(fn FogCoordPointer(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn FogCoordPointerEXT(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn FogCoordPointerListIBM(GLenum, GLint, **GLvoid, GLint) -> c_void)
+    failing!(fn FogCoordd(GLdouble) -> c_void)
+    failing!(fn FogCoorddEXT(GLdouble) -> c_void)
+    failing!(fn FogCoorddv(*GLdouble) -> c_void)
+    failing!(fn FogCoorddvEXT(*GLdouble) -> c_void)
+    failing!(fn FogCoordf(GLfloat) -> c_void)
+    failing!(fn FogCoordfEXT(GLfloat) -> c_void)
+    failing!(fn FogCoordfv(*GLfloat) -> c_void)
+    failing!(fn FogCoordfvEXT(*GLfloat) -> c_void)
+    failing!(fn FogCoordhNV(GLhalfNV) -> c_void)
+    failing!(fn FogCoordhvNV(*GLhalfNV) -> c_void)
+    failing!(fn FogFuncSGIS(GLsizei, *GLfloat) -> c_void)
+    failing!(fn Fogf(GLenum, GLfloat) -> c_void)
+    failing!(fn Fogfv(GLenum, *GLfloat) -> c_void)
+    failing!(fn Fogi(GLenum, GLint) -> c_void)
+    failing!(fn Fogiv(GLenum, *GLint) -> c_void)
+    failing!(fn Fogx(GLenum, GLfixed) -> c_void)
+    failing!(fn FogxOES(GLenum, GLfixed) -> c_void)
+    failing!(fn Fogxv(GLenum, *GLfixed) -> c_void)
+    failing!(fn FogxvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn FragmentColorMaterialSGIX(GLenum, GLenum) -> c_void)
+    failing!(fn FragmentLightModelfSGIX(GLenum, GLfloat) -> c_void)
+    failing!(fn FragmentLightModelfvSGIX(GLenum, *GLfloat) -> c_void)
+    failing!(fn FragmentLightModeliSGIX(GLenum, GLint) -> c_void)
+    failing!(fn FragmentLightModelivSGIX(GLenum, *GLint) -> c_void)
+    failing!(fn FragmentLightfSGIX(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn FragmentLightfvSGIX(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn FragmentLightiSGIX(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn FragmentLightivSGIX(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn FragmentMaterialfSGIX(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn FragmentMaterialfvSGIX(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn FragmentMaterialiSGIX(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn FragmentMaterialivSGIX(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn FrameTerminatorGREMEDY() -> c_void)
+    failing!(fn FrameZoomSGIX(GLint) -> c_void)
+    failing!(fn FramebufferDrawBufferEXT(GLuint, GLenum) -> c_void)
+    failing!(fn FramebufferDrawBuffersEXT(GLuint, GLsizei, *GLenum) -> c_void)
+    failing!(fn FramebufferParameteri(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn FramebufferReadBufferEXT(GLuint, GLenum) -> c_void)
+    failing!(fn FramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn FramebufferRenderbufferEXT(GLenum, GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn FramebufferRenderbufferOES(GLenum, GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn FramebufferTexture(GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTexture1D(GLenum, GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTexture1DEXT(GLenum, GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTexture2DEXT(GLenum, GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTexture2DMultisampleEXT(GLenum, GLenum, GLenum, GLuint, GLint, GLsizei) -> c_void)
+    failing!(fn FramebufferTexture2DMultisampleIMG(GLenum, GLenum, GLenum, GLuint, GLint, GLsizei) -> c_void)
+    failing!(fn FramebufferTexture2DOES(GLenum, GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTexture3D(GLenum, GLenum, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn FramebufferTexture3DEXT(GLenum, GLenum, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn FramebufferTexture3DOES(GLenum, GLenum, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn FramebufferTextureARB(GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTextureEXT(GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn FramebufferTextureFaceARB(GLenum, GLenum, GLuint, GLint, GLenum) -> c_void)
+    failing!(fn FramebufferTextureFaceEXT(GLenum, GLenum, GLuint, GLint, GLenum) -> c_void)
+    failing!(fn FramebufferTextureLayer(GLenum, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn FramebufferTextureLayerARB(GLenum, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn FramebufferTextureLayerEXT(GLenum, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn FreeObjectBufferATI(GLuint) -> c_void)
+    failing!(fn FrontFace(GLenum) -> c_void)
+    failing!(fn Frustum(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Frustumf(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn FrustumfOES(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Frustumx(GLfixed, GLfixed, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn FrustumxOES(GLfixed, GLfixed, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn GenAsyncMarkersSGIX(GLsizei) -> GLuint)
+    failing!(fn GenBuffers(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenBuffersARB(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenFencesAPPLE(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenFencesNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenFragmentShadersATI(GLuint) -> GLuint)
+    failing!(fn GenFramebuffers(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenFramebuffersEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenFramebuffersOES(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenLists(GLsizei) -> GLuint)
+    failing!(fn GenNamesAMD(GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn GenOcclusionQueriesNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenPathsNV(GLsizei) -> GLuint)
+    failing!(fn GenPerfMonitorsAMD(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenProgramPipelines(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenProgramPipelinesEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenProgramsARB(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenProgramsNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenQueries(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenQueriesARB(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenQueriesEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenRenderbuffers(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenRenderbuffersEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenRenderbuffersOES(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenSamplers(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenSymbolsEXT(GLenum, GLenum, GLenum, GLuint) -> GLuint)
+    failing!(fn GenTextures(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenTexturesEXT(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenTransformFeedbacks(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenTransformFeedbacksNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenVertexArrays(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenVertexArraysAPPLE(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenVertexArraysOES(GLsizei, *GLuint) -> c_void)
+    failing!(fn GenVertexShadersEXT(GLuint) -> GLuint)
+    failing!(fn GenerateMipmap(GLenum) -> c_void)
+    failing!(fn GenerateMipmapEXT(GLenum) -> c_void)
+    failing!(fn GenerateMipmapOES(GLenum) -> c_void)
+    failing!(fn GenerateMultiTexMipmapEXT(GLenum, GLenum) -> c_void)
+    failing!(fn GenerateTextureMipmapEXT(GLuint, GLenum) -> c_void)
+    failing!(fn GetActiveAtomicCounterBufferiv(GLuint, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetActiveAttrib(GLuint, GLuint, GLsizei, *GLsizei, *GLint, *GLenum, *GLchar) -> c_void)
+    failing!(fn GetActiveAttribARB(GLhandleARB, GLuint, GLsizei, *GLsizei, *GLint, *GLenum, *GLcharARB) -> c_void)
+    failing!(fn GetActiveSubroutineName(GLuint, GLenum, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetActiveSubroutineUniformName(GLuint, GLenum, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetActiveSubroutineUniformiv(GLuint, GLenum, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetActiveUniform(GLuint, GLuint, GLsizei, *GLsizei, *GLint, *GLenum, *GLchar) -> c_void)
+    failing!(fn GetActiveUniformARB(GLhandleARB, GLuint, GLsizei, *GLsizei, *GLint, *GLenum, *GLcharARB) -> c_void)
+    failing!(fn GetActiveUniformBlockName(GLuint, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetActiveUniformBlockiv(GLuint, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetActiveUniformName(GLuint, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetActiveUniformsiv(GLuint, GLsizei, *GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetActiveVaryingNV(GLuint, GLuint, GLsizei, *GLsizei, *GLsizei, *GLenum, *GLchar) -> c_void)
+    failing!(fn GetArrayObjectfvATI(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetArrayObjectivATI(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetAttachedObjectsARB(GLhandleARB, GLsizei, *GLsizei, *GLhandleARB) -> c_void)
+    failing!(fn GetAttachedShaders(GLuint, GLsizei, *GLsizei, *GLuint) -> c_void)
+    failing!(fn GetAttribLocation(GLuint, *GLchar) -> GLint)
+    failing!(fn GetAttribLocationARB(GLhandleARB, *GLcharARB) -> GLint)
+    failing!(fn GetBooleanIndexedvEXT(GLenum, GLuint, *GLboolean) -> c_void)
+    failing!(fn GetBooleani_v(GLenum, GLuint, *GLboolean) -> c_void)
+    failing!(fn GetBooleanv(GLenum, *GLboolean) -> c_void)
+    failing!(fn GetBufferParameteri64v(GLenum, GLenum, *GLint64) -> c_void)
+    failing!(fn GetBufferParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetBufferParameterivARB(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetBufferParameterui64vNV(GLenum, GLenum, *GLuint64EXT) -> c_void)
+    failing!(fn GetBufferPointerv(GLenum, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetBufferPointervARB(GLenum, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetBufferPointervOES(GLenum, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetBufferSubData(GLenum, GLintptr, GLsizeiptr, *GLvoid) -> c_void)
+    failing!(fn GetBufferSubDataARB(GLenum, GLintptrARB, GLsizeiptrARB, *GLvoid) -> c_void)
+    failing!(fn GetClipPlane(GLenum, *GLdouble) -> c_void)
+    failing!(fn GetClipPlanef(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetClipPlanefOES(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetClipPlanex(GLenum, *GLfixed) -> c_void)
+    failing!(fn GetClipPlanexOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn GetColorTable(GLenum, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetColorTableEXT(GLenum, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetColorTableParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetColorTableParameterfvEXT(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetColorTableParameterfvSGI(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetColorTableParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetColorTableParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetColorTableParameterivSGI(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetColorTableSGI(GLenum, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetCombinerInputParameterfvNV(GLenum, GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetCombinerInputParameterivNV(GLenum, GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetCombinerOutputParameterfvNV(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetCombinerOutputParameterivNV(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetCombinerStageParameterfvNV(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetCompressedMultiTexImageEXT(GLenum, GLenum, GLint, *GLvoid) -> c_void)
+    failing!(fn GetCompressedTexImage(GLenum, GLint, *GLvoid) -> c_void)
+    failing!(fn GetCompressedTexImageARB(GLenum, GLint, *GLvoid) -> c_void)
+    failing!(fn GetCompressedTextureImageEXT(GLuint, GLenum, GLint, *GLvoid) -> c_void)
+    failing!(fn GetConvolutionFilter(GLenum, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetConvolutionFilterEXT(GLenum, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetConvolutionParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetConvolutionParameterfvEXT(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetConvolutionParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetConvolutionParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetConvolutionParameterxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetDebugMessageLog(GLuint, GLsizei, *GLenum, *GLenum, *GLuint, *GLenum, *GLsizei, *GLchar) -> GLuint)
+    failing!(fn GetDebugMessageLogAMD(GLuint, GLsizei, *GLenum, *GLuint, *GLuint, *GLsizei, *GLchar) -> GLuint)
+    failing!(fn GetDebugMessageLogARB(GLuint, GLsizei, *GLenum, *GLenum, *GLuint, *GLenum, *GLsizei, *GLchar) -> GLuint)
+    failing!(fn GetDebugMessageLogKHR(GLuint, GLsizei, *GLenum, *GLenum, *GLuint, *GLenum, *GLsizei, *GLchar) -> GLuint)
+    failing!(fn GetDetailTexFuncSGIS(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetDoubleIndexedvEXT(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn GetDoublei_v(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn GetDoublei_vEXT(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn GetDoublev(GLenum, *GLdouble) -> c_void)
+    failing!(fn GetDriverControlStringQCOM(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetDriverControlsQCOM(*GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn GetError() -> GLenum)
+    failing!(fn GetFenceivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetFinalCombinerInputParameterfvNV(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetFinalCombinerInputParameterivNV(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetFixedv(GLenum, *GLfixed) -> c_void)
+    failing!(fn GetFixedvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn GetFloatIndexedvEXT(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetFloati_v(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetFloati_vEXT(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetFloatv(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetFogFuncSGIS(*GLfloat) -> c_void)
+    failing!(fn GetFragDataIndex(GLuint, *GLchar) -> GLint)
+    failing!(fn GetFragDataLocation(GLuint, *GLchar) -> GLint)
+    failing!(fn GetFragDataLocationEXT(GLuint, *GLchar) -> GLint)
+    failing!(fn GetFragmentLightfvSGIX(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetFragmentLightivSGIX(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetFragmentMaterialfvSGIX(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetFragmentMaterialivSGIX(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetFramebufferAttachmentParameteriv(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetFramebufferAttachmentParameterivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetFramebufferAttachmentParameterivOES(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetFramebufferParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetFramebufferParameterivEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetGraphicsResetStatusARB() -> GLenum)
+    failing!(fn GetGraphicsResetStatusEXT() -> GLenum)
+    failing!(fn GetHandleARB(GLenum) -> GLhandleARB)
+    failing!(fn GetHistogram(GLenum, GLboolean, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetHistogramEXT(GLenum, GLboolean, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetHistogramParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetHistogramParameterfvEXT(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetHistogramParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetHistogramParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetHistogramParameterxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetImageHandleARB(GLuint, GLint, GLboolean, GLint, GLenum) -> GLuint64)
+    failing!(fn GetImageHandleNV(GLuint, GLint, GLboolean, GLint, GLenum) -> GLuint64)
+    failing!(fn GetImageTransformParameterfvHP(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetImageTransformParameterivHP(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetInfoLogARB(GLhandleARB, GLsizei, *GLsizei, *GLcharARB) -> c_void)
+    failing!(fn GetInstrumentsSGIX() -> GLint)
+    failing!(fn GetInteger64i_v(GLenum, GLuint, *GLint64) -> c_void)
+    failing!(fn GetInteger64v(GLenum, *GLint64) -> c_void)
+    failing!(fn GetInteger64vAPPLE(GLenum, *GLint64) -> c_void)
+    failing!(fn GetIntegerIndexedvEXT(GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn GetIntegeri_v(GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn GetIntegeri_vEXT(GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn GetIntegerui64i_vNV(GLenum, GLuint, *GLuint64EXT) -> c_void)
+    failing!(fn GetIntegerui64vNV(GLenum, *GLuint64EXT) -> c_void)
+    failing!(fn GetIntegerv(GLenum, *GLint) -> c_void)
+    failing!(fn GetInternalformati64v(GLenum, GLenum, GLenum, GLsizei, *GLint64) -> c_void)
+    failing!(fn GetInternalformativ(GLenum, GLenum, GLenum, GLsizei, *GLint) -> c_void)
+    failing!(fn GetInvariantBooleanvEXT(GLuint, GLenum, *GLboolean) -> c_void)
+    failing!(fn GetInvariantFloatvEXT(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetInvariantIntegervEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetLightfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetLightiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetLightx(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetLightxOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetLightxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetLightxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetListParameterfvSGIX(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetListParameterivSGIX(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetLocalConstantBooleanvEXT(GLuint, GLenum, *GLboolean) -> c_void)
+    failing!(fn GetLocalConstantFloatvEXT(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetLocalConstantIntegervEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetMapAttribParameterfvNV(GLenum, GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMapAttribParameterivNV(GLenum, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetMapControlPointsNV(GLenum, GLuint, GLenum, GLsizei, GLsizei, GLboolean, *GLvoid) -> c_void)
+    failing!(fn GetMapParameterfvNV(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMapParameterivNV(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMapdv(GLenum, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetMapfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMapiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMapxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetMaterialfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMaterialiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMaterialx(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn GetMaterialxOES(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn GetMaterialxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetMaterialxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetMinmax(GLenum, GLboolean, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetMinmaxEXT(GLenum, GLboolean, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetMinmaxParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMinmaxParameterfvEXT(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMinmaxParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMinmaxParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMultiTexEnvfvEXT(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMultiTexEnvivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMultiTexGendvEXT(GLenum, GLenum, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetMultiTexGenfvEXT(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMultiTexGenivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMultiTexImageEXT(GLenum, GLenum, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetMultiTexLevelParameterfvEXT(GLenum, GLenum, GLint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMultiTexLevelParameterivEXT(GLenum, GLenum, GLint, GLenum, *GLint) -> c_void)
+    failing!(fn GetMultiTexParameterIivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMultiTexParameterIuivEXT(GLenum, GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn GetMultiTexParameterfvEXT(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetMultiTexParameterivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetMultisamplefv(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetMultisamplefvNV(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetNamedBufferParameterivEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetNamedBufferParameterui64vNV(GLuint, GLenum, *GLuint64EXT) -> c_void)
+    failing!(fn GetNamedBufferPointervEXT(GLuint, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetNamedBufferSubDataEXT(GLuint, GLintptr, GLsizeiptr, *GLvoid) -> c_void)
+    failing!(fn GetNamedFramebufferAttachmentParameterivEXT(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetNamedFramebufferParameterivEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetNamedProgramLocalParameterIivEXT(GLuint, GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn GetNamedProgramLocalParameterIuivEXT(GLuint, GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn GetNamedProgramLocalParameterdvEXT(GLuint, GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn GetNamedProgramLocalParameterfvEXT(GLuint, GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetNamedProgramStringEXT(GLuint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetNamedProgramivEXT(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetNamedRenderbufferParameterivEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetNamedStringARB(GLint, *GLchar, GLsizei, *GLint, *GLchar) -> c_void)
+    failing!(fn GetNamedStringivARB(GLint, *GLchar, GLenum, *GLint) -> c_void)
+    failing!(fn GetObjectBufferfvATI(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetObjectBufferivATI(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetObjectLabel(GLenum, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetObjectLabelEXT(GLenum, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetObjectLabelKHR(GLenum, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetObjectParameterfvARB(GLhandleARB, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetObjectParameterivAPPLE(GLenum, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetObjectParameterivARB(GLhandleARB, GLenum, *GLint) -> c_void)
+    failing!(fn GetObjectPtrLabel(*c_void, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetObjectPtrLabelKHR(*c_void, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetOcclusionQueryivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetOcclusionQueryuivNV(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetPathColorGenfvNV(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetPathColorGenivNV(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetPathCommandsNV(GLuint, *GLubyte) -> c_void)
+    failing!(fn GetPathCoordsNV(GLuint, *GLfloat) -> c_void)
+    failing!(fn GetPathDashArrayNV(GLuint, *GLfloat) -> c_void)
+    failing!(fn GetPathLengthNV(GLuint, GLsizei, GLsizei) -> GLfloat)
+    failing!(fn GetPathMetricRangeNV(GLbitfield, GLuint, GLsizei, GLsizei, *GLfloat) -> c_void)
+    failing!(fn GetPathMetricsNV(GLbitfield, GLsizei, GLenum, *GLvoid, GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn GetPathParameterfvNV(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetPathParameterivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetPathSpacingNV(GLenum, GLsizei, GLenum, *GLvoid, GLuint, GLfloat, GLfloat, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetPathTexGenfvNV(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetPathTexGenivNV(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetPerfMonitorCounterDataAMD(GLuint, GLenum, GLsizei, *GLuint, *GLint) -> c_void)
+    failing!(fn GetPerfMonitorCounterInfoAMD(GLuint, GLuint, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetPerfMonitorCounterStringAMD(GLuint, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetPerfMonitorCountersAMD(GLuint, *GLint, *GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn GetPerfMonitorGroupStringAMD(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetPerfMonitorGroupsAMD(*GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn GetPixelMapfv(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetPixelMapuiv(GLenum, *GLuint) -> c_void)
+    failing!(fn GetPixelMapusv(GLenum, *GLushort) -> c_void)
+    failing!(fn GetPixelMapxv(GLenum, GLint, *GLfixed) -> c_void)
+    failing!(fn GetPixelTexGenParameterfvSGIS(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetPixelTexGenParameterivSGIS(GLenum, *GLint) -> c_void)
+    failing!(fn GetPixelTransformParameterfvEXT(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetPixelTransformParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetPointerIndexedvEXT(GLenum, GLuint, **GLvoid) -> c_void)
+    failing!(fn GetPointeri_vEXT(GLenum, GLuint, **GLvoid) -> c_void)
+    failing!(fn GetPointerv(GLenum, **GLvoid) -> c_void)
+    failing!(fn GetPointervEXT(GLenum, **GLvoid) -> c_void)
+    failing!(fn GetPointervKHR(GLenum, **GLvoid) -> c_void)
+    failing!(fn GetPolygonStipple(*GLubyte) -> c_void)
+    failing!(fn GetProgramBinary(GLuint, GLsizei, *GLsizei, *GLenum, *GLvoid) -> c_void)
+    failing!(fn GetProgramBinaryOES(GLuint, GLsizei, *GLsizei, *GLenum, *GLvoid) -> c_void)
+    failing!(fn GetProgramEnvParameterIivNV(GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn GetProgramEnvParameterIuivNV(GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn GetProgramEnvParameterdvARB(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn GetProgramEnvParameterfvARB(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetProgramInfoLog(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetProgramInterfaceiv(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetProgramLocalParameterIivNV(GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn GetProgramLocalParameterIuivNV(GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn GetProgramLocalParameterdvARB(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn GetProgramLocalParameterfvARB(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn GetProgramNamedParameterdvNV(GLuint, GLsizei, *GLubyte, *GLdouble) -> c_void)
+    failing!(fn GetProgramNamedParameterfvNV(GLuint, GLsizei, *GLubyte, *GLfloat) -> c_void)
+    failing!(fn GetProgramParameterdvNV(GLenum, GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetProgramParameterfvNV(GLenum, GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetProgramPipelineInfoLog(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetProgramPipelineInfoLogEXT(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetProgramPipelineiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetProgramPipelineivEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetProgramResourceIndex(GLuint, GLenum, *GLchar) -> GLuint)
+    failing!(fn GetProgramResourceLocation(GLuint, GLenum, *GLchar) -> GLint)
+    failing!(fn GetProgramResourceLocationIndex(GLuint, GLenum, *GLchar) -> GLint)
+    failing!(fn GetProgramResourceName(GLuint, GLenum, GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetProgramResourceiv(GLuint, GLenum, GLuint, GLsizei, *GLenum, GLsizei, *GLsizei, *GLint) -> c_void)
+    failing!(fn GetProgramStageiv(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetProgramStringARB(GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetProgramStringNV(GLuint, GLenum, *GLubyte) -> c_void)
+    failing!(fn GetProgramSubroutineParameteruivNV(GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn GetProgramiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetProgramivARB(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetProgramivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetQueryIndexediv(GLenum, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetQueryObjecti64v(GLuint, GLenum, *GLint64) -> c_void)
+    failing!(fn GetQueryObjecti64vEXT(GLuint, GLenum, *GLint64) -> c_void)
+    failing!(fn GetQueryObjectiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetQueryObjectivARB(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetQueryObjectivEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetQueryObjectui64v(GLuint, GLenum, *GLuint64) -> c_void)
+    failing!(fn GetQueryObjectui64vEXT(GLuint, GLenum, *GLuint64) -> c_void)
+    failing!(fn GetQueryObjectuiv(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetQueryObjectuivARB(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetQueryObjectuivEXT(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetQueryiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetQueryivARB(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetQueryivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetRenderbufferParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetRenderbufferParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetRenderbufferParameterivOES(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetSamplerParameterIiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetSamplerParameterIuiv(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetSamplerParameterfv(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetSamplerParameteriv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetSeparableFilter(GLenum, GLenum, GLenum, *GLvoid, *GLvoid, *GLvoid) -> c_void)
+    failing!(fn GetSeparableFilterEXT(GLenum, GLenum, GLenum, *GLvoid, *GLvoid, *GLvoid) -> c_void)
+    failing!(fn GetShaderInfoLog(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetShaderPrecisionFormat(GLenum, GLenum, *GLint, *GLint) -> c_void)
+    failing!(fn GetShaderSource(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetShaderSourceARB(GLhandleARB, GLsizei, *GLsizei, *GLcharARB) -> c_void)
+    failing!(fn GetShaderiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetSharpenTexFuncSGIS(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetString(GLenum) -> *GLubyte)
+    failing!(fn GetStringi(GLenum, GLuint) -> *GLubyte)
+    failing!(fn GetSubroutineIndex(GLuint, GLenum, *GLchar) -> GLuint)
+    failing!(fn GetSubroutineUniformLocation(GLuint, GLenum, *GLchar) -> GLint)
+    failing!(fn GetSynciv(GLsync, GLenum, GLsizei, *GLsizei, *GLint) -> c_void)
+    failing!(fn GetSyncivAPPLE(GLsync, GLenum, GLsizei, *GLsizei, *GLint) -> c_void)
+    failing!(fn GetTexBumpParameterfvATI(GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTexBumpParameterivATI(GLenum, *GLint) -> c_void)
+    failing!(fn GetTexEnvfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTexEnviv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTexEnvxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetTexEnvxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetTexFilterFuncSGIS(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTexGendv(GLenum, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetTexGenfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTexGenfvOES(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTexGeniv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTexGenivOES(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTexGenxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetTexImage(GLenum, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetTexLevelParameterfv(GLenum, GLint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTexLevelParameteriv(GLenum, GLint, GLenum, *GLint) -> c_void)
+    failing!(fn GetTexLevelParameterxvOES(GLenum, GLint, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetTexParameterIiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTexParameterIivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTexParameterIuiv(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn GetTexParameterIuivEXT(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn GetTexParameterPointervAPPLE(GLenum, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetTexParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTexParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTexParameterxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetTexParameterxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn GetTextureHandleARB(GLuint) -> GLuint64)
+    failing!(fn GetTextureHandleNV(GLuint) -> GLuint64)
+    failing!(fn GetTextureImageEXT(GLuint, GLenum, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn GetTextureLevelParameterfvEXT(GLuint, GLenum, GLint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTextureLevelParameterivEXT(GLuint, GLenum, GLint, GLenum, *GLint) -> c_void)
+    failing!(fn GetTextureParameterIivEXT(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTextureParameterIuivEXT(GLuint, GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn GetTextureParameterfvEXT(GLuint, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetTextureParameterivEXT(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn GetTextureSamplerHandleARB(GLuint, GLuint) -> GLuint64)
+    failing!(fn GetTextureSamplerHandleNV(GLuint, GLuint) -> GLuint64)
+    failing!(fn GetTrackMatrixivNV(GLenum, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetTransformFeedbackVarying(GLuint, GLuint, GLsizei, *GLsizei, *GLsizei, *GLenum, *GLchar) -> c_void)
+    failing!(fn GetTransformFeedbackVaryingEXT(GLuint, GLuint, GLsizei, *GLsizei, *GLsizei, *GLenum, *GLchar) -> c_void)
+    failing!(fn GetTransformFeedbackVaryingNV(GLuint, GLuint, *GLint) -> c_void)
+    failing!(fn GetTranslatedShaderSourceANGLE(GLuint, GLsizei, *GLsizei, *GLchar) -> c_void)
+    failing!(fn GetUniformBlockIndex(GLuint, *GLchar) -> GLuint)
+    failing!(fn GetUniformBufferSizeEXT(GLuint, GLint) -> GLint)
+    failing!(fn GetUniformIndices(GLuint, GLsizei, **GLchar, *GLuint) -> c_void)
+    failing!(fn GetUniformLocation(GLuint, *GLchar) -> GLint)
+    failing!(fn GetUniformLocationARB(GLhandleARB, *GLcharARB) -> GLint)
+    failing!(fn GetUniformOffsetEXT(GLuint, GLint) -> GLintptr)
+    failing!(fn GetUniformSubroutineuiv(GLenum, GLint, *GLuint) -> c_void)
+    failing!(fn GetUniformdv(GLuint, GLint, *GLdouble) -> c_void)
+    failing!(fn GetUniformfv(GLuint, GLint, *GLfloat) -> c_void)
+    failing!(fn GetUniformfvARB(GLhandleARB, GLint, *GLfloat) -> c_void)
+    failing!(fn GetUniformi64vNV(GLuint, GLint, *GLint64EXT) -> c_void)
+    failing!(fn GetUniformiv(GLuint, GLint, *GLint) -> c_void)
+    failing!(fn GetUniformivARB(GLhandleARB, GLint, *GLint) -> c_void)
+    failing!(fn GetUniformui64vNV(GLuint, GLint, *GLuint64EXT) -> c_void)
+    failing!(fn GetUniformuiv(GLuint, GLint, *GLuint) -> c_void)
+    failing!(fn GetUniformuivEXT(GLuint, GLint, *GLuint) -> c_void)
+    failing!(fn GetVariantArrayObjectfvATI(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetVariantArrayObjectivATI(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVariantBooleanvEXT(GLuint, GLenum, *GLboolean) -> c_void)
+    failing!(fn GetVariantFloatvEXT(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetVariantIntegervEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVariantPointervEXT(GLuint, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetVaryingLocationNV(GLuint, *GLchar) -> GLint)
+    failing!(fn GetVertexArrayIntegeri_vEXT(GLuint, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVertexArrayIntegervEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVertexArrayPointeri_vEXT(GLuint, GLuint, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetVertexArrayPointervEXT(GLuint, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetVertexAttribArrayObjectfvATI(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetVertexAttribArrayObjectivATI(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVertexAttribIiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVertexAttribIivEXT(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVertexAttribIuiv(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetVertexAttribIuivEXT(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetVertexAttribLdv(GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetVertexAttribLdvEXT(GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetVertexAttribLi64vNV(GLuint, GLenum, *GLint64EXT) -> c_void)
+    failing!(fn GetVertexAttribLui64vARB(GLuint, GLenum, *GLuint64EXT) -> c_void)
+    failing!(fn GetVertexAttribLui64vNV(GLuint, GLenum, *GLuint64EXT) -> c_void)
+    failing!(fn GetVertexAttribPointerv(GLuint, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetVertexAttribPointervARB(GLuint, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetVertexAttribPointervNV(GLuint, GLenum, **GLvoid) -> c_void)
+    failing!(fn GetVertexAttribdv(GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetVertexAttribdvARB(GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetVertexAttribdvNV(GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetVertexAttribfv(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetVertexAttribfvARB(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetVertexAttribfvNV(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetVertexAttribiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVertexAttribivARB(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVertexAttribivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVideoCaptureStreamdvNV(GLuint, GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn GetVideoCaptureStreamfvNV(GLuint, GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn GetVideoCaptureStreamivNV(GLuint, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVideoCaptureivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVideoi64vNV(GLuint, GLenum, *GLint64EXT) -> c_void)
+    failing!(fn GetVideoivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn GetVideoui64vNV(GLuint, GLenum, *GLuint64EXT) -> c_void)
+    failing!(fn GetVideouivNV(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn GetnColorTableARB(GLenum, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn GetnCompressedTexImageARB(GLenum, GLint, GLsizei, *GLvoid) -> c_void)
+    failing!(fn GetnConvolutionFilterARB(GLenum, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn GetnHistogramARB(GLenum, GLboolean, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn GetnMapdvARB(GLenum, GLenum, GLsizei, *GLdouble) -> c_void)
+    failing!(fn GetnMapfvARB(GLenum, GLenum, GLsizei, *GLfloat) -> c_void)
+    failing!(fn GetnMapivARB(GLenum, GLenum, GLsizei, *GLint) -> c_void)
+    failing!(fn GetnMinmaxARB(GLenum, GLboolean, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn GetnPixelMapfvARB(GLenum, GLsizei, *GLfloat) -> c_void)
+    failing!(fn GetnPixelMapuivARB(GLenum, GLsizei, *GLuint) -> c_void)
+    failing!(fn GetnPixelMapusvARB(GLenum, GLsizei, *GLushort) -> c_void)
+    failing!(fn GetnPolygonStippleARB(GLsizei, *GLubyte) -> c_void)
+    failing!(fn GetnSeparableFilterARB(GLenum, GLenum, GLenum, GLsizei, *GLvoid, GLsizei, *GLvoid, *GLvoid) -> c_void)
+    failing!(fn GetnTexImageARB(GLenum, GLint, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn GetnUniformdvARB(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn GetnUniformfvARB(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn GetnUniformfvEXT(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn GetnUniformivARB(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn GetnUniformivEXT(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn GetnUniformuivARB(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn GlobalAlphaFactorbSUN(GLbyte) -> c_void)
+    failing!(fn GlobalAlphaFactordSUN(GLdouble) -> c_void)
+    failing!(fn GlobalAlphaFactorfSUN(GLfloat) -> c_void)
+    failing!(fn GlobalAlphaFactoriSUN(GLint) -> c_void)
+    failing!(fn GlobalAlphaFactorsSUN(GLshort) -> c_void)
+    failing!(fn GlobalAlphaFactorubSUN(GLubyte) -> c_void)
+    failing!(fn GlobalAlphaFactoruiSUN(GLuint) -> c_void)
+    failing!(fn GlobalAlphaFactorusSUN(GLushort) -> c_void)
+    failing!(fn Hint(GLenum, GLenum) -> c_void)
+    failing!(fn HintPGI(GLenum, GLint) -> c_void)
+    failing!(fn Histogram(GLenum, GLsizei, GLenum, GLboolean) -> c_void)
+    failing!(fn HistogramEXT(GLenum, GLsizei, GLenum, GLboolean) -> c_void)
+    failing!(fn IglooInterfaceSGIX(GLenum, *GLvoid) -> c_void)
+    failing!(fn ImageTransformParameterfHP(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn ImageTransformParameterfvHP(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn ImageTransformParameteriHP(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn ImageTransformParameterivHP(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn ImportSyncEXT(GLenum, GLintptr, GLbitfield) -> GLsync)
+    failing!(fn IndexFormatNV(GLenum, GLsizei) -> c_void)
+    failing!(fn IndexFuncEXT(GLenum, GLclampf) -> c_void)
+    failing!(fn IndexMask(GLuint) -> c_void)
+    failing!(fn IndexMaterialEXT(GLenum, GLenum) -> c_void)
+    failing!(fn IndexPointer(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn IndexPointerEXT(GLenum, GLsizei, GLsizei, *GLvoid) -> c_void)
+    failing!(fn IndexPointerListIBM(GLenum, GLint, **GLvoid, GLint) -> c_void)
+    failing!(fn Indexd(GLdouble) -> c_void)
+    failing!(fn Indexdv(*GLdouble) -> c_void)
+    failing!(fn Indexf(GLfloat) -> c_void)
+    failing!(fn Indexfv(*GLfloat) -> c_void)
+    failing!(fn Indexi(GLint) -> c_void)
+    failing!(fn Indexiv(*GLint) -> c_void)
+    failing!(fn Indexs(GLshort) -> c_void)
+    failing!(fn Indexsv(*GLshort) -> c_void)
+    failing!(fn Indexub(GLubyte) -> c_void)
+    failing!(fn Indexubv(*GLubyte) -> c_void)
+    failing!(fn IndexxOES(GLfixed) -> c_void)
+    failing!(fn IndexxvOES(*GLfixed) -> c_void)
+    failing!(fn InitNames() -> c_void)
+    failing!(fn InsertComponentEXT(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn InsertEventMarkerEXT(GLsizei, *GLchar) -> c_void)
+    failing!(fn InstrumentsBufferSGIX(GLsizei, *GLint) -> c_void)
+    failing!(fn InterleavedArrays(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn InterpolatePathsNV(GLuint, GLuint, GLuint, GLfloat) -> c_void)
+    failing!(fn InvalidateBufferData(GLuint) -> c_void)
+    failing!(fn InvalidateBufferSubData(GLuint, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn InvalidateFramebuffer(GLenum, GLsizei, *GLenum) -> c_void)
+    failing!(fn InvalidateSubFramebuffer(GLenum, GLsizei, *GLenum, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn InvalidateTexImage(GLuint, GLint) -> c_void)
+    failing!(fn InvalidateTexSubImage(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei) -> c_void)
+    failing!(fn IsAsyncMarkerSGIX(GLuint) -> GLboolean)
+    failing!(fn IsBuffer(GLuint) -> GLboolean)
+    failing!(fn IsBufferARB(GLuint) -> GLboolean)
+    failing!(fn IsBufferResidentNV(GLenum) -> GLboolean)
+    failing!(fn IsEnabled(GLenum) -> GLboolean)
+    failing!(fn IsEnabledIndexedEXT(GLenum, GLuint) -> GLboolean)
+    failing!(fn IsEnabledi(GLenum, GLuint) -> GLboolean)
+    failing!(fn IsFenceAPPLE(GLuint) -> GLboolean)
+    failing!(fn IsFenceNV(GLuint) -> GLboolean)
+    failing!(fn IsFramebuffer(GLuint) -> GLboolean)
+    failing!(fn IsFramebufferEXT(GLuint) -> GLboolean)
+    failing!(fn IsFramebufferOES(GLuint) -> GLboolean)
+    failing!(fn IsImageHandleResidentARB(GLuint64) -> GLboolean)
+    failing!(fn IsImageHandleResidentNV(GLuint64) -> GLboolean)
+    failing!(fn IsList(GLuint) -> GLboolean)
+    failing!(fn IsNameAMD(GLenum, GLuint) -> GLboolean)
+    failing!(fn IsNamedBufferResidentNV(GLuint) -> GLboolean)
+    failing!(fn IsNamedStringARB(GLint, *GLchar) -> GLboolean)
+    failing!(fn IsObjectBufferATI(GLuint) -> GLboolean)
+    failing!(fn IsOcclusionQueryNV(GLuint) -> GLboolean)
+    failing!(fn IsPathNV(GLuint) -> GLboolean)
+    failing!(fn IsPointInFillPathNV(GLuint, GLuint, GLfloat, GLfloat) -> GLboolean)
+    failing!(fn IsPointInStrokePathNV(GLuint, GLfloat, GLfloat) -> GLboolean)
+    failing!(fn IsProgram(GLuint) -> GLboolean)
+    failing!(fn IsProgramARB(GLuint) -> GLboolean)
+    failing!(fn IsProgramNV(GLuint) -> GLboolean)
+    failing!(fn IsProgramPipeline(GLuint) -> GLboolean)
+    failing!(fn IsProgramPipelineEXT(GLuint) -> GLboolean)
+    failing!(fn IsQuery(GLuint) -> GLboolean)
+    failing!(fn IsQueryARB(GLuint) -> GLboolean)
+    failing!(fn IsQueryEXT(GLuint) -> GLboolean)
+    failing!(fn IsRenderbuffer(GLuint) -> GLboolean)
+    failing!(fn IsRenderbufferEXT(GLuint) -> GLboolean)
+    failing!(fn IsRenderbufferOES(GLuint) -> GLboolean)
+    failing!(fn IsSampler(GLuint) -> GLboolean)
+    failing!(fn IsShader(GLuint) -> GLboolean)
+    failing!(fn IsSync(GLsync) -> GLboolean)
+    failing!(fn IsSyncAPPLE(GLsync) -> GLboolean)
+    failing!(fn IsTexture(GLuint) -> GLboolean)
+    failing!(fn IsTextureEXT(GLuint) -> GLboolean)
+    failing!(fn IsTextureHandleResidentARB(GLuint64) -> GLboolean)
+    failing!(fn IsTextureHandleResidentNV(GLuint64) -> GLboolean)
+    failing!(fn IsTransformFeedback(GLuint) -> GLboolean)
+    failing!(fn IsTransformFeedbackNV(GLuint) -> GLboolean)
+    failing!(fn IsVariantEnabledEXT(GLuint, GLenum) -> GLboolean)
+    failing!(fn IsVertexArray(GLuint) -> GLboolean)
+    failing!(fn IsVertexArrayAPPLE(GLuint) -> GLboolean)
+    failing!(fn IsVertexArrayOES(GLuint) -> GLboolean)
+    failing!(fn IsVertexAttribEnabledAPPLE(GLuint, GLenum) -> GLboolean)
+    failing!(fn LabelObjectEXT(GLenum, GLuint, GLsizei, *GLchar) -> c_void)
+    failing!(fn LightEnviSGIX(GLenum, GLint) -> c_void)
+    failing!(fn LightModelf(GLenum, GLfloat) -> c_void)
+    failing!(fn LightModelfv(GLenum, *GLfloat) -> c_void)
+    failing!(fn LightModeli(GLenum, GLint) -> c_void)
+    failing!(fn LightModeliv(GLenum, *GLint) -> c_void)
+    failing!(fn LightModelx(GLenum, GLfixed) -> c_void)
+    failing!(fn LightModelxOES(GLenum, GLfixed) -> c_void)
+    failing!(fn LightModelxv(GLenum, *GLfixed) -> c_void)
+    failing!(fn LightModelxvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn Lightf(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn Lightfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn Lighti(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn Lightiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn Lightx(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn LightxOES(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn Lightxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn LightxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn LineStipple(GLint, GLushort) -> c_void)
+    failing!(fn LineWidth(GLfloat) -> c_void)
+    failing!(fn LineWidthx(GLfixed) -> c_void)
+    failing!(fn LineWidthxOES(GLfixed) -> c_void)
+    failing!(fn LinkProgram(GLuint) -> c_void)
+    failing!(fn LinkProgramARB(GLhandleARB) -> c_void)
+    failing!(fn ListBase(GLuint) -> c_void)
+    failing!(fn ListParameterfSGIX(GLuint, GLenum, GLfloat) -> c_void)
+    failing!(fn ListParameterfvSGIX(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn ListParameteriSGIX(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn ListParameterivSGIX(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn LoadIdentity() -> c_void)
+    failing!(fn LoadIdentityDeformationMapSGIX(GLbitfield) -> c_void)
+    failing!(fn LoadMatrixd(*GLdouble) -> c_void)
+    failing!(fn LoadMatrixf(*GLfloat) -> c_void)
+    failing!(fn LoadMatrixx(*GLfixed) -> c_void)
+    failing!(fn LoadMatrixxOES(*GLfixed) -> c_void)
+    failing!(fn LoadName(GLuint) -> c_void)
+    failing!(fn LoadPaletteFromModelViewMatrixOES() -> c_void)
+    failing!(fn LoadProgramNV(GLenum, GLuint, GLsizei, *GLubyte) -> c_void)
+    failing!(fn LoadTransposeMatrixd(*GLdouble) -> c_void)
+    failing!(fn LoadTransposeMatrixdARB(*GLdouble) -> c_void)
+    failing!(fn LoadTransposeMatrixf(*GLfloat) -> c_void)
+    failing!(fn LoadTransposeMatrixfARB(*GLfloat) -> c_void)
+    failing!(fn LoadTransposeMatrixxOES(*GLfixed) -> c_void)
+    failing!(fn LockArraysEXT(GLint, GLsizei) -> c_void)
+    failing!(fn LogicOp(GLenum) -> c_void)
+    failing!(fn MakeBufferNonResidentNV(GLenum) -> c_void)
+    failing!(fn MakeBufferResidentNV(GLenum, GLenum) -> c_void)
+    failing!(fn MakeImageHandleNonResidentARB(GLuint64) -> c_void)
+    failing!(fn MakeImageHandleNonResidentNV(GLuint64) -> c_void)
+    failing!(fn MakeImageHandleResidentARB(GLuint64, GLenum) -> c_void)
+    failing!(fn MakeImageHandleResidentNV(GLuint64, GLenum) -> c_void)
+    failing!(fn MakeNamedBufferNonResidentNV(GLuint) -> c_void)
+    failing!(fn MakeNamedBufferResidentNV(GLuint, GLenum) -> c_void)
+    failing!(fn MakeTextureHandleNonResidentARB(GLuint64) -> c_void)
+    failing!(fn MakeTextureHandleNonResidentNV(GLuint64) -> c_void)
+    failing!(fn MakeTextureHandleResidentARB(GLuint64) -> c_void)
+    failing!(fn MakeTextureHandleResidentNV(GLuint64) -> c_void)
+    failing!(fn Map1d(GLenum, GLdouble, GLdouble, GLint, GLint, *GLdouble) -> c_void)
+    failing!(fn Map1f(GLenum, GLfloat, GLfloat, GLint, GLint, *GLfloat) -> c_void)
+    failing!(fn Map1xOES(GLenum, GLfixed, GLfixed, GLint, GLint, GLfixed) -> c_void)
+    failing!(fn Map2d(GLenum, GLdouble, GLdouble, GLint, GLint, GLdouble, GLdouble, GLint, GLint, *GLdouble) -> c_void)
+    failing!(fn Map2f(GLenum, GLfloat, GLfloat, GLint, GLint, GLfloat, GLfloat, GLint, GLint, *GLfloat) -> c_void)
+    failing!(fn Map2xOES(GLenum, GLfixed, GLfixed, GLint, GLint, GLfixed, GLfixed, GLint, GLint, GLfixed) -> c_void)
+    failing!(fn MapBuffer(GLenum, GLenum) -> *c_void)
+    failing!(fn MapBufferARB(GLenum, GLenum) -> *c_void)
+    failing!(fn MapBufferOES(GLenum, GLenum) -> *c_void)
+    failing!(fn MapBufferRange(GLenum, GLintptr, GLsizeiptr, GLbitfield) -> *c_void)
+    failing!(fn MapBufferRangeEXT(GLenum, GLintptr, GLsizeiptr, GLbitfield) -> *c_void)
+    failing!(fn MapControlPointsNV(GLenum, GLuint, GLenum, GLsizei, GLsizei, GLint, GLint, GLboolean, *GLvoid) -> c_void)
+    failing!(fn MapGrid1d(GLint, GLdouble, GLdouble) -> c_void)
+    failing!(fn MapGrid1f(GLint, GLfloat, GLfloat) -> c_void)
+    failing!(fn MapGrid1xOES(GLint, GLfixed, GLfixed) -> c_void)
+    failing!(fn MapGrid2d(GLint, GLdouble, GLdouble, GLint, GLdouble, GLdouble) -> c_void)
+    failing!(fn MapGrid2f(GLint, GLfloat, GLfloat, GLint, GLfloat, GLfloat) -> c_void)
+    failing!(fn MapGrid2xOES(GLint, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn MapNamedBufferEXT(GLuint, GLenum) -> *c_void)
+    failing!(fn MapNamedBufferRangeEXT(GLuint, GLintptr, GLsizeiptr, GLbitfield) -> *c_void)
+    failing!(fn MapObjectBufferATI(GLuint) -> *c_void)
+    failing!(fn MapParameterfvNV(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn MapParameterivNV(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn MapTexture2DINTEL(GLuint, GLint, GLbitfield, *GLint, *GLenum) -> *c_void)
+    failing!(fn MapVertexAttrib1dAPPLE(GLuint, GLuint, GLdouble, GLdouble, GLint, GLint, *GLdouble) -> c_void)
+    failing!(fn MapVertexAttrib1fAPPLE(GLuint, GLuint, GLfloat, GLfloat, GLint, GLint, *GLfloat) -> c_void)
+    failing!(fn MapVertexAttrib2dAPPLE(GLuint, GLuint, GLdouble, GLdouble, GLint, GLint, GLdouble, GLdouble, GLint, GLint, *GLdouble) -> c_void)
+    failing!(fn MapVertexAttrib2fAPPLE(GLuint, GLuint, GLfloat, GLfloat, GLint, GLint, GLfloat, GLfloat, GLint, GLint, *GLfloat) -> c_void)
+    failing!(fn Materialf(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn Materialfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn Materiali(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn Materialiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn Materialx(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn MaterialxOES(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn Materialxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn MaterialxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn MatrixFrustumEXT(GLenum, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MatrixIndexPointerARB(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn MatrixIndexPointerOES(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn MatrixIndexubvARB(GLint, *GLubyte) -> c_void)
+    failing!(fn MatrixIndexuivARB(GLint, *GLuint) -> c_void)
+    failing!(fn MatrixIndexusvARB(GLint, *GLushort) -> c_void)
+    failing!(fn MatrixLoadIdentityEXT(GLenum) -> c_void)
+    failing!(fn MatrixLoadTransposedEXT(GLenum, *GLdouble) -> c_void)
+    failing!(fn MatrixLoadTransposefEXT(GLenum, *GLfloat) -> c_void)
+    failing!(fn MatrixLoaddEXT(GLenum, *GLdouble) -> c_void)
+    failing!(fn MatrixLoadfEXT(GLenum, *GLfloat) -> c_void)
+    failing!(fn MatrixMode(GLenum) -> c_void)
+    failing!(fn MatrixMultTransposedEXT(GLenum, *GLdouble) -> c_void)
+    failing!(fn MatrixMultTransposefEXT(GLenum, *GLfloat) -> c_void)
+    failing!(fn MatrixMultdEXT(GLenum, *GLdouble) -> c_void)
+    failing!(fn MatrixMultfEXT(GLenum, *GLfloat) -> c_void)
+    failing!(fn MatrixOrthoEXT(GLenum, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MatrixPopEXT(GLenum) -> c_void)
+    failing!(fn MatrixPushEXT(GLenum) -> c_void)
+    failing!(fn MatrixRotatedEXT(GLenum, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MatrixRotatefEXT(GLenum, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn MatrixScaledEXT(GLenum, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MatrixScalefEXT(GLenum, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn MatrixTranslatedEXT(GLenum, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MatrixTranslatefEXT(GLenum, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn MemoryBarrier(GLbitfield) -> c_void)
+    failing!(fn MemoryBarrierEXT(GLbitfield) -> c_void)
+    failing!(fn MinSampleShading(GLfloat) -> c_void)
+    failing!(fn MinSampleShadingARB(GLfloat) -> c_void)
+    failing!(fn Minmax(GLenum, GLenum, GLboolean) -> c_void)
+    failing!(fn MinmaxEXT(GLenum, GLenum, GLboolean) -> c_void)
+    failing!(fn MultMatrixd(*GLdouble) -> c_void)
+    failing!(fn MultMatrixf(*GLfloat) -> c_void)
+    failing!(fn MultMatrixx(*GLfixed) -> c_void)
+    failing!(fn MultMatrixxOES(*GLfixed) -> c_void)
+    failing!(fn MultTransposeMatrixd(*GLdouble) -> c_void)
+    failing!(fn MultTransposeMatrixdARB(*GLdouble) -> c_void)
+    failing!(fn MultTransposeMatrixf(*GLfloat) -> c_void)
+    failing!(fn MultTransposeMatrixfARB(*GLfloat) -> c_void)
+    failing!(fn MultTransposeMatrixxOES(*GLfixed) -> c_void)
+    failing!(fn MultiDrawArrays(GLenum, *GLint, *GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawArraysEXT(GLenum, *GLint, *GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawArraysIndirect(GLenum, *c_void, GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawArraysIndirectAMD(GLenum, *GLvoid, GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawArraysIndirectBindlessNV(GLenum, *GLvoid, GLsizei, GLsizei, GLint) -> c_void)
+    failing!(fn MultiDrawElementsIndirectBindlessNV(GLenum, GLenum, *GLvoid, GLsizei, GLsizei, GLint) -> c_void)
+    failing!(fn MultiDrawArraysIndirectCountARB(GLenum, GLintptr, GLintptr, GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawElementArrayAPPLE(GLenum, *GLint, *GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawElements(GLenum, *GLsizei, GLenum, **GLvoid, GLsizei) -> c_void)
+    failing!(fn MultiDrawElementsBaseVertex(GLenum, *GLsizei, GLenum, **GLvoid, GLsizei, *GLint) -> c_void)
+    failing!(fn MultiDrawElementsEXT(GLenum, *GLsizei, GLenum, **GLvoid, GLsizei) -> c_void)
+    failing!(fn MultiDrawElementsIndirect(GLenum, GLenum, *c_void, GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawElementsIndirectAMD(GLenum, GLenum, *GLvoid, GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawElementsIndirectCountARB(GLenum, GLenum, GLintptr, GLintptr, GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiDrawRangeElementArrayAPPLE(GLenum, GLuint, GLuint, *GLint, *GLsizei, GLsizei) -> c_void)
+    failing!(fn MultiModeDrawArraysIBM(*GLenum, *GLint, *GLsizei, GLsizei, GLint) -> c_void)
+    failing!(fn MultiModeDrawElementsIBM(*GLenum, *GLsizei, GLenum, **GLvoid, GLsizei, GLint) -> c_void)
+    failing!(fn MultiTexBufferEXT(GLenum, GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn MultiTexCoord1bOES(GLenum, GLbyte) -> c_void)
+    failing!(fn MultiTexCoord1bvOES(GLenum, *GLbyte) -> c_void)
+    failing!(fn MultiTexCoord1d(GLenum, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord1dARB(GLenum, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord1dv(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord1dvARB(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord1f(GLenum, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord1fARB(GLenum, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord1fv(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord1fvARB(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord1hNV(GLenum, GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord1hvNV(GLenum, *GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord1i(GLenum, GLint) -> c_void)
+    failing!(fn MultiTexCoord1iARB(GLenum, GLint) -> c_void)
+    failing!(fn MultiTexCoord1iv(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord1ivARB(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord1s(GLenum, GLshort) -> c_void)
+    failing!(fn MultiTexCoord1sARB(GLenum, GLshort) -> c_void)
+    failing!(fn MultiTexCoord1sv(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord1svARB(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord1xOES(GLenum, GLfixed) -> c_void)
+    failing!(fn MultiTexCoord1xvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn MultiTexCoord2bOES(GLenum, GLbyte, GLbyte) -> c_void)
+    failing!(fn MultiTexCoord2bvOES(GLenum, *GLbyte) -> c_void)
+    failing!(fn MultiTexCoord2d(GLenum, GLdouble, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord2dARB(GLenum, GLdouble, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord2dv(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord2dvARB(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord2f(GLenum, GLfloat, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord2fARB(GLenum, GLfloat, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord2fv(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord2fvARB(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord2hNV(GLenum, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord2hvNV(GLenum, *GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord2i(GLenum, GLint, GLint) -> c_void)
+    failing!(fn MultiTexCoord2iARB(GLenum, GLint, GLint) -> c_void)
+    failing!(fn MultiTexCoord2iv(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord2ivARB(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord2s(GLenum, GLshort, GLshort) -> c_void)
+    failing!(fn MultiTexCoord2sARB(GLenum, GLshort, GLshort) -> c_void)
+    failing!(fn MultiTexCoord2sv(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord2svARB(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord2xOES(GLenum, GLfixed, GLfixed) -> c_void)
+    failing!(fn MultiTexCoord2xvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn MultiTexCoord3bOES(GLenum, GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn MultiTexCoord3bvOES(GLenum, *GLbyte) -> c_void)
+    failing!(fn MultiTexCoord3d(GLenum, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord3dARB(GLenum, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord3dv(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord3dvARB(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord3f(GLenum, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord3fARB(GLenum, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord3fv(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord3fvARB(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord3hNV(GLenum, GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord3hvNV(GLenum, *GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord3i(GLenum, GLint, GLint, GLint) -> c_void)
+    failing!(fn MultiTexCoord3iARB(GLenum, GLint, GLint, GLint) -> c_void)
+    failing!(fn MultiTexCoord3iv(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord3ivARB(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord3s(GLenum, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn MultiTexCoord3sARB(GLenum, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn MultiTexCoord3sv(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord3svARB(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord3xOES(GLenum, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn MultiTexCoord3xvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn MultiTexCoord4bOES(GLenum, GLbyte, GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn MultiTexCoord4bvOES(GLenum, *GLbyte) -> c_void)
+    failing!(fn MultiTexCoord4d(GLenum, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord4dARB(GLenum, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn MultiTexCoord4dv(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord4dvARB(GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexCoord4f(GLenum, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord4fARB(GLenum, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn MultiTexCoord4fv(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord4fvARB(GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexCoord4hNV(GLenum, GLhalfNV, GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord4hvNV(GLenum, *GLhalfNV) -> c_void)
+    failing!(fn MultiTexCoord4i(GLenum, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn MultiTexCoord4iARB(GLenum, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn MultiTexCoord4iv(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord4ivARB(GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexCoord4s(GLenum, GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn MultiTexCoord4sARB(GLenum, GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn MultiTexCoord4sv(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord4svARB(GLenum, *GLshort) -> c_void)
+    failing!(fn MultiTexCoord4x(GLenum, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn MultiTexCoord4xOES(GLenum, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn MultiTexCoord4xvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn MultiTexCoordP1ui(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn MultiTexCoordP1uiv(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn MultiTexCoordP2ui(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn MultiTexCoordP2uiv(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn MultiTexCoordP3ui(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn MultiTexCoordP3uiv(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn MultiTexCoordP4ui(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn MultiTexCoordP4uiv(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn MultiTexCoordPointerEXT(GLenum, GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn MultiTexEnvfEXT(GLenum, GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn MultiTexEnvfvEXT(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexEnviEXT(GLenum, GLenum, GLenum, GLint) -> c_void)
+    failing!(fn MultiTexEnvivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexGendEXT(GLenum, GLenum, GLenum, GLdouble) -> c_void)
+    failing!(fn MultiTexGendvEXT(GLenum, GLenum, GLenum, *GLdouble) -> c_void)
+    failing!(fn MultiTexGenfEXT(GLenum, GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn MultiTexGenfvEXT(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexGeniEXT(GLenum, GLenum, GLenum, GLint) -> c_void)
+    failing!(fn MultiTexGenivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexImage1DEXT(GLenum, GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn MultiTexImage2DEXT(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn MultiTexImage3DEXT(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn MultiTexParameterIivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexParameterIuivEXT(GLenum, GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn MultiTexParameterfEXT(GLenum, GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn MultiTexParameterfvEXT(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn MultiTexParameteriEXT(GLenum, GLenum, GLenum, GLint) -> c_void)
+    failing!(fn MultiTexParameterivEXT(GLenum, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn MultiTexRenderbufferEXT(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn MultiTexSubImage1DEXT(GLenum, GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn MultiTexSubImage2DEXT(GLenum, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn MultiTexSubImage3DEXT(GLenum, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn NamedBufferDataEXT(GLuint, GLsizeiptr, *GLvoid, GLenum) -> c_void)
+    failing!(fn NamedBufferStorageEXT(GLuint, GLsizeiptr, *c_void, GLbitfield) -> c_void)
+    failing!(fn NamedBufferSubDataEXT(GLuint, GLintptr, GLsizeiptr, *GLvoid) -> c_void)
+    failing!(fn NamedCopyBufferSubDataEXT(GLuint, GLuint, GLintptr, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn NamedFramebufferParameteriEXT(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn NamedFramebufferRenderbufferEXT(GLuint, GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn NamedFramebufferTexture1DEXT(GLuint, GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn NamedFramebufferTexture2DEXT(GLuint, GLenum, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn NamedFramebufferTexture3DEXT(GLuint, GLenum, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn NamedFramebufferTextureEXT(GLuint, GLenum, GLuint, GLint) -> c_void)
+    failing!(fn NamedFramebufferTextureFaceEXT(GLuint, GLenum, GLuint, GLint, GLenum) -> c_void)
+    failing!(fn NamedFramebufferTextureLayerEXT(GLuint, GLenum, GLuint, GLint, GLint) -> c_void)
+    failing!(fn NamedProgramLocalParameter4dEXT(GLuint, GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn NamedProgramLocalParameter4dvEXT(GLuint, GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn NamedProgramLocalParameter4fEXT(GLuint, GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn NamedProgramLocalParameter4fvEXT(GLuint, GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn NamedProgramLocalParameterI4iEXT(GLuint, GLenum, GLuint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn NamedProgramLocalParameterI4ivEXT(GLuint, GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn NamedProgramLocalParameterI4uiEXT(GLuint, GLenum, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn NamedProgramLocalParameterI4uivEXT(GLuint, GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn NamedProgramLocalParameters4fvEXT(GLuint, GLenum, GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn NamedProgramLocalParametersI4ivEXT(GLuint, GLenum, GLuint, GLsizei, *GLint) -> c_void)
+    failing!(fn NamedProgramLocalParametersI4uivEXT(GLuint, GLenum, GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn NamedProgramStringEXT(GLuint, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn NamedRenderbufferStorageEXT(GLuint, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn NamedRenderbufferStorageMultisampleCoverageEXT(GLuint, GLsizei, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn NamedRenderbufferStorageMultisampleEXT(GLuint, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn NamedStringARB(GLenum, GLint, *GLchar, GLint, *GLchar) -> c_void)
+    failing!(fn NewList(GLuint, GLenum) -> c_void)
+    failing!(fn NewObjectBufferATI(GLsizei, *GLvoid, GLenum) -> GLuint)
+    failing!(fn Normal3b(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn Normal3bv(*GLbyte) -> c_void)
+    failing!(fn Normal3d(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Normal3dv(*GLdouble) -> c_void)
+    failing!(fn Normal3f(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Normal3fVertex3fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Normal3fVertex3fvSUN(*GLfloat, *GLfloat) -> c_void)
+    failing!(fn Normal3fv(*GLfloat) -> c_void)
+    failing!(fn Normal3hNV(GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn Normal3hvNV(*GLhalfNV) -> c_void)
+    failing!(fn Normal3i(GLint, GLint, GLint) -> c_void)
+    failing!(fn Normal3iv(*GLint) -> c_void)
+    failing!(fn Normal3s(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Normal3sv(*GLshort) -> c_void)
+    failing!(fn Normal3x(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Normal3xOES(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Normal3xvOES(*GLfixed) -> c_void)
+    failing!(fn NormalFormatNV(GLenum, GLsizei) -> c_void)
+    failing!(fn NormalP3ui(GLenum, GLuint) -> c_void)
+    failing!(fn NormalP3uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn NormalPointer(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn NormalPointerEXT(GLenum, GLsizei, GLsizei, *GLvoid) -> c_void)
+    failing!(fn NormalPointerListIBM(GLenum, GLint, **GLvoid, GLint) -> c_void)
+    failing!(fn NormalPointervINTEL(GLenum, **GLvoid) -> c_void)
+    failing!(fn NormalStream3bATI(GLenum, GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn NormalStream3bvATI(GLenum, *GLbyte) -> c_void)
+    failing!(fn NormalStream3dATI(GLenum, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn NormalStream3dvATI(GLenum, *GLdouble) -> c_void)
+    failing!(fn NormalStream3fATI(GLenum, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn NormalStream3fvATI(GLenum, *GLfloat) -> c_void)
+    failing!(fn NormalStream3iATI(GLenum, GLint, GLint, GLint) -> c_void)
+    failing!(fn NormalStream3ivATI(GLenum, *GLint) -> c_void)
+    failing!(fn NormalStream3sATI(GLenum, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn NormalStream3svATI(GLenum, *GLshort) -> c_void)
+    failing!(fn ObjectLabel(GLenum, GLuint, GLsizei, *GLchar) -> c_void)
+    failing!(fn ObjectLabelKHR(GLenum, GLuint, GLsizei, *GLchar) -> c_void)
+    failing!(fn ObjectPtrLabel(*c_void, GLsizei, *GLchar) -> c_void)
+    failing!(fn ObjectPtrLabelKHR(*c_void, GLsizei, *GLchar) -> c_void)
+    failing!(fn ObjectPurgeableAPPLE(GLenum, GLuint, GLenum) -> GLenum)
+    failing!(fn ObjectUnpurgeableAPPLE(GLenum, GLuint, GLenum) -> GLenum)
+    failing!(fn Ortho(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Orthof(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn OrthofOES(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Orthox(GLfixed, GLfixed, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn OrthoxOES(GLfixed, GLfixed, GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn PNTrianglesfATI(GLenum, GLfloat) -> c_void)
+    failing!(fn PNTrianglesiATI(GLenum, GLint) -> c_void)
+    failing!(fn PassTexCoordATI(GLuint, GLuint, GLenum) -> c_void)
+    failing!(fn PassThrough(GLfloat) -> c_void)
+    failing!(fn PassThroughxOES(GLfixed) -> c_void)
+    failing!(fn PatchParameterfv(GLenum, *GLfloat) -> c_void)
+    failing!(fn PatchParameteri(GLenum, GLint) -> c_void)
+    failing!(fn PathColorGenNV(GLenum, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn PathCommandsNV(GLuint, GLsizei, *GLubyte, GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn PathCoordsNV(GLuint, GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn PathCoverDepthFuncNV(GLenum) -> c_void)
+    failing!(fn PathDashArrayNV(GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn PathFogGenNV(GLenum) -> c_void)
+    failing!(fn PathGlyphRangeNV(GLuint, GLenum, *GLvoid, GLbitfield, GLuint, GLsizei, GLenum, GLuint, GLfloat) -> c_void)
+    failing!(fn PathGlyphsNV(GLuint, GLenum, *GLvoid, GLbitfield, GLsizei, GLenum, *GLvoid, GLenum, GLuint, GLfloat) -> c_void)
+    failing!(fn PathParameterfNV(GLuint, GLenum, GLfloat) -> c_void)
+    failing!(fn PathParameterfvNV(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn PathParameteriNV(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn PathParameterivNV(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn PathStencilDepthOffsetNV(GLfloat, GLfloat) -> c_void)
+    failing!(fn PathStencilFuncNV(GLenum, GLint, GLuint) -> c_void)
+    failing!(fn PathStringNV(GLuint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn PathSubCommandsNV(GLuint, GLsizei, GLsizei, GLsizei, *GLubyte, GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn PathSubCoordsNV(GLuint, GLsizei, GLsizei, GLenum, *GLvoid) -> c_void)
+    failing!(fn PathTexGenNV(GLenum, GLenum, GLint, *GLfloat) -> c_void)
+    failing!(fn PauseTransformFeedback() -> c_void)
+    failing!(fn PauseTransformFeedbackNV() -> c_void)
+    failing!(fn PixelDataRangeNV(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn PixelMapfv(GLenum, GLsizei, *GLfloat) -> c_void)
+    failing!(fn PixelMapuiv(GLenum, GLsizei, *GLuint) -> c_void)
+    failing!(fn PixelMapusv(GLenum, GLsizei, *GLushort) -> c_void)
+    failing!(fn PixelMapx(GLenum, GLint, *GLfixed) -> c_void)
+    failing!(fn PixelStoref(GLenum, GLfloat) -> c_void)
+    failing!(fn PixelStorei(GLenum, GLint) -> c_void)
+    failing!(fn PixelStorex(GLenum, GLfixed) -> c_void)
+    failing!(fn PixelTexGenParameterfSGIS(GLenum, GLfloat) -> c_void)
+    failing!(fn PixelTexGenParameterfvSGIS(GLenum, *GLfloat) -> c_void)
+    failing!(fn PixelTexGenParameteriSGIS(GLenum, GLint) -> c_void)
+    failing!(fn PixelTexGenParameterivSGIS(GLenum, *GLint) -> c_void)
+    failing!(fn PixelTexGenSGIX(GLenum) -> c_void)
+    failing!(fn PixelTransferf(GLenum, GLfloat) -> c_void)
+    failing!(fn PixelTransferi(GLenum, GLint) -> c_void)
+    failing!(fn PixelTransferxOES(GLenum, GLfixed) -> c_void)
+    failing!(fn PixelTransformParameterfEXT(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn PixelTransformParameterfvEXT(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn PixelTransformParameteriEXT(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn PixelTransformParameterivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn PixelZoom(GLfloat, GLfloat) -> c_void)
+    failing!(fn PixelZoomxOES(GLfixed, GLfixed) -> c_void)
+    failing!(fn PointAlongPathNV(GLuint, GLsizei, GLsizei, GLfloat, *GLfloat, *GLfloat, *GLfloat, *GLfloat) -> GLboolean)
+    failing!(fn PointParameterf(GLenum, GLfloat) -> c_void)
+    failing!(fn PointParameterfARB(GLenum, GLfloat) -> c_void)
+    failing!(fn PointParameterfEXT(GLenum, GLfloat) -> c_void)
+    failing!(fn PointParameterfSGIS(GLenum, GLfloat) -> c_void)
+    failing!(fn PointParameterfv(GLenum, *GLfloat) -> c_void)
+    failing!(fn PointParameterfvARB(GLenum, *GLfloat) -> c_void)
+    failing!(fn PointParameterfvEXT(GLenum, *GLfloat) -> c_void)
+    failing!(fn PointParameterfvSGIS(GLenum, *GLfloat) -> c_void)
+    failing!(fn PointParameteri(GLenum, GLint) -> c_void)
+    failing!(fn PointParameteriNV(GLenum, GLint) -> c_void)
+    failing!(fn PointParameteriv(GLenum, *GLint) -> c_void)
+    failing!(fn PointParameterivNV(GLenum, *GLint) -> c_void)
+    failing!(fn PointParameterx(GLenum, GLfixed) -> c_void)
+    failing!(fn PointParameterxOES(GLenum, GLfixed) -> c_void)
+    failing!(fn PointParameterxv(GLenum, *GLfixed) -> c_void)
+    failing!(fn PointParameterxvOES(GLenum, *GLfixed) -> c_void)
+    failing!(fn PointSize(GLfloat) -> c_void)
+    failing!(fn PointSizePointerOES(GLenum, GLsizei, *c_void) -> c_void)
+    failing!(fn PointSizex(GLfixed) -> c_void)
+    failing!(fn PointSizexOES(GLfixed) -> c_void)
+    failing!(fn PollAsyncSGIX(*GLuint) -> GLint)
+    failing!(fn PollInstrumentsSGIX(*GLint) -> GLint)
+    failing!(fn PolygonMode(GLenum, GLenum) -> c_void)
+    failing!(fn PolygonOffset(GLfloat, GLfloat) -> c_void)
+    failing!(fn PolygonOffsetEXT(GLfloat, GLfloat) -> c_void)
+    failing!(fn PolygonOffsetx(GLfixed, GLfixed) -> c_void)
+    failing!(fn PolygonOffsetxOES(GLfixed, GLfixed) -> c_void)
+    failing!(fn PolygonStipple(*GLubyte) -> c_void)
+    failing!(fn PopAttrib() -> c_void)
+    failing!(fn PopClientAttrib() -> c_void)
+    failing!(fn PopDebugGroup() -> c_void)
+    failing!(fn PopDebugGroupKHR() -> c_void)
+    failing!(fn PopGroupMarkerEXT() -> c_void)
+    failing!(fn PopMatrix() -> c_void)
+    failing!(fn PopName() -> c_void)
+    failing!(fn PresentFrameDualFillNV(GLuint, GLuint64EXT, GLuint, GLuint, GLenum, GLenum, GLuint, GLenum, GLuint, GLenum, GLuint, GLenum, GLuint) -> c_void)
+    failing!(fn PresentFrameKeyedNV(GLuint, GLuint64EXT, GLuint, GLuint, GLenum, GLenum, GLuint, GLuint, GLenum, GLuint, GLuint) -> c_void)
+    failing!(fn PrimitiveRestartIndex(GLuint) -> c_void)
+    failing!(fn PrimitiveRestartIndexNV(GLuint) -> c_void)
+    failing!(fn PrimitiveRestartNV() -> c_void)
+    failing!(fn PrioritizeTextures(GLsizei, *GLuint, *GLfloat) -> c_void)
+    failing!(fn PrioritizeTexturesEXT(GLsizei, *GLuint, *GLclampf) -> c_void)
+    failing!(fn PrioritizeTexturesxOES(GLsizei, *GLuint, *GLfixed) -> c_void)
+    failing!(fn ProgramBinary(GLuint, GLenum, *GLvoid, GLsizei) -> c_void)
+    failing!(fn ProgramBinaryOES(GLuint, GLenum, *GLvoid, GLint) -> c_void)
+    failing!(fn ProgramBufferParametersIivNV(GLenum, GLuint, GLuint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramBufferParametersIuivNV(GLenum, GLuint, GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramBufferParametersfvNV(GLenum, GLuint, GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramEnvParameter4dARB(GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramEnvParameter4dvARB(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn ProgramEnvParameter4fARB(GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramEnvParameter4fvARB(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn ProgramEnvParameterI4iNV(GLenum, GLuint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramEnvParameterI4ivNV(GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn ProgramEnvParameterI4uiNV(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramEnvParameterI4uivNV(GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn ProgramEnvParameters4fvEXT(GLenum, GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramEnvParametersI4ivNV(GLenum, GLuint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramEnvParametersI4uivNV(GLenum, GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramLocalParameter4dARB(GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramLocalParameter4dvARB(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn ProgramLocalParameter4fARB(GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramLocalParameter4fvARB(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn ProgramLocalParameterI4iNV(GLenum, GLuint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramLocalParameterI4ivNV(GLenum, GLuint, *GLint) -> c_void)
+    failing!(fn ProgramLocalParameterI4uiNV(GLenum, GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramLocalParameterI4uivNV(GLenum, GLuint, *GLuint) -> c_void)
+    failing!(fn ProgramLocalParameters4fvEXT(GLenum, GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramLocalParametersI4ivNV(GLenum, GLuint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramLocalParametersI4uivNV(GLenum, GLuint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramNamedParameter4dNV(GLuint, GLsizei, *GLubyte, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramNamedParameter4dvNV(GLuint, GLsizei, *GLubyte, *GLdouble) -> c_void)
+    failing!(fn ProgramNamedParameter4fNV(GLuint, GLsizei, *GLubyte, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramNamedParameter4fvNV(GLuint, GLsizei, *GLubyte, *GLfloat) -> c_void)
+    failing!(fn ProgramParameter4dNV(GLenum, GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramParameter4dvNV(GLenum, GLuint, *GLdouble) -> c_void)
+    failing!(fn ProgramParameter4fNV(GLenum, GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramParameter4fvNV(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn ProgramParameteri(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn ProgramParameteriARB(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn ProgramParameteriEXT(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn ProgramParameters4dvNV(GLenum, GLuint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramParameters4fvNV(GLenum, GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramStringARB(GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn ProgramSubroutineParametersuivNV(GLenum, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform1d(GLuint, GLint, GLdouble) -> c_void)
+    failing!(fn ProgramUniform1dEXT(GLuint, GLint, GLdouble) -> c_void)
+    failing!(fn ProgramUniform1dv(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform1dvEXT(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform1f(GLuint, GLint, GLfloat) -> c_void)
+    failing!(fn ProgramUniform1fEXT(GLuint, GLint, GLfloat) -> c_void)
+    failing!(fn ProgramUniform1fv(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform1fvEXT(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform1i(GLuint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform1i64NV(GLuint, GLint, GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform1i64vNV(GLuint, GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform1iEXT(GLuint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform1iv(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform1ivEXT(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform1ui(GLuint, GLint, GLuint) -> c_void)
+    failing!(fn ProgramUniform1ui64NV(GLuint, GLint, GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform1ui64vNV(GLuint, GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform1uiEXT(GLuint, GLint, GLuint) -> c_void)
+    failing!(fn ProgramUniform1uiv(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform1uivEXT(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform2d(GLuint, GLint, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramUniform2dEXT(GLuint, GLint, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramUniform2dv(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform2dvEXT(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform2f(GLuint, GLint, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramUniform2fEXT(GLuint, GLint, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramUniform2fv(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform2fvEXT(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform2i(GLuint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform2i64NV(GLuint, GLint, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform2i64vNV(GLuint, GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform2iEXT(GLuint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform2iv(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform2ivEXT(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform2ui(GLuint, GLint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramUniform2ui64NV(GLuint, GLint, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform2ui64vNV(GLuint, GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform2uiEXT(GLuint, GLint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramUniform2uiv(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform2uivEXT(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform3d(GLuint, GLint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramUniform3dEXT(GLuint, GLint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramUniform3dv(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform3dvEXT(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform3f(GLuint, GLint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramUniform3fEXT(GLuint, GLint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramUniform3fv(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform3fvEXT(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform3i(GLuint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform3i64NV(GLuint, GLint, GLint64EXT, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform3i64vNV(GLuint, GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform3iEXT(GLuint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform3iv(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform3ivEXT(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform3ui(GLuint, GLint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramUniform3ui64NV(GLuint, GLint, GLuint64EXT, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform3ui64vNV(GLuint, GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform3uiEXT(GLuint, GLint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramUniform3uiv(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform3uivEXT(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform4d(GLuint, GLint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramUniform4dEXT(GLuint, GLint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn ProgramUniform4dv(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform4dvEXT(GLuint, GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn ProgramUniform4f(GLuint, GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramUniform4fEXT(GLuint, GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ProgramUniform4fv(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform4fvEXT(GLuint, GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ProgramUniform4i(GLuint, GLint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform4i64NV(GLuint, GLint, GLint64EXT, GLint64EXT, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform4i64vNV(GLuint, GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn ProgramUniform4iEXT(GLuint, GLint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn ProgramUniform4iv(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform4ivEXT(GLuint, GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn ProgramUniform4ui(GLuint, GLint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramUniform4ui64NV(GLuint, GLint, GLuint64EXT, GLuint64EXT, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform4ui64vNV(GLuint, GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniform4uiEXT(GLuint, GLint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ProgramUniform4uiv(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniform4uivEXT(GLuint, GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn ProgramUniformHandleui64ARB(GLuint, GLint, GLuint64) -> c_void)
+    failing!(fn ProgramUniformHandleui64NV(GLuint, GLint, GLuint64) -> c_void)
+    failing!(fn ProgramUniformHandleui64vARB(GLuint, GLint, GLsizei, *GLuint64) -> c_void)
+    failing!(fn ProgramUniformHandleui64vNV(GLuint, GLint, GLsizei, *GLuint64) -> c_void)
+    failing!(fn ProgramUniformMatrix2dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix2dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix2fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix2fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix2x3dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix2x3dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix2x3fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix2x3fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix2x4dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix2x4dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix2x4fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix2x4fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix3dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix3dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix3fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix3fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix3x2dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix3x2dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix3x2fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix3x2fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix3x4dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix3x4dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix3x4fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix3x4fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix4dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix4dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix4fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix4fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix4x2dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix4x2dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix4x2fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix4x2fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix4x3dv(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix4x3dvEXT(GLuint, GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn ProgramUniformMatrix4x3fv(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformMatrix4x3fvEXT(GLuint, GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn ProgramUniformui64NV(GLuint, GLint, GLuint64EXT) -> c_void)
+    failing!(fn ProgramUniformui64vNV(GLuint, GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn ProgramVertexLimitNV(GLenum, GLint) -> c_void)
+    failing!(fn ProvokingVertex(GLenum) -> c_void)
+    failing!(fn ProvokingVertexEXT(GLenum) -> c_void)
+    failing!(fn PushAttrib(GLbitfield) -> c_void)
+    failing!(fn PushClientAttrib(GLbitfield) -> c_void)
+    failing!(fn PushClientAttribDefaultEXT(GLbitfield) -> c_void)
+    failing!(fn PushDebugGroup(GLenum, GLuint, GLsizei, *GLchar) -> c_void)
+    failing!(fn PushDebugGroupKHR(GLenum, GLuint, GLsizei, *GLchar) -> c_void)
+    failing!(fn PushGroupMarkerEXT(GLsizei, *GLchar) -> c_void)
+    failing!(fn PushMatrix() -> c_void)
+    failing!(fn PushName(GLuint) -> c_void)
+    failing!(fn QueryCounter(GLuint, GLenum) -> c_void)
+    failing!(fn QueryCounterEXT(GLuint, GLenum) -> c_void)
+    failing!(fn QueryMatrixxOES(*GLfixed, *GLint) -> GLbitfield)
+    failing!(fn RasterPos2d(GLdouble, GLdouble) -> c_void)
+    failing!(fn RasterPos2dv(*GLdouble) -> c_void)
+    failing!(fn RasterPos2f(GLfloat, GLfloat) -> c_void)
+    failing!(fn RasterPos2fv(*GLfloat) -> c_void)
+    failing!(fn RasterPos2i(GLint, GLint) -> c_void)
+    failing!(fn RasterPos2iv(*GLint) -> c_void)
+    failing!(fn RasterPos2s(GLshort, GLshort) -> c_void)
+    failing!(fn RasterPos2sv(*GLshort) -> c_void)
+    failing!(fn RasterPos2xOES(GLfixed, GLfixed) -> c_void)
+    failing!(fn RasterPos2xvOES(*GLfixed) -> c_void)
+    failing!(fn RasterPos3d(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn RasterPos3dv(*GLdouble) -> c_void)
+    failing!(fn RasterPos3f(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn RasterPos3fv(*GLfloat) -> c_void)
+    failing!(fn RasterPos3i(GLint, GLint, GLint) -> c_void)
+    failing!(fn RasterPos3iv(*GLint) -> c_void)
+    failing!(fn RasterPos3s(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn RasterPos3sv(*GLshort) -> c_void)
+    failing!(fn RasterPos3xOES(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn RasterPos3xvOES(*GLfixed) -> c_void)
+    failing!(fn RasterPos4d(GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn RasterPos4dv(*GLdouble) -> c_void)
+    failing!(fn RasterPos4f(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn RasterPos4fv(*GLfloat) -> c_void)
+    failing!(fn RasterPos4i(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn RasterPos4iv(*GLint) -> c_void)
+    failing!(fn RasterPos4s(GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn RasterPos4sv(*GLshort) -> c_void)
+    failing!(fn RasterPos4xOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn RasterPos4xvOES(*GLfixed) -> c_void)
+    failing!(fn ReadBuffer(GLenum) -> c_void)
+    failing!(fn ReadBufferIndexedEXT(GLenum, GLint) -> c_void)
+    failing!(fn ReadBufferNV(GLenum) -> c_void)
+    failing!(fn ReadInstrumentsSGIX(GLint) -> c_void)
+    failing!(fn ReadPixels(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn ReadnPixelsARB(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn ReadnPixelsEXT(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn Rectd(GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Rectdv(*GLdouble, *GLdouble) -> c_void)
+    failing!(fn Rectf(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Rectfv(*GLfloat, *GLfloat) -> c_void)
+    failing!(fn Recti(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn Rectiv(*GLint, *GLint) -> c_void)
+    failing!(fn Rects(GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Rectsv(*GLshort, *GLshort) -> c_void)
+    failing!(fn RectxOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn RectxvOES(*GLfixed, *GLfixed) -> c_void)
+    failing!(fn ReferencePlaneSGIX(*GLdouble) -> c_void)
+    failing!(fn ReleaseShaderCompiler() -> c_void)
+    failing!(fn RenderMode(GLenum) -> GLint)
+    failing!(fn RenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageEXT(GLenum, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageMultisampleANGLE(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageMultisampleAPPLE(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageMultisampleCoverageNV(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageMultisampleEXT(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageMultisampleIMG(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageMultisampleNV(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn RenderbufferStorageOES(GLenum, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn ReplacementCodePointerSUN(GLenum, GLsizei, **GLvoid) -> c_void)
+    failing!(fn ReplacementCodeubSUN(GLubyte) -> c_void)
+    failing!(fn ReplacementCodeubvSUN(*GLubyte) -> c_void)
+    failing!(fn ReplacementCodeuiColor3fVertex3fSUN(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiColor3fVertex3fvSUN(*GLuint, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiColor4fNormal3fVertex3fSUN(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiColor4fNormal3fVertex3fvSUN(*GLuint, *GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiColor4ubVertex3fSUN(GLuint, GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiColor4ubVertex3fvSUN(*GLuint, *GLubyte, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiNormal3fVertex3fSUN(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiNormal3fVertex3fvSUN(*GLuint, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiSUN(GLuint) -> c_void)
+    failing!(fn ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN(*GLuint, *GLfloat, *GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiTexCoord2fNormal3fVertex3fSUN(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN(*GLuint, *GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiTexCoord2fVertex3fSUN(GLuint, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiTexCoord2fVertex3fvSUN(*GLuint, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiVertex3fSUN(GLuint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuiVertex3fvSUN(*GLuint, *GLfloat) -> c_void)
+    failing!(fn ReplacementCodeuivSUN(*GLuint) -> c_void)
+    failing!(fn ReplacementCodeusSUN(GLushort) -> c_void)
+    failing!(fn ReplacementCodeusvSUN(*GLushort) -> c_void)
+    failing!(fn RequestResidentProgramsNV(GLsizei, *GLuint) -> c_void)
+    failing!(fn ResetHistogram(GLenum) -> c_void)
+    failing!(fn ResetHistogramEXT(GLenum) -> c_void)
+    failing!(fn ResetMinmax(GLenum) -> c_void)
+    failing!(fn ResetMinmaxEXT(GLenum) -> c_void)
+    failing!(fn ResizeBuffersMESA() -> c_void)
+    failing!(fn ResolveMultisampleFramebufferAPPLE() -> c_void)
+    failing!(fn ResumeTransformFeedback() -> c_void)
+    failing!(fn ResumeTransformFeedbackNV() -> c_void)
+    failing!(fn Rotated(GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Rotatef(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Rotatex(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn RotatexOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn SampleCoverage(GLfloat, GLboolean) -> c_void)
+    failing!(fn SampleCoverageARB(GLfloat, GLboolean) -> c_void)
+    failing!(fn SampleCoverageOES(GLfixed, GLboolean) -> c_void)
+    failing!(fn SampleCoveragex(GLclampx, GLboolean) -> c_void)
+    failing!(fn SampleCoveragexOES(GLclampx, GLboolean) -> c_void)
+    failing!(fn SampleMapATI(GLuint, GLuint, GLenum) -> c_void)
+    failing!(fn SampleMaskEXT(GLclampf, GLboolean) -> c_void)
+    failing!(fn SampleMaskIndexedNV(GLuint, GLbitfield) -> c_void)
+    failing!(fn SampleMaskSGIS(GLclampf, GLboolean) -> c_void)
+    failing!(fn SampleMaski(GLuint, GLbitfield) -> c_void)
+    failing!(fn SamplePatternEXT(GLenum) -> c_void)
+    failing!(fn SamplePatternSGIS(GLenum) -> c_void)
+    failing!(fn SamplerParameterIiv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn SamplerParameterIuiv(GLuint, GLenum, *GLuint) -> c_void)
+    failing!(fn SamplerParameterf(GLuint, GLenum, GLfloat) -> c_void)
+    failing!(fn SamplerParameterfv(GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn SamplerParameteri(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn SamplerParameteriv(GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn Scaled(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Scalef(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Scalex(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn ScalexOES(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Scissor(GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn ScissorArrayv(GLuint, GLsizei, *GLint) -> c_void)
+    failing!(fn ScissorIndexed(GLuint, GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn ScissorIndexedv(GLuint, *GLint) -> c_void)
+    failing!(fn SecondaryColor3b(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn SecondaryColor3bEXT(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn SecondaryColor3bv(*GLbyte) -> c_void)
+    failing!(fn SecondaryColor3bvEXT(*GLbyte) -> c_void)
+    failing!(fn SecondaryColor3d(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn SecondaryColor3dEXT(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn SecondaryColor3dv(*GLdouble) -> c_void)
+    failing!(fn SecondaryColor3dvEXT(*GLdouble) -> c_void)
+    failing!(fn SecondaryColor3f(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn SecondaryColor3fEXT(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn SecondaryColor3fv(*GLfloat) -> c_void)
+    failing!(fn SecondaryColor3fvEXT(*GLfloat) -> c_void)
+    failing!(fn SecondaryColor3hNV(GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn SecondaryColor3hvNV(*GLhalfNV) -> c_void)
+    failing!(fn SecondaryColor3i(GLint, GLint, GLint) -> c_void)
+    failing!(fn SecondaryColor3iEXT(GLint, GLint, GLint) -> c_void)
+    failing!(fn SecondaryColor3iv(*GLint) -> c_void)
+    failing!(fn SecondaryColor3ivEXT(*GLint) -> c_void)
+    failing!(fn SecondaryColor3s(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn SecondaryColor3sEXT(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn SecondaryColor3sv(*GLshort) -> c_void)
+    failing!(fn SecondaryColor3svEXT(*GLshort) -> c_void)
+    failing!(fn SecondaryColor3ub(GLubyte, GLubyte, GLubyte) -> c_void)
+    failing!(fn SecondaryColor3ubEXT(GLubyte, GLubyte, GLubyte) -> c_void)
+    failing!(fn SecondaryColor3ubv(*GLubyte) -> c_void)
+    failing!(fn SecondaryColor3ubvEXT(*GLubyte) -> c_void)
+    failing!(fn SecondaryColor3ui(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn SecondaryColor3uiEXT(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn SecondaryColor3uiv(*GLuint) -> c_void)
+    failing!(fn SecondaryColor3uivEXT(*GLuint) -> c_void)
+    failing!(fn SecondaryColor3us(GLushort, GLushort, GLushort) -> c_void)
+    failing!(fn SecondaryColor3usEXT(GLushort, GLushort, GLushort) -> c_void)
+    failing!(fn SecondaryColor3usv(*GLushort) -> c_void)
+    failing!(fn SecondaryColor3usvEXT(*GLushort) -> c_void)
+    failing!(fn SecondaryColorFormatNV(GLint, GLenum, GLsizei) -> c_void)
+    failing!(fn SecondaryColorP3ui(GLenum, GLuint) -> c_void)
+    failing!(fn SecondaryColorP3uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn SecondaryColorPointer(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn SecondaryColorPointerEXT(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn SecondaryColorPointerListIBM(GLint, GLenum, GLint, **GLvoid, GLint) -> c_void)
+    failing!(fn SelectBuffer(GLsizei, *GLuint) -> c_void)
+    failing!(fn SelectPerfMonitorCountersAMD(GLuint, GLboolean, GLuint, GLint, *GLuint) -> c_void)
+    failing!(fn SeparableFilter2D(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, *GLvoid, *GLvoid) -> c_void)
+    failing!(fn SeparableFilter2DEXT(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, *GLvoid, *GLvoid) -> c_void)
+    failing!(fn SetFenceAPPLE(GLuint) -> c_void)
+    failing!(fn SetFenceNV(GLuint, GLenum) -> c_void)
+    failing!(fn SetFragmentShaderConstantATI(GLuint, *GLfloat) -> c_void)
+    failing!(fn SetInvariantEXT(GLuint, GLenum, *GLvoid) -> c_void)
+    failing!(fn SetLocalConstantEXT(GLuint, GLenum, *GLvoid) -> c_void)
+    failing!(fn SetMultisamplefvAMD(GLenum, GLuint, *GLfloat) -> c_void)
+    failing!(fn ShadeModel(GLenum) -> c_void)
+    failing!(fn ShaderBinary(GLsizei, *GLuint, GLenum, *GLvoid, GLsizei) -> c_void)
+    failing!(fn ShaderOp1EXT(GLenum, GLuint, GLuint) -> c_void)
+    failing!(fn ShaderOp2EXT(GLenum, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ShaderOp3EXT(GLenum, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn ShaderSource(GLuint, GLsizei, **GLchar, *GLint) -> c_void)
+    failing!(fn ShaderSourceARB(GLhandleARB, GLsizei, **GLcharARB, *GLint) -> c_void)
+    failing!(fn ShaderStorageBlockBinding(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn SharpenTexFuncSGIS(GLenum, GLsizei, *GLfloat) -> c_void)
+    failing!(fn SpriteParameterfSGIX(GLenum, GLfloat) -> c_void)
+    failing!(fn SpriteParameterfvSGIX(GLenum, *GLfloat) -> c_void)
+    failing!(fn SpriteParameteriSGIX(GLenum, GLint) -> c_void)
+    failing!(fn SpriteParameterivSGIX(GLenum, *GLint) -> c_void)
+    failing!(fn StartInstrumentsSGIX() -> c_void)
+    failing!(fn StartTilingQCOM(GLuint, GLuint, GLuint, GLuint, GLbitfield) -> c_void)
+    failing!(fn StencilClearTagEXT(GLsizei, GLuint) -> c_void)
+    failing!(fn StencilFillPathInstancedNV(GLsizei, GLenum, *GLvoid, GLuint, GLenum, GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn StencilFillPathNV(GLuint, GLenum, GLuint) -> c_void)
+    failing!(fn StencilFunc(GLenum, GLint, GLuint) -> c_void)
+    failing!(fn StencilFuncSeparate(GLenum, GLenum, GLint, GLuint) -> c_void)
+    failing!(fn StencilFuncSeparateATI(GLenum, GLenum, GLint, GLuint) -> c_void)
+    failing!(fn StencilMask(GLuint) -> c_void)
+    failing!(fn StencilMaskSeparate(GLenum, GLuint) -> c_void)
+    failing!(fn StencilOp(GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn StencilOpSeparate(GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn StencilOpSeparateATI(GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn StencilOpValueAMD(GLenum, GLuint) -> c_void)
+    failing!(fn StencilStrokePathInstancedNV(GLsizei, GLenum, *GLvoid, GLuint, GLint, GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn StencilStrokePathNV(GLuint, GLint, GLuint) -> c_void)
+    failing!(fn StopInstrumentsSGIX(GLint) -> c_void)
+    failing!(fn StringMarkerGREMEDY(GLsizei, *GLvoid) -> c_void)
+    failing!(fn SwizzleEXT(GLuint, GLuint, GLenum, GLenum, GLenum, GLenum) -> c_void)
+    failing!(fn SyncTextureINTEL(GLuint) -> c_void)
+    failing!(fn TagSampleBufferSGIX() -> c_void)
+    failing!(fn Tangent3bEXT(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn Tangent3bvEXT(*GLbyte) -> c_void)
+    failing!(fn Tangent3dEXT(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Tangent3dvEXT(*GLdouble) -> c_void)
+    failing!(fn Tangent3fEXT(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Tangent3fvEXT(*GLfloat) -> c_void)
+    failing!(fn Tangent3iEXT(GLint, GLint, GLint) -> c_void)
+    failing!(fn Tangent3ivEXT(*GLint) -> c_void)
+    failing!(fn Tangent3sEXT(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Tangent3svEXT(*GLshort) -> c_void)
+    failing!(fn TangentPointerEXT(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn TbufferMask3DFX(GLuint) -> c_void)
+    failing!(fn TessellationFactorAMD(GLfloat) -> c_void)
+    failing!(fn TessellationModeAMD(GLenum) -> c_void)
+    failing!(fn TestFenceAPPLE(GLuint) -> GLboolean)
+    failing!(fn TestFenceNV(GLuint) -> GLboolean)
+    failing!(fn TestObjectAPPLE(GLenum, GLuint) -> GLboolean)
+    failing!(fn TexBuffer(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn TexBufferARB(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn TexBufferEXT(GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn TexBufferRange(GLenum, GLenum, GLuint, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn TexBumpParameterfvATI(GLenum, *GLfloat) -> c_void)
+    failing!(fn TexBumpParameterivATI(GLenum, *GLint) -> c_void)
+    failing!(fn TexCoord1bOES(GLbyte) -> c_void)
+    failing!(fn TexCoord1bvOES(*GLbyte) -> c_void)
+    failing!(fn TexCoord1d(GLdouble) -> c_void)
+    failing!(fn TexCoord1dv(*GLdouble) -> c_void)
+    failing!(fn TexCoord1f(GLfloat) -> c_void)
+    failing!(fn TexCoord1fv(*GLfloat) -> c_void)
+    failing!(fn TexCoord1hNV(GLhalfNV) -> c_void)
+    failing!(fn TexCoord1hvNV(*GLhalfNV) -> c_void)
+    failing!(fn TexCoord1i(GLint) -> c_void)
+    failing!(fn TexCoord1iv(*GLint) -> c_void)
+    failing!(fn TexCoord1s(GLshort) -> c_void)
+    failing!(fn TexCoord1sv(*GLshort) -> c_void)
+    failing!(fn TexCoord1xOES(GLfixed) -> c_void)
+    failing!(fn TexCoord1xvOES(*GLfixed) -> c_void)
+    failing!(fn TexCoord2bOES(GLbyte, GLbyte) -> c_void)
+    failing!(fn TexCoord2bvOES(*GLbyte) -> c_void)
+    failing!(fn TexCoord2d(GLdouble, GLdouble) -> c_void)
+    failing!(fn TexCoord2dv(*GLdouble) -> c_void)
+    failing!(fn TexCoord2f(GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord2fColor3fVertex3fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord2fColor3fVertex3fvSUN(*GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn TexCoord2fColor4fNormal3fVertex3fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord2fColor4fNormal3fVertex3fvSUN(*GLfloat, *GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn TexCoord2fColor4ubVertex3fSUN(GLfloat, GLfloat, GLubyte, GLubyte, GLubyte, GLubyte, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord2fColor4ubVertex3fvSUN(*GLfloat, *GLubyte, *GLfloat) -> c_void)
+    failing!(fn TexCoord2fNormal3fVertex3fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord2fNormal3fVertex3fvSUN(*GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn TexCoord2fVertex3fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord2fVertex3fvSUN(*GLfloat, *GLfloat) -> c_void)
+    failing!(fn TexCoord2fv(*GLfloat) -> c_void)
+    failing!(fn TexCoord2hNV(GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn TexCoord2hvNV(*GLhalfNV) -> c_void)
+    failing!(fn TexCoord2i(GLint, GLint) -> c_void)
+    failing!(fn TexCoord2iv(*GLint) -> c_void)
+    failing!(fn TexCoord2s(GLshort, GLshort) -> c_void)
+    failing!(fn TexCoord2sv(*GLshort) -> c_void)
+    failing!(fn TexCoord2xOES(GLfixed, GLfixed) -> c_void)
+    failing!(fn TexCoord2xvOES(*GLfixed) -> c_void)
+    failing!(fn TexCoord3bOES(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn TexCoord3bvOES(*GLbyte) -> c_void)
+    failing!(fn TexCoord3d(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn TexCoord3dv(*GLdouble) -> c_void)
+    failing!(fn TexCoord3f(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord3fv(*GLfloat) -> c_void)
+    failing!(fn TexCoord3hNV(GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn TexCoord3hvNV(*GLhalfNV) -> c_void)
+    failing!(fn TexCoord3i(GLint, GLint, GLint) -> c_void)
+    failing!(fn TexCoord3iv(*GLint) -> c_void)
+    failing!(fn TexCoord3s(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn TexCoord3sv(*GLshort) -> c_void)
+    failing!(fn TexCoord3xOES(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn TexCoord3xvOES(*GLfixed) -> c_void)
+    failing!(fn TexCoord4bOES(GLbyte, GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn TexCoord4bvOES(*GLbyte) -> c_void)
+    failing!(fn TexCoord4d(GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn TexCoord4dv(*GLdouble) -> c_void)
+    failing!(fn TexCoord4f(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord4fColor4fNormal3fVertex4fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord4fColor4fNormal3fVertex4fvSUN(*GLfloat, *GLfloat, *GLfloat, *GLfloat) -> c_void)
+    failing!(fn TexCoord4fVertex4fSUN(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn TexCoord4fVertex4fvSUN(*GLfloat, *GLfloat) -> c_void)
+    failing!(fn TexCoord4fv(*GLfloat) -> c_void)
+    failing!(fn TexCoord4hNV(GLhalfNV, GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn TexCoord4hvNV(*GLhalfNV) -> c_void)
+    failing!(fn TexCoord4i(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn TexCoord4iv(*GLint) -> c_void)
+    failing!(fn TexCoord4s(GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn TexCoord4sv(*GLshort) -> c_void)
+    failing!(fn TexCoord4xOES(GLfixed, GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn TexCoord4xvOES(*GLfixed) -> c_void)
+    failing!(fn TexCoordFormatNV(GLint, GLenum, GLsizei) -> c_void)
+    failing!(fn TexCoordP1ui(GLenum, GLuint) -> c_void)
+    failing!(fn TexCoordP1uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn TexCoordP2ui(GLenum, GLuint) -> c_void)
+    failing!(fn TexCoordP2uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn TexCoordP3ui(GLenum, GLuint) -> c_void)
+    failing!(fn TexCoordP3uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn TexCoordP4ui(GLenum, GLuint) -> c_void)
+    failing!(fn TexCoordP4uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn TexCoordPointer(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn TexCoordPointerEXT(GLint, GLenum, GLsizei, GLsizei, *GLvoid) -> c_void)
+    failing!(fn TexCoordPointerListIBM(GLint, GLenum, GLint, **GLvoid, GLint) -> c_void)
+    failing!(fn TexCoordPointervINTEL(GLint, GLenum, **GLvoid) -> c_void)
+    failing!(fn TexEnvf(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn TexEnvfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn TexEnvi(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn TexEnviv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TexEnvx(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn TexEnvxOES(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn TexEnvxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn TexEnvxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn TexFilterFuncSGIS(GLenum, GLenum, GLsizei, *GLfloat) -> c_void)
+    failing!(fn TexGend(GLenum, GLenum, GLdouble) -> c_void)
+    failing!(fn TexGendv(GLenum, GLenum, *GLdouble) -> c_void)
+    failing!(fn TexGenf(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn TexGenfOES(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn TexGenfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn TexGenfvOES(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn TexGeni(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn TexGeniOES(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn TexGeniv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TexGenivOES(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TexGenxOES(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn TexGenxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn TexImage1D(GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexImage2D(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexImage2DMultisample(GLenum, GLsizei, GLint, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TexImage2DMultisampleCoverageNV(GLenum, GLsizei, GLsizei, GLint, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TexImage3D(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexImage3DEXT(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexImage3DMultisample(GLenum, GLsizei, GLint, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TexImage3DMultisampleCoverageNV(GLenum, GLsizei, GLsizei, GLint, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TexImage3DOES(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexImage4DSGIS(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexPageCommitmentARB(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TexParameterIiv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TexParameterIivEXT(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TexParameterIuiv(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn TexParameterIuivEXT(GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn TexParameterf(GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn TexParameterfv(GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn TexParameteri(GLenum, GLenum, GLint) -> c_void)
+    failing!(fn TexParameteriv(GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TexParameterx(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn TexParameterxOES(GLenum, GLenum, GLfixed) -> c_void)
+    failing!(fn TexParameterxv(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn TexParameterxvOES(GLenum, GLenum, *GLfixed) -> c_void)
+    failing!(fn TexRenderbufferNV(GLenum, GLuint) -> c_void)
+    failing!(fn TexStorage1D(GLenum, GLsizei, GLenum, GLsizei) -> c_void)
+    failing!(fn TexStorage1DEXT(GLenum, GLsizei, GLenum, GLsizei) -> c_void)
+    failing!(fn TexStorage2D(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn TexStorage2DEXT(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn TexStorage2DMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TexStorage3D(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) -> c_void)
+    failing!(fn TexStorage3DEXT(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) -> c_void)
+    failing!(fn TexStorage3DMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TexStorageSparseAMD(GLenum, GLenum, GLsizei, GLsizei, GLsizei, GLsizei, GLbitfield) -> c_void)
+    failing!(fn TexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexSubImage1DEXT(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexSubImage2DEXT(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexSubImage3D(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexSubImage3DEXT(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexSubImage3DOES(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TexSubImage4DSGIS(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TextureBarrierNV() -> c_void)
+    failing!(fn TextureBufferEXT(GLuint, GLenum, GLenum, GLuint) -> c_void)
+    failing!(fn TextureBufferRangeEXT(GLuint, GLenum, GLenum, GLuint, GLintptr, GLsizeiptr) -> c_void)
+    failing!(fn TextureColorMaskSGIS(GLboolean, GLboolean, GLboolean, GLboolean) -> c_void)
+    failing!(fn TextureImage1DEXT(GLuint, GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TextureImage2DEXT(GLuint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TextureImage2DMultisampleCoverageNV(GLuint, GLenum, GLsizei, GLsizei, GLint, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TextureImage2DMultisampleNV(GLuint, GLenum, GLsizei, GLint, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TextureImage3DEXT(GLuint, GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TextureImage3DMultisampleCoverageNV(GLuint, GLenum, GLsizei, GLsizei, GLint, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TextureImage3DMultisampleNV(GLuint, GLenum, GLsizei, GLint, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TextureLightEXT(GLenum) -> c_void)
+    failing!(fn TextureMaterialEXT(GLenum, GLenum) -> c_void)
+    failing!(fn TextureNormalEXT(GLenum) -> c_void)
+    failing!(fn TexturePageCommitmentEXT(GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TextureParameterIivEXT(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TextureParameterIuivEXT(GLuint, GLenum, GLenum, *GLuint) -> c_void)
+    failing!(fn TextureParameterfEXT(GLuint, GLenum, GLenum, GLfloat) -> c_void)
+    failing!(fn TextureParameterfvEXT(GLuint, GLenum, GLenum, *GLfloat) -> c_void)
+    failing!(fn TextureParameteriEXT(GLuint, GLenum, GLenum, GLint) -> c_void)
+    failing!(fn TextureParameterivEXT(GLuint, GLenum, GLenum, *GLint) -> c_void)
+    failing!(fn TextureRangeAPPLE(GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn TextureRenderbufferEXT(GLuint, GLenum, GLuint) -> c_void)
+    failing!(fn TextureStorage1DEXT(GLuint, GLenum, GLsizei, GLenum, GLsizei) -> c_void)
+    failing!(fn TextureStorage2DEXT(GLuint, GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> c_void)
+    failing!(fn TextureStorage2DMultisampleEXT(GLuint, GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TextureStorage3DEXT(GLuint, GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) -> c_void)
+    failing!(fn TextureStorage3DMultisampleEXT(GLuint, GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> c_void)
+    failing!(fn TextureStorageSparseAMD(GLuint, GLenum, GLenum, GLsizei, GLsizei, GLsizei, GLsizei, GLbitfield) -> c_void)
+    failing!(fn TextureSubImage1DEXT(GLuint, GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TextureSubImage2DEXT(GLuint, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TextureSubImage3DEXT(GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid) -> c_void)
+    failing!(fn TextureView(GLuint, GLenum, GLuint, GLenum, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn TrackMatrixNV(GLenum, GLuint, GLenum, GLenum) -> c_void)
+    failing!(fn TransformFeedbackAttribsNV(GLuint, *GLint, GLenum) -> c_void)
+    failing!(fn TransformFeedbackStreamAttribsNV(GLsizei, *GLint, GLsizei, *GLint, GLenum) -> c_void)
+    failing!(fn TransformFeedbackVaryings(GLuint, GLsizei, **GLchar, GLenum) -> c_void)
+    failing!(fn TransformFeedbackVaryingsEXT(GLuint, GLsizei, **GLchar, GLenum) -> c_void)
+    failing!(fn TransformFeedbackVaryingsNV(GLuint, GLsizei, *GLint, GLenum) -> c_void)
+    failing!(fn TransformPathNV(GLuint, GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn Translated(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Translatef(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Translatex(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn TranslatexOES(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Uniform1d(GLint, GLdouble) -> c_void)
+    failing!(fn Uniform1dv(GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn Uniform1f(GLint, GLfloat) -> c_void)
+    failing!(fn Uniform1fARB(GLint, GLfloat) -> c_void)
+    failing!(fn Uniform1fv(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform1fvARB(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform1i(GLint, GLint) -> c_void)
+    failing!(fn Uniform1i64NV(GLint, GLint64EXT) -> c_void)
+    failing!(fn Uniform1i64vNV(GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn Uniform1iARB(GLint, GLint) -> c_void)
+    failing!(fn Uniform1iv(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform1ivARB(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform1ui(GLint, GLuint) -> c_void)
+    failing!(fn Uniform1ui64NV(GLint, GLuint64EXT) -> c_void)
+    failing!(fn Uniform1ui64vNV(GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn Uniform1uiEXT(GLint, GLuint) -> c_void)
+    failing!(fn Uniform1uiv(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniform1uivEXT(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniform2d(GLint, GLdouble, GLdouble) -> c_void)
+    failing!(fn Uniform2dv(GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn Uniform2f(GLint, GLfloat, GLfloat) -> c_void)
+    failing!(fn Uniform2fARB(GLint, GLfloat, GLfloat) -> c_void)
+    failing!(fn Uniform2fv(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform2fvARB(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform2i(GLint, GLint, GLint) -> c_void)
+    failing!(fn Uniform2i64NV(GLint, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn Uniform2i64vNV(GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn Uniform2iARB(GLint, GLint, GLint) -> c_void)
+    failing!(fn Uniform2iv(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform2ivARB(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform2ui(GLint, GLuint, GLuint) -> c_void)
+    failing!(fn Uniform2ui64NV(GLint, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn Uniform2ui64vNV(GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn Uniform2uiEXT(GLint, GLuint, GLuint) -> c_void)
+    failing!(fn Uniform2uiv(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniform2uivEXT(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniform3d(GLint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Uniform3dv(GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn Uniform3f(GLint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Uniform3fARB(GLint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Uniform3fv(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform3fvARB(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform3i(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn Uniform3i64NV(GLint, GLint64EXT, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn Uniform3i64vNV(GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn Uniform3iARB(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn Uniform3iv(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform3ivARB(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform3ui(GLint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn Uniform3ui64NV(GLint, GLuint64EXT, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn Uniform3ui64vNV(GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn Uniform3uiEXT(GLint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn Uniform3uiv(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniform3uivEXT(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniform4d(GLint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Uniform4dv(GLint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn Uniform4f(GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Uniform4fARB(GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Uniform4fv(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform4fvARB(GLint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn Uniform4i(GLint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn Uniform4i64NV(GLint, GLint64EXT, GLint64EXT, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn Uniform4i64vNV(GLint, GLsizei, *GLint64EXT) -> c_void)
+    failing!(fn Uniform4iARB(GLint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn Uniform4iv(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform4ivARB(GLint, GLsizei, *GLint) -> c_void)
+    failing!(fn Uniform4ui(GLint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn Uniform4ui64NV(GLint, GLuint64EXT, GLuint64EXT, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn Uniform4ui64vNV(GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn Uniform4uiEXT(GLint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn Uniform4uiv(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniform4uivEXT(GLint, GLsizei, *GLuint) -> c_void)
+    failing!(fn UniformBlockBinding(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn UniformBufferEXT(GLuint, GLint, GLuint) -> c_void)
+    failing!(fn UniformHandleui64ARB(GLint, GLuint64) -> c_void)
+    failing!(fn UniformHandleui64NV(GLint, GLuint64) -> c_void)
+    failing!(fn UniformHandleui64vARB(GLint, GLsizei, *GLuint64) -> c_void)
+    failing!(fn UniformHandleui64vNV(GLint, GLsizei, *GLuint64) -> c_void)
+    failing!(fn UniformMatrix2dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix2fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix2fvARB(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix2x3dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix2x3fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix2x4dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix2x4fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix3dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix3fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix3fvARB(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix3x2dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix3x2fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix3x4dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix3x4fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix4dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix4fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix4fvARB(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix4x2dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix4x2fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformMatrix4x3dv(GLint, GLsizei, GLboolean, *GLdouble) -> c_void)
+    failing!(fn UniformMatrix4x3fv(GLint, GLsizei, GLboolean, *GLfloat) -> c_void)
+    failing!(fn UniformSubroutinesuiv(GLenum, GLsizei, *GLuint) -> c_void)
+    failing!(fn Uniformui64NV(GLint, GLuint64EXT) -> c_void)
+    failing!(fn Uniformui64vNV(GLint, GLsizei, *GLuint64EXT) -> c_void)
+    failing!(fn UnlockArraysEXT() -> c_void)
+    failing!(fn UnmapBuffer(GLenum) -> GLboolean)
+    failing!(fn UnmapBufferARB(GLenum) -> GLboolean)
+    failing!(fn UnmapBufferOES(GLenum) -> GLboolean)
+    failing!(fn UnmapNamedBufferEXT(GLuint) -> GLboolean)
+    failing!(fn UnmapObjectBufferATI(GLuint) -> c_void)
+    failing!(fn UnmapTexture2DINTEL(GLuint, GLint) -> c_void)
+    failing!(fn UpdateObjectBufferATI(GLuint, GLuint, GLsizei, *GLvoid, GLenum) -> c_void)
+    failing!(fn UseProgram(GLuint) -> c_void)
+    failing!(fn UseProgramObjectARB(GLhandleARB) -> c_void)
+    failing!(fn UseProgramStages(GLuint, GLbitfield, GLuint) -> c_void)
+    failing!(fn UseProgramStagesEXT(GLuint, GLbitfield, GLuint) -> c_void)
+    failing!(fn UseShaderProgramEXT(GLenum, GLuint) -> c_void)
+    failing!(fn VDPAUFiniNV() -> c_void)
+    failing!(fn VDPAUGetSurfaceivNV(GLvdpauSurfaceNV, GLenum, GLsizei, *GLsizei, *GLint) -> c_void)
+    failing!(fn VDPAUInitNV(*GLvoid, *GLvoid) -> c_void)
+    failing!(fn VDPAUIsSurfaceNV(GLvdpauSurfaceNV) -> c_void)
+    failing!(fn VDPAUMapSurfacesNV(GLsizei, *GLvdpauSurfaceNV) -> c_void)
+    failing!(fn VDPAURegisterOutputSurfaceNV(*GLvoid, GLenum, GLsizei, *GLuint) -> GLvdpauSurfaceNV)
+    failing!(fn VDPAURegisterVideoSurfaceNV(*GLvoid, GLenum, GLsizei, *GLuint) -> GLvdpauSurfaceNV)
+    failing!(fn VDPAUSurfaceAccessNV(GLvdpauSurfaceNV, GLenum) -> c_void)
+    failing!(fn VDPAUUnmapSurfacesNV(GLsizei, *GLvdpauSurfaceNV) -> c_void)
+    failing!(fn VDPAUUnregisterSurfaceNV(GLvdpauSurfaceNV) -> c_void)
+    failing!(fn ValidateProgram(GLuint) -> c_void)
+    failing!(fn ValidateProgramARB(GLhandleARB) -> c_void)
+    failing!(fn ValidateProgramPipeline(GLuint) -> c_void)
+    failing!(fn ValidateProgramPipelineEXT(GLuint) -> c_void)
+    failing!(fn VariantArrayObjectATI(GLuint, GLenum, GLsizei, GLuint, GLuint) -> c_void)
+    failing!(fn VariantPointerEXT(GLuint, GLenum, GLuint, *GLvoid) -> c_void)
+    failing!(fn VariantbvEXT(GLuint, *GLbyte) -> c_void)
+    failing!(fn VariantdvEXT(GLuint, *GLdouble) -> c_void)
+    failing!(fn VariantfvEXT(GLuint, *GLfloat) -> c_void)
+    failing!(fn VariantivEXT(GLuint, *GLint) -> c_void)
+    failing!(fn VariantsvEXT(GLuint, *GLshort) -> c_void)
+    failing!(fn VariantubvEXT(GLuint, *GLubyte) -> c_void)
+    failing!(fn VariantuivEXT(GLuint, *GLuint) -> c_void)
+    failing!(fn VariantusvEXT(GLuint, *GLushort) -> c_void)
+    failing!(fn Vertex2bOES(GLbyte) -> c_void)
+    failing!(fn Vertex2bvOES(*GLbyte) -> c_void)
+    failing!(fn Vertex2d(GLdouble, GLdouble) -> c_void)
+    failing!(fn Vertex2dv(*GLdouble) -> c_void)
+    failing!(fn Vertex2f(GLfloat, GLfloat) -> c_void)
+    failing!(fn Vertex2fv(*GLfloat) -> c_void)
+    failing!(fn Vertex2hNV(GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn Vertex2hvNV(*GLhalfNV) -> c_void)
+    failing!(fn Vertex2i(GLint, GLint) -> c_void)
+    failing!(fn Vertex2iv(*GLint) -> c_void)
+    failing!(fn Vertex2s(GLshort, GLshort) -> c_void)
+    failing!(fn Vertex2sv(*GLshort) -> c_void)
+    failing!(fn Vertex2xOES(GLfixed) -> c_void)
+    failing!(fn Vertex2xvOES(*GLfixed) -> c_void)
+    failing!(fn Vertex3bOES(GLbyte, GLbyte) -> c_void)
+    failing!(fn Vertex3bvOES(*GLbyte) -> c_void)
+    failing!(fn Vertex3d(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Vertex3dv(*GLdouble) -> c_void)
+    failing!(fn Vertex3f(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Vertex3fv(*GLfloat) -> c_void)
+    failing!(fn Vertex3hNV(GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn Vertex3hvNV(*GLhalfNV) -> c_void)
+    failing!(fn Vertex3i(GLint, GLint, GLint) -> c_void)
+    failing!(fn Vertex3iv(*GLint) -> c_void)
+    failing!(fn Vertex3s(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Vertex3sv(*GLshort) -> c_void)
+    failing!(fn Vertex3xOES(GLfixed, GLfixed) -> c_void)
+    failing!(fn Vertex3xvOES(*GLfixed) -> c_void)
+    failing!(fn Vertex4bOES(GLbyte, GLbyte, GLbyte) -> c_void)
+    failing!(fn Vertex4bvOES(*GLbyte) -> c_void)
+    failing!(fn Vertex4d(GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn Vertex4dv(*GLdouble) -> c_void)
+    failing!(fn Vertex4f(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn Vertex4fv(*GLfloat) -> c_void)
+    failing!(fn Vertex4hNV(GLhalfNV, GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn Vertex4hvNV(*GLhalfNV) -> c_void)
+    failing!(fn Vertex4i(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn Vertex4iv(*GLint) -> c_void)
+    failing!(fn Vertex4s(GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn Vertex4sv(*GLshort) -> c_void)
+    failing!(fn Vertex4xOES(GLfixed, GLfixed, GLfixed) -> c_void)
+    failing!(fn Vertex4xvOES(*GLfixed) -> c_void)
+    failing!(fn VertexArrayBindVertexBufferEXT(GLuint, GLuint, GLuint, GLintptr, GLsizei) -> c_void)
+    failing!(fn VertexArrayColorOffsetEXT(GLuint, GLuint, GLint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayEdgeFlagOffsetEXT(GLuint, GLuint, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayFogCoordOffsetEXT(GLuint, GLuint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayIndexOffsetEXT(GLuint, GLuint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayMultiTexCoordOffsetEXT(GLuint, GLuint, GLenum, GLint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayNormalOffsetEXT(GLuint, GLuint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayParameteriAPPLE(GLenum, GLint) -> c_void)
+    failing!(fn VertexArrayRangeAPPLE(GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexArrayRangeNV(GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexArraySecondaryColorOffsetEXT(GLuint, GLuint, GLint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayTexCoordOffsetEXT(GLuint, GLuint, GLint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayVertexAttribBindingEXT(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexArrayVertexAttribFormatEXT(GLuint, GLuint, GLint, GLenum, GLboolean, GLuint) -> c_void)
+    failing!(fn VertexArrayVertexAttribIFormatEXT(GLuint, GLuint, GLint, GLenum, GLuint) -> c_void)
+    failing!(fn VertexArrayVertexAttribIOffsetEXT(GLuint, GLuint, GLuint, GLint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayVertexAttribLFormatEXT(GLuint, GLuint, GLint, GLenum, GLuint) -> c_void)
+    failing!(fn VertexArrayVertexAttribLOffsetEXT(GLuint, GLuint, GLuint, GLint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayVertexAttribOffsetEXT(GLuint, GLuint, GLuint, GLint, GLenum, GLboolean, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexArrayVertexBindingDivisorEXT(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexArrayVertexOffsetEXT(GLuint, GLuint, GLint, GLenum, GLsizei, GLintptr) -> c_void)
+    failing!(fn VertexAttrib1d(GLuint, GLdouble) -> c_void)
+    failing!(fn VertexAttrib1dARB(GLuint, GLdouble) -> c_void)
+    failing!(fn VertexAttrib1dNV(GLuint, GLdouble) -> c_void)
+    failing!(fn VertexAttrib1dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib1dvARB(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib1dvNV(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib1f(GLuint, GLfloat) -> c_void)
+    failing!(fn VertexAttrib1fARB(GLuint, GLfloat) -> c_void)
+    failing!(fn VertexAttrib1fNV(GLuint, GLfloat) -> c_void)
+    failing!(fn VertexAttrib1fv(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib1fvARB(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib1fvNV(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib1hNV(GLuint, GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib1hvNV(GLuint, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib1s(GLuint, GLshort) -> c_void)
+    failing!(fn VertexAttrib1sARB(GLuint, GLshort) -> c_void)
+    failing!(fn VertexAttrib1sNV(GLuint, GLshort) -> c_void)
+    failing!(fn VertexAttrib1sv(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib1svARB(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib1svNV(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib2d(GLuint, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib2dARB(GLuint, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib2dNV(GLuint, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib2dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib2dvARB(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib2dvNV(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib2f(GLuint, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib2fARB(GLuint, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib2fNV(GLuint, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib2fv(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib2fvARB(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib2fvNV(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib2hNV(GLuint, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib2hvNV(GLuint, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib2s(GLuint, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib2sARB(GLuint, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib2sNV(GLuint, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib2sv(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib2svARB(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib2svNV(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib3d(GLuint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib3dARB(GLuint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib3dNV(GLuint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib3dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib3dvARB(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib3dvNV(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib3f(GLuint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib3fARB(GLuint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib3fNV(GLuint, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib3fv(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib3fvARB(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib3fvNV(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib3hNV(GLuint, GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib3hvNV(GLuint, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib3s(GLuint, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib3sARB(GLuint, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib3sNV(GLuint, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib3sv(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib3svARB(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib3svNV(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib4Nbv(GLuint, *GLbyte) -> c_void)
+    failing!(fn VertexAttrib4NbvARB(GLuint, *GLbyte) -> c_void)
+    failing!(fn VertexAttrib4Niv(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttrib4NivARB(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttrib4Nsv(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib4NsvARB(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib4Nub(GLuint, GLubyte, GLubyte, GLubyte, GLubyte) -> c_void)
+    failing!(fn VertexAttrib4NubARB(GLuint, GLubyte, GLubyte, GLubyte, GLubyte) -> c_void)
+    failing!(fn VertexAttrib4Nubv(GLuint, *GLubyte) -> c_void)
+    failing!(fn VertexAttrib4NubvARB(GLuint, *GLubyte) -> c_void)
+    failing!(fn VertexAttrib4Nuiv(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttrib4NuivARB(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttrib4Nusv(GLuint, *GLushort) -> c_void)
+    failing!(fn VertexAttrib4NusvARB(GLuint, *GLushort) -> c_void)
+    failing!(fn VertexAttrib4bv(GLuint, *GLbyte) -> c_void)
+    failing!(fn VertexAttrib4bvARB(GLuint, *GLbyte) -> c_void)
+    failing!(fn VertexAttrib4d(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib4dARB(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib4dNV(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttrib4dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib4dvARB(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib4dvNV(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttrib4f(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib4fARB(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib4fNV(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexAttrib4fv(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib4fvARB(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib4fvNV(GLuint, *GLfloat) -> c_void)
+    failing!(fn VertexAttrib4hNV(GLuint, GLhalfNV, GLhalfNV, GLhalfNV, GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib4hvNV(GLuint, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttrib4iv(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttrib4ivARB(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttrib4s(GLuint, GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib4sARB(GLuint, GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib4sNV(GLuint, GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexAttrib4sv(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib4svARB(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib4svNV(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttrib4ubNV(GLuint, GLubyte, GLubyte, GLubyte, GLubyte) -> c_void)
+    failing!(fn VertexAttrib4ubv(GLuint, *GLubyte) -> c_void)
+    failing!(fn VertexAttrib4ubvARB(GLuint, *GLubyte) -> c_void)
+    failing!(fn VertexAttrib4ubvNV(GLuint, *GLubyte) -> c_void)
+    failing!(fn VertexAttrib4uiv(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttrib4uivARB(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttrib4usv(GLuint, *GLushort) -> c_void)
+    failing!(fn VertexAttrib4usvARB(GLuint, *GLushort) -> c_void)
+    failing!(fn VertexAttribArrayObjectATI(GLuint, GLint, GLenum, GLboolean, GLsizei, GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribBinding(GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribDivisor(GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribDivisorANGLE(GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribDivisorARB(GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribDivisorNV(GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribFormat(GLuint, GLint, GLenum, GLboolean, GLuint) -> c_void)
+    failing!(fn VertexAttribFormatNV(GLuint, GLint, GLenum, GLboolean, GLsizei) -> c_void)
+    failing!(fn VertexAttribI1i(GLuint, GLint) -> c_void)
+    failing!(fn VertexAttribI1iEXT(GLuint, GLint) -> c_void)
+    failing!(fn VertexAttribI1iv(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI1ivEXT(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI1ui(GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI1uiEXT(GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI1uiv(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI1uivEXT(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI2i(GLuint, GLint, GLint) -> c_void)
+    failing!(fn VertexAttribI2iEXT(GLuint, GLint, GLint) -> c_void)
+    failing!(fn VertexAttribI2iv(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI2ivEXT(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI2ui(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI2uiEXT(GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI2uiv(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI2uivEXT(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI3i(GLuint, GLint, GLint, GLint) -> c_void)
+    failing!(fn VertexAttribI3iEXT(GLuint, GLint, GLint, GLint) -> c_void)
+    failing!(fn VertexAttribI3iv(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI3ivEXT(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI3ui(GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI3uiEXT(GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI3uiv(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI3uivEXT(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI4bv(GLuint, *GLbyte) -> c_void)
+    failing!(fn VertexAttribI4bvEXT(GLuint, *GLbyte) -> c_void)
+    failing!(fn VertexAttribI4i(GLuint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn VertexAttribI4iEXT(GLuint, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn VertexAttribI4iv(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI4ivEXT(GLuint, *GLint) -> c_void)
+    failing!(fn VertexAttribI4sv(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttribI4svEXT(GLuint, *GLshort) -> c_void)
+    failing!(fn VertexAttribI4ubv(GLuint, *GLubyte) -> c_void)
+    failing!(fn VertexAttribI4ubvEXT(GLuint, *GLubyte) -> c_void)
+    failing!(fn VertexAttribI4ui(GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI4uiEXT(GLuint, GLuint, GLuint, GLuint, GLuint) -> c_void)
+    failing!(fn VertexAttribI4uiv(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI4uivEXT(GLuint, *GLuint) -> c_void)
+    failing!(fn VertexAttribI4usv(GLuint, *GLushort) -> c_void)
+    failing!(fn VertexAttribI4usvEXT(GLuint, *GLushort) -> c_void)
+    failing!(fn VertexAttribIFormat(GLuint, GLint, GLenum, GLuint) -> c_void)
+    failing!(fn VertexAttribIFormatNV(GLuint, GLint, GLenum, GLsizei) -> c_void)
+    failing!(fn VertexAttribIPointer(GLuint, GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexAttribIPointerEXT(GLuint, GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexAttribL1d(GLuint, GLdouble) -> c_void)
+    failing!(fn VertexAttribL1dEXT(GLuint, GLdouble) -> c_void)
+    failing!(fn VertexAttribL1dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL1dvEXT(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL1i64NV(GLuint, GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL1i64vNV(GLuint, *GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL1ui64ARB(GLuint, GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL1ui64NV(GLuint, GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL1ui64vARB(GLuint, *GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL1ui64vNV(GLuint, *GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL2d(GLuint, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttribL2dEXT(GLuint, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttribL2dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL2dvEXT(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL2i64NV(GLuint, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL2i64vNV(GLuint, *GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL2ui64NV(GLuint, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL2ui64vNV(GLuint, *GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL3d(GLuint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttribL3dEXT(GLuint, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttribL3dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL3dvEXT(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL3i64NV(GLuint, GLint64EXT, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL3i64vNV(GLuint, *GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL3ui64NV(GLuint, GLuint64EXT, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL3ui64vNV(GLuint, *GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL4d(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttribL4dEXT(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexAttribL4dv(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL4dvEXT(GLuint, *GLdouble) -> c_void)
+    failing!(fn VertexAttribL4i64NV(GLuint, GLint64EXT, GLint64EXT, GLint64EXT, GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL4i64vNV(GLuint, *GLint64EXT) -> c_void)
+    failing!(fn VertexAttribL4ui64NV(GLuint, GLuint64EXT, GLuint64EXT, GLuint64EXT, GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribL4ui64vNV(GLuint, *GLuint64EXT) -> c_void)
+    failing!(fn VertexAttribLFormat(GLuint, GLint, GLenum, GLuint) -> c_void)
+    failing!(fn VertexAttribLFormatNV(GLuint, GLint, GLenum, GLsizei) -> c_void)
+    failing!(fn VertexAttribLPointer(GLuint, GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexAttribLPointerEXT(GLuint, GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexAttribP1ui(GLuint, GLenum, GLboolean, GLuint) -> c_void)
+    failing!(fn VertexAttribP1uiv(GLuint, GLenum, GLboolean, *GLuint) -> c_void)
+    failing!(fn VertexAttribP2ui(GLuint, GLenum, GLboolean, GLuint) -> c_void)
+    failing!(fn VertexAttribP2uiv(GLuint, GLenum, GLboolean, *GLuint) -> c_void)
+    failing!(fn VertexAttribP3ui(GLuint, GLenum, GLboolean, GLuint) -> c_void)
+    failing!(fn VertexAttribP3uiv(GLuint, GLenum, GLboolean, *GLuint) -> c_void)
+    failing!(fn VertexAttribP4ui(GLuint, GLenum, GLboolean, GLuint) -> c_void)
+    failing!(fn VertexAttribP4uiv(GLuint, GLenum, GLboolean, *GLuint) -> c_void)
+    failing!(fn VertexAttribParameteriAMD(GLuint, GLenum, GLint) -> c_void)
+    failing!(fn VertexAttribPointer(GLuint, GLint, GLenum, GLboolean, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexAttribPointerARB(GLuint, GLint, GLenum, GLboolean, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexAttribPointerNV(GLuint, GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexAttribs1dvNV(GLuint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn VertexAttribs1fvNV(GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn VertexAttribs1hvNV(GLuint, GLsizei, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttribs1svNV(GLuint, GLsizei, *GLshort) -> c_void)
+    failing!(fn VertexAttribs2dvNV(GLuint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn VertexAttribs2fvNV(GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn VertexAttribs2hvNV(GLuint, GLsizei, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttribs2svNV(GLuint, GLsizei, *GLshort) -> c_void)
+    failing!(fn VertexAttribs3dvNV(GLuint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn VertexAttribs3fvNV(GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn VertexAttribs3hvNV(GLuint, GLsizei, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttribs3svNV(GLuint, GLsizei, *GLshort) -> c_void)
+    failing!(fn VertexAttribs4dvNV(GLuint, GLsizei, *GLdouble) -> c_void)
+    failing!(fn VertexAttribs4fvNV(GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn VertexAttribs4hvNV(GLuint, GLsizei, *GLhalfNV) -> c_void)
+    failing!(fn VertexAttribs4svNV(GLuint, GLsizei, *GLshort) -> c_void)
+    failing!(fn VertexAttribs4ubvNV(GLuint, GLsizei, *GLubyte) -> c_void)
+    failing!(fn VertexBindingDivisor(GLuint, GLuint) -> c_void)
+    failing!(fn VertexBlendARB(GLint) -> c_void)
+    failing!(fn VertexBlendEnvfATI(GLenum, GLfloat) -> c_void)
+    failing!(fn VertexBlendEnviATI(GLenum, GLint) -> c_void)
+    failing!(fn VertexFormatNV(GLint, GLenum, GLsizei) -> c_void)
+    failing!(fn VertexP2ui(GLenum, GLuint) -> c_void)
+    failing!(fn VertexP2uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn VertexP3ui(GLenum, GLuint) -> c_void)
+    failing!(fn VertexP3uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn VertexP4ui(GLenum, GLuint) -> c_void)
+    failing!(fn VertexP4uiv(GLenum, *GLuint) -> c_void)
+    failing!(fn VertexPointer(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexPointerEXT(GLint, GLenum, GLsizei, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexPointerListIBM(GLint, GLenum, GLint, **GLvoid, GLint) -> c_void)
+    failing!(fn VertexPointervINTEL(GLint, GLenum, **GLvoid) -> c_void)
+    failing!(fn VertexStream1dATI(GLenum, GLdouble) -> c_void)
+    failing!(fn VertexStream1dvATI(GLenum, *GLdouble) -> c_void)
+    failing!(fn VertexStream1fATI(GLenum, GLfloat) -> c_void)
+    failing!(fn VertexStream1fvATI(GLenum, *GLfloat) -> c_void)
+    failing!(fn VertexStream1iATI(GLenum, GLint) -> c_void)
+    failing!(fn VertexStream1ivATI(GLenum, *GLint) -> c_void)
+    failing!(fn VertexStream1sATI(GLenum, GLshort) -> c_void)
+    failing!(fn VertexStream1svATI(GLenum, *GLshort) -> c_void)
+    failing!(fn VertexStream2dATI(GLenum, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexStream2dvATI(GLenum, *GLdouble) -> c_void)
+    failing!(fn VertexStream2fATI(GLenum, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexStream2fvATI(GLenum, *GLfloat) -> c_void)
+    failing!(fn VertexStream2iATI(GLenum, GLint, GLint) -> c_void)
+    failing!(fn VertexStream2ivATI(GLenum, *GLint) -> c_void)
+    failing!(fn VertexStream2sATI(GLenum, GLshort, GLshort) -> c_void)
+    failing!(fn VertexStream2svATI(GLenum, *GLshort) -> c_void)
+    failing!(fn VertexStream3dATI(GLenum, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexStream3dvATI(GLenum, *GLdouble) -> c_void)
+    failing!(fn VertexStream3fATI(GLenum, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexStream3fvATI(GLenum, *GLfloat) -> c_void)
+    failing!(fn VertexStream3iATI(GLenum, GLint, GLint, GLint) -> c_void)
+    failing!(fn VertexStream3ivATI(GLenum, *GLint) -> c_void)
+    failing!(fn VertexStream3sATI(GLenum, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexStream3svATI(GLenum, *GLshort) -> c_void)
+    failing!(fn VertexStream4dATI(GLenum, GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn VertexStream4dvATI(GLenum, *GLdouble) -> c_void)
+    failing!(fn VertexStream4fATI(GLenum, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn VertexStream4fvATI(GLenum, *GLfloat) -> c_void)
+    failing!(fn VertexStream4iATI(GLenum, GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn VertexStream4ivATI(GLenum, *GLint) -> c_void)
+    failing!(fn VertexStream4sATI(GLenum, GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn VertexStream4svATI(GLenum, *GLshort) -> c_void)
+    failing!(fn VertexWeightPointerEXT(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn VertexWeightfEXT(GLfloat) -> c_void)
+    failing!(fn VertexWeightfvEXT(*GLfloat) -> c_void)
+    failing!(fn VertexWeighthNV(GLhalfNV) -> c_void)
+    failing!(fn VertexWeighthvNV(*GLhalfNV) -> c_void)
+    failing!(fn VideoCaptureNV(GLuint, *GLuint, *GLuint64EXT) -> GLenum)
+    failing!(fn VideoCaptureStreamParameterdvNV(GLuint, GLuint, GLenum, *GLdouble) -> c_void)
+    failing!(fn VideoCaptureStreamParameterfvNV(GLuint, GLuint, GLenum, *GLfloat) -> c_void)
+    failing!(fn VideoCaptureStreamParameterivNV(GLuint, GLuint, GLenum, *GLint) -> c_void)
+    failing!(fn Viewport(GLint, GLint, GLsizei, GLsizei) -> c_void)
+    failing!(fn ViewportArrayv(GLuint, GLsizei, *GLfloat) -> c_void)
+    failing!(fn ViewportIndexedf(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn ViewportIndexedfv(GLuint, *GLfloat) -> c_void)
+    failing!(fn WaitSync(GLsync, GLbitfield, GLuint64) -> c_void)
+    failing!(fn WaitSyncAPPLE(GLsync, GLbitfield, GLuint64) -> c_void)
+    failing!(fn WeightPathsNV(GLuint, GLsizei, *GLuint, *GLfloat) -> c_void)
+    failing!(fn WeightPointerARB(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn WeightPointerOES(GLint, GLenum, GLsizei, *GLvoid) -> c_void)
+    failing!(fn WeightbvARB(GLint, *GLbyte) -> c_void)
+    failing!(fn WeightdvARB(GLint, *GLdouble) -> c_void)
+    failing!(fn WeightfvARB(GLint, *GLfloat) -> c_void)
+    failing!(fn WeightivARB(GLint, *GLint) -> c_void)
+    failing!(fn WeightsvARB(GLint, *GLshort) -> c_void)
+    failing!(fn WeightubvARB(GLint, *GLubyte) -> c_void)
+    failing!(fn WeightuivARB(GLint, *GLuint) -> c_void)
+    failing!(fn WeightusvARB(GLint, *GLushort) -> c_void)
+    failing!(fn WindowPos2d(GLdouble, GLdouble) -> c_void)
+    failing!(fn WindowPos2dARB(GLdouble, GLdouble) -> c_void)
+    failing!(fn WindowPos2dMESA(GLdouble, GLdouble) -> c_void)
+    failing!(fn WindowPos2dv(*GLdouble) -> c_void)
+    failing!(fn WindowPos2dvARB(*GLdouble) -> c_void)
+    failing!(fn WindowPos2dvMESA(*GLdouble) -> c_void)
+    failing!(fn WindowPos2f(GLfloat, GLfloat) -> c_void)
+    failing!(fn WindowPos2fARB(GLfloat, GLfloat) -> c_void)
+    failing!(fn WindowPos2fMESA(GLfloat, GLfloat) -> c_void)
+    failing!(fn WindowPos2fv(*GLfloat) -> c_void)
+    failing!(fn WindowPos2fvARB(*GLfloat) -> c_void)
+    failing!(fn WindowPos2fvMESA(*GLfloat) -> c_void)
+    failing!(fn WindowPos2i(GLint, GLint) -> c_void)
+    failing!(fn WindowPos2iARB(GLint, GLint) -> c_void)
+    failing!(fn WindowPos2iMESA(GLint, GLint) -> c_void)
+    failing!(fn WindowPos2iv(*GLint) -> c_void)
+    failing!(fn WindowPos2ivARB(*GLint) -> c_void)
+    failing!(fn WindowPos2ivMESA(*GLint) -> c_void)
+    failing!(fn WindowPos2s(GLshort, GLshort) -> c_void)
+    failing!(fn WindowPos2sARB(GLshort, GLshort) -> c_void)
+    failing!(fn WindowPos2sMESA(GLshort, GLshort) -> c_void)
+    failing!(fn WindowPos2sv(*GLshort) -> c_void)
+    failing!(fn WindowPos2svARB(*GLshort) -> c_void)
+    failing!(fn WindowPos2svMESA(*GLshort) -> c_void)
+    failing!(fn WindowPos3d(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn WindowPos3dARB(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn WindowPos3dMESA(GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn WindowPos3dv(*GLdouble) -> c_void)
+    failing!(fn WindowPos3dvARB(*GLdouble) -> c_void)
+    failing!(fn WindowPos3dvMESA(*GLdouble) -> c_void)
+    failing!(fn WindowPos3f(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn WindowPos3fARB(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn WindowPos3fMESA(GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn WindowPos3fv(*GLfloat) -> c_void)
+    failing!(fn WindowPos3fvARB(*GLfloat) -> c_void)
+    failing!(fn WindowPos3fvMESA(*GLfloat) -> c_void)
+    failing!(fn WindowPos3i(GLint, GLint, GLint) -> c_void)
+    failing!(fn WindowPos3iARB(GLint, GLint, GLint) -> c_void)
+    failing!(fn WindowPos3iMESA(GLint, GLint, GLint) -> c_void)
+    failing!(fn WindowPos3iv(*GLint) -> c_void)
+    failing!(fn WindowPos3ivARB(*GLint) -> c_void)
+    failing!(fn WindowPos3ivMESA(*GLint) -> c_void)
+    failing!(fn WindowPos3s(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn WindowPos3sARB(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn WindowPos3sMESA(GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn WindowPos3sv(*GLshort) -> c_void)
+    failing!(fn WindowPos3svARB(*GLshort) -> c_void)
+    failing!(fn WindowPos3svMESA(*GLshort) -> c_void)
+    failing!(fn WindowPos4dMESA(GLdouble, GLdouble, GLdouble, GLdouble) -> c_void)
+    failing!(fn WindowPos4dvMESA(*GLdouble) -> c_void)
+    failing!(fn WindowPos4fMESA(GLfloat, GLfloat, GLfloat, GLfloat) -> c_void)
+    failing!(fn WindowPos4fvMESA(*GLfloat) -> c_void)
+    failing!(fn WindowPos4iMESA(GLint, GLint, GLint, GLint) -> c_void)
+    failing!(fn WindowPos4ivMESA(*GLint) -> c_void)
+    failing!(fn WindowPos4sMESA(GLshort, GLshort, GLshort, GLshort) -> c_void)
+    failing!(fn WindowPos4svMESA(*GLshort) -> c_void)
+    failing!(fn WriteMaskEXT(GLuint, GLuint, GLenum, GLenum, GLenum, GLenum) -> c_void)
 }
 
 /// Load each OpenGL symbol using a custom load function. This allows for the
