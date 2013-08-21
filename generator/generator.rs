@@ -187,9 +187,16 @@ impl<'self> Generator<'self> {
             .connect(", ")
     }
 
-    fn gen_param_call_list(cmd: &Cmd) -> ~str {
+    fn gen_param_ident_list(cmd: &Cmd) -> ~str {
         cmd.params.iter()
             .map(|b| Generator::gen_binding_ident(b, true))
+            .to_owned_vec()
+            .connect(", ")
+    }
+
+    fn gen_param_ty_list(cmd: &Cmd) -> ~str {
+        cmd.params.iter()
+            .map(|b| ty::to_rust_ty(b.ty))
             .to_owned_vec()
             .connect(", ")
     }
@@ -262,6 +269,33 @@ impl<'self> Generator<'self> {
         self.write_line("    }");
         self.write_line("}");
     }
+
+    fn write_failing_fns(&mut self) {
+        self.write_line("mod failing {");
+        self.incr_indent();
+        self.write_line("use std::libc::*;");
+        self.write_line("use super::types::*;");
+        self.write_line("");
+        self.write_line("macro_rules! failing(");
+        self.write_line("    (fn $name:ident()) => (pub extern \"C\" fn $name() { fail!(stringify!($name was not loaded)) });");
+        self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (pub extern \"C\" fn $name() -> $ret_ty { fail!(stringify!($name was not loaded)) });");
+        self.write_line("    (fn $name:ident($($arg_ty:ty),*)) => (pub extern \"C\" fn $name($(_: $arg_ty),*) { fail!(stringify!($name was not loaded)) });");
+        self.write_line("    (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern \"C\" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });");
+        self.write_line(")");
+        self.write_line("");
+        self.for_cmds(
+            |_| (),
+            |_, c| self.write_line(fmt!(
+                "failing!(fn %s(%s)%s)",
+                c.proto.ident,
+                Generator::gen_param_ty_list(c),
+                Generator::gen_return_suffix(c)
+            )),
+            |_, _| ()
+        );
+        self.decr_indent();
+        self.write_line("}");
+    }
 }
 
 struct PtrGenerator<'self>(Generator<'self>);
@@ -284,7 +318,7 @@ impl<'self> PtrGenerator<'self> {
                 Generator::gen_return_suffix(c),
                 if !c.is_safe { "" } else { "unsafe { " },
                 c.proto.ident,
-                Generator::gen_param_call_list(c),
+                Generator::gen_param_ident_list(c),
                 if !c.is_safe { "" } else { " }" }
             )),
             |_, _| ()
@@ -348,27 +382,6 @@ impl<'self> PtrGenerator<'self> {
             |_, c| self.write_line(fmt!("fn_mod!(%s)", c.proto.ident)),
             |_, _| ()
         );
-    }
-
-    fn write_failing_fns(&mut self) {
-        self.write_line("mod failing {");
-        self.incr_indent();
-        self.write_line("use std::libc::*;");
-        self.write_line("use super::types::*;");
-        self.write_line("");
-        self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
-                "pub extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
-                c.proto.ident,
-                Generator::gen_param_list(c, false),
-                Generator::gen_return_suffix(c),
-                c.proto.ident
-            )),
-            |_, _| ()
-        );
-        self.decr_indent();
-        self.write_line("}");
     }
 
     fn write_load_fn(&mut self) {
@@ -465,27 +478,6 @@ impl<'self> StructGenerator<'self> {
         self.write_line("}");
     }
 
-    fn write_failing_fns(&mut self) {
-        self.write_line("mod failing {");
-        self.incr_indent();
-        self.write_line("use std::libc::*;");
-        self.write_line("use super::types::*;");
-        self.write_line("");
-        self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(
-                fmt!("pub extern \"C\" fn %s(%s)%s { fail!(\"%s was not loaded\") }",
-                    c.proto.ident,
-                    Generator::gen_param_list(c, false),
-                    Generator::gen_return_suffix(c),
-                    c.proto.ident)
-            ),
-            |_, _| ()
-        );
-        self.decr_indent();
-        self.write_line("}");
-    }
-
     fn write_load_fn(&mut self) {
         self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
         self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
@@ -530,7 +522,7 @@ impl<'self> StructGenerator<'self> {
                 Generator::gen_return_suffix(c),
                 if !c.is_safe { "" } else { "unsafe { " },
                 c.proto.ident,
-                Generator::gen_param_call_list(c),
+                Generator::gen_param_ident_list(c),
                 if !c.is_safe { "" } else { " }" }
             )),
             |_, _| ()
