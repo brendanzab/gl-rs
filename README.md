@@ -4,6 +4,11 @@ _NOTE: this loader does not currently work with the latest version of Rust but w
 
 An OpenGL function pointer loader for the Rust Programming Language.
 
+## Todo
+
+- Provide `cfg`s so that the extensions can be limited. This should reduce the size of the compiled lib and the time it takes for the functions pointers to be loaded.
+- Make the generator work properly with GLX and WGL.
+
 ## Usage
 
 ### Pointer-style loader
