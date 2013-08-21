@@ -153,8 +153,12 @@ impl<'self> RegistryBuilder {
 
     fn skip_until(&self, event: ParseEvent) {
         loop {
-            let msg = self.recv();
-            if msg == event || msg == EndDocument { break }
+            match self.recv() {
+                EndDocument => fail!("Expected %s, but reached the end of the document.",
+                                     event.to_str()),
+                ref msg if *msg == event => break,
+                _ => (),
+            }
         }
     }
 
