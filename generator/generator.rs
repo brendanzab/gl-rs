@@ -259,12 +259,11 @@ impl<'self> Generator<'self> {
         self.write_line("pub struct FnPtr<F> { f: F, is_loaded: bool }");
         self.write_line("");
         self.write_line("impl<F> FnPtr<F> {");
-        self.write_line("    pub fn new(ptr: *c_void, failing_fn: F) -> FnPtr<F> {");
+        self.write_line("    pub fn new(ptr: Option<extern \"C\" fn()>, failing_fn: F) -> FnPtr<F> {");
         self.write_line("        use std::cast::transmute;");
-        self.write_line("        if !ptr.is_null() {");
-        self.write_line("            FnPtr { f: unsafe { transmute(ptr) }, is_loaded: true }");
-        self.write_line("        } else {");
-        self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
+        self.write_line("        match ptr {");
+        self.write_line("            Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },");
+        self.write_line("            None => FnPtr { f: failing_fn, is_loaded: false },");
         self.write_line("        }");
         self.write_line("    }");
         self.write_line("}");
@@ -311,7 +310,7 @@ impl<'self> PtrGenerator<'self> {
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(fmt!(
-                "#[inline] pub %sfn %s(%s)%s { %s(storage::%s.f)(%s)%s }",
+                "#[fixed_stack_segment] #[inline] pub %sfn %s(%s)%s { %s(storage::%s.f)(%s)%s }",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
                 Generator::gen_param_list(c, true),
@@ -364,13 +363,11 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("macro_rules! fn_mod(");
         self.write_line("    ($name:ident) => (");
         self.write_line("        pub mod $name {");
-        self.write_line("            use std::libc::c_void;");
-        self.write_line("            ");
         self.write_line("            #[inline]");
         self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
         self.write_line("            ");
         self.write_line("            #[inline]");
-        self.write_line("            pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) {");
+        self.write_line("            pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
         self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn(stringify!($name)), ::failing::$name) }");
         self.write_line("            }");
         self.write_line("        }");
@@ -391,12 +388,12 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("/// ~~~");
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
-        self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) {");
+        self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
         self.write_line("");
         self.incr_indent();
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(fmt!("%s::load_with(loadfn);", c.proto.ident)),
+            |_, c| self.write_line(fmt!("%s::load_with(|s| loadfn(s));", c.proto.ident)),
             |_, _| ()
         );
         self.decr_indent();
@@ -486,11 +483,9 @@ impl<'self> StructGenerator<'self> {
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
         self.write_line(fmt!(
-            "pub fn load_with(loadfn: &fn(symbol: &str) -> *c_void) -> ~%s {",
+            "pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) -> ~%s {",
             StructGenerator::gen_struct_name(&self.ns)
         ));
-        self.incr_indent();
-        self.write_line("use std::cast::transmute;");
         self.write_line("");
         self.write_line(fmt!("~%s {", StructGenerator::gen_struct_name(&self.ns)));
         self.incr_indent();
@@ -514,7 +509,7 @@ impl<'self> StructGenerator<'self> {
         self.for_cmds(
             |_| (),
             |_, c| self.write_line(fmt!(
-                "#[inline] pub %sfn %s(%s%s)%s { %s(self.%s.f)(%s)%s }",
+                "#[fixed_stack_segment] #[inline] pub %sfn %s(%s%s)%s { %s(self.%s.f)(%s)%s }",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
                 if c.params.len() > 0 { "&self, " } else { "&self" },
