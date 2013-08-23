@@ -205,6 +205,14 @@ impl<'self> Generator<'self> {
         ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty))
     }
 
+    fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> ~str {
+        (match *ns {
+            Gl => "gl",
+            Glx => "glx",
+            Wgl => "wgl",
+        }) + cmd.proto.ident
+    }
+
     fn write_header(&self) {
         self.write_line("// Copyright 2013 The gl-rs developers. For a full listing of the authors,");
         self.write_line("// refer to the AUTHORS file at the top-level directory of this distribution.");
@@ -361,14 +369,14 @@ impl<'self> PtrGenerator<'self> {
 
     fn write_fn_mods(&self) {
         self.write_line("macro_rules! fn_mod(");
-        self.write_line("    ($name:ident) => (");
+        self.write_line("    ($name:ident, $sym:expr) => (");
         self.write_line("        pub mod $name {");
         self.write_line("            #[inline]");
         self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
         self.write_line("            ");
         self.write_line("            #[inline]");
         self.write_line("            pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
-        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn(stringify!($name)), ::failing::$name) }");
+        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name) }");
         self.write_line("            }");
         self.write_line("        }");
         self.write_line("    )");
@@ -376,7 +384,10 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("");
         self.for_cmds(
             |_| (),
-            |_, c| self.write_line(fmt!("fn_mod!(%s)", c.proto.ident)),
+            |_, c| self.write_line(fmt!(
+                "fn_mod!(%s, \"%s\")",
+                c.proto.ident,
+                Generator::gen_symbol_name(&self.ns, c))),
             |_, _| ()
         );
     }
@@ -493,7 +504,9 @@ impl<'self> StructGenerator<'self> {
             |_| (),
             |_, c| self.write_line(fmt!(
                 "%s: FnPtr::new(loadfn(\"%s\"), failing::%s),",
-                c.proto.ident, c.proto.ident, c.proto.ident
+                c.proto.ident,
+                Generator::gen_symbol_name(&self.ns, c),
+                c.proto.ident
             )),
             |_, _| ()
         );
