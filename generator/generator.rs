@@ -400,7 +400,6 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
         self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
-        self.write_line("");
         self.incr_indent();
         self.for_cmds(
             |_| (),
@@ -497,7 +496,6 @@ impl<'self> StructGenerator<'self> {
             "pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) -> ~%s {",
             StructGenerator::gen_struct_name(&self.ns)
         ));
-        self.write_line("");
         self.write_line(fmt!("~%s {", StructGenerator::gen_struct_name(&self.ns)));
         self.incr_indent();
         self.for_cmds(

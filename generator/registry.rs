@@ -333,7 +333,7 @@ impl<'self> RegistryBuilder {
                 msg => fail!("Expected </command>, found: %s", msg.to_str()),
             }
         }
-        let is_safe = params.len() <= 0 || params.iter().any(|p| !p.ty.contains_char('*'));
+        let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.contains_char('*'));
 
         Cmd {
             proto: proto,
