@@ -1,5 +1,3 @@
-_NOTE: this loader does not currently work with the latest version of Rust but will soon. This is because we are waiting for external function pointer calling to be implemented. This should land soon though, so stay tuned!_
-
 # gl-rs
 
 An OpenGL function pointer loader for the Rust Programming Language.
