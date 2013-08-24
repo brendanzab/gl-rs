@@ -7,15 +7,23 @@ An OpenGL function pointer loader for the Rust Programming Language.
 - Provide `cfg`s so that the extensions can be limited. This should reduce the size of the compiled lib and the time it takes for the functions pointers to be loaded.
 - Make the generator work properly with GLX and WGL.
 
-## Usage
 
-### Pointer-style loader
+## Pointer-style loader
+
+### Compilation
+
+~~~
+rustc gl_ptr.rs
+~~~
+
+### Usage
+
+The pointer-style loader loads function pointers into global variables.
 
 You can import the pointer style loader and give it a nice name like so:
 
 ~~~rust
-extern mod gl (name = "gl_ptr");
-use gl;
+extern mod gl;
 use gl::types::*;
 ~~~
 
@@ -51,6 +59,14 @@ if gl::Viewport::is_loaded() {
 }
 ~~~
 
-### Struct-style loader
+## Struct-style loader
+
+### Compilation
+
+~~~
+rustc gl_struct.rs
+~~~
+
+### Usage
 
 _Todo_
