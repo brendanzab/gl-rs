@@ -21,15 +21,15 @@ fn main() {
         window.make_context_current();
 
         // Load the OpenGL function pointers
-        gl::load_with(glfw::get_proc_address);
+        let gl = gl::load_with(glfw::get_proc_address);
 
         while !window.should_close() {
             // Poll events
             glfw::poll_events();
 
             // Clear the screen to black
-            gl::ClearColor(0.3, 0.3, 0.3, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl.ClearColor(0.3, 0.3, 0.3, 1.0);
+            gl.Clear(gl::COLOR_BUFFER_BIT);
 
             // Swap buffers
             window.swap_buffers();
