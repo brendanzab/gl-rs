@@ -2,72 +2,78 @@
 
 An OpenGL function pointer loader for the Rust Programming Language.
 
-## Todo
-
-- Provide `cfg`s so that the extensions can be limited. This should reduce the size of the compiled lib and the time it takes for the functions pointers to be loaded.
-- Make the generator work properly with GLX and WGL.
-
-Pull requests are welcome!
-
 ## Usage
 
-### Pointer-style loader
-
-The pointer-style loader loads function pointers into global variables.
-
-You can import the pointer style loader and give it a nice name like so:
+You can import the pointer style loader and type aliases like so:
 
 ~~~rust
 extern mod gl;
+// include the OpenGL type aliases
 use gl::types::*;
 ~~~
 
-You can load each OpenGL symbol `load_with`function. You must supply a loader function from your context library, for example, `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
-
-This is an example of what it would look like using [glfw-rs](https://github.com/bjz/glfw-rs):
-
-~~~rust
-unsafe { gl::load_with(glfw::get_proc_address) };
-~~~
-
-If the symbol could not be loaded, it is assigned a failing function. Calling a function that has not been loaded will result in a failure like: `fail!("gl::Viewport was not loaded")`, which aviods a segfault and provides useful information as to the cause of the error. This feature does not cause any run time overhead.
-
-This is how you access an OpenGL enum:
+You can load the function pointers into their respective function pointers
+using the `load_with` function. You must supply a loader function from your
+context library, This is how it would look using [glfw-rs]
+(https://github.com/bjz/glfw-rs):
 
 ~~~rust
-gl::RED_BITS
+// the supplied function must be of the type:
+// `&fn(symbol: &str) -> Option<extern "C" fn()>`
+gl::load_with(glfw::get_proc_address);
+
+// loading a specific function pointer
+gl::Viewport::load_with(glfw::get_proc_address);
 ~~~
 
-And this is how you call a function:
+Calling a function that has not been loaded will result in a failure like:
+`fail!("gl::Viewport was not loaded")`, which aviods a segfault. This feature
+does not cause any run time overhead because the failing functions are
+assigned only when `load_with` is called.
 
 ~~~rust
-gl::Viewport(0, 0, 600, 480);
+// accessing an enum
+gl::RED_BITS;
+
+// calling a function
+gl::DrawArrays(gl::TRIANGLES, 0, 3);
+
+// functions that take pointers are unsafe
+unsafe {  gl::ShaderSource(shader, 1, &c_str, std::ptr::null()) };
 ~~~
 
-Functions that take pointers are marked as `unsafe`.
-
-Each function pointer has a boolean value associated with allowing you to check if a function has been loaded at run time:
+Each function pointer has a boolean value associated with allowing you to
+check if a function has been loaded at run time. The function accesses a
+corresponding global boolean that is set when `load_with` is called, so there
+shouldn't be much overhead.
 
 ~~~rust
 if gl::Viewport::is_loaded() {
-    //...
+    // do something...
 }
 ~~~
 
-### Struct-style loader
-
-_Todo_
-
 ## Compilation
 
-### Pointer-style loader
-
 ~~~
-rustc gl_ptr.rs
+ % rustc --opt-level=3 ../gl.rs
 ~~~
 
-### Struct-style loader
+Note that this will take a while to compile (~1m). This is because the loader
+*big* file (see the Todo section of this README for plans to reduce its size).
 
-~~~
-rustc gl_struct.rs
-~~~
+## Generating the loader
+
+The loader in `gl.rs` is actually generated using the [XML API Registry]
+(http://www.opengl.org/discussion_boards/showthread.php/181927-New-XML-based-API-Registry-released?p=1251775).
+If you would like to generate the loader yourself, please refer to the README
+in the `generator` directory.
+
+## Todo
+
+- Provide `cfg`s so that the extensions can be limited. This should reduce the
+  size of the compiled lib and the time it takes for the functions pointers to
+  be loaded.
+- Make the generator work properly with GLX and WGL.
+
+Pull requests are welcome!
