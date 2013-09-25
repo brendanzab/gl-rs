@@ -43,7 +43,7 @@ fn main() {
             parse_args(args, &reg, ns);
         }
         [_] => fail!("Error: expected an opengl namespace. Expected one of: gl, glx, or wgl."),
-        [] => util::unreachable(),
+        [] => unreachable!(),
     }
     // TODO: Use registry data to generate function loader.
 }
