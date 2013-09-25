@@ -17,7 +17,6 @@ extern mod extra;
 use std::hashmap::HashMap;
 use std::io;
 use std::os;
-use std::util;
 
 use registry::*;
 
