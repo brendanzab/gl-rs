@@ -29,8 +29,8 @@ fn main() {
         [_, ref ns_str, ..args] => {
             let (path, ns) = match *ns_str {
                 ~"gl" => (~"gl.xml", registry::Gl),
-                ~"glx" => (~"glx.xml", registry::Glx),
-                ~"wgl" => (~"wgl.xml", registry::Wgl),
+                ~"glx" => fail!("glx generation unimplemented"),
+                ~"wgl" => fail!("wgl generation unimplemented"),
                 _ => fail!("Unexpected opengl namespace '%s'. Expected one of: gl, glx, or wgl.", *ns_str),
             };
             // Parse the XML registry.
