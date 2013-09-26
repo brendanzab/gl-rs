@@ -30,6 +30,8 @@ pub struct Registry {
     groups: ~[Group],
     enums: ~[EnumNs],
     cmds: ~[CmdNs],
+    features: ~[Feature],
+    extensions: ~[Extension],
 }
 
 impl Registry {
@@ -94,6 +96,39 @@ pub struct Cmd {
     alias: Option<~str>,
     vecequiv: Option<~str>,
     glx: Option<GlxOpcode>,
+}
+
+pub struct Feature {
+    api: ~str,
+    name: ~str,
+    number: ~str,
+    requires: ~[Require],
+    removes: ~[Remove],
+}
+
+pub struct Require {
+    comment: Option<~str>,
+    /// A reference to the earlier types, by name
+    enums: ~[~str],
+    /// A reference to the earlier types, by name
+    commands: ~[~str],
+}
+
+pub struct Remove {
+    // always core, for now
+    profile: ~str,
+    comment: ~str,
+    /// A reference to the earlier types, by name
+    enums: ~[~str],
+    /// A reference to the earlier types, by name
+    commands: ~[~str],
+}
+
+pub struct Extension {
+    name: ~str,
+    /// which apis this extension is defined for (see Feature.api)
+    supported: ~[~str],
+    requires: ~[Require],
 }
 
 pub struct GlxOpcode {
@@ -167,16 +202,17 @@ impl<'self> RegistryBuilder {
         let mut registry = Registry {
             groups: ~[],
             enums: ~[],
-            cmds: ~[]
+            cmds: ~[],
+            features: ~[],
+            extensions: ~[],
         };
+
         loop {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
                 StartElement(~"comment", _) => self.skip_until(EndElement(~"comment")),
                 StartElement(~"types", _) => self.skip_until(EndElement(~"types")),
-                StartElement(~"feature", _) => self.skip_until(EndElement(~"feature")),
-                StartElement(~"extensions", _) => self.skip_until(EndElement(~"extensions")),
 
                 // add groups
                 StartElement(~"groups", _) => {
@@ -219,6 +255,23 @@ impl<'self> RegistryBuilder {
                     );
                 }
 
+                StartElement(~"feature", ref atts) => {
+                    debug2!("Parsing feature: {:?}", atts);
+                    registry.features.push(FromXML::convert(self, atts));
+                }
+
+                StartElement(~"extensions", ref atts) => {
+                    loop {
+                        match self.recv() {
+                            StartElement(~"extension", ref atts) => {
+                                registry.extensions.push(FromXML::convert(self, atts));
+                            }
+                            EndElement(~"extensions") => break,
+                            msg => fail2!("Unexpected message {}", msg.to_str()),
+                        }
+                    }
+                }
+
                 // finished building the registry
                 EndElement(~"registry") => break,
 
@@ -227,6 +280,55 @@ impl<'self> RegistryBuilder {
             }
         }
         registry
+    }
+
+    fn consume_two<'a, T: FromXML, U: FromXML>(&self, one: &'a str, two: &'a str, end: &'a str) -> (~[T], ~[U]) {
+        debug2!("consume_two: looking for {:s} and {:s} until {:s}", one, two, end);
+
+        let mut ones = ~[];
+        let mut twos = ~[];
+
+        loop {
+            match self.recv() {
+                StartElement(ref name, ref atts) => {
+                    debug2!("Found start element <{:?} {:?}>", name, atts);
+                    debug2!("one and two are {:?} and {:?}", one, two);
+
+                    let n = name.clone();
+
+                    if one == n {
+                        ones.push(FromXML::convert(self, atts));
+                    } else if "type" == n {
+                        // XXX: GL1.1 contains types, which we never care about anyway.
+                        // Make sure consume_two doesn't get used for things which *do*
+                        // care about type.
+                        warn!("Ignoring type!");
+                        loop;
+                    } else if two == n {
+                        twos.push(FromXML::convert(self, atts));
+                    } else {
+                        fail2!("Unexpected element: <{:?} {:?}>", n, atts);
+                    }
+                },
+                EndElement(name) => {
+                    debug2!("Found end element </{:?}>", name);
+
+                    if (&[one, two]).iter().any(|&x| x == name) {
+                        loop;
+                    } else if "type" == name {
+                        // XXX: GL1.1 contains types, which we never care about anyway.
+                        // Make sure consume_two doesn't get used for things which *do*
+                        // care about type.
+                        warn!("Ignoring type!");
+                        loop;
+                    } else if end == name {
+                        return (ones, twos);
+                    } else {
+                        fail2!("Unexpected end element {}", name);
+                    }
+                },
+                msg => fail2!("Unexpected message {}", msg.to_str()) }
+        }
     }
 
     fn consume_group(&self, name: ~str) -> Group {
@@ -365,5 +467,89 @@ impl<'self> RegistryBuilder {
             ty: ty,
             group: group,
         }
+    }
+}
+
+trait FromXML {
+    fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Self;
+}
+
+impl FromXML for Require {
+    fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Require {
+        debug!("Doing a FromXML on Require");
+        let comment = a.find_clone("comment");
+        let (enums, commands) = r.consume_two("enum", "command", "require");
+        Require {
+            comment: comment,
+            enums: enums,
+            commands: commands
+        }
+    }
+}
+
+impl FromXML for Remove {
+    fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Remove {
+        debug!("Doing a FromXML on Remove");
+        let profile = a.get_clone("profile");
+        let comment = a.get_clone("comment");
+        let (enums, commands) = r.consume_two("enum", "command", "remove");
+
+        Remove {
+            profile: profile,
+            comment: comment,
+            enums: enums,
+            commands: commands
+        }
+    }
+}
+
+impl FromXML for Feature {
+    fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Feature {
+        debug!("Doing a FromXML on Feature");
+        let api      = a.get_clone("api");
+        let name     = a.get_clone("name");
+        let number   = a.get_clone("number");
+
+        debug2!("Found api = {:s}, name = {:s}, number = {:s}", api, name, number);
+
+        let (require, remove) = r.consume_two("require", "remove", "feature");
+
+        Feature {
+            api: api,
+            name: name,
+            number: number,
+            requires: require,
+            removes: remove
+        }
+    }
+}
+
+impl FromXML for Extension {
+    fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Extension {
+        debug!("Doing a FromXML on Extension");
+        let name = a.get_clone("name");
+        let supported = a.get("supported").split_iter('|').map(|x| x.to_owned()).to_owned_vec();
+        let mut require = ~[];
+        loop {
+            match r.recv() {
+                StartElement(~"require", ref atts) => {
+                    require.push(FromXML::convert(r, atts));
+                }
+                EndElement(~"extension") => break,
+                msg => fail2!("Unexpected message {}", msg.to_str())
+            }
+        }
+
+        Extension {
+            name: name,
+            supported: supported,
+            requires: require
+        }
+    }
+}
+
+impl FromXML for ~str {
+    fn convert(_: &RegistryBuilder, a: &sax::Attributes) -> ~str {
+        a.get_clone("name")
     }
 }
