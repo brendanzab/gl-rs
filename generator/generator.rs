@@ -17,7 +17,6 @@ extern mod extra;
 use std::hashmap::HashMap;
 use std::io;
 use std::os;
-use std::util;
 
 use registry::*;
 
@@ -29,8 +28,8 @@ fn main() {
         [_, ref ns_str, ..args] => {
             let (path, ns) = match *ns_str {
                 ~"gl" => (~"gl.xml", registry::Gl),
-                ~"glx" => (~"glx.xml", registry::Glx),
-                ~"wgl" => (~"wgl.xml", registry::Wgl),
+                ~"glx" => fail!("glx generation unimplemented"),
+                ~"wgl" => fail!("wgl generation unimplemented"),
                 _ => fail!("Unexpected opengl namespace '%s'. Expected one of: gl, glx, or wgl.", *ns_str),
             };
             // Parse the XML registry.
@@ -43,7 +42,7 @@ fn main() {
             parse_args(args, &reg, ns);
         }
         [_] => fail!("Error: expected an opengl namespace. Expected one of: gl, glx, or wgl."),
-        [] => util::unreachable(),
+        [] => unreachable!(),
     }
     // TODO: Use registry data to generate function loader.
 }
