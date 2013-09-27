@@ -23,8 +23,18 @@ You can pick which GL version to use, as well as the profile, and any
 extensions. See `./generator --help` for the options to pass. The default is
 4.3 core profile with no extensions.
 
-Unfortunately the GLX and WGL loaders are not finished at this time. Help to
-remedy this is welcomed!
+Some other examples:
+
+~~~
+./generator --version 3.3 --profile core
+~~~
+
+~~~
+./generator --version 2.1 --extension GL_ARB_robustness --extension GL_EXT_draw_instanced
+~~~
+
+You can also use `--namespace` for GLX and WGL, but unfortunately their
+loaders are not finished at this time. Help to remedy this is welcomed!
 
 ## Struct style loader
 
