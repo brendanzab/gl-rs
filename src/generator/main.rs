@@ -37,7 +37,7 @@ fn main() {
     let opts = &[
         optopt("", "namespace", "OpenGL namespace (gl by default)", "gl|glx|wgl"),
         optopt("", "api", "API to generate bindings for (gl by default)", "gl|gles1|gles2"),
-        reqopt("", "type", "Binding type to generate (ptr by default)", "ptr|struct"),
+        optopt("", "type", "Binding type to generate (ptr by default)", "ptr|struct"),
         optopt("", "profile", "Profile to generate (compatability by default)", "core|compatability"),
         optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
         optmulti("", "extension", "Extension to include", ""),
@@ -45,11 +45,7 @@ fn main() {
 
     let args = match getopts(os::args(), opts) {
         Ok(a) => a,
-        Err(x) => {
-            println!("Error: {}", x.to_err_msg());
-            println(usage("generator", opts));
-            return;
-        }
+        Err(x) => fail!("Error: %s\n%s", x.to_err_msg(), usage("generator", opts)),
     };
 
     let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
