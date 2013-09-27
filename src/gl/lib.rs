@@ -320,6 +320,7 @@ pub static CONSTANT_COLOR: GLenum = 0x8001;
 pub static ONE_MINUS_CONSTANT_COLOR: GLenum = 0x8002;
 pub static CONSTANT_ALPHA: GLenum = 0x8003;
 pub static ONE_MINUS_CONSTANT_ALPHA: GLenum = 0x8004;
+pub static BLEND_COLOR: GLenum = 0x8005;
 pub static FUNC_ADD: GLenum = 0x8006;
 pub static MIN: GLenum = 0x8007;
 pub static MAX: GLenum = 0x8008;
