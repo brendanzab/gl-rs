@@ -316,11 +316,13 @@ impl<'self> RegistryBuilder {
             // XXX: verify that the string comparison with <= actually works as desired
             if f.api == self.opts.api && f.number <= self.opts.version {
                 for rem in f.removes.iter() {
-                    if rem.profile != self.opts.profile {
+                    if rem.profile == self.opts.profile {
                         for enm in rem.enums.iter() {
+                            debug2!("Removing {:?}", enm);
                             desired_enums.remove(enm);
                         }
                         for cmd in rem.commands.iter() {
+                            debug2!("Removing {:?}", cmd);
                             desired_cmds.remove(cmd);
                         }
                     }

@@ -16,8 +16,12 @@ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/regi
 3. Generate the loader
 
 ~~~
-./generator gl ptr > gl.rs
+./generator > gl.rs
 ~~~
+
+You can pick which GL version to use, as well as the profile, and any
+extensions. See `./generator --help` for the options to pass. The default is
+4.3 core profile with no extensions.
 
 Unfortunately the GLX and WGL loaders are not finished at this time. Help to
 remedy this is welcomed!
@@ -29,5 +33,5 @@ a loader that stores the pointers in a struct. This might be useful for people
 who want to set up multiple contexts in the same application.
 
 ~~~
-./generator gl struct > gl_struct.rs
+./generator --type struct > gl_struct.rs
 ~~~

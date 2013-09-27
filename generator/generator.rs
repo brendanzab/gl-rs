@@ -35,12 +35,12 @@ pub struct GeneratorOptions {
 
 fn main() {
     let opts = &[
-        reqopt("", "namespace", "OpenGL namespace", "gl|glx|wgl"),
-        reqopt("", "api", "API to generate bindings for", "gl|gles1|gles2"),
-        reqopt("", "version", "Version to generate bindings for", "2.1, 3.2, etc"),
-        reqopt("", "type", "Binding type to generate", "ptr|struct"),
+        optopt("", "namespace", "OpenGL namespace (gl by default)", "gl|glx|wgl"),
+        optopt("", "api", "API to generate bindings for (gl by default)", "gl|gles1|gles2"),
+        reqopt("", "type", "Binding type to generate (ptr by default)", "ptr|struct"),
         optopt("", "profile", "Profile to generate (compatability by default)", "core|compatability"),
-        optmulti("", "extension", "Extension to include", "KHR_debug"),
+        optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
+        optmulti("", "extension", "Extension to include", ""),
     ];
 
     let args = match getopts(os::args(), opts) {
@@ -52,7 +52,7 @@ fn main() {
         }
     };
 
-    let (path, ns) = match args.opt_str("namespace").unwrap() {
+    let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
         ~"gl"  => (~"gl.xml", registry::Gl),
         ~"glx" => fail!("glx generation unimplemented"),
         ~"wgl" => fail!("wgl generation unimplemented"),
@@ -62,16 +62,16 @@ fn main() {
     let opts = GeneratorOptions {
         extensions: args.opt_strs("extension"),
         profile: args.opt_str("profile").unwrap_or(~"compatability"),
-        version: args.opt_str("version").unwrap(),
-        api: args.opt_str("api").unwrap(),
-        ns: args.opt_str("namespace").unwrap(),
+        version: args.opt_str("version").unwrap_or(~"4.3"),
+        api: args.opt_str("api").unwrap_or(~"gl"),
+        ns: args.opt_str("namespace").unwrap_or(~"gl"),
     };
 
     let reg = Registry::from_xml(
         io::file_reader(&Path(path)).expect(fmt!("Could not read %s", path)).read_c_str(), ns, opts);
 
 
-    match args.opt_str("type").unwrap() {
+    match args.opt_str("type").unwrap_or(~"ptr") {
         ~"ptr"    => PtrGenerator   ::write(std::io::stdout(), &reg, ns),
         ~"struct" => StructGenerator::write(std::io::stdout(), &reg, ns),
         type_     => fail2!("Unknown type {}", type_)
