@@ -340,7 +340,7 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("");
         self.write_line("macro_rules! fn_ptr(");
         self.write_line("    (fn $name:ident()) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn() = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn()> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
         self.write_line("    );");
         self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (");
         self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn() -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
