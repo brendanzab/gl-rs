@@ -2,6 +2,12 @@
 
 An OpenGL function pointer loader for the Rust Programming Language.
 
+## Compilation
+
+~~~
+rustpkg build --opt-level=3 gl
+~~~
+
 ## Usage
 
 You can import the pointer style loader and type aliases like so:
@@ -42,7 +48,7 @@ gl::DrawArrays(gl::TRIANGLES, 0, 3);
 unsafe {  gl::ShaderSource(shader, 1, &c_str, std::ptr::null()) };
 ~~~
 
-Each function pointer has a boolean value associated with allowing you to
+Each function pointer has an associated boolean value allowing you to
 check if a function has been loaded at run time. The function accesses a
 corresponding global boolean that is set when `load_with` is called, so there
 shouldn't be much overhead.
@@ -53,24 +59,13 @@ if gl::Viewport::is_loaded() {
 }
 ~~~
 
-## Compilation
-
-~~~
- % rustc --opt-level=3 ../gl.rs
-~~~
-
-Note that this will take a while to compile (~1m). This is because the loader
-*big* file (see the Todo section of this README for plans to reduce its size).
-
 ## Generating the loader
 
-The loader in `gl.rs` is actually generated using the [XML API Registry]
+The loader in `gl.rs` is generated using the [XML API Registry]
 (http://www.opengl.org/discussion_boards/showthread.php/181927-New-XML-based-API-Registry-released?p=1251775).
 If you would like to generate the loader yourself, please refer to the README
-in the `generator` directory.
+in the `src/generator` directory.
 
 ## Todo
 
-- Make the generator work properly with GLX and WGL.
-
-Pull requests are welcome!
+- Make the generator work properly GLX and WGL.
