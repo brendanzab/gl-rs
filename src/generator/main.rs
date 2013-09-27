@@ -38,7 +38,7 @@ fn main() {
         optopt("", "namespace", "OpenGL namespace (gl by default)", "gl|glx|wgl"),
         optopt("", "api", "API to generate bindings for (gl by default)", "gl|gles1|gles2"),
         optopt("", "type", "Binding type to generate (ptr by default)", "ptr|struct"),
-        optopt("", "profile", "Profile to generate (compatability by default)", "core|compatability"),
+        optopt("", "profile", "Profile to generate (core by default)", "core|compatability"),
         optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
         optmulti("", "extension", "Extension to include", ""),
     ];
@@ -57,7 +57,7 @@ fn main() {
 
     let opts = GeneratorOptions {
         extensions: args.opt_strs("extension"),
-        profile: args.opt_str("profile").unwrap_or(~"compatability"),
+        profile: args.opt_str("profile").unwrap_or(~"core"),
         version: args.opt_str("version").unwrap_or(~"4.3"),
         api: args.opt_str("api").unwrap_or(~"gl"),
         ns: args.opt_str("namespace").unwrap_or(~"gl"),
