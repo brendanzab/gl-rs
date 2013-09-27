@@ -71,9 +71,6 @@ in the `generator` directory.
 
 ## Todo
 
-- Provide `cfg`s so that the extensions can be limited. This should reduce the
-  size of the compiled lib and the time it takes for the functions pointers to
-  be loaded.
 - Make the generator work properly with GLX and WGL.
 
 Pull requests are welcome!
