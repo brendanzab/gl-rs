@@ -14,6 +14,8 @@
 
 extern mod extra;
 
+use extra::getopts::groups::*;
+
 use std::hashmap::HashMap;
 use std::io;
 use std::os;
@@ -23,42 +25,56 @@ use registry::*;
 pub mod registry;
 pub mod ty;
 
-fn main() {
-    match os::real_args() {
-        [_, ref ns_str, ..args] => {
-            let (path, ns) = match *ns_str {
-                ~"gl" => (~"gl.xml", registry::Gl),
-                ~"glx" => fail!("glx generation unimplemented"),
-                ~"wgl" => fail!("wgl generation unimplemented"),
-                _ => fail!("Unexpected opengl namespace '%s'. Expected one of: gl, glx, or wgl.", *ns_str),
-            };
-            // Parse the XML registry.
-            let reg = Registry::from_xml(
-                io::file_reader(&Path(path))
-                    .expect(fmt!("Could not read %s", path))
-                    .read_c_str(),
-                ns
-            );
-            parse_args(args, &reg, ns);
-        }
-        [_] => fail!("Error: expected an opengl namespace. Expected one of: gl, glx, or wgl."),
-        [] => unreachable!(),
-    }
-    // TODO: Use registry data to generate function loader.
+pub struct GeneratorOptions {
+    extensions: ~[~str],
+    profile: ~str,
+    version: ~str,
+    api: ~str,
+    ns: ~str,
 }
 
-fn parse_args(args: &[~str], reg: &Registry, ns: Ns) {
-    match args {
-        [~"ptr", .._] => {
-            PtrGenerator::write(std::io::stdout(), reg, ns);
+fn main() {
+    let opts = &[
+        optopt("", "namespace", "OpenGL namespace (gl by default)", "gl|glx|wgl"),
+        optopt("", "api", "API to generate bindings for (gl by default)", "gl|gles1|gles2"),
+        reqopt("", "type", "Binding type to generate (ptr by default)", "ptr|struct"),
+        optopt("", "profile", "Profile to generate (compatability by default)", "core|compatability"),
+        optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
+        optmulti("", "extension", "Extension to include", ""),
+    ];
+
+    let args = match getopts(os::args(), opts) {
+        Ok(a) => a,
+        Err(x) => {
+            println!("Error: {}", x.to_err_msg());
+            println(usage("generator", opts));
+            return;
         }
-        [~"struct", .._] => {
-            StructGenerator::write(std::io::stdout(), reg, ns);
-        }
-        [ref flag] => {
-            printfln!("Error: unexpected argument `%s`.", *flag);
-        }
-        [] => (),
+    };
+
+    let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
+        ~"gl"  => (~"gl.xml", registry::Gl),
+        ~"glx" => fail!("glx generation unimplemented"),
+        ~"wgl" => fail!("wgl generation unimplemented"),
+        ns     => fail2!("Unexpected opengl namespace '{}'", ns)
+    };
+
+    let opts = GeneratorOptions {
+        extensions: args.opt_strs("extension"),
+        profile: args.opt_str("profile").unwrap_or(~"compatability"),
+        version: args.opt_str("version").unwrap_or(~"4.3"),
+        api: args.opt_str("api").unwrap_or(~"gl"),
+        ns: args.opt_str("namespace").unwrap_or(~"gl"),
+    };
+
+    let reg = Registry::from_xml(
+        io::file_reader(&Path(path)).expect(fmt!("Could not read %s", path)).read_c_str(), ns, opts);
+
+
+    match args.opt_str("type").unwrap_or(~"ptr") {
+        ~"ptr"    => PtrGenerator   ::write(std::io::stdout(), &reg, ns),
+        ~"struct" => StructGenerator::write(std::io::stdout(), &reg, ns),
+        type_     => fail2!("Unknown type {}", type_)
     }
 }
 
@@ -108,17 +124,14 @@ impl<'self> Generator<'self> {
         self.write_line("/// " + s);
     }
 
-    fn for_enums(&self, fn_ns: &fn(&EnumNs), fn_unseen: &fn(&EnumNs, &Enum), fn_seen: &fn(&EnumNs, &Enum)) {
+    fn for_enums(&self, fn_unseen: &fn(&Enum)) {
         let mut seen = HashMap::new();
-        for ns in self.registry.enums.iter() {
-            fn_ns(ns);
-            for def in ns.defs.iter() {
-                match seen.find(&def.ident) {
-                    Some(seen_ns) => { fn_seen(*seen_ns, def); loop; }
-                    None => fn_unseen(ns, def),
-                }
-                seen.insert(def.ident.clone(), ns);
+        for def in self.registry.enums.iter() {
+            match seen.find(&def.ident) {
+                Some(_) => { loop; }
+                None => fn_unseen(def),
             }
+            seen.insert(def.ident.clone(), ());
         }
     }
 
@@ -139,24 +152,20 @@ impl<'self> Generator<'self> {
     }
 
     fn write_enums(&self) {
-        self.for_enums(
-            |_| (),
-            |_, e| self.write_enum(e, "GLenum"),
-            |_, _| ()
-        )
+        do self.for_enums |e| {
+            self.write_enum(e, "GLenum");
+        }
+
     }
 
-    fn for_cmds(&self, fn_ns: &fn(&CmdNs), fn_unseen: &fn(&CmdNs, &Cmd), fn_seen: &fn(&CmdNs, &Cmd)) {
+    fn for_cmds(&self, fn_unseen: &fn(&Cmd)) {
         let mut seen = HashMap::new();
-        for ns in self.registry.cmds.iter() {
-            fn_ns(ns);
-            for def in ns.defs.iter() {
-                match seen.find(&def.proto.ident) {
-                    Some(seen_ns) => { fn_seen(*seen_ns, def); loop; }
-                    None => fn_unseen(ns, def),
-                }
-                seen.insert(def.proto.ident.clone(), ns);
+        for def in self.registry.cmds.iter() {
+            match seen.find(&def.proto.ident) {
+                Some(_) => { loop; }
+                None => fn_unseen(def),
             }
+            seen.insert(def.proto.ident.clone(), ());
         }
     }
 
@@ -228,7 +237,7 @@ impl<'self> Generator<'self> {
         self.write_line("// See the License for the specific language governing permissions and");
         self.write_line("// limitations under the License.");
         self.write_line("");
-        self.write_line(fmt!("#[link(name = \"%s\",", match self.ns { Gl => "gl", Glx => "glx", Wgl => "wgl" }));
+        self.write_line(fmt!("#[link(name = \"%s\",", self.ns.to_str()));
         self.write_line("       author = \"Brendan Zabarauskas\",");
         self.write_line("       url = \"https://github.com/bjz/gl-rs\",");
         self.write_line("       vers = \"0.1\")];");
@@ -241,7 +250,7 @@ impl<'self> Generator<'self> {
     }
 
     fn write_type_aliases(&mut self) {
-        self.write_line("mod types {");
+        self.write_line("pub mod types {");
         self.incr_indent();
         self.write_line("use std::libc::*;");
         self.write_line("");
@@ -290,14 +299,12 @@ impl<'self> Generator<'self> {
         self.write_line(")");
         self.write_line("");
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
+            |c| self.write_line(fmt!(
                 "failing!(fn %s(%s)%s)",
                 c.proto.ident,
                 Generator::gen_param_ty_list(c),
                 Generator::gen_return_suffix(c)
-            )),
-            |_, _| ()
+            ))
         );
         self.decr_indent();
         self.write_line("}");
@@ -315,8 +322,7 @@ impl<'self> PtrGenerator<'self> {
 
     fn write_fns(&self) {
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
+            |c| self.write_line(fmt!(
                 "#[fixed_stack_segment] #[inline] pub %sfn %s(%s)%s { %s(storage::%s.f)(%s)%s }",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
@@ -326,8 +332,7 @@ impl<'self> PtrGenerator<'self> {
                 c.proto.ident,
                 Generator::gen_param_ident_list(c),
                 if !c.is_safe { "" } else { " }" }
-            )),
-            |_, _| ()
+            ))
         );
     }
 
@@ -353,14 +358,12 @@ impl<'self> PtrGenerator<'self> {
         self.write_line(")");
         self.write_line("");
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
+            |c| self.write_line(fmt!(
                 "fn_ptr!(fn %s(%s)%s)",
                 c.proto.ident,
                 Generator::gen_param_list(c, true),
                 Generator::gen_return_suffix(c)
-            )),
-            |_, _| ()
+            ))
         );
         self.decr_indent();
         self.write_line("}");
@@ -382,12 +385,10 @@ impl<'self> PtrGenerator<'self> {
         self.write_line(")");
         self.write_line("");
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
+            |c| self.write_line(fmt!(
                 "fn_mod!(%s, \"%s\")",
                 c.proto.ident,
-                Generator::gen_symbol_name(&self.ns, c))),
-            |_, _| ()
+                Generator::gen_symbol_name(&self.ns, c)))
         );
     }
 
@@ -401,9 +402,7 @@ impl<'self> PtrGenerator<'self> {
         self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
         self.incr_indent();
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!("%s::load_with(|s| loadfn(s));", c.proto.ident)),
-            |_, _| ()
+            |c| self.write_line(fmt!("%s::load_with(|s| loadfn(s));", c.proto.ident))
         );
         self.decr_indent();
         self.write_line("}");
@@ -471,14 +470,12 @@ impl<'self> StructGenerator<'self> {
         self.write_line(fmt!("pub struct %s {", StructGenerator::gen_struct_name(&self.ns)));
         self.incr_indent();
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
+            |c| self.write_line(fmt!(
                 "%s: FnPtr<extern \"C\" fn(%s)%s>,",
                 c.proto.ident,
                 Generator::gen_param_list(c, true),
                 Generator::gen_return_suffix(c)
-            )),
-            |_, _| ()
+            ))
         );
         self.decr_indent();
         self.write_line("}");
@@ -498,14 +495,12 @@ impl<'self> StructGenerator<'self> {
         self.write_line(fmt!("~%s {", StructGenerator::gen_struct_name(&self.ns)));
         self.incr_indent();
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
+            |c| self.write_line(fmt!(
                 "%s: FnPtr::new(loadfn(\"%s\"), failing::%s),",
                 c.proto.ident,
                 Generator::gen_symbol_name(&self.ns, c),
                 c.proto.ident
-            )),
-            |_, _| ()
+            ))
         );
         self.decr_indent();
         self.write_line("}");
@@ -517,8 +512,7 @@ impl<'self> StructGenerator<'self> {
         self.write_line(fmt!("impl %s {", StructGenerator::gen_struct_name(&self.ns)));
         self.incr_indent();
         self.for_cmds(
-            |_| (),
-            |_, c| self.write_line(fmt!(
+            |c| self.write_line(fmt!(
                 "#[fixed_stack_segment] #[inline] pub %sfn %s(%s%s)%s { %s(self.%s.f)(%s)%s }",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
@@ -529,8 +523,7 @@ impl<'self> StructGenerator<'self> {
                 c.proto.ident,
                 Generator::gen_param_ident_list(c),
                 if !c.is_safe { "" } else { " }" }
-            )),
-            |_, _| ()
+            ))
         );
         self.decr_indent();
         self.write_line("}");

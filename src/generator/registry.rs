@@ -1,10 +1,31 @@
-
 extern mod sax;
 
 use extra::treemap::TreeSet;
+use std::hashmap::HashSet;
 use self::sax::*;
 
 pub enum Ns { Gl, Glx, Wgl }
+
+impl FromStr for Ns {
+    fn from_str(s: &str) -> Option<Ns> {
+        match s {
+            "gl"  => Some(Gl),
+            "glx" => Some(Glx),
+            "wgl" => Some(Wgl),
+            _     => None,
+        }
+    }
+}
+
+impl ToStr for Ns {
+    fn to_str(&self) -> ~str {
+        match *self {
+            Gl  => ~"gl",
+            Glx => ~"glx",
+            Wgl => ~"wgl",
+        }
+    }
+}
 
 fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
     if s.starts_with(trim) { s.slice_from(trim.len()) } else { s }
@@ -28,28 +49,26 @@ fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
 
 pub struct Registry {
     groups: ~[Group],
-    enums: ~[EnumNs],
-    cmds: ~[CmdNs],
+    enums: ~[Enum],
+    cmds: ~[Cmd],
     features: ~[Feature],
     extensions: ~[Extension],
 }
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml(data: &str, ns: Ns) -> Registry {
-        RegistryBuilder::parse(data, ns)
+    pub fn from_xml(data: &str, ns: Ns, opts: ::GeneratorOptions) -> Registry {
+        RegistryBuilder::parse(data, ns, opts)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
     /// for working out what conversions are needed for the specific registry.
     pub fn get_tys(&self) -> TreeSet<~str> {
         let mut tys = TreeSet::new();
-        for cmds in self.cmds.iter() {
-            for def in cmds.defs.iter() {
-                tys.insert(def.proto.ty.clone());
-                for param in def.params.iter() {
-                    tys.insert(param.ty.clone());
-                }
+        for def in self.cmds.iter() {
+            tys.insert(def.proto.ty.clone());
+            for param in def.params.iter() {
+                tys.insert(param.ty.clone());
             }
         }
         tys
@@ -98,6 +117,7 @@ pub struct Cmd {
     glx: Option<GlxOpcode>,
 }
 
+#[deriving(Clone)]
 pub struct Feature {
     api: ~str,
     name: ~str,
@@ -106,6 +126,7 @@ pub struct Feature {
     removes: ~[Remove],
 }
 
+#[deriving(Clone)]
 pub struct Require {
     comment: Option<~str>,
     /// A reference to the earlier types, by name
@@ -114,6 +135,7 @@ pub struct Require {
     commands: ~[~str],
 }
 
+#[deriving(Clone)]
 pub struct Remove {
     // always core, for now
     profile: ~str,
@@ -124,6 +146,7 @@ pub struct Remove {
     commands: ~[~str],
 }
 
+#[deriving(Clone)]
 pub struct Extension {
     name: ~str,
     /// which apis this extension is defined for (see Feature.api)
@@ -140,14 +163,16 @@ pub struct GlxOpcode {
 
 struct RegistryBuilder {
     ns: Ns,
+    priv opts: ::GeneratorOptions,
     priv port: SaxPort,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
 impl<'self> RegistryBuilder {
-    fn parse(data: &str, ns: Ns) -> Registry {
+    fn parse(data: &str, ns: Ns, opts: ::GeneratorOptions) -> Registry {
         RegistryBuilder {
             ns: ns,
+            opts: opts,
             port: parse_xml(data),
         }.consume_registry()
     }
@@ -230,29 +255,13 @@ impl<'self> RegistryBuilder {
                 }
 
                 // add enum namespace
-                StartElement(~"enums", ref atts) => {
-                    registry.enums.push(
-                        EnumNs {
-                            namespace:  atts.get_clone("namespace"),
-                            group:      atts.find_clone("group"),
-                            ty:         atts.find_clone("type"),
-                            start:      atts.find_clone("start"),
-                            end:        atts.find_clone("end"),
-                            vendor:     atts.find_clone("vendor"),
-                            comment:    atts.find_clone("comment"),
-                            defs:       self.consume_enums(),
-                        }
-                    )
+                StartElement(~"enums", _) => {
+                    registry.enums.extend(&mut self.consume_enums().move_iter())
                 }
 
                 // add command namespace
-                StartElement(~"commands", ref atts) => {
-                    registry.cmds.push(
-                        CmdNs {
-                            namespace:  atts.get_clone("namespace"),
-                            defs:       self.consume_cmds(),
-                        }
-                    );
+                StartElement(~"commands", _) => {
+                    registry.cmds.extend(&mut self.consume_cmds().move_iter());
                 }
 
                 StartElement(~"feature", ref atts) => {
@@ -260,7 +269,7 @@ impl<'self> RegistryBuilder {
                     registry.features.push(FromXML::convert(self, atts));
                 }
 
-                StartElement(~"extensions", ref atts) => {
+                StartElement(~"extensions", _) => {
                     loop {
                         match self.recv() {
                             StartElement(~"extension", ref atts) => {
@@ -279,7 +288,72 @@ impl<'self> RegistryBuilder {
                 msg => fail!("Expected </registry>, found: %s", msg.to_str()),
             }
         }
-        registry
+
+        let Registry {
+            groups, enums, cmds, features: feats, extensions: exts
+        } = registry;
+
+        let mut desired_enums = HashSet::new();
+        let mut desired_cmds = HashSet::new();
+
+        // find the features we want
+        let mut found_feat = false;
+        for f in feats.iter() {
+            // XXX: verify that the string comparison with <= actually works as desired
+            if f.api == self.opts.api && f.number <= self.opts.version {
+                for req in f.requires.iter() {
+                    desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
+                }
+            }
+            if f.number == self.opts.version {
+                found_feat = true;
+            }
+        }
+
+        // remove the things that should be removed
+        for f in feats.iter() {
+            // XXX: verify that the string comparison with <= actually works as desired
+            if f.api == self.opts.api && f.number <= self.opts.version {
+                for rem in f.removes.iter() {
+                    if rem.profile == self.opts.profile {
+                        for enm in rem.enums.iter() {
+                            debug2!("Removing {:?}", enm);
+                            desired_enums.remove(enm);
+                        }
+                        for cmd in rem.commands.iter() {
+                            debug2!("Removing {:?}", cmd);
+                            desired_cmds.remove(cmd);
+                        }
+                    }
+                }
+            }
+        }
+
+        if !found_feat {
+            fail2!("Did not find version {} in the registry", self.opts.version);
+        }
+
+        for ext in exts.iter() {
+            if self.opts.extensions.iter().any(|x| x == &ext.name) {
+                if !ext.supported.iter().any(|x| x == &self.opts.api) {
+                    fail2!("Requested {}, which doesn't support the {} API", ext.name, self.opts.api);
+                }
+                for req in ext.requires.iter() {
+                    desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
+                }
+            }
+        }
+
+        Registry {
+            groups: groups,
+            enums: enums.move_iter().filter(|e| desired_enums.contains(&(~"GL_" + e.ident))).to_owned_vec(),
+            cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&(~"gl" + c.proto.ident))).to_owned_vec(),
+            // these aren't important after this step
+            features: ~[],
+            extensions: ~[],
+        }
     }
 
     fn consume_two<'a, T: FromXML, U: FromXML>(&self, one: &'a str, two: &'a str, end: &'a str) -> (~[T], ~[U]) {
