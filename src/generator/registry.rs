@@ -304,70 +304,75 @@ impl<'self> RegistryBuilder {
             }
         }
 
-        let Registry {
-            groups, enums, cmds, features: feats, extensions: exts
-        } = registry;
+        match self.opts.filter {
+            Some(ref filter) => {
+                let Registry {
+                    groups, enums, cmds, features: feats, extensions: exts
+                } = registry;
 
-        let mut desired_enums = HashSet::new();
-        let mut desired_cmds = HashSet::new();
+                let mut desired_enums = HashSet::new();
+                let mut desired_cmds = HashSet::new();
 
-        // find the features we want
-        let mut found_feat = false;
-        for f in feats.iter() {
-            // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == self.opts.api && f.number <= self.opts.version {
-                for req in f.requires.iter() {
-                    desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
-                    desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
-                }
-            }
-            if f.number == self.opts.version {
-                found_feat = true;
-            }
-        }
-
-        // remove the things that should be removed
-        for f in feats.iter() {
-            // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == self.opts.api && f.number <= self.opts.version {
-                for rem in f.removes.iter() {
-                    if rem.profile == self.opts.profile {
-                        for enm in rem.enums.iter() {
-                            debug2!("Removing {:?}", enm);
-                            desired_enums.remove(enm);
+                // find the features we want
+                let mut found_feat = false;
+                for f in feats.iter() {
+                    // XXX: verify that the string comparison with <= actually works as desired
+                    if f.api == filter.api && f.number <= filter.version {
+                        for req in f.requires.iter() {
+                            desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
+                            desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
                         }
-                        for cmd in rem.commands.iter() {
-                            debug2!("Removing {:?}", cmd);
-                            desired_cmds.remove(cmd);
+                    }
+                    if f.number == filter.version {
+                        found_feat = true;
+                    }
+                }
+
+                // remove the things that should be removed
+                for f in feats.iter() {
+                    // XXX: verify that the string comparison with <= actually works as desired
+                    if f.api == filter.api && f.number <= filter.version {
+                        for rem in f.removes.iter() {
+                            if rem.profile == filter.profile {
+                                for enm in rem.enums.iter() {
+                                    debug2!("Removing {:?}", enm);
+                                    desired_enums.remove(enm);
+                                }
+                                for cmd in rem.commands.iter() {
+                                    debug2!("Removing {:?}", cmd);
+                                    desired_cmds.remove(cmd);
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        if !found_feat {
-            fail2!("Did not find version {} in the registry", self.opts.version);
-        }
-
-        for ext in exts.iter() {
-            if self.opts.extensions.iter().any(|x| x == &ext.name) {
-                if !ext.supported.iter().any(|x| x == &self.opts.api) {
-                    fail2!("Requested {}, which doesn't support the {} API", ext.name, self.opts.api);
+                if !found_feat {
+                    fail2!("Did not find version {} in the registry", filter.version);
                 }
-                for req in ext.requires.iter() {
-                    desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
-                    desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
-                }
-            }
-        }
 
-        Registry {
-            groups: groups,
-            enums: enums.move_iter().filter(|e| desired_enums.contains(&(~"GL_" + e.ident))).to_owned_vec(),
-            cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&(~"gl" + c.proto.ident))).to_owned_vec(),
-            // these aren't important after this step
-            features: ~[],
-            extensions: ~[],
+                for ext in exts.iter() {
+                    if filter.extensions.iter().any(|x| x == &ext.name) {
+                        if !ext.supported.iter().any(|x| x == &filter.api) {
+                            fail2!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
+                        }
+                        for req in ext.requires.iter() {
+                            desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
+                            desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
+                        }
+                    }
+                }
+
+                Registry {
+                    groups: groups,
+                    enums: enums.move_iter().filter(|e| desired_enums.contains(&(~"GL_" + e.ident))).to_owned_vec(),
+                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&(~"gl" + c.proto.ident))).to_owned_vec(),
+                    // these aren't important after this step
+                    features: ~[],
+                    extensions: ~[],
+                }
+            },
+            None => registry
         }
     }
 
