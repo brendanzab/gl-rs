@@ -60,7 +60,7 @@ fn main() {
         optopt("", "profile", "Profile to generate (core by default)", "core|compatability"),
         optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
         optmulti("", "extension", "Extension to include", ""),
-        optflag("", "full", "Generate API for all profiles and extensions"),
+        optflag("", "full", "Generate API for all profiles, versions and extensions"),
     ];
 
     let args = match getopts(os::args(), opts) {
