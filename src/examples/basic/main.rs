@@ -17,8 +17,8 @@ extern mod glfw;
 extern mod gl;
 
 #[start]
-fn start(argc: int, argv: **u8, crate_map: *u8) -> int {
-    std::rt::start_on_main_thread(argc, argv, crate_map, main)
+fn start(argc: int, argv: **u8) -> int {
+    std::rt::start_on_main_thread(argc, argv, main)
 }
 
 fn main() {
@@ -29,7 +29,7 @@ fn main() {
     do glfw::start {
         // Choose a GL profile that is compatible with OS X 10.7+
         glfw::window_hint::context_version(3, 2);
-        glfw::window_hint::opengl_profile(glfw::OPENGL_CORE_PROFILE);
+        glfw::window_hint::opengl_profile(glfw::OpenGlCoreProfile);
         glfw::window_hint::opengl_forward_compat(true);
 
         let window = glfw::Window::create(800, 600, "OpenGL", glfw::Windowed).unwrap();
