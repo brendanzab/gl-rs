@@ -85,6 +85,9 @@ pub mod types {
     pub type GLvdpauSurfaceNV = GLintptr;
 }
 
+pub static FALSE: GLboolean = 0;
+pub static TRUE: GLboolean = 1;
+
 pub static DEPTH_BUFFER_BIT: GLenum = 0x00000100;
 pub static STENCIL_BUFFER_BIT: GLenum = 0x00000400;
 pub static COLOR_BUFFER_BIT: GLenum = 0x00004000;
@@ -119,11 +122,9 @@ pub static GEOMETRY_SHADER_BIT: GLenum = 0x00000004;
 pub static TESS_CONTROL_SHADER_BIT: GLenum = 0x00000008;
 pub static TESS_EVALUATION_SHADER_BIT: GLenum = 0x00000010;
 pub static ALL_SHADER_BITS: GLenum = 0xFFFFFFFF;
-pub static FALSE: GLenum = 0;
 pub static NO_ERROR: GLenum = 0;
 pub static ZERO: GLenum = 0;
 pub static NONE: GLenum = 0;
-pub static TRUE: GLenum = 1;
 pub static ONE: GLenum = 1;
 pub static INVALID_INDEX: GLenum = 0xFFFFFFFF;
 pub static TIMEOUT_IGNORED: GLenum = 0xFFFFFFFFFFFFFFFF;
@@ -320,6 +321,7 @@ pub static CONSTANT_COLOR: GLenum = 0x8001;
 pub static ONE_MINUS_CONSTANT_COLOR: GLenum = 0x8002;
 pub static CONSTANT_ALPHA: GLenum = 0x8003;
 pub static ONE_MINUS_CONSTANT_ALPHA: GLenum = 0x8004;
+pub static BLEND_COLOR: GLenum = 0x8005;
 pub static FUNC_ADD: GLenum = 0x8006;
 pub static MIN: GLenum = 0x8007;
 pub static MAX: GLenum = 0x8008;
