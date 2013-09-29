@@ -147,27 +147,25 @@ impl<'self> Generator<'self> {
         }
     }
 
-    fn gen_enum_ident(enm: &Enum) -> ~str {
-        if (enm.ident[0] as char).is_digit() {
+    fn write_enum(&self, enm: &Enum, ty: &str) {
+        let ident = if (enm.ident[0] as char).is_digit() {
             "_" + enm.ident
         } else {
             enm.ident.clone()
-        }
-    }
+        };
 
-    fn write_enum(&self, enm: &Enum, ty: &str) {
-        self.write_line(fmt!(
-            "pub static %s: %s = %s;",
-            Generator::gen_enum_ident(enm),
-            ty, enm.value
-        ))
+        let ty = match ident {
+            ~"TRUE" | ~"FALSE" => ~"GLboolean",
+            _ => ty.to_owned(),
+        };
+
+        self.write_line(fmt!("pub static %s: %s = %s;", ident, ty, enm.value))
     }
 
     fn write_enums(&self) {
         do self.for_enums |e| {
             self.write_enum(e, "GLenum");
         }
-
     }
 
     fn for_cmds(&self, fn_unseen: &fn(&Cmd)) {
