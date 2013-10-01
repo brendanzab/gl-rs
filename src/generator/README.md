@@ -35,13 +35,3 @@ Some other examples:
 
 You can also use `--namespace` for GLX and WGL, but unfortunately their
 loaders are not finished at this time. Help to remedy this is welcomed!
-
-## Struct style loader
-
-I'm not sure how useful this is, but I've also included the option to generate
-a loader that stores the pointers in a struct. This might be useful for people
-who want to set up multiple contexts in the same application.
-
-~~~
-./generator --type struct > gl_struct.rs
-~~~
