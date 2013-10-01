@@ -41,12 +41,15 @@ use registry::*;
 pub mod registry;
 pub mod ty;
 
-pub struct GeneratorOptions {
+pub struct GeneratorFilter {
     extensions: ~[~str],
     profile: ~str,
     version: ~str,
     api: ~str,
-    ns: ~str,
+}
+
+pub struct GeneratorOptions {
+    filter: Option<GeneratorFilter>,
 }
 
 fn main() {
@@ -56,6 +59,7 @@ fn main() {
         optopt("", "profile", "Profile to generate (core by default)", "core|compatability"),
         optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
         optmulti("", "extension", "Extension to include", ""),
+        optflag("", "full", "Generate API for all profiles, versions and extensions"),
     ];
 
     let args = match getopts(os::args(), opts) {
@@ -70,12 +74,20 @@ fn main() {
         ns     => fail2!("Unexpected opengl namespace '{}'", ns)
     };
 
+    let filter =
+        if args.opt_present("full") {
+            None
+        } else {
+            Some(GeneratorFilter {
+                extensions: args.opt_strs("extension"),
+                profile: args.opt_str("profile").unwrap_or(~"core"),
+                version: args.opt_str("version").unwrap_or(~"4.3"),
+                api: args.opt_str("api").unwrap_or(~"gl"),
+                })
+        };
+
     let opts = GeneratorOptions {
-        extensions: args.opt_strs("extension"),
-        profile: args.opt_str("profile").unwrap_or(~"core"),
-        version: args.opt_str("version").unwrap_or(~"4.3"),
-        api: args.opt_str("api").unwrap_or(~"gl"),
-        ns: args.opt_str("namespace").unwrap_or(~"gl"),
+        filter: filter
     };
 
     let reg = Registry::from_xml(
