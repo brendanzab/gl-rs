@@ -72,8 +72,8 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml(data: &str, ns: Ns, opts: ::GeneratorOptions) -> Registry {
-        RegistryBuilder::parse(data, ns, opts)
+    pub fn from_xml(data: &str, ns: Ns, filter: Option<Filter>) -> Registry {
+        RegistryBuilder::parse(data, ns, filter)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
@@ -178,16 +178,23 @@ pub struct GlxOpcode {
 
 struct RegistryBuilder {
     ns: Ns,
-    priv opts: ::GeneratorOptions,
-    priv port: SaxPort,
+    filter: Option<Filter>,
+    port: SaxPort,
+}
+
+pub struct Filter {
+    extensions: ~[~str],
+    profile: ~str,
+    version: ~str,
+    api: ~str,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
 impl<'self> RegistryBuilder {
-    fn parse(data: &str, ns: Ns, opts: ::GeneratorOptions) -> Registry {
+    fn parse(data: &str, ns: Ns, filter: Option<Filter>) -> Registry {
         RegistryBuilder {
             ns: ns,
-            opts: opts,
+            filter: filter,
             port: parse_xml(data),
         }.consume_registry()
     }
@@ -304,7 +311,7 @@ impl<'self> RegistryBuilder {
             }
         }
 
-        match self.opts.filter {
+        match self.filter {
             Some(ref filter) => {
                 let Registry {
                     groups, enums, cmds, features: feats, extensions: exts

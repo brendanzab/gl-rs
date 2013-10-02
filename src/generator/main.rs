@@ -41,17 +41,6 @@ use registry::*;
 pub mod registry;
 pub mod ty;
 
-pub struct GeneratorFilter {
-    extensions: ~[~str],
-    profile: ~str,
-    version: ~str,
-    api: ~str,
-}
-
-pub struct GeneratorOptions {
-    filter: Option<GeneratorFilter>,
-}
-
 fn main() {
     let opts = &[
         optopt("", "namespace", "OpenGL namespace (gl by default)", "gl|glx|wgl"),
@@ -68,30 +57,24 @@ fn main() {
     };
 
     let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
-        ~"gl"  => (~"gl.xml", registry::Gl),
+        ~"gl"  => (Path("gl.xml"), Gl),
         ~"glx" => fail!("glx generation unimplemented"),
         ~"wgl" => fail!("wgl generation unimplemented"),
         ns     => fail2!("Unexpected opengl namespace '{}'", ns)
     };
 
-    let filter =
-        if args.opt_present("full") {
-            None
-        } else {
-            Some(GeneratorFilter {
-                extensions: args.opt_strs("extension"),
-                profile: args.opt_str("profile").unwrap_or(~"core"),
-                version: args.opt_str("version").unwrap_or(~"4.3"),
-                api: args.opt_str("api").unwrap_or(~"gl"),
-                })
-        };
-
-    let opts = GeneratorOptions {
-        filter: filter
+    let filter = if args.opt_present("full") {
+        None
+    } else {
+        Some(Filter {
+            extensions: args.opt_strs("extension"),
+            profile: args.opt_str("profile").unwrap_or(~"core"),
+            version: args.opt_str("version").unwrap_or(~"4.3"),
+            api: args.opt_str("api").unwrap_or(~"gl"),
+        })
     };
 
-    let reg = Registry::from_xml(
-        io::file_reader(&Path(path)).expect(fmt!("Could not read %s", path)).read_c_str(), ns, opts);
+    let reg = Registry::from_xml(io::file_reader(&path).expect(fmt!("Could not read %s", path.to_str())).read_c_str(), ns, filter);
 
     Generator::write(std::io::stdout(), &reg, ns);
 }
