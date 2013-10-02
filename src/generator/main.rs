@@ -56,7 +56,6 @@ fn main() {
     let opts = &[
         optopt("", "namespace", "OpenGL namespace (gl by default)", "gl|glx|wgl"),
         optopt("", "api", "API to generate bindings for (gl by default)", "gl|gles1|gles2"),
-        optopt("", "type", "Binding type to generate (ptr by default)", "ptr|struct"),
         optopt("", "profile", "Profile to generate (core by default)", "core|compatability"),
         optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
         optmulti("", "extension", "Extension to include", ""),
@@ -94,12 +93,7 @@ fn main() {
     let reg = Registry::from_xml(
         io::file_reader(&Path(path)).expect(fmt!("Could not read %s", path)).read_c_str(), ns, opts);
 
-
-    match args.opt_str("type").unwrap_or(~"ptr") {
-        ~"ptr"    => PtrGenerator   ::write(std::io::stdout(), &reg, ns),
-        ~"struct" => StructGenerator::write(std::io::stdout(), &reg, ns),
-        type_     => fail2!("Unknown type {}", type_)
-    }
+    Generator::write(std::io::stdout(), &reg, ns);
 }
 
 static TAB_WIDTH: uint = 4;
@@ -159,27 +153,25 @@ impl<'self> Generator<'self> {
         }
     }
 
-    fn gen_enum_ident(enm: &Enum) -> ~str {
-        if (enm.ident[0] as char).is_digit() {
+    fn write_enum(&self, enm: &Enum, ty: &str) {
+        let ident = if (enm.ident[0] as char).is_digit() {
             "_" + enm.ident
         } else {
             enm.ident.clone()
-        }
-    }
+        };
 
-    fn write_enum(&self, enm: &Enum, ty: &str) {
-        self.write_line(fmt!(
-            "pub static %s: %s = %s;",
-            Generator::gen_enum_ident(enm),
-            ty, enm.value
-        ))
+        let ty = match ident {
+            ~"TRUE" | ~"FALSE" => ~"GLboolean",
+            _ => ty.to_owned(),
+        };
+
+        self.write_line(fmt!("pub static %s: %s = %s;", ident, ty, enm.value))
     }
 
     fn write_enums(&self) {
         do self.for_enums |e| {
             self.write_enum(e, "GLenum");
         }
-
     }
 
     fn for_cmds(&self, fn_unseen: &fn(&Cmd)) {
@@ -333,16 +325,6 @@ impl<'self> Generator<'self> {
         self.decr_indent();
         self.write_line("}");
     }
-}
-
-struct PtrGenerator<'self>(Generator<'self>);
-
-impl<'self> PtrGenerator<'self> {
-    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns) -> PtrGenerator<'a> {
-        PtrGenerator(
-            Generator::new(writer, reg, ns)
-        )
-    }
 
     fn write_fns(&self) {
         self.for_cmds(
@@ -433,7 +415,7 @@ impl<'self> PtrGenerator<'self> {
     }
 
     fn write(writer: @Writer, reg: &Registry, ns: Ns) {
-        let mut gen = PtrGenerator::new(writer, reg, ns);
+        let mut gen = Generator::new(writer, reg, ns);
 
         // header with licence, metadata and imports
         gen.write_header();
@@ -469,123 +451,6 @@ impl<'self> PtrGenerator<'self> {
 
         // loader function
         gen.write_load_fn();
-        gen.write_line("");
-    }
-}
-
-struct StructGenerator<'self>(Generator<'self>);
-
-impl<'self> StructGenerator<'self> {
-    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns) -> StructGenerator<'a> {
-        StructGenerator(
-            Generator::new(writer, reg, ns)
-        )
-    }
-
-    fn gen_struct_name(ns: &Ns) -> &'static str {
-        match *ns {
-            Gl => "GL",
-            Glx => "GLX",
-            Wgl => "WGL",
-        }
-    }
-
-    fn write_struct_def(&mut self) {
-        self.write_line(fmt!("pub struct %s {", StructGenerator::gen_struct_name(&self.ns)));
-        self.incr_indent();
-        self.for_cmds(
-            |c| self.write_line(fmt!(
-                "%s: FnPtr<extern \"C\" fn(%s)%s>,",
-                c.proto.ident,
-                Generator::gen_param_list(c, true),
-                Generator::gen_return_suffix(c)
-            ))
-        );
-        self.decr_indent();
-        self.write_line("}");
-    }
-
-    fn write_load_fn(&mut self) {
-        self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
-        self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
-        self.write_line("///");
-        self.write_line("/// ~~~");
-        self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
-        self.write_line("/// ~~~");
-        self.write_line(fmt!(
-            "pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) -> ~%s {",
-            StructGenerator::gen_struct_name(&self.ns)
-        ));
-        self.write_line(fmt!("~%s {", StructGenerator::gen_struct_name(&self.ns)));
-        self.incr_indent();
-        self.for_cmds(
-            |c| self.write_line(fmt!(
-                "%s: FnPtr::new(loadfn(\"%s\"), failing::%s),",
-                c.proto.ident,
-                Generator::gen_symbol_name(&self.ns, c),
-                c.proto.ident
-            ))
-        );
-        self.decr_indent();
-        self.write_line("}");
-        self.decr_indent();
-        self.write_line("}");
-    }
-
-    fn write_wrapper_fns(&mut self) {
-        self.write_line(fmt!("impl %s {", StructGenerator::gen_struct_name(&self.ns)));
-        self.incr_indent();
-        self.for_cmds(
-            |c| self.write_line(fmt!(
-                "#[fixed_stack_segment] #[inline] pub %sfn %s(%s%s)%s { %s(self.%s.f)(%s)%s }",
-                if c.is_safe { "" } else { "unsafe " },
-                c.proto.ident,
-                if c.params.len() > 0 { "&self, " } else { "&self" },
-                Generator::gen_param_list(c, true),
-                Generator::gen_return_suffix(c),
-                if !c.is_safe { "" } else { "unsafe { " },
-                c.proto.ident,
-                Generator::gen_param_ident_list(c),
-                if !c.is_safe { "" } else { " }" }
-            ))
-        );
-        self.decr_indent();
-        self.write_line("}");
-    }
-
-    pub fn write(writer: @Writer, reg: &Registry, ns: Ns) {
-        let mut gen = StructGenerator::new(writer, reg, ns);
-
-        // header with licence, metadata and imports
-        gen.write_header();
-        gen.write_line("");
-
-        // type aliases
-        gen.write_type_aliases();
-        gen.write_line("");
-
-        // enums definitions
-        gen.write_enums();
-        gen.write_line("");
-
-        // FnPtr struct def
-        gen.write_fnptr_struct_def();
-        gen.write_line("");
-
-        // pointer storage struct definition
-        gen.write_struct_def();
-        gen.write_line("");
-
-        // failing fallback functions
-        gen.write_failing_fns();
-        gen.write_line("");
-
-        // loader function
-        gen.write_load_fn();
-        gen.write_line("");
-
-        // function wrappers
-        gen.write_wrapper_fns();
         gen.write_line("");
     }
 }
