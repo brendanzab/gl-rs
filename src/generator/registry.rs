@@ -404,7 +404,7 @@ impl<'self> RegistryBuilder {
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
-                        loop;
+                        continue;
                     } else if two == n {
                         twos.push(FromXML::convert(self, atts));
                     } else {
@@ -415,13 +415,13 @@ impl<'self> RegistryBuilder {
                     debug2!("Found end element </{:?}>", name);
 
                     if (&[one, two]).iter().any(|&x| x == name) {
-                        loop;
+                        continue;
                     } else if "type" == name {
                         // XXX: GL1.1 contains types, which we never care about anyway.
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
-                        loop;
+                        continue;
                     } else if end == name {
                         return (ones, twos);
                     } else {

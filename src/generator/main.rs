@@ -18,6 +18,8 @@
        vers = "0.1")];
 #[comment = "OpenGL function loader generator."];
 #[license = "ASL2"];
+#[feature(globs)];
+#[feature(macro_rules)];
 
 //! Requires libxml2
 //!
@@ -129,7 +131,7 @@ impl<'self> Generator<'self> {
         let mut seen = HashMap::new();
         for def in self.registry.enums.iter() {
             match seen.find(&def.ident) {
-                Some(_) => { loop; }
+                Some(_) => { continue; }
                 None => fn_unseen(def),
             }
             seen.insert(def.ident.clone(), ());
@@ -161,7 +163,7 @@ impl<'self> Generator<'self> {
         let mut seen = HashMap::new();
         for def in self.registry.cmds.iter() {
             match seen.find(&def.proto.ident) {
-                Some(_) => { loop; }
+                Some(_) => { continue; }
                 None => fn_unseen(def),
             }
             seen.insert(def.proto.ident.clone(), ());
