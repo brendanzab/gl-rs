@@ -200,7 +200,7 @@ impl<'self> RegistryBuilder {
     }
 
     fn recv(&self) -> ParseEvent {
-        loop {
+        while true {
             match self.port.recv() {
                 Ok(StartDocument) => (),
                 Ok(Comment(_)) => (),
@@ -234,7 +234,7 @@ impl<'self> RegistryBuilder {
     }
 
     fn skip_until(&self, event: ParseEvent) {
-        loop {
+        while true {
             match self.recv() {
                 EndDocument => fail!("Expected %s, but reached the end of the document.",
                                      event.to_str()),
@@ -254,7 +254,7 @@ impl<'self> RegistryBuilder {
             extensions: ~[],
         };
 
-        loop {
+        while true {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
@@ -263,7 +263,7 @@ impl<'self> RegistryBuilder {
 
                 // add groups
                 StartElement(~"groups", _) => {
-                    loop {
+                    while true {
                         match self.recv() {
                             StartElement(~"group", ref atts) => {
                                 registry.groups.push(
@@ -292,7 +292,7 @@ impl<'self> RegistryBuilder {
                 }
 
                 StartElement(~"extensions", _) => {
-                    loop {
+                    while true {
                         match self.recv() {
                             StartElement(~"extension", ref atts) => {
                                 registry.extensions.push(FromXML::convert(self, atts));
@@ -389,7 +389,7 @@ impl<'self> RegistryBuilder {
         let mut ones = ~[];
         let mut twos = ~[];
 
-        loop {
+        while true {
             match self.recv() {
                 StartElement(ref name, ref atts) => {
                     debug2!("Found start element <{:?} {:?}>", name, atts);
@@ -404,7 +404,7 @@ impl<'self> RegistryBuilder {
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
-                        loop;
+                        continue;
                     } else if two == n {
                         twos.push(FromXML::convert(self, atts));
                     } else {
@@ -415,13 +415,13 @@ impl<'self> RegistryBuilder {
                     debug2!("Found end element </{:?}>", name);
 
                     if (&[one, two]).iter().any(|&x| x == name) {
-                        loop;
+                        continue;
                     } else if "type" == name {
                         // XXX: GL1.1 contains types, which we never care about anyway.
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
-                        loop;
+                        continue;
                     } else if end == name {
                         return (ones, twos);
                     } else {
@@ -434,7 +434,7 @@ impl<'self> RegistryBuilder {
 
     fn consume_group(&self, name: ~str) -> Group {
         let mut enms = ~[];
-        loop {
+        while true {
             match self.recv() {
                 StartElement(~"enum", ref atts) => {
                     enms.push(atts.get_clone("name"));
@@ -452,7 +452,7 @@ impl<'self> RegistryBuilder {
 
     fn consume_enums(&self) -> ~[Enum] {
         let mut enums = ~[];
-        loop {
+        while true {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
@@ -481,7 +481,7 @@ impl<'self> RegistryBuilder {
 
     fn consume_cmds(&self) -> ~[Cmd] {
         let mut cmds = ~[];
-        loop {
+        while true {
             match self.recv() {
                 // add command definition
                 StartElement(~"command", _) => {
@@ -507,7 +507,7 @@ impl<'self> RegistryBuilder {
         let mut alias = None;
         let mut vecequiv = None;
         let mut glx = None;
-        loop {
+        while true {
             match self.recv() {
                 StartElement(~"param", ref atts) => {
                     params.push(
@@ -551,7 +551,7 @@ impl<'self> RegistryBuilder {
     fn consume_binding(&self, group: Option<~str>) -> Binding {
         // consume type
         let mut ty = ~"";
-        loop {
+        while true {
             match self.recv() {
                 Characters(ch) => ty.push_str(ch),
                 StartElement(~"ptype", _) => (),
@@ -631,7 +631,7 @@ impl FromXML for Extension {
         let name = a.get_clone("name");
         let supported = a.get("supported").split_iter('|').map(|x| x.to_owned()).to_owned_vec();
         let mut require = ~[];
-        loop {
+        while true {
             match r.recv() {
                 StartElement(~"require", ref atts) => {
                     require.push(FromXML::convert(r, atts));

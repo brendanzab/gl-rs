@@ -13,6 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[feature(globs)];
+#[feature(macro_rules)];
+
 extern mod glfw;
 extern mod gl;
 
@@ -98,7 +101,7 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint {
 
 fn main() {
     do glfw::set_error_callback |_, description| {
-        printfln!("GLFW Error: %s", description);
+        println!("GLFW Error: {}", description);
     }
 
     do glfw::start {
