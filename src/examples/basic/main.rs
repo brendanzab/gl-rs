@@ -23,7 +23,7 @@ fn start(argc: int, argv: **u8) -> int {
 
 fn main() {
     do glfw::set_error_callback |_, description| {
-        printfln!("GLFW Error: %s", description);
+        println!("GLFW Error: {}", description);
     }
 
     do glfw::start {
