@@ -4,5 +4,7 @@ before_install:
 install:
   - sudo apt-get install rust-nightly
 script:
+  - rustpkg install github.com/bjz/sax-rs
+  - rustc -L .rust/build/*/github.com/bjz/sax-rs/ src/generator/main.rs
+#  - rustpkg build generator
   - rustpkg build gl
-  - rustpkg build generator
