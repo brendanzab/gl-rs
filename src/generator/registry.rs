@@ -207,7 +207,7 @@ impl<'self> RegistryBuilder {
                 Ok(Characters(ref ch)) if ch.is_whitespace() => (),
                 Ok(EndDocument) => fail!("The end of the document has been reached"),
                 Ok(event) => return event,
-                Err(err) => fail!("XML error: %s", err.to_str()),
+                Err(err) => fail!("XML error: {}", err.to_str()),
             }
         }
     }
@@ -215,28 +215,28 @@ impl<'self> RegistryBuilder {
     fn expect_characters(&self) -> ~str {
         match self.recv() {
             Characters(ref ch) => ch.clone(),
-            msg => fail!("Expected characters, found: %s", msg.to_str()),
+            msg => fail!("Expected characters, found: {}", msg.to_str()),
         }
     }
 
     fn expect_start_element(&self, name: &str) -> Attributes {
         match self.recv() {
             StartElement(ref n, ref atts) if name == *n => atts.clone(),
-            msg => fail!("Expected <%s>, found: %s", name, msg.to_str()),
+            msg => fail!("Expected <{}>, found: {}", name, msg.to_str()),
         }
     }
 
     fn expect_end_element(&self, name: &str) {
         match self.recv() {
             EndElement(ref n) if name == *n => (),
-            msg => fail!("Expected </%s>, found: %s", name, msg.to_str()),
+            msg => fail!("Expected </{}>, found: {}", name, msg.to_str()),
         }
     }
 
     fn skip_until(&self, event: ParseEvent) {
         loop {
             match self.recv() {
-                EndDocument => fail!("Expected %s, but reached the end of the document.",
+                EndDocument => fail!("Expected {}, but reached the end of the document.",
                                      event.to_str()),
                 ref msg if *msg == event => break,
                 _ => (),
@@ -271,7 +271,7 @@ impl<'self> RegistryBuilder {
                                 );
                             }
                             EndElement(~"groups") => break,
-                            msg => fail!("Expected </groups>, found: %s", msg.to_str()),
+                            msg => fail!("Expected </groups>, found: {}", msg.to_str()),
                         }
                     }
                 }
@@ -307,7 +307,7 @@ impl<'self> RegistryBuilder {
                 EndElement(~"registry") => break,
 
                 // error handling
-                msg => fail!("Expected </registry>, found: %s", msg.to_str()),
+                msg => fail!("Expected </registry>, found: {}", msg.to_str()),
             }
         }
 
@@ -441,7 +441,7 @@ impl<'self> RegistryBuilder {
                     self.expect_end_element("enum");
                 }
                 EndElement(~"group") => break,
-                msg => fail!("Expected </group>, found: %s", msg.to_str()),
+                msg => fail!("Expected </group>, found: {}", msg.to_str()),
             }
         }
         Group {
@@ -473,7 +473,7 @@ impl<'self> RegistryBuilder {
                 // finished building the namespace
                 EndElement(~"enums") => break,
                 // error handling
-                msg => fail!("Expected </enums>, found: %s", msg.to_str()),
+                msg => fail!("Expected </enums>, found: {}", msg.to_str()),
             }
         }
         enums
@@ -490,7 +490,7 @@ impl<'self> RegistryBuilder {
                 // finished building the namespace
                 EndElement(~"commands") => break,
                 // error handling
-                msg => fail!("Expected </commands>, found: %s", msg.to_str()),
+                msg => fail!("Expected </commands>, found: {}", msg.to_str()),
             }
         }
         cmds
@@ -533,7 +533,7 @@ impl<'self> RegistryBuilder {
                     self.expect_end_element("glx");
                 }
                 EndElement(~"command") => break,
-                msg => fail!("Expected </command>, found: %s", msg.to_str()),
+                msg => fail!("Expected </command>, found: {}", msg.to_str()),
             }
         }
         let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.contains_char('*'));
@@ -557,7 +557,7 @@ impl<'self> RegistryBuilder {
                 StartElement(~"ptype", _) => (),
                 EndElement(~"ptype") => (),
                 StartElement(~"name", _) => break,
-                msg => fail!("Expected binding, found: %s", msg.to_str()),
+                msg => fail!("Expected binding, found: {}", msg.to_str()),
             }
         }
         // consume identifier

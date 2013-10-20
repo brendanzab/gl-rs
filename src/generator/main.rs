@@ -37,6 +37,7 @@ use extra::getopts::groups::*;
 use std::hashmap::HashMap;
 use std::io;
 use std::os;
+use std::path::Path;
 
 use registry::*;
 
@@ -55,11 +56,11 @@ fn main() {
 
     let args = match getopts(os::args(), opts) {
         Ok(a) => a,
-        Err(x) => fail!("Error: %s\n%s", x.to_err_msg(), usage("generator", opts)),
+        Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("generator", opts)),
     };
 
     let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
-        ~"gl"  => (Path("gl.xml"), Gl),
+        ~"gl"  => (Path::new("gl.xml"), Gl),
         ~"glx" => fail!("glx generation unimplemented"),
         ~"wgl" => fail!("wgl generation unimplemented"),
         ns     => fail2!("Unexpected opengl namespace '{}'", ns)
@@ -76,7 +77,7 @@ fn main() {
         })
     };
 
-    let reg = Registry::from_xml(io::file_reader(&path).expect(fmt!("Could not read %s", path.to_str())).read_c_str(), ns, filter);
+    let reg = Registry::from_xml(io::file_reader(&path).expect(format!("Could not read {}", path.display())).read_c_str(), ns, filter);
 
     Generator::write(std::io::stdout(), &reg, ns);
 }
@@ -150,7 +151,7 @@ impl<'self> Generator<'self> {
             _ => ty.to_owned(),
         };
 
-        self.write_line(fmt!("pub static %s: %s = %s;", ident, ty, enm.value))
+        self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value))
     }
 
     fn write_enums(&self) {
@@ -184,7 +185,7 @@ impl<'self> Generator<'self> {
     }
 
     fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
-        fmt!("%s: %s",
+        format!("{}: {}",
             Generator::gen_binding_ident(binding, use_idents),
             ty::to_rust_ty(binding.ty))
     }
@@ -238,13 +239,16 @@ impl<'self> Generator<'self> {
         self.write_line("// See the License for the specific language governing permissions and");
         self.write_line("// limitations under the License.");
         self.write_line("");
-        self.write_line(fmt!("#[link(name = \"%s\",", self.ns.to_str()));
+        self.write_line(format!("\\#[link(name = \"{}\",", self.ns.to_str()));
         self.write_line("       author = \"Brendan Zabarauskas\",");
         self.write_line("       url = \"https://github.com/bjz/gl-rs\",");
         self.write_line("       vers = \"0.1\")];");
         self.write_line("#[comment = \"An OpenGL function loader.\"];");
         self.write_line("#[license = \"ASL2\"];");
         self.write_line("#[crate_type = \"lib\"];");
+        self.write_line("");
+        self.write_line("#[feature(macro_rules)];");
+        self.write_line("#[feature(globs)];");
         self.write_line("");
         self.write_line("use std::libc::*;");
         self.write_line("use self::types::*;");
@@ -300,8 +304,8 @@ impl<'self> Generator<'self> {
         self.write_line(")");
         self.write_line("");
         self.for_cmds(
-            |c| self.write_line(fmt!(
-                "failing!(fn %s(%s)%s)",
+            |c| self.write_line(format!(
+                "failing!(fn {}({}){})",
                 c.proto.ident,
                 Generator::gen_param_ty_list(c),
                 Generator::gen_return_suffix(c)
@@ -313,8 +317,8 @@ impl<'self> Generator<'self> {
 
     fn write_fns(&self) {
         self.for_cmds(
-            |c| self.write_line(fmt!(
-                "#[fixed_stack_segment] #[inline] pub %sfn %s(%s)%s { %s(storage::%s.f)(%s)%s }",
+            |c| self.write_line(format!(
+                "\\#[fixed_stack_segment] \\#[inline] pub {}fn {}({}){} \\{ {}(storage::{}.f)({}){} \\}",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
                 Generator::gen_param_list(c, true),
@@ -349,8 +353,8 @@ impl<'self> Generator<'self> {
         self.write_line(")");
         self.write_line("");
         self.for_cmds(
-            |c| self.write_line(fmt!(
-                "fn_ptr!(fn %s(%s)%s)",
+            |c| self.write_line(format!(
+                "fn_ptr!(fn {}({}){})",
                 c.proto.ident,
                 Generator::gen_param_list(c, true),
                 Generator::gen_return_suffix(c)
@@ -376,8 +380,8 @@ impl<'self> Generator<'self> {
         self.write_line(")");
         self.write_line("");
         self.for_cmds(
-            |c| self.write_line(fmt!(
-                "fn_mod!(%s, \"%s\")",
+            |c| self.write_line(format!(
+                "fn_mod!({}, \"{}\")",
                 c.proto.ident,
                 Generator::gen_symbol_name(&self.ns, c)))
         );
@@ -393,7 +397,7 @@ impl<'self> Generator<'self> {
         self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
         self.incr_indent();
         self.for_cmds(
-            |c| self.write_line(fmt!("%s::load_with(|s| loadfn(s));", c.proto.ident))
+            |c| self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident))
         );
         self.decr_indent();
         self.write_line("}");
