@@ -233,7 +233,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         // "void *"                    => "*mut c_void",
 
         // failure
-        _ => fail!("Type conversion not implemented for `%s`", ty),
+        _ => fail!("Type conversion not implemented for `{}`", ty),
     }
 }
 
