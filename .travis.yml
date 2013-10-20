@@ -5,3 +5,4 @@ install:
   - sudo apt-get install rust-nightly
 script:
   - rustpkg build gl
+  - rustpkg build generator
