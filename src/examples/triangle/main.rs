@@ -22,7 +22,7 @@ extern mod gl;
 use std::cast;
 use std::ptr;
 use std::str;
-use std::sys;
+use std::mem;
 use std::vec;
 
 use gl::types::*;
@@ -133,7 +133,7 @@ fn main() {
             gl::GenBuffers(1, &mut vbo);
             gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
             gl::BufferData(gl::ARRAY_BUFFER,
-                           (VERTEX_DATA.len() * sys::size_of::<GLfloat>()) as GLsizeiptr,
+                           (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
                            cast::transmute(&VERTEX_DATA[0]),
                            gl::STATIC_DRAW);
 
