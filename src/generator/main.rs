@@ -34,10 +34,12 @@ extern mod extra;
 
 use extra::getopts::groups::*;
 
-use std::hashmap::HashMap;
-use std::io;
 use std::os;
 use std::path::Path;
+use std::rt::io;
+use std::rt::io::{Open, Reader, Writer};
+use std::rt::io::file::FileInfo;
+use std::str;
 
 use registry::*;
 
@@ -63,7 +65,7 @@ fn main() {
         ~"gl"  => (Path::new("gl.xml"), Gl),
         ~"glx" => fail!("glx generation unimplemented"),
         ~"wgl" => fail!("wgl generation unimplemented"),
-        ns     => fail2!("Unexpected opengl namespace '{}'", ns)
+        ns     => fail!("Unexpected opengl namespace '{}'", ns)
     };
 
     let filter = if args.opt_present("full") {
@@ -77,26 +79,32 @@ fn main() {
         })
     };
 
-    let reg = Registry::from_xml(io::file_reader(&path).expect(format!("Could not read {}", path.display())).read_c_str(), ns, filter);
+    let reg = Registry::from_xml(
+        str::from_utf8_owned(
+            path.open_reader(Open)
+                .expect(format!("Could not read {}", path.display()))
+                .read_to_end()
+            ), ns, filter
+    );
 
-    Generator::write(std::io::stdout(), &reg, ns);
+    Generator::write(&mut io::stdout(), &reg, ns);
 }
 
 static TAB_WIDTH: uint = 4;
 
-struct Generator<'self> {
+struct Generator<'self, W> {
     ns: Ns,
-    writer: @Writer,
+    writer: &'self mut W,
     registry: &'self Registry,
     indent: uint,
 }
 
-impl<'self> Generator<'self> {
-    fn new<'a>(writer: @Writer, reg: &'a Registry, ns: Ns) -> Generator<'a> {
+impl<'self, W: Writer> Generator<'self, W> {
+    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> Generator<'a, W> {
         Generator {
             ns: ns,
             writer: writer,
-            registry: &'a *reg,
+            registry: registry,
             indent: 0,
         }
     }
@@ -109,37 +117,27 @@ impl<'self> Generator<'self> {
         if self.indent > 0 { self.indent -= 1 }
     }
 
-    fn write_indent(&self) {
+    fn write_indent(&mut self) {
         do (TAB_WIDTH * self.indent).times {
-            self.writer.write_char(' ');
+            self.writer.write(" ".as_bytes());
         }
     }
 
-    fn write_line(&self, s: &str) {
+    fn write_line(&mut self, s: &str) {
         self.write_indent();
-        self.writer.write_line(s);
+        let line = format!("{}\n", s);
+        self.writer.write(line.as_bytes());
     }
 
-    fn write_comment(&self, s: &str) {
+    fn write_comment(&mut self, s: &str) {
         self.write_line("// " + s);
     }
 
-    fn write_doc_comment(&self, s: &str) {
+    fn write_doc_comment(&mut self, s: &str) {
         self.write_line("/// " + s);
     }
 
-    fn for_enums(&self, fn_unseen: &fn(&Enum)) {
-        let mut seen = HashMap::new();
-        for def in self.registry.enums.iter() {
-            match seen.find(&def.ident) {
-                Some(_) => { continue; }
-                None => fn_unseen(def),
-            }
-            seen.insert(def.ident.clone(), ());
-        }
-    }
-
-    fn write_enum(&self, enm: &Enum, ty: &str) {
+    fn write_enum(&mut self, enm: &Enum, ty: &str) {
         let ident = if (enm.ident[0] as char).is_digit() {
             "_" + enm.ident
         } else {
@@ -154,20 +152,9 @@ impl<'self> Generator<'self> {
         self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value))
     }
 
-    fn write_enums(&self) {
-        do self.for_enums |e| {
+    fn write_enums(&mut self) {
+        for e in self.registry.enum_iter() {
             self.write_enum(e, "GLenum");
-        }
-    }
-
-    fn for_cmds(&self, fn_unseen: &fn(&Cmd)) {
-        let mut seen = HashMap::new();
-        for def in self.registry.cmds.iter() {
-            match seen.find(&def.proto.ident) {
-                Some(_) => { continue; }
-                None => fn_unseen(def),
-            }
-            seen.insert(def.proto.ident.clone(), ());
         }
     }
 
@@ -186,20 +173,20 @@ impl<'self> Generator<'self> {
 
     fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
         format!("{}: {}",
-            Generator::gen_binding_ident(binding, use_idents),
+            Generator::<'self, W>::gen_binding_ident(binding, use_idents),
             ty::to_rust_ty(binding.ty))
     }
 
     fn gen_param_list(cmd: &Cmd, use_idents: bool) -> ~str {
         cmd.params.iter()
-            .map(|b| Generator::gen_binding(b, use_idents))
+            .map(|b| Generator::<'self, W>::gen_binding(b, use_idents))
             .to_owned_vec()
             .connect(", ")
     }
 
     fn gen_param_ident_list(cmd: &Cmd) -> ~str {
         cmd.params.iter()
-            .map(|b| Generator::gen_binding_ident(b, true))
+            .map(|b| Generator::<'self, W>::gen_binding_ident(b, true))
             .to_owned_vec()
             .connect(", ")
     }
@@ -223,7 +210,7 @@ impl<'self> Generator<'self> {
         }) + cmd.proto.ident
     }
 
-    fn write_header(&self) {
+    fn write_header(&mut self) {
         self.write_line("// Copyright 2013 The gl-rs developers. For a full listing of the authors,");
         self.write_line("// refer to the AUTHORS file at the top-level directory of this distribution.");
         self.write_line("// ");
@@ -239,7 +226,8 @@ impl<'self> Generator<'self> {
         self.write_line("// See the License for the specific language governing permissions and");
         self.write_line("// limitations under the License.");
         self.write_line("");
-        self.write_line(format!("\\#[link(name = \"{}\",", self.ns.to_str()));
+        let ns = self.ns.to_str();
+        self.write_line(format!("\\#[link(name = \"{}\",", ns));
         self.write_line("       author = \"Brendan Zabarauskas\",");
         self.write_line("       url = \"https://github.com/bjz/gl-rs\",");
         self.write_line("       vers = \"0.1\")];");
@@ -303,32 +291,32 @@ impl<'self> Generator<'self> {
         self.write_line("    (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern \"C\" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });");
         self.write_line(")");
         self.write_line("");
-        self.for_cmds(
-            |c| self.write_line(format!(
+        for c in self.registry.cmd_iter() {
+            self.write_line(format!(
                 "failing!(fn {}({}){})",
                 c.proto.ident,
-                Generator::gen_param_ty_list(c),
-                Generator::gen_return_suffix(c)
-            ))
-        );
+                Generator::<'self, W>::gen_param_ty_list(c),
+                Generator::<'self, W>::gen_return_suffix(c)
+            ));
+        }
         self.decr_indent();
         self.write_line("}");
     }
 
-    fn write_fns(&self) {
-        self.for_cmds(
-            |c| self.write_line(format!(
+    fn write_fns(&mut self) {
+        for c in self.registry.cmd_iter() {
+            self.write_line(format!(
                 "\\#[fixed_stack_segment] \\#[inline] pub {}fn {}({}){} \\{ {}(storage::{}.f)({}){} \\}",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
-                Generator::gen_param_list(c, true),
-                Generator::gen_return_suffix(c),
+                Generator::<'self, W>::gen_param_list(c, true),
+                Generator::<'self, W>::gen_return_suffix(c),
                 if !c.is_safe { "" } else { "unsafe { " },
                 c.proto.ident,
-                Generator::gen_param_ident_list(c),
+                Generator::<'self, W>::gen_param_ident_list(c),
                 if !c.is_safe { "" } else { " }" }
-            ))
-        );
+            ));
+        }
     }
 
     fn write_ptrs(&mut self) {
@@ -352,19 +340,19 @@ impl<'self> Generator<'self> {
         self.write_line("    );");
         self.write_line(")");
         self.write_line("");
-        self.for_cmds(
-            |c| self.write_line(format!(
+        for c in self.registry.cmd_iter() {
+            self.write_line(format!(
                 "fn_ptr!(fn {}({}){})",
                 c.proto.ident,
-                Generator::gen_param_list(c, true),
-                Generator::gen_return_suffix(c)
-            ))
-        );
+                Generator::<'self, W>::gen_param_list(c, true),
+                Generator::<'self, W>::gen_return_suffix(c)
+            ));
+        };
         self.decr_indent();
         self.write_line("}");
     }
 
-    fn write_fn_mods(&self) {
+    fn write_fn_mods(&mut self) {
         self.write_line("macro_rules! fn_mod(");
         self.write_line("    ($name:ident, $sym:expr) => (");
         self.write_line("        pub mod $name {");
@@ -379,12 +367,13 @@ impl<'self> Generator<'self> {
         self.write_line("    )");
         self.write_line(")");
         self.write_line("");
-        self.for_cmds(
-            |c| self.write_line(format!(
+        for c in self.registry.cmd_iter() {
+            let ns = self.ns;
+            self.write_line(format!(
                 "fn_mod!({}, \"{}\")",
                 c.proto.ident,
-                Generator::gen_symbol_name(&self.ns, c)))
-        );
+                Generator::<'self, W>::gen_symbol_name(&ns, c)));
+        }
     }
 
     fn write_load_fn(&mut self) {
@@ -396,15 +385,15 @@ impl<'self> Generator<'self> {
         self.write_line("/// ~~~");
         self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
         self.incr_indent();
-        self.for_cmds(
-            |c| self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident))
-        );
+        for c in self.registry.cmd_iter() {
+            self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident))
+        }
         self.decr_indent();
         self.write_line("}");
     }
 
-    fn write(writer: @Writer, reg: &Registry, ns: Ns) {
-        let mut gen = Generator::new(writer, reg, ns);
+    fn write(writer: &mut W, registry: &Registry, ns: Ns) {
+        let mut gen = Generator::new(writer, registry, ns);
 
         // header with licence, metadata and imports
         gen.write_header();
