@@ -17,6 +17,7 @@ extern mod sax;
 
 use extra::treemap::TreeSet;
 use std::hashmap::HashSet;
+use std::vec::VecIterator;
 use self::sax::*;
 
 pub enum Ns { Gl, Glx, Wgl }
@@ -87,6 +88,56 @@ impl Registry {
             }
         }
         tys
+    }
+
+    pub fn enum_iter<'a>(&'a self) -> EnumIterator<'a> {
+        EnumIterator {
+            seen: HashSet::new(),
+            iter: self.enums.iter(),
+        }
+    }
+
+    pub fn cmd_iter<'a>(&'a self) -> CmdIterator<'a> {
+        CmdIterator {
+            seen: HashSet::new(),
+            iter: self.cmds.iter(),
+        }
+    }
+}
+
+pub struct EnumIterator<'self> {
+    priv seen: HashSet<~str>,
+    priv iter: VecIterator<'self, Enum>,
+}
+
+impl<'self> Iterator<&'self Enum> for EnumIterator<'self> {
+    fn next(&mut self) -> Option<&'self Enum> {
+        do self.iter.next().and_then |def| {
+            if !self.seen.contains(&def.ident) {
+                self.seen.insert(def.ident.clone());
+                Some(def)
+            } else {
+                self.next()
+            }
+        }
+    }
+}
+
+pub struct CmdIterator<'self> {
+    priv seen: HashSet<~str>,
+    priv iter: VecIterator<'self, Cmd>,
+}
+
+impl<'self> Iterator<&'self Cmd> for CmdIterator<'self> {
+    fn next(&mut self) -> Option<&'self Cmd> {
+        do self.iter.next().and_then |def| {
+            if !self.seen.contains(&def.proto.ident) {
+                self.seen.insert(def.proto.ident.clone());
+                Some(def)
+            } else {
+                self.next()
+            }
+        }
     }
 }
 
@@ -287,7 +338,7 @@ impl<'self> RegistryBuilder {
                 }
 
                 StartElement(~"feature", ref atts) => {
-                    debug2!("Parsing feature: {:?}", atts);
+                    debug!("Parsing feature: {:?}", atts);
                     registry.features.push(FromXML::convert(self, atts));
                 }
 
@@ -298,7 +349,7 @@ impl<'self> RegistryBuilder {
                                 registry.extensions.push(FromXML::convert(self, atts));
                             }
                             EndElement(~"extensions") => break,
-                            msg => fail2!("Unexpected message {}", msg.to_str()),
+                            msg => fail!("Unexpected message {}", msg.to_str()),
                         }
                     }
                 }
@@ -342,11 +393,11 @@ impl<'self> RegistryBuilder {
                         for rem in f.removes.iter() {
                             if rem.profile == filter.profile {
                                 for enm in rem.enums.iter() {
-                                    debug2!("Removing {:?}", enm);
+                                    debug!("Removing {:?}", enm);
                                     desired_enums.remove(enm);
                                 }
                                 for cmd in rem.commands.iter() {
-                                    debug2!("Removing {:?}", cmd);
+                                    debug!("Removing {:?}", cmd);
                                     desired_cmds.remove(cmd);
                                 }
                             }
@@ -355,13 +406,13 @@ impl<'self> RegistryBuilder {
                 }
 
                 if !found_feat {
-                    fail2!("Did not find version {} in the registry", filter.version);
+                    fail!("Did not find version {} in the registry", filter.version);
                 }
 
                 for ext in exts.iter() {
                     if filter.extensions.iter().any(|x| x == &ext.name) {
                         if !ext.supported.iter().any(|x| x == &filter.api) {
-                            fail2!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
+                            fail!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
                         }
                         for req in ext.requires.iter() {
                             desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
@@ -384,7 +435,7 @@ impl<'self> RegistryBuilder {
     }
 
     fn consume_two<'a, T: FromXML, U: FromXML>(&self, one: &'a str, two: &'a str, end: &'a str) -> (~[T], ~[U]) {
-        debug2!("consume_two: looking for {:s} and {:s} until {:s}", one, two, end);
+        debug!("consume_two: looking for {:s} and {:s} until {:s}", one, two, end);
 
         let mut ones = ~[];
         let mut twos = ~[];
@@ -392,8 +443,8 @@ impl<'self> RegistryBuilder {
         loop {
             match self.recv() {
                 StartElement(ref name, ref atts) => {
-                    debug2!("Found start element <{:?} {:?}>", name, atts);
-                    debug2!("one and two are {:?} and {:?}", one, two);
+                    debug!("Found start element <{:?} {:?}>", name, atts);
+                    debug!("one and two are {:?} and {:?}", one, two);
 
                     let n = name.clone();
 
@@ -408,11 +459,11 @@ impl<'self> RegistryBuilder {
                     } else if two == n {
                         twos.push(FromXML::convert(self, atts));
                     } else {
-                        fail2!("Unexpected element: <{:?} {:?}>", n, atts);
+                        fail!("Unexpected element: <{:?} {:?}>", n, atts);
                     }
                 },
                 EndElement(name) => {
-                    debug2!("Found end element </{:?}>", name);
+                    debug!("Found end element </{:?}>", name);
 
                     if (&[one, two]).iter().any(|&x| x == name) {
                         continue;
@@ -425,10 +476,10 @@ impl<'self> RegistryBuilder {
                     } else if end == name {
                         return (ones, twos);
                     } else {
-                        fail2!("Unexpected end element {}", name);
+                        fail!("Unexpected end element {}", name);
                     }
                 },
-                msg => fail2!("Unexpected message {}", msg.to_str()) }
+                msg => fail!("Unexpected message {}", msg.to_str()) }
         }
     }
 
@@ -611,7 +662,7 @@ impl FromXML for Feature {
         let name     = a.get_clone("name");
         let number   = a.get_clone("number");
 
-        debug2!("Found api = {:s}, name = {:s}, number = {:s}", api, name, number);
+        debug!("Found api = {:s}, name = {:s}, number = {:s}", api, name, number);
 
         let (require, remove) = r.consume_two("require", "remove", "feature");
 
@@ -637,7 +688,7 @@ impl FromXML for Extension {
                     require.push(FromXML::convert(r, atts));
                 }
                 EndElement(~"extension") => break,
-                msg => fail2!("Unexpected message {}", msg.to_str())
+                msg => fail!("Unexpected message {}", msg.to_str())
             }
         }
 
