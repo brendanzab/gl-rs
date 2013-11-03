@@ -99,6 +99,58 @@ struct Generator<'self, W> {
     indent: uint,
 }
 
+fn gen_binding_ident<'a>(binding: &'a Binding, use_idents: bool) -> &'a str {
+    if use_idents {
+        match binding.ident.as_slice() {
+            "in" => &'a "in_",
+            "ref" => &'a "ref_",
+            "type" => &'a "type_",
+            ident => ident,
+        }
+    } else {
+        &'a "_"
+    }
+}
+
+fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
+    format!("{}: {}",
+        gen_binding_ident(binding, use_idents),
+        ty::to_rust_ty(binding.ty))
+}
+
+fn gen_param_list(cmd: &Cmd, use_idents: bool) -> ~str {
+    cmd.params.iter()
+        .map(|b| gen_binding(b, use_idents))
+        .to_owned_vec()
+        .connect(", ")
+}
+
+fn gen_param_ident_list(cmd: &Cmd) -> ~str {
+    cmd.params.iter()
+        .map(|b| gen_binding_ident(b, true))
+        .to_owned_vec()
+        .connect(", ")
+}
+
+fn gen_param_ty_list(cmd: &Cmd) -> ~str {
+    cmd.params.iter()
+        .map(|b| ty::to_rust_ty(b.ty))
+        .to_owned_vec()
+        .connect(", ")
+}
+
+fn gen_return_suffix(cmd: &Cmd) -> ~str {
+    ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty))
+}
+
+fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> ~str {
+    (match *ns {
+        Gl => "gl",
+        Glx => "glx",
+        Wgl => "wgl",
+    }) + cmd.proto.ident
+}
+
 impl<'self, W: Writer> Generator<'self, W> {
     fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> Generator<'a, W> {
         Generator {
@@ -156,58 +208,6 @@ impl<'self, W: Writer> Generator<'self, W> {
         for e in self.registry.enum_iter() {
             self.write_enum(e, "GLenum");
         }
-    }
-
-    fn gen_binding_ident<'a>(binding: &'a Binding, use_idents: bool) -> &'a str {
-        if use_idents {
-            match binding.ident.as_slice() {
-                "in" => &'a "in_",
-                "ref" => &'a "ref_",
-                "type" => &'a "type_",
-                ident => ident,
-            }
-        } else {
-            &'a "_"
-        }
-    }
-
-    fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
-        format!("{}: {}",
-            Generator::<'self, W>::gen_binding_ident(binding, use_idents),
-            ty::to_rust_ty(binding.ty))
-    }
-
-    fn gen_param_list(cmd: &Cmd, use_idents: bool) -> ~str {
-        cmd.params.iter()
-            .map(|b| Generator::<'self, W>::gen_binding(b, use_idents))
-            .to_owned_vec()
-            .connect(", ")
-    }
-
-    fn gen_param_ident_list(cmd: &Cmd) -> ~str {
-        cmd.params.iter()
-            .map(|b| Generator::<'self, W>::gen_binding_ident(b, true))
-            .to_owned_vec()
-            .connect(", ")
-    }
-
-    fn gen_param_ty_list(cmd: &Cmd) -> ~str {
-        cmd.params.iter()
-            .map(|b| ty::to_rust_ty(b.ty))
-            .to_owned_vec()
-            .connect(", ")
-    }
-
-    fn gen_return_suffix(cmd: &Cmd) -> ~str {
-        ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty))
-    }
-
-    fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> ~str {
-        (match *ns {
-            Gl => "gl",
-            Glx => "glx",
-            Wgl => "wgl",
-        }) + cmd.proto.ident
     }
 
     fn write_header(&mut self) {
@@ -295,8 +295,8 @@ impl<'self, W: Writer> Generator<'self, W> {
             self.write_line(format!(
                 "failing!(fn {}({}){})",
                 c.proto.ident,
-                Generator::<'self, W>::gen_param_ty_list(c),
-                Generator::<'self, W>::gen_return_suffix(c)
+                gen_param_ty_list(c),
+                gen_return_suffix(c)
             ));
         }
         self.decr_indent();
@@ -309,11 +309,11 @@ impl<'self, W: Writer> Generator<'self, W> {
                 "\\#[fixed_stack_segment] \\#[inline] pub {}fn {}({}){} \\{ {}(storage::{}.f)({}){} \\}",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
-                Generator::<'self, W>::gen_param_list(c, true),
-                Generator::<'self, W>::gen_return_suffix(c),
+                gen_param_list(c, true),
+                gen_return_suffix(c),
                 if !c.is_safe { "" } else { "unsafe { " },
                 c.proto.ident,
-                Generator::<'self, W>::gen_param_ident_list(c),
+                gen_param_ident_list(c),
                 if !c.is_safe { "" } else { " }" }
             ));
         }
@@ -344,8 +344,8 @@ impl<'self, W: Writer> Generator<'self, W> {
             self.write_line(format!(
                 "fn_ptr!(fn {}({}){})",
                 c.proto.ident,
-                Generator::<'self, W>::gen_param_list(c, true),
-                Generator::<'self, W>::gen_return_suffix(c)
+                gen_param_list(c, true),
+                gen_return_suffix(c)
             ));
         };
         self.decr_indent();
@@ -372,7 +372,7 @@ impl<'self, W: Writer> Generator<'self, W> {
             self.write_line(format!(
                 "fn_mod!({}, \"{}\")",
                 c.proto.ident,
-                Generator::<'self, W>::gen_symbol_name(&ns, c)));
+                gen_symbol_name(&ns, c)));
         }
     }
 
