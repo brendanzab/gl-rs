@@ -37,8 +37,7 @@ use extra::getopts::groups::*;
 use std::os;
 use std::path::Path;
 use std::rt::io;
-use std::rt::io::{Open, Reader, Writer};
-use std::rt::io::file::FileInfo;
+use std::rt::io::{File, Reader, Writer};
 use std::str;
 
 use registry::*;
@@ -81,7 +80,7 @@ fn main() {
 
     let reg = Registry::from_xml(
         str::from_utf8_owned(
-            path.open_reader(Open)
+            File::open(&path)
                 .expect(format!("Could not read {}", path.display()))
                 .read_to_end()
             ), ns, filter
