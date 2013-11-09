@@ -168,24 +168,34 @@ impl<'self, W: Writer> Generator<'self, W> {
         if self.indent > 0 { self.indent -= 1 }
     }
 
+    fn write_str(&mut self, s: &str) {
+        self.writer.write(s.as_bytes())
+    }
+
     fn write_indent(&mut self) {
         do (TAB_WIDTH * self.indent).times {
-            self.writer.write(" ".as_bytes());
+            self.write_str(" ");
         }
     }
 
     fn write_line(&mut self, s: &str) {
         self.write_indent();
-        let line = format!("{}\n", s);
-        self.writer.write(line.as_bytes());
+        self.write_str(s);
+        self.write_str("\n");
     }
 
     fn write_comment(&mut self, s: &str) {
-        self.write_line("// " + s);
+        self.write_indent();
+        self.write_str("// ");
+        self.write_str(s);
+        self.write_str("\n");
     }
 
     fn write_doc_comment(&mut self, s: &str) {
-        self.write_line("/// " + s);
+        self.write_indent();
+        self.write_str("/// ");
+        self.write_str(s);
+        self.write_str("\n");
     }
 
     fn write_enum(&mut self, enm: &Enum, ty: &str) {
