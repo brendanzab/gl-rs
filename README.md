@@ -64,7 +64,7 @@ if gl::Viewport::is_loaded() {
 The loader in `gl.rs` is generated using the [XML API Registry]
 (http://www.opengl.org/discussion_boards/showthread.php/181927-New-XML-based-API-Registry-released?p=1251775).
 If you would like to generate the loader yourself, please refer to the README
-in the `src/generator` directory.
+in the `src/gen` directory.
 
 ## Todo
 

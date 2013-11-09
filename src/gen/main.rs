@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "glgen",
+#[link(name = "glrsgen",
        author = "Brendan Zabarauskas",
        vers = "0.1")];
 #[comment = "OpenGL function loader generator."];
