@@ -27,6 +27,8 @@ use std::vec;
 
 use gl::types::*;
 
+#[link_args="-lglfw"] extern {}
+
 // Vertex data
 static VERTEX_DATA: [GLfloat, ..6] = [
      0.0,  0.5,
@@ -100,9 +102,7 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint {
 }
 
 fn main() {
-    do glfw::set_error_callback |_, description| {
-        println!("GLFW Error: {}", description);
-    }
+    glfw::set_error_callback(~ErrorContext);
 
     do glfw::start {
         // Choose a GL profile that is compatible with OS X 10.7+
@@ -171,5 +171,12 @@ fn main() {
             gl::DeleteBuffers(1, &vbo);
             gl::DeleteVertexArrays(1, &vao);
         }
+    }
+}
+
+struct ErrorContext;
+impl glfw::ErrorCallback for ErrorContext {
+    fn call(&self, _: glfw::Error, description: ~str) {
+        println!("GLFW Error: {:s}", description);
     }
 }

@@ -16,15 +16,15 @@
 extern mod glfw;
 extern mod gl;
 
+#[link_args="-lglfw"] extern {}
+
 #[start]
 fn start(argc: int, argv: **u8) -> int {
     std::rt::start_on_main_thread(argc, argv, main)
 }
 
 fn main() {
-    do glfw::set_error_callback |_, description| {
-        println!("GLFW Error: {}", description);
-    }
+    glfw::set_error_callback(~ErrorContext);
 
     do glfw::start {
         // Choose a GL profile that is compatible with OS X 10.7+
@@ -49,5 +49,12 @@ fn main() {
             // Swap buffers
             window.swap_buffers();
         }
+    }
+}
+
+struct ErrorContext;
+impl glfw::ErrorCallback for ErrorContext {
+    fn call(&self, _: glfw::Error, description: ~str) {
+        println!("GLFW Error: {:s}", description);
     }
 }
