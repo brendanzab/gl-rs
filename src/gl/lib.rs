@@ -464,7 +464,7 @@ pub static MAX_COMPUTE_UNIFORM_COMPONENTS: GLenum = 0x8263;
 pub static MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS: GLenum = 0x8264;
 pub static MAX_COMPUTE_ATOMIC_COUNTERS: GLenum = 0x8265;
 pub static MAX_COMBINED_COMPUTE_UNIFORM_COMPONENTS: GLenum = 0x8266;
-pub static COMPUTE_LOCAL_WORK_SIZE: GLenum = 0x8267;
+pub static COMPUTE_WORK_GROUP_SIZE: GLenum = 0x8267;
 pub static DEBUG_TYPE_MARKER: GLenum = 0x8268;
 pub static DEBUG_TYPE_PUSH_GROUP: GLenum = 0x8269;
 pub static DEBUG_TYPE_POP_GROUP: GLenum = 0x826A;
@@ -1195,7 +1195,7 @@ pub static MAX_SHADER_STORAGE_BUFFER_BINDINGS: GLenum = 0x90DD;
 pub static MAX_SHADER_STORAGE_BLOCK_SIZE: GLenum = 0x90DE;
 pub static SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT: GLenum = 0x90DF;
 pub static DEPTH_STENCIL_TEXTURE_MODE: GLenum = 0x90EA;
-pub static MAX_COMPUTE_LOCAL_INVOCATIONS: GLenum = 0x90EB;
+pub static MAX_COMPUTE_WORK_GROUP_INVOCATIONS: GLenum = 0x90EB;
 pub static UNIFORM_BLOCK_REFERENCED_BY_COMPUTE_SHADER: GLenum = 0x90EC;
 pub static ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER: GLenum = 0x90ED;
 pub static DISPATCH_INDIRECT_BUFFER: GLenum = 0x90EE;
@@ -1360,569 +1360,569 @@ pub static MAX_FRAMEBUFFER_LAYERS: GLenum = 0x9317;
 pub static MAX_FRAMEBUFFER_SAMPLES: GLenum = 0x9318;
 pub static NUM_SAMPLE_COUNTS: GLenum = 0x9380;
 
-#[fixed_stack_segment] #[inline] pub fn ActiveShaderProgram(pipeline: GLuint, program: GLuint) { unsafe { (storage::ActiveShaderProgram.f)(pipeline, program) } }
-#[fixed_stack_segment] #[inline] pub fn ActiveTexture(texture: GLenum) { unsafe { (storage::ActiveTexture.f)(texture) } }
-#[fixed_stack_segment] #[inline] pub fn AttachShader(program: GLuint, shader: GLuint) { unsafe { (storage::AttachShader.f)(program, shader) } }
-#[fixed_stack_segment] #[inline] pub fn BeginConditionalRender(id: GLuint, mode: GLenum) { unsafe { (storage::BeginConditionalRender.f)(id, mode) } }
-#[fixed_stack_segment] #[inline] pub fn BeginQuery(target: GLenum, id: GLuint) { unsafe { (storage::BeginQuery.f)(target, id) } }
-#[fixed_stack_segment] #[inline] pub fn BeginQueryIndexed(target: GLenum, index: GLuint, id: GLuint) { unsafe { (storage::BeginQueryIndexed.f)(target, index, id) } }
-#[fixed_stack_segment] #[inline] pub fn BeginTransformFeedback(primitiveMode: GLenum) { unsafe { (storage::BeginTransformFeedback.f)(primitiveMode) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn BindAttribLocation(program: GLuint, index: GLuint, name: *GLchar) { (storage::BindAttribLocation.f)(program, index, name) }
-#[fixed_stack_segment] #[inline] pub fn BindBuffer(target: GLenum, buffer: GLuint) { unsafe { (storage::BindBuffer.f)(target, buffer) } }
-#[fixed_stack_segment] #[inline] pub fn BindBufferBase(target: GLenum, index: GLuint, buffer: GLuint) { unsafe { (storage::BindBufferBase.f)(target, index, buffer) } }
-#[fixed_stack_segment] #[inline] pub fn BindBufferRange(target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { unsafe { (storage::BindBufferRange.f)(target, index, buffer, offset, size) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn BindFragDataLocation(program: GLuint, color: GLuint, name: *GLchar) { (storage::BindFragDataLocation.f)(program, color, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn BindFragDataLocationIndexed(program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar) { (storage::BindFragDataLocationIndexed.f)(program, colorNumber, index, name) }
-#[fixed_stack_segment] #[inline] pub fn BindFramebuffer(target: GLenum, framebuffer: GLuint) { unsafe { (storage::BindFramebuffer.f)(target, framebuffer) } }
-#[fixed_stack_segment] #[inline] pub fn BindImageTexture(unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum) { unsafe { (storage::BindImageTexture.f)(unit, texture, level, layered, layer, access, format) } }
-#[fixed_stack_segment] #[inline] pub fn BindProgramPipeline(pipeline: GLuint) { unsafe { (storage::BindProgramPipeline.f)(pipeline) } }
-#[fixed_stack_segment] #[inline] pub fn BindRenderbuffer(target: GLenum, renderbuffer: GLuint) { unsafe { (storage::BindRenderbuffer.f)(target, renderbuffer) } }
-#[fixed_stack_segment] #[inline] pub fn BindSampler(unit: GLuint, sampler: GLuint) { unsafe { (storage::BindSampler.f)(unit, sampler) } }
-#[fixed_stack_segment] #[inline] pub fn BindTexture(target: GLenum, texture: GLuint) { unsafe { (storage::BindTexture.f)(target, texture) } }
-#[fixed_stack_segment] #[inline] pub fn BindTransformFeedback(target: GLenum, id: GLuint) { unsafe { (storage::BindTransformFeedback.f)(target, id) } }
-#[fixed_stack_segment] #[inline] pub fn BindVertexArray(array: GLuint) { unsafe { (storage::BindVertexArray.f)(array) } }
-#[fixed_stack_segment] #[inline] pub fn BindVertexBuffer(bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) { unsafe { (storage::BindVertexBuffer.f)(bindingindex, buffer, offset, stride) } }
-#[fixed_stack_segment] #[inline] pub fn BlendColor(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { unsafe { (storage::BlendColor.f)(red, green, blue, alpha) } }
-#[fixed_stack_segment] #[inline] pub fn BlendEquation(mode: GLenum) { unsafe { (storage::BlendEquation.f)(mode) } }
-#[fixed_stack_segment] #[inline] pub fn BlendEquationSeparate(modeRGB: GLenum, modeAlpha: GLenum) { unsafe { (storage::BlendEquationSeparate.f)(modeRGB, modeAlpha) } }
-#[fixed_stack_segment] #[inline] pub fn BlendEquationSeparatei(buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum) { unsafe { (storage::BlendEquationSeparatei.f)(buf, modeRGB, modeAlpha) } }
-#[fixed_stack_segment] #[inline] pub fn BlendEquationi(buf: GLuint, mode: GLenum) { unsafe { (storage::BlendEquationi.f)(buf, mode) } }
-#[fixed_stack_segment] #[inline] pub fn BlendFunc(sfactor: GLenum, dfactor: GLenum) { unsafe { (storage::BlendFunc.f)(sfactor, dfactor) } }
-#[fixed_stack_segment] #[inline] pub fn BlendFuncSeparate(sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum) { unsafe { (storage::BlendFuncSeparate.f)(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha) } }
-#[fixed_stack_segment] #[inline] pub fn BlendFuncSeparatei(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum) { unsafe { (storage::BlendFuncSeparatei.f)(buf, srcRGB, dstRGB, srcAlpha, dstAlpha) } }
-#[fixed_stack_segment] #[inline] pub fn BlendFunci(buf: GLuint, src: GLenum, dst: GLenum) { unsafe { (storage::BlendFunci.f)(buf, src, dst) } }
-#[fixed_stack_segment] #[inline] pub fn BlitFramebuffer(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum) { unsafe { (storage::BlitFramebuffer.f)(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn BufferData(target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum) { (storage::BufferData.f)(target, size, data, usage) }
-#[fixed_stack_segment] #[inline] pub unsafe fn BufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid) { (storage::BufferSubData.f)(target, offset, size, data) }
-#[fixed_stack_segment] #[inline] pub fn CheckFramebufferStatus(target: GLenum) -> GLenum { unsafe { (storage::CheckFramebufferStatus.f)(target) } }
-#[fixed_stack_segment] #[inline] pub fn ClampColor(target: GLenum, clamp: GLenum) { unsafe { (storage::ClampColor.f)(target, clamp) } }
-#[fixed_stack_segment] #[inline] pub fn Clear(mask: GLbitfield) { unsafe { (storage::Clear.f)(mask) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ClearBufferData(target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *c_void) { (storage::ClearBufferData.f)(target, internalformat, format, type_, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ClearBufferSubData(target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *c_void) { (storage::ClearBufferSubData.f)(target, internalformat, offset, size, format, type_, data) }
-#[fixed_stack_segment] #[inline] pub fn ClearBufferfi(buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint) { unsafe { (storage::ClearBufferfi.f)(buffer, drawbuffer, depth, stencil) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ClearBufferfv(buffer: GLenum, drawbuffer: GLint, value: *GLfloat) { (storage::ClearBufferfv.f)(buffer, drawbuffer, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ClearBufferiv(buffer: GLenum, drawbuffer: GLint, value: *GLint) { (storage::ClearBufferiv.f)(buffer, drawbuffer, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ClearBufferuiv(buffer: GLenum, drawbuffer: GLint, value: *GLuint) { (storage::ClearBufferuiv.f)(buffer, drawbuffer, value) }
-#[fixed_stack_segment] #[inline] pub fn ClearColor(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { unsafe { (storage::ClearColor.f)(red, green, blue, alpha) } }
-#[fixed_stack_segment] #[inline] pub fn ClearDepth(depth: GLdouble) { unsafe { (storage::ClearDepth.f)(depth) } }
-#[fixed_stack_segment] #[inline] pub fn ClearDepthf(d: GLfloat) { unsafe { (storage::ClearDepthf.f)(d) } }
-#[fixed_stack_segment] #[inline] pub fn ClearStencil(s: GLint) { unsafe { (storage::ClearStencil.f)(s) } }
-#[fixed_stack_segment] #[inline] pub fn ClientWaitSync(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum { unsafe { (storage::ClientWaitSync.f)(sync, flags, timeout) } }
-#[fixed_stack_segment] #[inline] pub fn ColorMask(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean) { unsafe { (storage::ColorMask.f)(red, green, blue, alpha) } }
-#[fixed_stack_segment] #[inline] pub fn ColorMaski(index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean) { unsafe { (storage::ColorMaski.f)(index, r, g, b, a) } }
-#[fixed_stack_segment] #[inline] pub fn ColorP3ui(type_: GLenum, color: GLuint) { unsafe { (storage::ColorP3ui.f)(type_, color) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ColorP3uiv(type_: GLenum, color: *GLuint) { (storage::ColorP3uiv.f)(type_, color) }
-#[fixed_stack_segment] #[inline] pub fn ColorP4ui(type_: GLenum, color: GLuint) { unsafe { (storage::ColorP4ui.f)(type_, color) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ColorP4uiv(type_: GLenum, color: *GLuint) { (storage::ColorP4uiv.f)(type_, color) }
-#[fixed_stack_segment] #[inline] pub fn CompileShader(shader: GLuint) { unsafe { (storage::CompileShader.f)(shader) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn CompressedTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (storage::CompressedTexImage1D.f)(target, level, internalformat, width, border, imageSize, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn CompressedTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (storage::CompressedTexImage2D.f)(target, level, internalformat, width, height, border, imageSize, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn CompressedTexImage3D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid) { (storage::CompressedTexImage3D.f)(target, level, internalformat, width, height, depth, border, imageSize, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn CompressedTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (storage::CompressedTexSubImage1D.f)(target, level, xoffset, width, format, imageSize, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn CompressedTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (storage::CompressedTexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, imageSize, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn CompressedTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid) { (storage::CompressedTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data) }
-#[fixed_stack_segment] #[inline] pub fn CopyBufferSubData(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr) { unsafe { (storage::CopyBufferSubData.f)(readTarget, writeTarget, readOffset, writeOffset, size) } }
-#[fixed_stack_segment] #[inline] pub fn CopyImageSubData(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei) { unsafe { (storage::CopyImageSubData.f)(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth) } }
-#[fixed_stack_segment] #[inline] pub fn CopyTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint) { unsafe { (storage::CopyTexImage1D.f)(target, level, internalformat, x, y, width, border) } }
-#[fixed_stack_segment] #[inline] pub fn CopyTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint) { unsafe { (storage::CopyTexImage2D.f)(target, level, internalformat, x, y, width, height, border) } }
-#[fixed_stack_segment] #[inline] pub fn CopyTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei) { unsafe { (storage::CopyTexSubImage1D.f)(target, level, xoffset, x, y, width) } }
-#[fixed_stack_segment] #[inline] pub fn CopyTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::CopyTexSubImage2D.f)(target, level, xoffset, yoffset, x, y, width, height) } }
-#[fixed_stack_segment] #[inline] pub fn CopyTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::CopyTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, x, y, width, height) } }
-#[fixed_stack_segment] #[inline] pub fn CreateProgram() -> GLuint { unsafe { (storage::CreateProgram.f)() } }
-#[fixed_stack_segment] #[inline] pub fn CreateShader(type_: GLenum) -> GLuint { unsafe { (storage::CreateShader.f)(type_) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn CreateShaderProgramv(type_: GLenum, count: GLsizei, strings: **GLchar) -> GLuint { (storage::CreateShaderProgramv.f)(type_, count, strings) }
-#[fixed_stack_segment] #[inline] pub fn CullFace(mode: GLenum) { unsafe { (storage::CullFace.f)(mode) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn DebugMessageCallback(callback: GLDEBUGPROC, userParam: *c_void) { (storage::DebugMessageCallback.f)(callback, userParam) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DebugMessageControl(source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean) { (storage::DebugMessageControl.f)(source, type_, severity, count, ids, enabled) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DebugMessageInsert(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar) { (storage::DebugMessageInsert.f)(source, type_, id, severity, length, buf) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteBuffers(n: GLsizei, buffers: *GLuint) { (storage::DeleteBuffers.f)(n, buffers) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteFramebuffers(n: GLsizei, framebuffers: *GLuint) { (storage::DeleteFramebuffers.f)(n, framebuffers) }
-#[fixed_stack_segment] #[inline] pub fn DeleteProgram(program: GLuint) { unsafe { (storage::DeleteProgram.f)(program) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteProgramPipelines(n: GLsizei, pipelines: *GLuint) { (storage::DeleteProgramPipelines.f)(n, pipelines) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteQueries(n: GLsizei, ids: *GLuint) { (storage::DeleteQueries.f)(n, ids) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteRenderbuffers(n: GLsizei, renderbuffers: *GLuint) { (storage::DeleteRenderbuffers.f)(n, renderbuffers) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteSamplers(count: GLsizei, samplers: *GLuint) { (storage::DeleteSamplers.f)(count, samplers) }
-#[fixed_stack_segment] #[inline] pub fn DeleteShader(shader: GLuint) { unsafe { (storage::DeleteShader.f)(shader) } }
-#[fixed_stack_segment] #[inline] pub fn DeleteSync(sync: GLsync) { unsafe { (storage::DeleteSync.f)(sync) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteTextures(n: GLsizei, textures: *GLuint) { (storage::DeleteTextures.f)(n, textures) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteTransformFeedbacks(n: GLsizei, ids: *GLuint) { (storage::DeleteTransformFeedbacks.f)(n, ids) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DeleteVertexArrays(n: GLsizei, arrays: *GLuint) { (storage::DeleteVertexArrays.f)(n, arrays) }
-#[fixed_stack_segment] #[inline] pub fn DepthFunc(func: GLenum) { unsafe { (storage::DepthFunc.f)(func) } }
-#[fixed_stack_segment] #[inline] pub fn DepthMask(flag: GLboolean) { unsafe { (storage::DepthMask.f)(flag) } }
-#[fixed_stack_segment] #[inline] pub fn DepthRange(near: GLdouble, far: GLdouble) { unsafe { (storage::DepthRange.f)(near, far) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn DepthRangeArrayv(first: GLuint, count: GLsizei, v: *GLdouble) { (storage::DepthRangeArrayv.f)(first, count, v) }
-#[fixed_stack_segment] #[inline] pub fn DepthRangeIndexed(index: GLuint, n: GLdouble, f: GLdouble) { unsafe { (storage::DepthRangeIndexed.f)(index, n, f) } }
-#[fixed_stack_segment] #[inline] pub fn DepthRangef(n: GLfloat, f: GLfloat) { unsafe { (storage::DepthRangef.f)(n, f) } }
-#[fixed_stack_segment] #[inline] pub fn DetachShader(program: GLuint, shader: GLuint) { unsafe { (storage::DetachShader.f)(program, shader) } }
-#[fixed_stack_segment] #[inline] pub fn Disable(cap: GLenum) { unsafe { (storage::Disable.f)(cap) } }
-#[fixed_stack_segment] #[inline] pub fn DisableVertexAttribArray(index: GLuint) { unsafe { (storage::DisableVertexAttribArray.f)(index) } }
-#[fixed_stack_segment] #[inline] pub fn Disablei(target: GLenum, index: GLuint) { unsafe { (storage::Disablei.f)(target, index) } }
-#[fixed_stack_segment] #[inline] pub fn DispatchCompute(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint) { unsafe { (storage::DispatchCompute.f)(num_groups_x, num_groups_y, num_groups_z) } }
-#[fixed_stack_segment] #[inline] pub fn DispatchComputeIndirect(indirect: GLintptr) { unsafe { (storage::DispatchComputeIndirect.f)(indirect) } }
-#[fixed_stack_segment] #[inline] pub fn DrawArrays(mode: GLenum, first: GLint, count: GLsizei) { unsafe { (storage::DrawArrays.f)(mode, first, count) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawArraysIndirect(mode: GLenum, indirect: *GLvoid) { (storage::DrawArraysIndirect.f)(mode, indirect) }
-#[fixed_stack_segment] #[inline] pub fn DrawArraysInstanced(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei) { unsafe { (storage::DrawArraysInstanced.f)(mode, first, count, instancecount) } }
-#[fixed_stack_segment] #[inline] pub fn DrawArraysInstancedBaseInstance(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint) { unsafe { (storage::DrawArraysInstancedBaseInstance.f)(mode, first, count, instancecount, baseinstance) } }
-#[fixed_stack_segment] #[inline] pub fn DrawBuffer(mode: GLenum) { unsafe { (storage::DrawBuffer.f)(mode) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawBuffers(n: GLsizei, bufs: *GLenum) { (storage::DrawBuffers.f)(n, bufs) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawElements(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid) { (storage::DrawElements.f)(mode, count, type_, indices) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawElementsBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) { (storage::DrawElementsBaseVertex.f)(mode, count, type_, indices, basevertex) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *GLvoid) { (storage::DrawElementsIndirect.f)(mode, type_, indirect) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawElementsInstanced(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei) { (storage::DrawElementsInstanced.f)(mode, count, type_, indices, instancecount) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawElementsInstancedBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, baseinstance: GLuint) { (storage::DrawElementsInstancedBaseInstance.f)(mode, count, type_, indices, instancecount, baseinstance) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawElementsInstancedBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint) { (storage::DrawElementsInstancedBaseVertex.f)(mode, count, type_, indices, instancecount, basevertex) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawElementsInstancedBaseVertexBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint) { (storage::DrawElementsInstancedBaseVertexBaseInstance.f)(mode, count, type_, indices, instancecount, basevertex, baseinstance) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawRangeElements(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid) { (storage::DrawRangeElements.f)(mode, start, end, count, type_, indices) }
-#[fixed_stack_segment] #[inline] pub unsafe fn DrawRangeElementsBaseVertex(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint) { (storage::DrawRangeElementsBaseVertex.f)(mode, start, end, count, type_, indices, basevertex) }
-#[fixed_stack_segment] #[inline] pub fn DrawTransformFeedback(mode: GLenum, id: GLuint) { unsafe { (storage::DrawTransformFeedback.f)(mode, id) } }
-#[fixed_stack_segment] #[inline] pub fn DrawTransformFeedbackInstanced(mode: GLenum, id: GLuint, instancecount: GLsizei) { unsafe { (storage::DrawTransformFeedbackInstanced.f)(mode, id, instancecount) } }
-#[fixed_stack_segment] #[inline] pub fn DrawTransformFeedbackStream(mode: GLenum, id: GLuint, stream: GLuint) { unsafe { (storage::DrawTransformFeedbackStream.f)(mode, id, stream) } }
-#[fixed_stack_segment] #[inline] pub fn DrawTransformFeedbackStreamInstanced(mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei) { unsafe { (storage::DrawTransformFeedbackStreamInstanced.f)(mode, id, stream, instancecount) } }
-#[fixed_stack_segment] #[inline] pub fn Enable(cap: GLenum) { unsafe { (storage::Enable.f)(cap) } }
-#[fixed_stack_segment] #[inline] pub fn EnableVertexAttribArray(index: GLuint) { unsafe { (storage::EnableVertexAttribArray.f)(index) } }
-#[fixed_stack_segment] #[inline] pub fn Enablei(target: GLenum, index: GLuint) { unsafe { (storage::Enablei.f)(target, index) } }
-#[fixed_stack_segment] #[inline] pub fn EndConditionalRender() { unsafe { (storage::EndConditionalRender.f)() } }
-#[fixed_stack_segment] #[inline] pub fn EndQuery(target: GLenum) { unsafe { (storage::EndQuery.f)(target) } }
-#[fixed_stack_segment] #[inline] pub fn EndQueryIndexed(target: GLenum, index: GLuint) { unsafe { (storage::EndQueryIndexed.f)(target, index) } }
-#[fixed_stack_segment] #[inline] pub fn EndTransformFeedback() { unsafe { (storage::EndTransformFeedback.f)() } }
-#[fixed_stack_segment] #[inline] pub fn FenceSync(condition: GLenum, flags: GLbitfield) -> GLsync { unsafe { (storage::FenceSync.f)(condition, flags) } }
-#[fixed_stack_segment] #[inline] pub fn Finish() { unsafe { (storage::Finish.f)() } }
-#[fixed_stack_segment] #[inline] pub fn Flush() { unsafe { (storage::Flush.f)() } }
-#[fixed_stack_segment] #[inline] pub fn FlushMappedBufferRange(target: GLenum, offset: GLintptr, length: GLsizeiptr) { unsafe { (storage::FlushMappedBufferRange.f)(target, offset, length) } }
-#[fixed_stack_segment] #[inline] pub fn FramebufferParameteri(target: GLenum, pname: GLenum, param: GLint) { unsafe { (storage::FramebufferParameteri.f)(target, pname, param) } }
-#[fixed_stack_segment] #[inline] pub fn FramebufferRenderbuffer(target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint) { unsafe { (storage::FramebufferRenderbuffer.f)(target, attachment, renderbuffertarget, renderbuffer) } }
-#[fixed_stack_segment] #[inline] pub fn FramebufferTexture(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint) { unsafe { (storage::FramebufferTexture.f)(target, attachment, texture, level) } }
-#[fixed_stack_segment] #[inline] pub fn FramebufferTexture1D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { unsafe { (storage::FramebufferTexture1D.f)(target, attachment, textarget, texture, level) } }
-#[fixed_stack_segment] #[inline] pub fn FramebufferTexture2D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { unsafe { (storage::FramebufferTexture2D.f)(target, attachment, textarget, texture, level) } }
-#[fixed_stack_segment] #[inline] pub fn FramebufferTexture3D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint) { unsafe { (storage::FramebufferTexture3D.f)(target, attachment, textarget, texture, level, zoffset) } }
-#[fixed_stack_segment] #[inline] pub fn FramebufferTextureLayer(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint) { unsafe { (storage::FramebufferTextureLayer.f)(target, attachment, texture, level, layer) } }
-#[fixed_stack_segment] #[inline] pub fn FrontFace(mode: GLenum) { unsafe { (storage::FrontFace.f)(mode) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenBuffers(n: GLsizei, buffers: *mut GLuint) { (storage::GenBuffers.f)(n, buffers) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenFramebuffers(n: GLsizei, framebuffers: *mut GLuint) { (storage::GenFramebuffers.f)(n, framebuffers) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenProgramPipelines(n: GLsizei, pipelines: *mut GLuint) { (storage::GenProgramPipelines.f)(n, pipelines) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenQueries(n: GLsizei, ids: *mut GLuint) { (storage::GenQueries.f)(n, ids) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenRenderbuffers(n: GLsizei, renderbuffers: *mut GLuint) { (storage::GenRenderbuffers.f)(n, renderbuffers) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenSamplers(count: GLsizei, samplers: *mut GLuint) { (storage::GenSamplers.f)(count, samplers) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenTextures(n: GLsizei, textures: *mut GLuint) { (storage::GenTextures.f)(n, textures) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenTransformFeedbacks(n: GLsizei, ids: *mut GLuint) { (storage::GenTransformFeedbacks.f)(n, ids) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GenVertexArrays(n: GLsizei, arrays: *mut GLuint) { (storage::GenVertexArrays.f)(n, arrays) }
-#[fixed_stack_segment] #[inline] pub fn GenerateMipmap(target: GLenum) { unsafe { (storage::GenerateMipmap.f)(target) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveAtomicCounterBufferiv(program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetActiveAtomicCounterBufferiv.f)(program, bufferIndex, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveAttrib(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLint, type_: *mut GLenum, name: *mut GLchar) { (storage::GetActiveAttrib.f)(program, index, bufSize, length, size, type_, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveSubroutineName(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *mut GLsizei, name: *mut GLchar) { (storage::GetActiveSubroutineName.f)(program, shadertype, index, bufsize, length, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveSubroutineUniformName(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *mut GLsizei, name: *mut GLchar) { (storage::GetActiveSubroutineUniformName.f)(program, shadertype, index, bufsize, length, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveSubroutineUniformiv(program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *mut GLint) { (storage::GetActiveSubroutineUniformiv.f)(program, shadertype, index, pname, values) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveUniform(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLint, type_: *mut GLenum, name: *mut GLchar) { (storage::GetActiveUniform.f)(program, index, bufSize, length, size, type_, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveUniformBlockName(program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *mut GLsizei, uniformBlockName: *mut GLchar) { (storage::GetActiveUniformBlockName.f)(program, uniformBlockIndex, bufSize, length, uniformBlockName) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveUniformBlockiv(program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetActiveUniformBlockiv.f)(program, uniformBlockIndex, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveUniformName(program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *mut GLsizei, uniformName: *mut GLchar) { (storage::GetActiveUniformName.f)(program, uniformIndex, bufSize, length, uniformName) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetActiveUniformsiv(program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *mut GLint) { (storage::GetActiveUniformsiv.f)(program, uniformCount, uniformIndices, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetAttachedShaders(program: GLuint, maxCount: GLsizei, count: *mut GLsizei, shaders: *mut GLuint) { (storage::GetAttachedShaders.f)(program, maxCount, count, shaders) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetAttribLocation(program: GLuint, name: *GLchar) -> GLint { (storage::GetAttribLocation.f)(program, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetBooleani_v(target: GLenum, index: GLuint, data: *mut GLboolean) { (storage::GetBooleani_v.f)(target, index, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetBooleanv(pname: GLenum, params: *mut GLboolean) { (storage::GetBooleanv.f)(pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetBufferParameteri64v(target: GLenum, pname: GLenum, params: *mut GLint64) { (storage::GetBufferParameteri64v.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetBufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetBufferParameteriv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetBufferPointerv(target: GLenum, pname: GLenum, params: **mut GLvoid) { (storage::GetBufferPointerv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetBufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *mut GLvoid) { (storage::GetBufferSubData.f)(target, offset, size, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetCompressedTexImage(target: GLenum, level: GLint, img: *mut GLvoid) { (storage::GetCompressedTexImage.f)(target, level, img) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetDebugMessageLog(count: GLuint, bufSize: GLsizei, sources: *mut GLenum, types: *mut GLenum, ids: *mut GLuint, severities: *mut GLenum, lengths: *mut GLsizei, messageLog: *mut GLchar) -> GLuint { (storage::GetDebugMessageLog.f)(count, bufSize, sources, types, ids, severities, lengths, messageLog) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetDoublei_v(target: GLenum, index: GLuint, data: *mut GLdouble) { (storage::GetDoublei_v.f)(target, index, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetDoublev(pname: GLenum, params: *mut GLdouble) { (storage::GetDoublev.f)(pname, params) }
-#[fixed_stack_segment] #[inline] pub fn GetError() -> GLenum { unsafe { (storage::GetError.f)() } }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetFloati_v(target: GLenum, index: GLuint, data: *mut GLfloat) { (storage::GetFloati_v.f)(target, index, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetFloatv(pname: GLenum, params: *mut GLfloat) { (storage::GetFloatv.f)(pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetFragDataIndex(program: GLuint, name: *GLchar) -> GLint { (storage::GetFragDataIndex.f)(program, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetFragDataLocation(program: GLuint, name: *GLchar) -> GLint { (storage::GetFragDataLocation.f)(program, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetFramebufferAttachmentParameteriv(target: GLenum, attachment: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetFramebufferAttachmentParameteriv.f)(target, attachment, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetFramebufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetFramebufferParameteriv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetInteger64i_v(target: GLenum, index: GLuint, data: *mut GLint64) { (storage::GetInteger64i_v.f)(target, index, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetInteger64v(pname: GLenum, params: *mut GLint64) { (storage::GetInteger64v.f)(pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetIntegeri_v(target: GLenum, index: GLuint, data: *mut GLint) { (storage::GetIntegeri_v.f)(target, index, data) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetIntegerv(pname: GLenum, params: *mut GLint) { (storage::GetIntegerv.f)(pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetInternalformati64v(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint64) { (storage::GetInternalformati64v.f)(target, internalformat, pname, bufSize, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetInternalformativ(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint) { (storage::GetInternalformativ.f)(target, internalformat, pname, bufSize, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetMultisamplefv(pname: GLenum, index: GLuint, val: *mut GLfloat) { (storage::GetMultisamplefv.f)(pname, index, val) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetObjectLabel(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar) { (storage::GetObjectLabel.f)(identifier, name, bufSize, length, label) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetObjectPtrLabel(ptr: *c_void, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar) { (storage::GetObjectPtrLabel.f)(ptr, bufSize, length, label) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramBinary(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, binaryFormat: *mut GLenum, binary: *mut GLvoid) { (storage::GetProgramBinary.f)(program, bufSize, length, binaryFormat, binary) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramInfoLog(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) { (storage::GetProgramInfoLog.f)(program, bufSize, length, infoLog) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramInterfaceiv(program: GLuint, programInterface: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetProgramInterfaceiv.f)(program, programInterface, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramPipelineInfoLog(pipeline: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) { (storage::GetProgramPipelineInfoLog.f)(pipeline, bufSize, length, infoLog) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramPipelineiv(pipeline: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetProgramPipelineiv.f)(pipeline, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramResourceIndex(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint { (storage::GetProgramResourceIndex.f)(program, programInterface, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramResourceLocation(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (storage::GetProgramResourceLocation.f)(program, programInterface, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramResourceLocationIndex(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (storage::GetProgramResourceLocationIndex.f)(program, programInterface, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramResourceName(program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, name: *mut GLchar) { (storage::GetProgramResourceName.f)(program, programInterface, index, bufSize, length, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramResourceiv(program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *mut GLsizei, params: *mut GLint) { (storage::GetProgramResourceiv.f)(program, programInterface, index, propCount, props, bufSize, length, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramStageiv(program: GLuint, shadertype: GLenum, pname: GLenum, values: *mut GLint) { (storage::GetProgramStageiv.f)(program, shadertype, pname, values) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetProgramiv(program: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetProgramiv.f)(program, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetQueryIndexediv(target: GLenum, index: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetQueryIndexediv.f)(target, index, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetQueryObjecti64v(id: GLuint, pname: GLenum, params: *mut GLint64) { (storage::GetQueryObjecti64v.f)(id, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetQueryObjectiv(id: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetQueryObjectiv.f)(id, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetQueryObjectui64v(id: GLuint, pname: GLenum, params: *mut GLuint64) { (storage::GetQueryObjectui64v.f)(id, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetQueryObjectuiv(id: GLuint, pname: GLenum, params: *mut GLuint) { (storage::GetQueryObjectuiv.f)(id, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetQueryiv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetQueryiv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetRenderbufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetRenderbufferParameteriv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetSamplerParameterIiv(sampler: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetSamplerParameterIiv.f)(sampler, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetSamplerParameterIuiv(sampler: GLuint, pname: GLenum, params: *mut GLuint) { (storage::GetSamplerParameterIuiv.f)(sampler, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetSamplerParameterfv(sampler: GLuint, pname: GLenum, params: *mut GLfloat) { (storage::GetSamplerParameterfv.f)(sampler, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetSamplerParameteriv(sampler: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetSamplerParameteriv.f)(sampler, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetShaderInfoLog(shader: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) { (storage::GetShaderInfoLog.f)(shader, bufSize, length, infoLog) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum, range: *mut GLint, precision: *mut GLint) { (storage::GetShaderPrecisionFormat.f)(shadertype, precisiontype, range, precision) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetShaderSource(shader: GLuint, bufSize: GLsizei, length: *mut GLsizei, source: *mut GLchar) { (storage::GetShaderSource.f)(shader, bufSize, length, source) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetShaderiv(shader: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetShaderiv.f)(shader, pname, params) }
-#[fixed_stack_segment] #[inline] pub fn GetString(name: GLenum) -> *GLubyte { unsafe { (storage::GetString.f)(name) } }
-#[fixed_stack_segment] #[inline] pub fn GetStringi(name: GLenum, index: GLuint) -> *GLubyte { unsafe { (storage::GetStringi.f)(name, index) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetSubroutineIndex(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint { (storage::GetSubroutineIndex.f)(program, shadertype, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetSubroutineUniformLocation(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint { (storage::GetSubroutineUniformLocation.f)(program, shadertype, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetSynciv(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *mut GLsizei, values: *mut GLint) { (storage::GetSynciv.f)(sync, pname, bufSize, length, values) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTexImage(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *mut GLvoid) { (storage::GetTexImage.f)(target, level, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTexLevelParameterfv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLfloat) { (storage::GetTexLevelParameterfv.f)(target, level, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTexLevelParameteriv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLint) { (storage::GetTexLevelParameteriv.f)(target, level, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTexParameterIiv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetTexParameterIiv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTexParameterIuiv(target: GLenum, pname: GLenum, params: *mut GLuint) { (storage::GetTexParameterIuiv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTexParameterfv(target: GLenum, pname: GLenum, params: *mut GLfloat) { (storage::GetTexParameterfv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTexParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetTexParameteriv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetTransformFeedbackVarying(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLsizei, type_: *mut GLenum, name: *mut GLchar) { (storage::GetTransformFeedbackVarying.f)(program, index, bufSize, length, size, type_, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformBlockIndex(program: GLuint, uniformBlockName: *GLchar) -> GLuint { (storage::GetUniformBlockIndex.f)(program, uniformBlockName) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformIndices(program: GLuint, uniformCount: GLsizei, uniformNames: **GLchar, uniformIndices: *mut GLuint) { (storage::GetUniformIndices.f)(program, uniformCount, uniformNames, uniformIndices) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformLocation(program: GLuint, name: *GLchar) -> GLint { (storage::GetUniformLocation.f)(program, name) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformSubroutineuiv(shadertype: GLenum, location: GLint, params: *mut GLuint) { (storage::GetUniformSubroutineuiv.f)(shadertype, location, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformdv(program: GLuint, location: GLint, params: *mut GLdouble) { (storage::GetUniformdv.f)(program, location, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformfv(program: GLuint, location: GLint, params: *mut GLfloat) { (storage::GetUniformfv.f)(program, location, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformiv(program: GLuint, location: GLint, params: *mut GLint) { (storage::GetUniformiv.f)(program, location, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetUniformuiv(program: GLuint, location: GLint, params: *mut GLuint) { (storage::GetUniformuiv.f)(program, location, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetVertexAttribIiv(index: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetVertexAttribIiv.f)(index, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetVertexAttribIuiv(index: GLuint, pname: GLenum, params: *mut GLuint) { (storage::GetVertexAttribIuiv.f)(index, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetVertexAttribLdv(index: GLuint, pname: GLenum, params: *mut GLdouble) { (storage::GetVertexAttribLdv.f)(index, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetVertexAttribPointerv(index: GLuint, pname: GLenum, pointer: **mut GLvoid) { (storage::GetVertexAttribPointerv.f)(index, pname, pointer) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetVertexAttribdv(index: GLuint, pname: GLenum, params: *mut GLdouble) { (storage::GetVertexAttribdv.f)(index, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetVertexAttribfv(index: GLuint, pname: GLenum, params: *mut GLfloat) { (storage::GetVertexAttribfv.f)(index, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn GetVertexAttribiv(index: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetVertexAttribiv.f)(index, pname, params) }
-#[fixed_stack_segment] #[inline] pub fn Hint(target: GLenum, mode: GLenum) { unsafe { (storage::Hint.f)(target, mode) } }
-#[fixed_stack_segment] #[inline] pub fn InvalidateBufferData(buffer: GLuint) { unsafe { (storage::InvalidateBufferData.f)(buffer) } }
-#[fixed_stack_segment] #[inline] pub fn InvalidateBufferSubData(buffer: GLuint, offset: GLintptr, length: GLsizeiptr) { unsafe { (storage::InvalidateBufferSubData.f)(buffer, offset, length) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn InvalidateFramebuffer(target: GLenum, numAttachments: GLsizei, attachments: *GLenum) { (storage::InvalidateFramebuffer.f)(target, numAttachments, attachments) }
-#[fixed_stack_segment] #[inline] pub unsafe fn InvalidateSubFramebuffer(target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (storage::InvalidateSubFramebuffer.f)(target, numAttachments, attachments, x, y, width, height) }
-#[fixed_stack_segment] #[inline] pub fn InvalidateTexImage(texture: GLuint, level: GLint) { unsafe { (storage::InvalidateTexImage.f)(texture, level) } }
-#[fixed_stack_segment] #[inline] pub fn InvalidateTexSubImage(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei) { unsafe { (storage::InvalidateTexSubImage.f)(texture, level, xoffset, yoffset, zoffset, width, height, depth) } }
-#[fixed_stack_segment] #[inline] pub fn IsBuffer(buffer: GLuint) -> GLboolean { unsafe { (storage::IsBuffer.f)(buffer) } }
-#[fixed_stack_segment] #[inline] pub fn IsEnabled(cap: GLenum) -> GLboolean { unsafe { (storage::IsEnabled.f)(cap) } }
-#[fixed_stack_segment] #[inline] pub fn IsEnabledi(target: GLenum, index: GLuint) -> GLboolean { unsafe { (storage::IsEnabledi.f)(target, index) } }
-#[fixed_stack_segment] #[inline] pub fn IsFramebuffer(framebuffer: GLuint) -> GLboolean { unsafe { (storage::IsFramebuffer.f)(framebuffer) } }
-#[fixed_stack_segment] #[inline] pub fn IsProgram(program: GLuint) -> GLboolean { unsafe { (storage::IsProgram.f)(program) } }
-#[fixed_stack_segment] #[inline] pub fn IsProgramPipeline(pipeline: GLuint) -> GLboolean { unsafe { (storage::IsProgramPipeline.f)(pipeline) } }
-#[fixed_stack_segment] #[inline] pub fn IsQuery(id: GLuint) -> GLboolean { unsafe { (storage::IsQuery.f)(id) } }
-#[fixed_stack_segment] #[inline] pub fn IsRenderbuffer(renderbuffer: GLuint) -> GLboolean { unsafe { (storage::IsRenderbuffer.f)(renderbuffer) } }
-#[fixed_stack_segment] #[inline] pub fn IsSampler(sampler: GLuint) -> GLboolean { unsafe { (storage::IsSampler.f)(sampler) } }
-#[fixed_stack_segment] #[inline] pub fn IsShader(shader: GLuint) -> GLboolean { unsafe { (storage::IsShader.f)(shader) } }
-#[fixed_stack_segment] #[inline] pub fn IsSync(sync: GLsync) -> GLboolean { unsafe { (storage::IsSync.f)(sync) } }
-#[fixed_stack_segment] #[inline] pub fn IsTexture(texture: GLuint) -> GLboolean { unsafe { (storage::IsTexture.f)(texture) } }
-#[fixed_stack_segment] #[inline] pub fn IsTransformFeedback(id: GLuint) -> GLboolean { unsafe { (storage::IsTransformFeedback.f)(id) } }
-#[fixed_stack_segment] #[inline] pub fn IsVertexArray(array: GLuint) -> GLboolean { unsafe { (storage::IsVertexArray.f)(array) } }
-#[fixed_stack_segment] #[inline] pub fn LineWidth(width: GLfloat) { unsafe { (storage::LineWidth.f)(width) } }
-#[fixed_stack_segment] #[inline] pub fn LinkProgram(program: GLuint) { unsafe { (storage::LinkProgram.f)(program) } }
-#[fixed_stack_segment] #[inline] pub fn LogicOp(opcode: GLenum) { unsafe { (storage::LogicOp.f)(opcode) } }
-#[fixed_stack_segment] #[inline] pub fn MapBuffer(target: GLenum, access: GLenum) -> *c_void { unsafe { (storage::MapBuffer.f)(target, access) } }
-#[fixed_stack_segment] #[inline] pub fn MapBufferRange(target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *c_void { unsafe { (storage::MapBufferRange.f)(target, offset, length, access) } }
-#[fixed_stack_segment] #[inline] pub fn MemoryBarrier(barriers: GLbitfield) { unsafe { (storage::MemoryBarrier.f)(barriers) } }
-#[fixed_stack_segment] #[inline] pub fn MinSampleShading(value: GLfloat) { unsafe { (storage::MinSampleShading.f)(value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiDrawArrays(mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei) { (storage::MultiDrawArrays.f)(mode, first, count, drawcount) }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiDrawArraysIndirect(mode: GLenum, indirect: *c_void, drawcount: GLsizei, stride: GLsizei) { (storage::MultiDrawArraysIndirect.f)(mode, indirect, drawcount, stride) }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiDrawElements(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei) { (storage::MultiDrawElements.f)(mode, count, type_, indices, drawcount) }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiDrawElementsBaseVertex(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei, basevertex: *GLint) { (storage::MultiDrawElementsBaseVertex.f)(mode, count, type_, indices, drawcount, basevertex) }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiDrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *c_void, drawcount: GLsizei, stride: GLsizei) { (storage::MultiDrawElementsIndirect.f)(mode, type_, indirect, drawcount, stride) }
-#[fixed_stack_segment] #[inline] pub fn MultiTexCoordP1ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP1ui.f)(texture, type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiTexCoordP1uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP1uiv.f)(texture, type_, coords) }
-#[fixed_stack_segment] #[inline] pub fn MultiTexCoordP2ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP2ui.f)(texture, type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiTexCoordP2uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP2uiv.f)(texture, type_, coords) }
-#[fixed_stack_segment] #[inline] pub fn MultiTexCoordP3ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP3ui.f)(texture, type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiTexCoordP3uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP3uiv.f)(texture, type_, coords) }
-#[fixed_stack_segment] #[inline] pub fn MultiTexCoordP4ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP4ui.f)(texture, type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn MultiTexCoordP4uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP4uiv.f)(texture, type_, coords) }
-#[fixed_stack_segment] #[inline] pub fn NormalP3ui(type_: GLenum, coords: GLuint) { unsafe { (storage::NormalP3ui.f)(type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn NormalP3uiv(type_: GLenum, coords: *GLuint) { (storage::NormalP3uiv.f)(type_, coords) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ObjectLabel(identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar) { (storage::ObjectLabel.f)(identifier, name, length, label) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ObjectPtrLabel(ptr: *c_void, length: GLsizei, label: *GLchar) { (storage::ObjectPtrLabel.f)(ptr, length, label) }
-#[fixed_stack_segment] #[inline] pub unsafe fn PatchParameterfv(pname: GLenum, values: *GLfloat) { (storage::PatchParameterfv.f)(pname, values) }
-#[fixed_stack_segment] #[inline] pub fn PatchParameteri(pname: GLenum, value: GLint) { unsafe { (storage::PatchParameteri.f)(pname, value) } }
-#[fixed_stack_segment] #[inline] pub fn PauseTransformFeedback() { unsafe { (storage::PauseTransformFeedback.f)() } }
-#[fixed_stack_segment] #[inline] pub fn PixelStoref(pname: GLenum, param: GLfloat) { unsafe { (storage::PixelStoref.f)(pname, param) } }
-#[fixed_stack_segment] #[inline] pub fn PixelStorei(pname: GLenum, param: GLint) { unsafe { (storage::PixelStorei.f)(pname, param) } }
-#[fixed_stack_segment] #[inline] pub fn PointParameterf(pname: GLenum, param: GLfloat) { unsafe { (storage::PointParameterf.f)(pname, param) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn PointParameterfv(pname: GLenum, params: *GLfloat) { (storage::PointParameterfv.f)(pname, params) }
-#[fixed_stack_segment] #[inline] pub fn PointParameteri(pname: GLenum, param: GLint) { unsafe { (storage::PointParameteri.f)(pname, param) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn PointParameteriv(pname: GLenum, params: *GLint) { (storage::PointParameteriv.f)(pname, params) }
-#[fixed_stack_segment] #[inline] pub fn PointSize(size: GLfloat) { unsafe { (storage::PointSize.f)(size) } }
-#[fixed_stack_segment] #[inline] pub fn PolygonMode(face: GLenum, mode: GLenum) { unsafe { (storage::PolygonMode.f)(face, mode) } }
-#[fixed_stack_segment] #[inline] pub fn PolygonOffset(factor: GLfloat, units: GLfloat) { unsafe { (storage::PolygonOffset.f)(factor, units) } }
-#[fixed_stack_segment] #[inline] pub fn PopDebugGroup() { unsafe { (storage::PopDebugGroup.f)() } }
-#[fixed_stack_segment] #[inline] pub fn PrimitiveRestartIndex(index: GLuint) { unsafe { (storage::PrimitiveRestartIndex.f)(index) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramBinary(program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei) { (storage::ProgramBinary.f)(program, binaryFormat, binary, length) }
-#[fixed_stack_segment] #[inline] pub fn ProgramParameteri(program: GLuint, pname: GLenum, value: GLint) { unsafe { (storage::ProgramParameteri.f)(program, pname, value) } }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform1d(program: GLuint, location: GLint, v0: GLdouble) { unsafe { (storage::ProgramUniform1d.f)(program, location, v0) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform1dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform1dv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform1f(program: GLuint, location: GLint, v0: GLfloat) { unsafe { (storage::ProgramUniform1f.f)(program, location, v0) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform1fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform1fv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform1i(program: GLuint, location: GLint, v0: GLint) { unsafe { (storage::ProgramUniform1i.f)(program, location, v0) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform1iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform1iv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform1ui(program: GLuint, location: GLint, v0: GLuint) { unsafe { (storage::ProgramUniform1ui.f)(program, location, v0) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform1uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform1uiv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform2d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble) { unsafe { (storage::ProgramUniform2d.f)(program, location, v0, v1) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform2dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform2dv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform2f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat) { unsafe { (storage::ProgramUniform2f.f)(program, location, v0, v1) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform2fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform2fv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform2i(program: GLuint, location: GLint, v0: GLint, v1: GLint) { unsafe { (storage::ProgramUniform2i.f)(program, location, v0, v1) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform2iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform2iv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform2ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint) { unsafe { (storage::ProgramUniform2ui.f)(program, location, v0, v1) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform2uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform2uiv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform3d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble) { unsafe { (storage::ProgramUniform3d.f)(program, location, v0, v1, v2) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform3dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform3dv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform3f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { unsafe { (storage::ProgramUniform3f.f)(program, location, v0, v1, v2) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform3fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform3fv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform3i(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint) { unsafe { (storage::ProgramUniform3i.f)(program, location, v0, v1, v2) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform3iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform3iv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform3ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { unsafe { (storage::ProgramUniform3ui.f)(program, location, v0, v1, v2) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform3uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform3uiv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform4d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble) { unsafe { (storage::ProgramUniform4d.f)(program, location, v0, v1, v2, v3) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform4dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform4dv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform4f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { unsafe { (storage::ProgramUniform4f.f)(program, location, v0, v1, v2, v3) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform4fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform4fv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform4i(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { unsafe { (storage::ProgramUniform4i.f)(program, location, v0, v1, v2, v3) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform4iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform4iv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn ProgramUniform4ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { unsafe { (storage::ProgramUniform4ui.f)(program, location, v0, v1, v2, v3) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniform4uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform4uiv.f)(program, location, count, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix2dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix2fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix2x3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix2x3dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix2x3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix2x3fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix2x4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix2x4dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix2x4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix2x4fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix3dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix3fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix3x2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix3x2dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix3x2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix3x2fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix3x4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix3x4dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix3x4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix3x4fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix4dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix4fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix4x2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix4x2dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix4x2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix4x2fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix4x3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix4x3dv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ProgramUniformMatrix4x3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix4x3fv.f)(program, location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub fn ProvokingVertex(mode: GLenum) { unsafe { (storage::ProvokingVertex.f)(mode) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn PushDebugGroup(source: GLenum, id: GLuint, length: GLsizei, message: *GLchar) { (storage::PushDebugGroup.f)(source, id, length, message) }
-#[fixed_stack_segment] #[inline] pub fn QueryCounter(id: GLuint, target: GLenum) { unsafe { (storage::QueryCounter.f)(id, target) } }
-#[fixed_stack_segment] #[inline] pub fn ReadBuffer(mode: GLenum) { unsafe { (storage::ReadBuffer.f)(mode) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ReadPixels(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *mut GLvoid) { (storage::ReadPixels.f)(x, y, width, height, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub fn ReleaseShaderCompiler() { unsafe { (storage::ReleaseShaderCompiler.f)() } }
-#[fixed_stack_segment] #[inline] pub fn RenderbufferStorage(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::RenderbufferStorage.f)(target, internalformat, width, height) } }
-#[fixed_stack_segment] #[inline] pub fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::RenderbufferStorageMultisample.f)(target, samples, internalformat, width, height) } }
-#[fixed_stack_segment] #[inline] pub fn ResumeTransformFeedback() { unsafe { (storage::ResumeTransformFeedback.f)() } }
-#[fixed_stack_segment] #[inline] pub fn SampleCoverage(value: GLfloat, invert: GLboolean) { unsafe { (storage::SampleCoverage.f)(value, invert) } }
-#[fixed_stack_segment] #[inline] pub fn SampleMaski(index: GLuint, mask: GLbitfield) { unsafe { (storage::SampleMaski.f)(index, mask) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn SamplerParameterIiv(sampler: GLuint, pname: GLenum, param: *GLint) { (storage::SamplerParameterIiv.f)(sampler, pname, param) }
-#[fixed_stack_segment] #[inline] pub unsafe fn SamplerParameterIuiv(sampler: GLuint, pname: GLenum, param: *GLuint) { (storage::SamplerParameterIuiv.f)(sampler, pname, param) }
-#[fixed_stack_segment] #[inline] pub fn SamplerParameterf(sampler: GLuint, pname: GLenum, param: GLfloat) { unsafe { (storage::SamplerParameterf.f)(sampler, pname, param) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn SamplerParameterfv(sampler: GLuint, pname: GLenum, param: *GLfloat) { (storage::SamplerParameterfv.f)(sampler, pname, param) }
-#[fixed_stack_segment] #[inline] pub fn SamplerParameteri(sampler: GLuint, pname: GLenum, param: GLint) { unsafe { (storage::SamplerParameteri.f)(sampler, pname, param) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn SamplerParameteriv(sampler: GLuint, pname: GLenum, param: *GLint) { (storage::SamplerParameteriv.f)(sampler, pname, param) }
-#[fixed_stack_segment] #[inline] pub fn Scissor(x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::Scissor.f)(x, y, width, height) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ScissorArrayv(first: GLuint, count: GLsizei, v: *GLint) { (storage::ScissorArrayv.f)(first, count, v) }
-#[fixed_stack_segment] #[inline] pub fn ScissorIndexed(index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::ScissorIndexed.f)(index, left, bottom, width, height) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ScissorIndexedv(index: GLuint, v: *GLint) { (storage::ScissorIndexedv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn SecondaryColorP3ui(type_: GLenum, color: GLuint) { unsafe { (storage::SecondaryColorP3ui.f)(type_, color) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn SecondaryColorP3uiv(type_: GLenum, color: *GLuint) { (storage::SecondaryColorP3uiv.f)(type_, color) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ShaderBinary(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei) { (storage::ShaderBinary.f)(count, shaders, binaryformat, binary, length) }
-#[fixed_stack_segment] #[inline] pub unsafe fn ShaderSource(shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint) { (storage::ShaderSource.f)(shader, count, string, length) }
-#[fixed_stack_segment] #[inline] pub fn ShaderStorageBlockBinding(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint) { unsafe { (storage::ShaderStorageBlockBinding.f)(program, storageBlockIndex, storageBlockBinding) } }
-#[fixed_stack_segment] #[inline] pub fn StencilFunc(func: GLenum, ref_: GLint, mask: GLuint) { unsafe { (storage::StencilFunc.f)(func, ref_, mask) } }
-#[fixed_stack_segment] #[inline] pub fn StencilFuncSeparate(face: GLenum, func: GLenum, ref_: GLint, mask: GLuint) { unsafe { (storage::StencilFuncSeparate.f)(face, func, ref_, mask) } }
-#[fixed_stack_segment] #[inline] pub fn StencilMask(mask: GLuint) { unsafe { (storage::StencilMask.f)(mask) } }
-#[fixed_stack_segment] #[inline] pub fn StencilMaskSeparate(face: GLenum, mask: GLuint) { unsafe { (storage::StencilMaskSeparate.f)(face, mask) } }
-#[fixed_stack_segment] #[inline] pub fn StencilOp(fail: GLenum, zfail: GLenum, zpass: GLenum) { unsafe { (storage::StencilOp.f)(fail, zfail, zpass) } }
-#[fixed_stack_segment] #[inline] pub fn StencilOpSeparate(face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum) { unsafe { (storage::StencilOpSeparate.f)(face, sfail, dpfail, dppass) } }
-#[fixed_stack_segment] #[inline] pub fn TexBuffer(target: GLenum, internalformat: GLenum, buffer: GLuint) { unsafe { (storage::TexBuffer.f)(target, internalformat, buffer) } }
-#[fixed_stack_segment] #[inline] pub fn TexBufferRange(target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { unsafe { (storage::TexBufferRange.f)(target, internalformat, buffer, offset, size) } }
-#[fixed_stack_segment] #[inline] pub fn TexCoordP1ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP1ui.f)(type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexCoordP1uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP1uiv.f)(type_, coords) }
-#[fixed_stack_segment] #[inline] pub fn TexCoordP2ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP2ui.f)(type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexCoordP2uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP2uiv.f)(type_, coords) }
-#[fixed_stack_segment] #[inline] pub fn TexCoordP3ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP3ui.f)(type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexCoordP3uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP3uiv.f)(type_, coords) }
-#[fixed_stack_segment] #[inline] pub fn TexCoordP4ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP4ui.f)(type_, coords) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexCoordP4uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP4uiv.f)(type_, coords) }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexImage1D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (storage::TexImage1D.f)(target, level, internalformat, width, border, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexImage2D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (storage::TexImage2D.f)(target, level, internalformat, width, height, border, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub fn TexImage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexImage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexImage3D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid) { (storage::TexImage3D.f)(target, level, internalformat, width, height, depth, border, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub fn TexImage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexImage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexParameterIiv(target: GLenum, pname: GLenum, params: *GLint) { (storage::TexParameterIiv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexParameterIuiv(target: GLenum, pname: GLenum, params: *GLuint) { (storage::TexParameterIuiv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub fn TexParameterf(target: GLenum, pname: GLenum, param: GLfloat) { unsafe { (storage::TexParameterf.f)(target, pname, param) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexParameterfv(target: GLenum, pname: GLenum, params: *GLfloat) { (storage::TexParameterfv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub fn TexParameteri(target: GLenum, pname: GLenum, param: GLint) { unsafe { (storage::TexParameteri.f)(target, pname, param) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexParameteriv(target: GLenum, pname: GLenum, params: *GLint) { (storage::TexParameteriv.f)(target, pname, params) }
-#[fixed_stack_segment] #[inline] pub fn TexStorage1D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) { unsafe { (storage::TexStorage1D.f)(target, levels, internalformat, width) } }
-#[fixed_stack_segment] #[inline] pub fn TexStorage2D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::TexStorage2D.f)(target, levels, internalformat, width, height) } }
-#[fixed_stack_segment] #[inline] pub fn TexStorage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexStorage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) } }
-#[fixed_stack_segment] #[inline] pub fn TexStorage3D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) { unsafe { (storage::TexStorage3D.f)(target, levels, internalformat, width, height, depth) } }
-#[fixed_stack_segment] #[inline] pub fn TexStorage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexStorage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (storage::TexSubImage1D.f)(target, level, xoffset, width, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (storage::TexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub unsafe fn TexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid) { (storage::TexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels) }
-#[fixed_stack_segment] #[inline] pub fn TextureView(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint) { unsafe { (storage::TextureView.f)(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn TransformFeedbackVaryings(program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum) { (storage::TransformFeedbackVaryings.f)(program, count, varyings, bufferMode) }
-#[fixed_stack_segment] #[inline] pub fn Uniform1d(location: GLint, x: GLdouble) { unsafe { (storage::Uniform1d.f)(location, x) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform1dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform1dv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform1f(location: GLint, v0: GLfloat) { unsafe { (storage::Uniform1f.f)(location, v0) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform1fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform1fv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform1i(location: GLint, v0: GLint) { unsafe { (storage::Uniform1i.f)(location, v0) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform1iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform1iv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform1ui(location: GLint, v0: GLuint) { unsafe { (storage::Uniform1ui.f)(location, v0) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform1uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform1uiv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform2d(location: GLint, x: GLdouble, y: GLdouble) { unsafe { (storage::Uniform2d.f)(location, x, y) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform2dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform2dv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform2f(location: GLint, v0: GLfloat, v1: GLfloat) { unsafe { (storage::Uniform2f.f)(location, v0, v1) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform2fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform2fv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform2i(location: GLint, v0: GLint, v1: GLint) { unsafe { (storage::Uniform2i.f)(location, v0, v1) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform2iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform2iv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform2ui(location: GLint, v0: GLuint, v1: GLuint) { unsafe { (storage::Uniform2ui.f)(location, v0, v1) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform2uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform2uiv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform3d(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble) { unsafe { (storage::Uniform3d.f)(location, x, y, z) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform3dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform3dv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform3f(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { unsafe { (storage::Uniform3f.f)(location, v0, v1, v2) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform3fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform3fv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform3i(location: GLint, v0: GLint, v1: GLint, v2: GLint) { unsafe { (storage::Uniform3i.f)(location, v0, v1, v2) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform3iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform3iv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform3ui(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { unsafe { (storage::Uniform3ui.f)(location, v0, v1, v2) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform3uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform3uiv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform4d(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { unsafe { (storage::Uniform4d.f)(location, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform4dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform4dv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform4f(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { unsafe { (storage::Uniform4f.f)(location, v0, v1, v2, v3) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform4fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform4fv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform4i(location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { unsafe { (storage::Uniform4i.f)(location, v0, v1, v2, v3) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform4iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform4iv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn Uniform4ui(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { unsafe { (storage::Uniform4ui.f)(location, v0, v1, v2, v3) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn Uniform4uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform4uiv.f)(location, count, value) }
-#[fixed_stack_segment] #[inline] pub fn UniformBlockBinding(program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint) { unsafe { (storage::UniformBlockBinding.f)(program, uniformBlockIndex, uniformBlockBinding) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix2dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix2fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix2x3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix2x3dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix2x3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix2x3fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix2x4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix2x4dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix2x4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix2x4fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix3dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix3fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix3x2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix3x2dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix3x2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix3x2fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix3x4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix3x4dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix3x4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix3x4fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix4dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix4fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix4x2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix4x2dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix4x2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix4x2fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix4x3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix4x3dv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformMatrix4x3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix4x3fv.f)(location, count, transpose, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn UniformSubroutinesuiv(shadertype: GLenum, count: GLsizei, indices: *GLuint) { (storage::UniformSubroutinesuiv.f)(shadertype, count, indices) }
-#[fixed_stack_segment] #[inline] pub fn UnmapBuffer(target: GLenum) -> GLboolean { unsafe { (storage::UnmapBuffer.f)(target) } }
-#[fixed_stack_segment] #[inline] pub fn UseProgram(program: GLuint) { unsafe { (storage::UseProgram.f)(program) } }
-#[fixed_stack_segment] #[inline] pub fn UseProgramStages(pipeline: GLuint, stages: GLbitfield, program: GLuint) { unsafe { (storage::UseProgramStages.f)(pipeline, stages, program) } }
-#[fixed_stack_segment] #[inline] pub fn ValidateProgram(program: GLuint) { unsafe { (storage::ValidateProgram.f)(program) } }
-#[fixed_stack_segment] #[inline] pub fn ValidateProgramPipeline(pipeline: GLuint) { unsafe { (storage::ValidateProgramPipeline.f)(pipeline) } }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib1d(index: GLuint, x: GLdouble) { unsafe { (storage::VertexAttrib1d.f)(index, x) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib1dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib1dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib1f(index: GLuint, x: GLfloat) { unsafe { (storage::VertexAttrib1f.f)(index, x) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib1fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib1fv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib1s(index: GLuint, x: GLshort) { unsafe { (storage::VertexAttrib1s.f)(index, x) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib1sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib1sv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib2d(index: GLuint, x: GLdouble, y: GLdouble) { unsafe { (storage::VertexAttrib2d.f)(index, x, y) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib2dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib2dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib2f(index: GLuint, x: GLfloat, y: GLfloat) { unsafe { (storage::VertexAttrib2f.f)(index, x, y) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib2fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib2fv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib2s(index: GLuint, x: GLshort, y: GLshort) { unsafe { (storage::VertexAttrib2s.f)(index, x, y) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib2sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib2sv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib3d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) { unsafe { (storage::VertexAttrib3d.f)(index, x, y, z) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib3dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib3dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib3f(index: GLuint, x: GLfloat, y: GLfloat, z: GLfloat) { unsafe { (storage::VertexAttrib3f.f)(index, x, y, z) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib3fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib3fv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib3s(index: GLuint, x: GLshort, y: GLshort, z: GLshort) { unsafe { (storage::VertexAttrib3s.f)(index, x, y, z) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib3sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib3sv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4Nbv(index: GLuint, v: *GLbyte) { (storage::VertexAttrib4Nbv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4Niv(index: GLuint, v: *GLint) { (storage::VertexAttrib4Niv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4Nsv(index: GLuint, v: *GLshort) { (storage::VertexAttrib4Nsv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib4Nub(index: GLuint, x: GLubyte, y: GLubyte, z: GLubyte, w: GLubyte) { unsafe { (storage::VertexAttrib4Nub.f)(index, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4Nubv(index: GLuint, v: *GLubyte) { (storage::VertexAttrib4Nubv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4Nuiv(index: GLuint, v: *GLuint) { (storage::VertexAttrib4Nuiv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4Nusv(index: GLuint, v: *GLushort) { (storage::VertexAttrib4Nusv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4bv(index: GLuint, v: *GLbyte) { (storage::VertexAttrib4bv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib4d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { unsafe { (storage::VertexAttrib4d.f)(index, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib4dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib4f(index: GLuint, x: GLfloat, y: GLfloat, z: GLfloat, w: GLfloat) { unsafe { (storage::VertexAttrib4f.f)(index, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib4fv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4iv(index: GLuint, v: *GLint) { (storage::VertexAttrib4iv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttrib4s(index: GLuint, x: GLshort, y: GLshort, z: GLshort, w: GLshort) { unsafe { (storage::VertexAttrib4s.f)(index, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib4sv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4ubv(index: GLuint, v: *GLubyte) { (storage::VertexAttrib4ubv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4uiv(index: GLuint, v: *GLuint) { (storage::VertexAttrib4uiv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttrib4usv(index: GLuint, v: *GLushort) { (storage::VertexAttrib4usv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribBinding(attribindex: GLuint, bindingindex: GLuint) { unsafe { (storage::VertexAttribBinding.f)(attribindex, bindingindex) } }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribDivisor(index: GLuint, divisor: GLuint) { unsafe { (storage::VertexAttribDivisor.f)(index, divisor) } }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribFormat(attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) { unsafe { (storage::VertexAttribFormat.f)(attribindex, size, type_, normalized, relativeoffset) } }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI1i(index: GLuint, x: GLint) { unsafe { (storage::VertexAttribI1i.f)(index, x) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI1iv(index: GLuint, v: *GLint) { (storage::VertexAttribI1iv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI1ui(index: GLuint, x: GLuint) { unsafe { (storage::VertexAttribI1ui.f)(index, x) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI1uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI1uiv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI2i(index: GLuint, x: GLint, y: GLint) { unsafe { (storage::VertexAttribI2i.f)(index, x, y) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI2iv(index: GLuint, v: *GLint) { (storage::VertexAttribI2iv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI2ui(index: GLuint, x: GLuint, y: GLuint) { unsafe { (storage::VertexAttribI2ui.f)(index, x, y) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI2uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI2uiv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI3i(index: GLuint, x: GLint, y: GLint, z: GLint) { unsafe { (storage::VertexAttribI3i.f)(index, x, y, z) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI3iv(index: GLuint, v: *GLint) { (storage::VertexAttribI3iv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI3ui(index: GLuint, x: GLuint, y: GLuint, z: GLuint) { unsafe { (storage::VertexAttribI3ui.f)(index, x, y, z) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI3uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI3uiv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI4bv(index: GLuint, v: *GLbyte) { (storage::VertexAttribI4bv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI4i(index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint) { unsafe { (storage::VertexAttribI4i.f)(index, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI4iv(index: GLuint, v: *GLint) { (storage::VertexAttribI4iv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI4sv(index: GLuint, v: *GLshort) { (storage::VertexAttribI4sv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI4ubv(index: GLuint, v: *GLubyte) { (storage::VertexAttribI4ubv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribI4ui(index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint) { unsafe { (storage::VertexAttribI4ui.f)(index, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI4uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI4uiv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribI4usv(index: GLuint, v: *GLushort) { (storage::VertexAttribI4usv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribIFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { unsafe { (storage::VertexAttribIFormat.f)(attribindex, size, type_, relativeoffset) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribIPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) { (storage::VertexAttribIPointer.f)(index, size, type_, stride, pointer) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribL1d(index: GLuint, x: GLdouble) { unsafe { (storage::VertexAttribL1d.f)(index, x) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribL1dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL1dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribL2d(index: GLuint, x: GLdouble, y: GLdouble) { unsafe { (storage::VertexAttribL2d.f)(index, x, y) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribL2dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL2dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribL3d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) { unsafe { (storage::VertexAttribL3d.f)(index, x, y, z) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribL3dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL3dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribL4d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { unsafe { (storage::VertexAttribL4d.f)(index, x, y, z, w) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribL4dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL4dv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribLFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { unsafe { (storage::VertexAttribLFormat.f)(attribindex, size, type_, relativeoffset) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribLPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid) { (storage::VertexAttribLPointer.f)(index, size, type_, stride, pointer) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribP1ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP1ui.f)(index, type_, normalized, value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribP1uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP1uiv.f)(index, type_, normalized, value) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribP2ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP2ui.f)(index, type_, normalized, value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribP2uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP2uiv.f)(index, type_, normalized, value) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribP3ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP3ui.f)(index, type_, normalized, value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribP3uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP3uiv.f)(index, type_, normalized, value) }
-#[fixed_stack_segment] #[inline] pub fn VertexAttribP4ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP4ui.f)(index, type_, normalized, value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribP4uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP4uiv.f)(index, type_, normalized, value) }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexAttribPointer(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid) { (storage::VertexAttribPointer.f)(index, size, type_, normalized, stride, pointer) }
-#[fixed_stack_segment] #[inline] pub fn VertexBindingDivisor(bindingindex: GLuint, divisor: GLuint) { unsafe { (storage::VertexBindingDivisor.f)(bindingindex, divisor) } }
-#[fixed_stack_segment] #[inline] pub fn VertexP2ui(type_: GLenum, value: GLuint) { unsafe { (storage::VertexP2ui.f)(type_, value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexP2uiv(type_: GLenum, value: *GLuint) { (storage::VertexP2uiv.f)(type_, value) }
-#[fixed_stack_segment] #[inline] pub fn VertexP3ui(type_: GLenum, value: GLuint) { unsafe { (storage::VertexP3ui.f)(type_, value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexP3uiv(type_: GLenum, value: *GLuint) { (storage::VertexP3uiv.f)(type_, value) }
-#[fixed_stack_segment] #[inline] pub fn VertexP4ui(type_: GLenum, value: GLuint) { unsafe { (storage::VertexP4ui.f)(type_, value) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn VertexP4uiv(type_: GLenum, value: *GLuint) { (storage::VertexP4uiv.f)(type_, value) }
-#[fixed_stack_segment] #[inline] pub fn Viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::Viewport.f)(x, y, width, height) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ViewportArrayv(first: GLuint, count: GLsizei, v: *GLfloat) { (storage::ViewportArrayv.f)(first, count, v) }
-#[fixed_stack_segment] #[inline] pub fn ViewportIndexedf(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat) { unsafe { (storage::ViewportIndexedf.f)(index, x, y, w, h) } }
-#[fixed_stack_segment] #[inline] pub unsafe fn ViewportIndexedfv(index: GLuint, v: *GLfloat) { (storage::ViewportIndexedfv.f)(index, v) }
-#[fixed_stack_segment] #[inline] pub fn WaitSync(sync: GLsync, flags: GLbitfield, timeout: GLuint64) { unsafe { (storage::WaitSync.f)(sync, flags, timeout) } }
+#[inline] pub fn ActiveShaderProgram(pipeline: GLuint, program: GLuint) { unsafe { (storage::ActiveShaderProgram.f)(pipeline, program) } }
+#[inline] pub fn ActiveTexture(texture: GLenum) { unsafe { (storage::ActiveTexture.f)(texture) } }
+#[inline] pub fn AttachShader(program: GLuint, shader: GLuint) { unsafe { (storage::AttachShader.f)(program, shader) } }
+#[inline] pub fn BeginConditionalRender(id: GLuint, mode: GLenum) { unsafe { (storage::BeginConditionalRender.f)(id, mode) } }
+#[inline] pub fn BeginQuery(target: GLenum, id: GLuint) { unsafe { (storage::BeginQuery.f)(target, id) } }
+#[inline] pub fn BeginQueryIndexed(target: GLenum, index: GLuint, id: GLuint) { unsafe { (storage::BeginQueryIndexed.f)(target, index, id) } }
+#[inline] pub fn BeginTransformFeedback(primitiveMode: GLenum) { unsafe { (storage::BeginTransformFeedback.f)(primitiveMode) } }
+#[inline] pub unsafe fn BindAttribLocation(program: GLuint, index: GLuint, name: *GLchar) { (storage::BindAttribLocation.f)(program, index, name) }
+#[inline] pub fn BindBuffer(target: GLenum, buffer: GLuint) { unsafe { (storage::BindBuffer.f)(target, buffer) } }
+#[inline] pub fn BindBufferBase(target: GLenum, index: GLuint, buffer: GLuint) { unsafe { (storage::BindBufferBase.f)(target, index, buffer) } }
+#[inline] pub fn BindBufferRange(target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { unsafe { (storage::BindBufferRange.f)(target, index, buffer, offset, size) } }
+#[inline] pub unsafe fn BindFragDataLocation(program: GLuint, color: GLuint, name: *GLchar) { (storage::BindFragDataLocation.f)(program, color, name) }
+#[inline] pub unsafe fn BindFragDataLocationIndexed(program: GLuint, colorNumber: GLuint, index: GLuint, name: *GLchar) { (storage::BindFragDataLocationIndexed.f)(program, colorNumber, index, name) }
+#[inline] pub fn BindFramebuffer(target: GLenum, framebuffer: GLuint) { unsafe { (storage::BindFramebuffer.f)(target, framebuffer) } }
+#[inline] pub fn BindImageTexture(unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum) { unsafe { (storage::BindImageTexture.f)(unit, texture, level, layered, layer, access, format) } }
+#[inline] pub fn BindProgramPipeline(pipeline: GLuint) { unsafe { (storage::BindProgramPipeline.f)(pipeline) } }
+#[inline] pub fn BindRenderbuffer(target: GLenum, renderbuffer: GLuint) { unsafe { (storage::BindRenderbuffer.f)(target, renderbuffer) } }
+#[inline] pub fn BindSampler(unit: GLuint, sampler: GLuint) { unsafe { (storage::BindSampler.f)(unit, sampler) } }
+#[inline] pub fn BindTexture(target: GLenum, texture: GLuint) { unsafe { (storage::BindTexture.f)(target, texture) } }
+#[inline] pub fn BindTransformFeedback(target: GLenum, id: GLuint) { unsafe { (storage::BindTransformFeedback.f)(target, id) } }
+#[inline] pub fn BindVertexArray(array: GLuint) { unsafe { (storage::BindVertexArray.f)(array) } }
+#[inline] pub fn BindVertexBuffer(bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) { unsafe { (storage::BindVertexBuffer.f)(bindingindex, buffer, offset, stride) } }
+#[inline] pub fn BlendColor(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { unsafe { (storage::BlendColor.f)(red, green, blue, alpha) } }
+#[inline] pub fn BlendEquation(mode: GLenum) { unsafe { (storage::BlendEquation.f)(mode) } }
+#[inline] pub fn BlendEquationSeparate(modeRGB: GLenum, modeAlpha: GLenum) { unsafe { (storage::BlendEquationSeparate.f)(modeRGB, modeAlpha) } }
+#[inline] pub fn BlendEquationSeparatei(buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum) { unsafe { (storage::BlendEquationSeparatei.f)(buf, modeRGB, modeAlpha) } }
+#[inline] pub fn BlendEquationi(buf: GLuint, mode: GLenum) { unsafe { (storage::BlendEquationi.f)(buf, mode) } }
+#[inline] pub fn BlendFunc(sfactor: GLenum, dfactor: GLenum) { unsafe { (storage::BlendFunc.f)(sfactor, dfactor) } }
+#[inline] pub fn BlendFuncSeparate(sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum) { unsafe { (storage::BlendFuncSeparate.f)(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha) } }
+#[inline] pub fn BlendFuncSeparatei(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum) { unsafe { (storage::BlendFuncSeparatei.f)(buf, srcRGB, dstRGB, srcAlpha, dstAlpha) } }
+#[inline] pub fn BlendFunci(buf: GLuint, src: GLenum, dst: GLenum) { unsafe { (storage::BlendFunci.f)(buf, src, dst) } }
+#[inline] pub fn BlitFramebuffer(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum) { unsafe { (storage::BlitFramebuffer.f)(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter) } }
+#[inline] pub unsafe fn BufferData(target: GLenum, size: GLsizeiptr, data: *c_void, usage: GLenum) { (storage::BufferData.f)(target, size, data, usage) }
+#[inline] pub unsafe fn BufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *c_void) { (storage::BufferSubData.f)(target, offset, size, data) }
+#[inline] pub fn CheckFramebufferStatus(target: GLenum) -> GLenum { unsafe { (storage::CheckFramebufferStatus.f)(target) } }
+#[inline] pub fn ClampColor(target: GLenum, clamp: GLenum) { unsafe { (storage::ClampColor.f)(target, clamp) } }
+#[inline] pub fn Clear(mask: GLbitfield) { unsafe { (storage::Clear.f)(mask) } }
+#[inline] pub unsafe fn ClearBufferData(target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *c_void) { (storage::ClearBufferData.f)(target, internalformat, format, type_, data) }
+#[inline] pub unsafe fn ClearBufferSubData(target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *c_void) { (storage::ClearBufferSubData.f)(target, internalformat, offset, size, format, type_, data) }
+#[inline] pub fn ClearBufferfi(buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint) { unsafe { (storage::ClearBufferfi.f)(buffer, drawbuffer, depth, stencil) } }
+#[inline] pub unsafe fn ClearBufferfv(buffer: GLenum, drawbuffer: GLint, value: *GLfloat) { (storage::ClearBufferfv.f)(buffer, drawbuffer, value) }
+#[inline] pub unsafe fn ClearBufferiv(buffer: GLenum, drawbuffer: GLint, value: *GLint) { (storage::ClearBufferiv.f)(buffer, drawbuffer, value) }
+#[inline] pub unsafe fn ClearBufferuiv(buffer: GLenum, drawbuffer: GLint, value: *GLuint) { (storage::ClearBufferuiv.f)(buffer, drawbuffer, value) }
+#[inline] pub fn ClearColor(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) { unsafe { (storage::ClearColor.f)(red, green, blue, alpha) } }
+#[inline] pub fn ClearDepth(depth: GLdouble) { unsafe { (storage::ClearDepth.f)(depth) } }
+#[inline] pub fn ClearDepthf(d: GLfloat) { unsafe { (storage::ClearDepthf.f)(d) } }
+#[inline] pub fn ClearStencil(s: GLint) { unsafe { (storage::ClearStencil.f)(s) } }
+#[inline] pub fn ClientWaitSync(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum { unsafe { (storage::ClientWaitSync.f)(sync, flags, timeout) } }
+#[inline] pub fn ColorMask(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean) { unsafe { (storage::ColorMask.f)(red, green, blue, alpha) } }
+#[inline] pub fn ColorMaski(index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean) { unsafe { (storage::ColorMaski.f)(index, r, g, b, a) } }
+#[inline] pub fn ColorP3ui(type_: GLenum, color: GLuint) { unsafe { (storage::ColorP3ui.f)(type_, color) } }
+#[inline] pub unsafe fn ColorP3uiv(type_: GLenum, color: *GLuint) { (storage::ColorP3uiv.f)(type_, color) }
+#[inline] pub fn ColorP4ui(type_: GLenum, color: GLuint) { unsafe { (storage::ColorP4ui.f)(type_, color) } }
+#[inline] pub unsafe fn ColorP4uiv(type_: GLenum, color: *GLuint) { (storage::ColorP4uiv.f)(type_, color) }
+#[inline] pub fn CompileShader(shader: GLuint) { unsafe { (storage::CompileShader.f)(shader) } }
+#[inline] pub unsafe fn CompressedTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *c_void) { (storage::CompressedTexImage1D.f)(target, level, internalformat, width, border, imageSize, data) }
+#[inline] pub unsafe fn CompressedTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *c_void) { (storage::CompressedTexImage2D.f)(target, level, internalformat, width, height, border, imageSize, data) }
+#[inline] pub unsafe fn CompressedTexImage3D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *c_void) { (storage::CompressedTexImage3D.f)(target, level, internalformat, width, height, depth, border, imageSize, data) }
+#[inline] pub unsafe fn CompressedTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *c_void) { (storage::CompressedTexSubImage1D.f)(target, level, xoffset, width, format, imageSize, data) }
+#[inline] pub unsafe fn CompressedTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *c_void) { (storage::CompressedTexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, imageSize, data) }
+#[inline] pub unsafe fn CompressedTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *c_void) { (storage::CompressedTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data) }
+#[inline] pub fn CopyBufferSubData(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr) { unsafe { (storage::CopyBufferSubData.f)(readTarget, writeTarget, readOffset, writeOffset, size) } }
+#[inline] pub fn CopyImageSubData(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei) { unsafe { (storage::CopyImageSubData.f)(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth) } }
+#[inline] pub fn CopyTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint) { unsafe { (storage::CopyTexImage1D.f)(target, level, internalformat, x, y, width, border) } }
+#[inline] pub fn CopyTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint) { unsafe { (storage::CopyTexImage2D.f)(target, level, internalformat, x, y, width, height, border) } }
+#[inline] pub fn CopyTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei) { unsafe { (storage::CopyTexSubImage1D.f)(target, level, xoffset, x, y, width) } }
+#[inline] pub fn CopyTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::CopyTexSubImage2D.f)(target, level, xoffset, yoffset, x, y, width, height) } }
+#[inline] pub fn CopyTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::CopyTexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, x, y, width, height) } }
+#[inline] pub fn CreateProgram() -> GLuint { unsafe { (storage::CreateProgram.f)() } }
+#[inline] pub fn CreateShader(type_: GLenum) -> GLuint { unsafe { (storage::CreateShader.f)(type_) } }
+#[inline] pub unsafe fn CreateShaderProgramv(type_: GLenum, count: GLsizei, strings: **GLchar) -> GLuint { (storage::CreateShaderProgramv.f)(type_, count, strings) }
+#[inline] pub fn CullFace(mode: GLenum) { unsafe { (storage::CullFace.f)(mode) } }
+#[inline] pub unsafe fn DebugMessageCallback(callback: GLDEBUGPROC, userParam: *c_void) { (storage::DebugMessageCallback.f)(callback, userParam) }
+#[inline] pub unsafe fn DebugMessageControl(source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *GLuint, enabled: GLboolean) { (storage::DebugMessageControl.f)(source, type_, severity, count, ids, enabled) }
+#[inline] pub unsafe fn DebugMessageInsert(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *GLchar) { (storage::DebugMessageInsert.f)(source, type_, id, severity, length, buf) }
+#[inline] pub unsafe fn DeleteBuffers(n: GLsizei, buffers: *GLuint) { (storage::DeleteBuffers.f)(n, buffers) }
+#[inline] pub unsafe fn DeleteFramebuffers(n: GLsizei, framebuffers: *GLuint) { (storage::DeleteFramebuffers.f)(n, framebuffers) }
+#[inline] pub fn DeleteProgram(program: GLuint) { unsafe { (storage::DeleteProgram.f)(program) } }
+#[inline] pub unsafe fn DeleteProgramPipelines(n: GLsizei, pipelines: *GLuint) { (storage::DeleteProgramPipelines.f)(n, pipelines) }
+#[inline] pub unsafe fn DeleteQueries(n: GLsizei, ids: *GLuint) { (storage::DeleteQueries.f)(n, ids) }
+#[inline] pub unsafe fn DeleteRenderbuffers(n: GLsizei, renderbuffers: *GLuint) { (storage::DeleteRenderbuffers.f)(n, renderbuffers) }
+#[inline] pub unsafe fn DeleteSamplers(count: GLsizei, samplers: *GLuint) { (storage::DeleteSamplers.f)(count, samplers) }
+#[inline] pub fn DeleteShader(shader: GLuint) { unsafe { (storage::DeleteShader.f)(shader) } }
+#[inline] pub fn DeleteSync(sync: GLsync) { unsafe { (storage::DeleteSync.f)(sync) } }
+#[inline] pub unsafe fn DeleteTextures(n: GLsizei, textures: *GLuint) { (storage::DeleteTextures.f)(n, textures) }
+#[inline] pub unsafe fn DeleteTransformFeedbacks(n: GLsizei, ids: *GLuint) { (storage::DeleteTransformFeedbacks.f)(n, ids) }
+#[inline] pub unsafe fn DeleteVertexArrays(n: GLsizei, arrays: *GLuint) { (storage::DeleteVertexArrays.f)(n, arrays) }
+#[inline] pub fn DepthFunc(func: GLenum) { unsafe { (storage::DepthFunc.f)(func) } }
+#[inline] pub fn DepthMask(flag: GLboolean) { unsafe { (storage::DepthMask.f)(flag) } }
+#[inline] pub fn DepthRange(near: GLdouble, far: GLdouble) { unsafe { (storage::DepthRange.f)(near, far) } }
+#[inline] pub unsafe fn DepthRangeArrayv(first: GLuint, count: GLsizei, v: *GLdouble) { (storage::DepthRangeArrayv.f)(first, count, v) }
+#[inline] pub fn DepthRangeIndexed(index: GLuint, n: GLdouble, f: GLdouble) { unsafe { (storage::DepthRangeIndexed.f)(index, n, f) } }
+#[inline] pub fn DepthRangef(n: GLfloat, f: GLfloat) { unsafe { (storage::DepthRangef.f)(n, f) } }
+#[inline] pub fn DetachShader(program: GLuint, shader: GLuint) { unsafe { (storage::DetachShader.f)(program, shader) } }
+#[inline] pub fn Disable(cap: GLenum) { unsafe { (storage::Disable.f)(cap) } }
+#[inline] pub fn DisableVertexAttribArray(index: GLuint) { unsafe { (storage::DisableVertexAttribArray.f)(index) } }
+#[inline] pub fn Disablei(target: GLenum, index: GLuint) { unsafe { (storage::Disablei.f)(target, index) } }
+#[inline] pub fn DispatchCompute(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint) { unsafe { (storage::DispatchCompute.f)(num_groups_x, num_groups_y, num_groups_z) } }
+#[inline] pub fn DispatchComputeIndirect(indirect: GLintptr) { unsafe { (storage::DispatchComputeIndirect.f)(indirect) } }
+#[inline] pub fn DrawArrays(mode: GLenum, first: GLint, count: GLsizei) { unsafe { (storage::DrawArrays.f)(mode, first, count) } }
+#[inline] pub unsafe fn DrawArraysIndirect(mode: GLenum, indirect: *c_void) { (storage::DrawArraysIndirect.f)(mode, indirect) }
+#[inline] pub fn DrawArraysInstanced(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei) { unsafe { (storage::DrawArraysInstanced.f)(mode, first, count, instancecount) } }
+#[inline] pub fn DrawArraysInstancedBaseInstance(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint) { unsafe { (storage::DrawArraysInstancedBaseInstance.f)(mode, first, count, instancecount, baseinstance) } }
+#[inline] pub fn DrawBuffer(mode: GLenum) { unsafe { (storage::DrawBuffer.f)(mode) } }
+#[inline] pub unsafe fn DrawBuffers(n: GLsizei, bufs: *GLenum) { (storage::DrawBuffers.f)(n, bufs) }
+#[inline] pub unsafe fn DrawElements(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void) { (storage::DrawElements.f)(mode, count, type_, indices) }
+#[inline] pub unsafe fn DrawElementsBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, basevertex: GLint) { (storage::DrawElementsBaseVertex.f)(mode, count, type_, indices, basevertex) }
+#[inline] pub unsafe fn DrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *c_void) { (storage::DrawElementsIndirect.f)(mode, type_, indirect) }
+#[inline] pub unsafe fn DrawElementsInstanced(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei) { (storage::DrawElementsInstanced.f)(mode, count, type_, indices, instancecount) }
+#[inline] pub unsafe fn DrawElementsInstancedBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, baseinstance: GLuint) { (storage::DrawElementsInstancedBaseInstance.f)(mode, count, type_, indices, instancecount, baseinstance) }
+#[inline] pub unsafe fn DrawElementsInstancedBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, basevertex: GLint) { (storage::DrawElementsInstancedBaseVertex.f)(mode, count, type_, indices, instancecount, basevertex) }
+#[inline] pub unsafe fn DrawElementsInstancedBaseVertexBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint) { (storage::DrawElementsInstancedBaseVertexBaseInstance.f)(mode, count, type_, indices, instancecount, basevertex, baseinstance) }
+#[inline] pub unsafe fn DrawRangeElements(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *c_void) { (storage::DrawRangeElements.f)(mode, start, end, count, type_, indices) }
+#[inline] pub unsafe fn DrawRangeElementsBaseVertex(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *c_void, basevertex: GLint) { (storage::DrawRangeElementsBaseVertex.f)(mode, start, end, count, type_, indices, basevertex) }
+#[inline] pub fn DrawTransformFeedback(mode: GLenum, id: GLuint) { unsafe { (storage::DrawTransformFeedback.f)(mode, id) } }
+#[inline] pub fn DrawTransformFeedbackInstanced(mode: GLenum, id: GLuint, instancecount: GLsizei) { unsafe { (storage::DrawTransformFeedbackInstanced.f)(mode, id, instancecount) } }
+#[inline] pub fn DrawTransformFeedbackStream(mode: GLenum, id: GLuint, stream: GLuint) { unsafe { (storage::DrawTransformFeedbackStream.f)(mode, id, stream) } }
+#[inline] pub fn DrawTransformFeedbackStreamInstanced(mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei) { unsafe { (storage::DrawTransformFeedbackStreamInstanced.f)(mode, id, stream, instancecount) } }
+#[inline] pub fn Enable(cap: GLenum) { unsafe { (storage::Enable.f)(cap) } }
+#[inline] pub fn EnableVertexAttribArray(index: GLuint) { unsafe { (storage::EnableVertexAttribArray.f)(index) } }
+#[inline] pub fn Enablei(target: GLenum, index: GLuint) { unsafe { (storage::Enablei.f)(target, index) } }
+#[inline] pub fn EndConditionalRender() { unsafe { (storage::EndConditionalRender.f)() } }
+#[inline] pub fn EndQuery(target: GLenum) { unsafe { (storage::EndQuery.f)(target) } }
+#[inline] pub fn EndQueryIndexed(target: GLenum, index: GLuint) { unsafe { (storage::EndQueryIndexed.f)(target, index) } }
+#[inline] pub fn EndTransformFeedback() { unsafe { (storage::EndTransformFeedback.f)() } }
+#[inline] pub fn FenceSync(condition: GLenum, flags: GLbitfield) -> GLsync { unsafe { (storage::FenceSync.f)(condition, flags) } }
+#[inline] pub fn Finish() { unsafe { (storage::Finish.f)() } }
+#[inline] pub fn Flush() { unsafe { (storage::Flush.f)() } }
+#[inline] pub fn FlushMappedBufferRange(target: GLenum, offset: GLintptr, length: GLsizeiptr) { unsafe { (storage::FlushMappedBufferRange.f)(target, offset, length) } }
+#[inline] pub fn FramebufferParameteri(target: GLenum, pname: GLenum, param: GLint) { unsafe { (storage::FramebufferParameteri.f)(target, pname, param) } }
+#[inline] pub fn FramebufferRenderbuffer(target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint) { unsafe { (storage::FramebufferRenderbuffer.f)(target, attachment, renderbuffertarget, renderbuffer) } }
+#[inline] pub fn FramebufferTexture(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint) { unsafe { (storage::FramebufferTexture.f)(target, attachment, texture, level) } }
+#[inline] pub fn FramebufferTexture1D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { unsafe { (storage::FramebufferTexture1D.f)(target, attachment, textarget, texture, level) } }
+#[inline] pub fn FramebufferTexture2D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) { unsafe { (storage::FramebufferTexture2D.f)(target, attachment, textarget, texture, level) } }
+#[inline] pub fn FramebufferTexture3D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint) { unsafe { (storage::FramebufferTexture3D.f)(target, attachment, textarget, texture, level, zoffset) } }
+#[inline] pub fn FramebufferTextureLayer(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint) { unsafe { (storage::FramebufferTextureLayer.f)(target, attachment, texture, level, layer) } }
+#[inline] pub fn FrontFace(mode: GLenum) { unsafe { (storage::FrontFace.f)(mode) } }
+#[inline] pub unsafe fn GenBuffers(n: GLsizei, buffers: *mut GLuint) { (storage::GenBuffers.f)(n, buffers) }
+#[inline] pub unsafe fn GenFramebuffers(n: GLsizei, framebuffers: *mut GLuint) { (storage::GenFramebuffers.f)(n, framebuffers) }
+#[inline] pub unsafe fn GenProgramPipelines(n: GLsizei, pipelines: *mut GLuint) { (storage::GenProgramPipelines.f)(n, pipelines) }
+#[inline] pub unsafe fn GenQueries(n: GLsizei, ids: *mut GLuint) { (storage::GenQueries.f)(n, ids) }
+#[inline] pub unsafe fn GenRenderbuffers(n: GLsizei, renderbuffers: *mut GLuint) { (storage::GenRenderbuffers.f)(n, renderbuffers) }
+#[inline] pub unsafe fn GenSamplers(count: GLsizei, samplers: *mut GLuint) { (storage::GenSamplers.f)(count, samplers) }
+#[inline] pub unsafe fn GenTextures(n: GLsizei, textures: *mut GLuint) { (storage::GenTextures.f)(n, textures) }
+#[inline] pub unsafe fn GenTransformFeedbacks(n: GLsizei, ids: *mut GLuint) { (storage::GenTransformFeedbacks.f)(n, ids) }
+#[inline] pub unsafe fn GenVertexArrays(n: GLsizei, arrays: *mut GLuint) { (storage::GenVertexArrays.f)(n, arrays) }
+#[inline] pub fn GenerateMipmap(target: GLenum) { unsafe { (storage::GenerateMipmap.f)(target) } }
+#[inline] pub unsafe fn GetActiveAtomicCounterBufferiv(program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetActiveAtomicCounterBufferiv.f)(program, bufferIndex, pname, params) }
+#[inline] pub unsafe fn GetActiveAttrib(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLint, type_: *mut GLenum, name: *mut GLchar) { (storage::GetActiveAttrib.f)(program, index, bufSize, length, size, type_, name) }
+#[inline] pub unsafe fn GetActiveSubroutineName(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *mut GLsizei, name: *mut GLchar) { (storage::GetActiveSubroutineName.f)(program, shadertype, index, bufsize, length, name) }
+#[inline] pub unsafe fn GetActiveSubroutineUniformName(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *mut GLsizei, name: *mut GLchar) { (storage::GetActiveSubroutineUniformName.f)(program, shadertype, index, bufsize, length, name) }
+#[inline] pub unsafe fn GetActiveSubroutineUniformiv(program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *mut GLint) { (storage::GetActiveSubroutineUniformiv.f)(program, shadertype, index, pname, values) }
+#[inline] pub unsafe fn GetActiveUniform(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLint, type_: *mut GLenum, name: *mut GLchar) { (storage::GetActiveUniform.f)(program, index, bufSize, length, size, type_, name) }
+#[inline] pub unsafe fn GetActiveUniformBlockName(program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *mut GLsizei, uniformBlockName: *mut GLchar) { (storage::GetActiveUniformBlockName.f)(program, uniformBlockIndex, bufSize, length, uniformBlockName) }
+#[inline] pub unsafe fn GetActiveUniformBlockiv(program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetActiveUniformBlockiv.f)(program, uniformBlockIndex, pname, params) }
+#[inline] pub unsafe fn GetActiveUniformName(program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *mut GLsizei, uniformName: *mut GLchar) { (storage::GetActiveUniformName.f)(program, uniformIndex, bufSize, length, uniformName) }
+#[inline] pub unsafe fn GetActiveUniformsiv(program: GLuint, uniformCount: GLsizei, uniformIndices: *GLuint, pname: GLenum, params: *mut GLint) { (storage::GetActiveUniformsiv.f)(program, uniformCount, uniformIndices, pname, params) }
+#[inline] pub unsafe fn GetAttachedShaders(program: GLuint, maxCount: GLsizei, count: *mut GLsizei, shaders: *mut GLuint) { (storage::GetAttachedShaders.f)(program, maxCount, count, shaders) }
+#[inline] pub unsafe fn GetAttribLocation(program: GLuint, name: *GLchar) -> GLint { (storage::GetAttribLocation.f)(program, name) }
+#[inline] pub unsafe fn GetBooleani_v(target: GLenum, index: GLuint, data: *mut GLboolean) { (storage::GetBooleani_v.f)(target, index, data) }
+#[inline] pub unsafe fn GetBooleanv(pname: GLenum, data: *mut GLboolean) { (storage::GetBooleanv.f)(pname, data) }
+#[inline] pub unsafe fn GetBufferParameteri64v(target: GLenum, pname: GLenum, params: *mut GLint64) { (storage::GetBufferParameteri64v.f)(target, pname, params) }
+#[inline] pub unsafe fn GetBufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetBufferParameteriv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetBufferPointerv(target: GLenum, pname: GLenum, params: **mut c_void) { (storage::GetBufferPointerv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetBufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *mut c_void) { (storage::GetBufferSubData.f)(target, offset, size, data) }
+#[inline] pub unsafe fn GetCompressedTexImage(target: GLenum, level: GLint, img: *mut c_void) { (storage::GetCompressedTexImage.f)(target, level, img) }
+#[inline] pub unsafe fn GetDebugMessageLog(count: GLuint, bufSize: GLsizei, sources: *mut GLenum, types: *mut GLenum, ids: *mut GLuint, severities: *mut GLenum, lengths: *mut GLsizei, messageLog: *mut GLchar) -> GLuint { (storage::GetDebugMessageLog.f)(count, bufSize, sources, types, ids, severities, lengths, messageLog) }
+#[inline] pub unsafe fn GetDoublei_v(target: GLenum, index: GLuint, data: *mut GLdouble) { (storage::GetDoublei_v.f)(target, index, data) }
+#[inline] pub unsafe fn GetDoublev(pname: GLenum, data: *mut GLdouble) { (storage::GetDoublev.f)(pname, data) }
+#[inline] pub fn GetError() -> GLenum { unsafe { (storage::GetError.f)() } }
+#[inline] pub unsafe fn GetFloati_v(target: GLenum, index: GLuint, data: *mut GLfloat) { (storage::GetFloati_v.f)(target, index, data) }
+#[inline] pub unsafe fn GetFloatv(pname: GLenum, data: *mut GLfloat) { (storage::GetFloatv.f)(pname, data) }
+#[inline] pub unsafe fn GetFragDataIndex(program: GLuint, name: *GLchar) -> GLint { (storage::GetFragDataIndex.f)(program, name) }
+#[inline] pub unsafe fn GetFragDataLocation(program: GLuint, name: *GLchar) -> GLint { (storage::GetFragDataLocation.f)(program, name) }
+#[inline] pub unsafe fn GetFramebufferAttachmentParameteriv(target: GLenum, attachment: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetFramebufferAttachmentParameteriv.f)(target, attachment, pname, params) }
+#[inline] pub unsafe fn GetFramebufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetFramebufferParameteriv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetInteger64i_v(target: GLenum, index: GLuint, data: *mut GLint64) { (storage::GetInteger64i_v.f)(target, index, data) }
+#[inline] pub unsafe fn GetInteger64v(pname: GLenum, data: *mut GLint64) { (storage::GetInteger64v.f)(pname, data) }
+#[inline] pub unsafe fn GetIntegeri_v(target: GLenum, index: GLuint, data: *mut GLint) { (storage::GetIntegeri_v.f)(target, index, data) }
+#[inline] pub unsafe fn GetIntegerv(pname: GLenum, data: *mut GLint) { (storage::GetIntegerv.f)(pname, data) }
+#[inline] pub unsafe fn GetInternalformati64v(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint64) { (storage::GetInternalformati64v.f)(target, internalformat, pname, bufSize, params) }
+#[inline] pub unsafe fn GetInternalformativ(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint) { (storage::GetInternalformativ.f)(target, internalformat, pname, bufSize, params) }
+#[inline] pub unsafe fn GetMultisamplefv(pname: GLenum, index: GLuint, val: *mut GLfloat) { (storage::GetMultisamplefv.f)(pname, index, val) }
+#[inline] pub unsafe fn GetObjectLabel(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar) { (storage::GetObjectLabel.f)(identifier, name, bufSize, length, label) }
+#[inline] pub unsafe fn GetObjectPtrLabel(ptr: *c_void, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar) { (storage::GetObjectPtrLabel.f)(ptr, bufSize, length, label) }
+#[inline] pub unsafe fn GetProgramBinary(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, binaryFormat: *mut GLenum, binary: *mut c_void) { (storage::GetProgramBinary.f)(program, bufSize, length, binaryFormat, binary) }
+#[inline] pub unsafe fn GetProgramInfoLog(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) { (storage::GetProgramInfoLog.f)(program, bufSize, length, infoLog) }
+#[inline] pub unsafe fn GetProgramInterfaceiv(program: GLuint, programInterface: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetProgramInterfaceiv.f)(program, programInterface, pname, params) }
+#[inline] pub unsafe fn GetProgramPipelineInfoLog(pipeline: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) { (storage::GetProgramPipelineInfoLog.f)(pipeline, bufSize, length, infoLog) }
+#[inline] pub unsafe fn GetProgramPipelineiv(pipeline: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetProgramPipelineiv.f)(pipeline, pname, params) }
+#[inline] pub unsafe fn GetProgramResourceIndex(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLuint { (storage::GetProgramResourceIndex.f)(program, programInterface, name) }
+#[inline] pub unsafe fn GetProgramResourceLocation(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (storage::GetProgramResourceLocation.f)(program, programInterface, name) }
+#[inline] pub unsafe fn GetProgramResourceLocationIndex(program: GLuint, programInterface: GLenum, name: *GLchar) -> GLint { (storage::GetProgramResourceLocationIndex.f)(program, programInterface, name) }
+#[inline] pub unsafe fn GetProgramResourceName(program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, name: *mut GLchar) { (storage::GetProgramResourceName.f)(program, programInterface, index, bufSize, length, name) }
+#[inline] pub unsafe fn GetProgramResourceiv(program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *GLenum, bufSize: GLsizei, length: *mut GLsizei, params: *mut GLint) { (storage::GetProgramResourceiv.f)(program, programInterface, index, propCount, props, bufSize, length, params) }
+#[inline] pub unsafe fn GetProgramStageiv(program: GLuint, shadertype: GLenum, pname: GLenum, values: *mut GLint) { (storage::GetProgramStageiv.f)(program, shadertype, pname, values) }
+#[inline] pub unsafe fn GetProgramiv(program: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetProgramiv.f)(program, pname, params) }
+#[inline] pub unsafe fn GetQueryIndexediv(target: GLenum, index: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetQueryIndexediv.f)(target, index, pname, params) }
+#[inline] pub unsafe fn GetQueryObjecti64v(id: GLuint, pname: GLenum, params: *mut GLint64) { (storage::GetQueryObjecti64v.f)(id, pname, params) }
+#[inline] pub unsafe fn GetQueryObjectiv(id: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetQueryObjectiv.f)(id, pname, params) }
+#[inline] pub unsafe fn GetQueryObjectui64v(id: GLuint, pname: GLenum, params: *mut GLuint64) { (storage::GetQueryObjectui64v.f)(id, pname, params) }
+#[inline] pub unsafe fn GetQueryObjectuiv(id: GLuint, pname: GLenum, params: *mut GLuint) { (storage::GetQueryObjectuiv.f)(id, pname, params) }
+#[inline] pub unsafe fn GetQueryiv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetQueryiv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetRenderbufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetRenderbufferParameteriv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetSamplerParameterIiv(sampler: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetSamplerParameterIiv.f)(sampler, pname, params) }
+#[inline] pub unsafe fn GetSamplerParameterIuiv(sampler: GLuint, pname: GLenum, params: *mut GLuint) { (storage::GetSamplerParameterIuiv.f)(sampler, pname, params) }
+#[inline] pub unsafe fn GetSamplerParameterfv(sampler: GLuint, pname: GLenum, params: *mut GLfloat) { (storage::GetSamplerParameterfv.f)(sampler, pname, params) }
+#[inline] pub unsafe fn GetSamplerParameteriv(sampler: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetSamplerParameteriv.f)(sampler, pname, params) }
+#[inline] pub unsafe fn GetShaderInfoLog(shader: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) { (storage::GetShaderInfoLog.f)(shader, bufSize, length, infoLog) }
+#[inline] pub unsafe fn GetShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum, range: *mut GLint, precision: *mut GLint) { (storage::GetShaderPrecisionFormat.f)(shadertype, precisiontype, range, precision) }
+#[inline] pub unsafe fn GetShaderSource(shader: GLuint, bufSize: GLsizei, length: *mut GLsizei, source: *mut GLchar) { (storage::GetShaderSource.f)(shader, bufSize, length, source) }
+#[inline] pub unsafe fn GetShaderiv(shader: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetShaderiv.f)(shader, pname, params) }
+#[inline] pub fn GetString(name: GLenum) -> *GLubyte { unsafe { (storage::GetString.f)(name) } }
+#[inline] pub fn GetStringi(name: GLenum, index: GLuint) -> *GLubyte { unsafe { (storage::GetStringi.f)(name, index) } }
+#[inline] pub unsafe fn GetSubroutineIndex(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint { (storage::GetSubroutineIndex.f)(program, shadertype, name) }
+#[inline] pub unsafe fn GetSubroutineUniformLocation(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint { (storage::GetSubroutineUniformLocation.f)(program, shadertype, name) }
+#[inline] pub unsafe fn GetSynciv(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *mut GLsizei, values: *mut GLint) { (storage::GetSynciv.f)(sync, pname, bufSize, length, values) }
+#[inline] pub unsafe fn GetTexImage(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *mut c_void) { (storage::GetTexImage.f)(target, level, format, type_, pixels) }
+#[inline] pub unsafe fn GetTexLevelParameterfv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLfloat) { (storage::GetTexLevelParameterfv.f)(target, level, pname, params) }
+#[inline] pub unsafe fn GetTexLevelParameteriv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLint) { (storage::GetTexLevelParameteriv.f)(target, level, pname, params) }
+#[inline] pub unsafe fn GetTexParameterIiv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetTexParameterIiv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetTexParameterIuiv(target: GLenum, pname: GLenum, params: *mut GLuint) { (storage::GetTexParameterIuiv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetTexParameterfv(target: GLenum, pname: GLenum, params: *mut GLfloat) { (storage::GetTexParameterfv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetTexParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) { (storage::GetTexParameteriv.f)(target, pname, params) }
+#[inline] pub unsafe fn GetTransformFeedbackVarying(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLsizei, type_: *mut GLenum, name: *mut GLchar) { (storage::GetTransformFeedbackVarying.f)(program, index, bufSize, length, size, type_, name) }
+#[inline] pub unsafe fn GetUniformBlockIndex(program: GLuint, uniformBlockName: *GLchar) -> GLuint { (storage::GetUniformBlockIndex.f)(program, uniformBlockName) }
+#[inline] pub unsafe fn GetUniformIndices(program: GLuint, uniformCount: GLsizei, uniformNames: **GLchar, uniformIndices: *mut GLuint) { (storage::GetUniformIndices.f)(program, uniformCount, uniformNames, uniformIndices) }
+#[inline] pub unsafe fn GetUniformLocation(program: GLuint, name: *GLchar) -> GLint { (storage::GetUniformLocation.f)(program, name) }
+#[inline] pub unsafe fn GetUniformSubroutineuiv(shadertype: GLenum, location: GLint, params: *mut GLuint) { (storage::GetUniformSubroutineuiv.f)(shadertype, location, params) }
+#[inline] pub unsafe fn GetUniformdv(program: GLuint, location: GLint, params: *mut GLdouble) { (storage::GetUniformdv.f)(program, location, params) }
+#[inline] pub unsafe fn GetUniformfv(program: GLuint, location: GLint, params: *mut GLfloat) { (storage::GetUniformfv.f)(program, location, params) }
+#[inline] pub unsafe fn GetUniformiv(program: GLuint, location: GLint, params: *mut GLint) { (storage::GetUniformiv.f)(program, location, params) }
+#[inline] pub unsafe fn GetUniformuiv(program: GLuint, location: GLint, params: *mut GLuint) { (storage::GetUniformuiv.f)(program, location, params) }
+#[inline] pub unsafe fn GetVertexAttribIiv(index: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetVertexAttribIiv.f)(index, pname, params) }
+#[inline] pub unsafe fn GetVertexAttribIuiv(index: GLuint, pname: GLenum, params: *mut GLuint) { (storage::GetVertexAttribIuiv.f)(index, pname, params) }
+#[inline] pub unsafe fn GetVertexAttribLdv(index: GLuint, pname: GLenum, params: *mut GLdouble) { (storage::GetVertexAttribLdv.f)(index, pname, params) }
+#[inline] pub unsafe fn GetVertexAttribPointerv(index: GLuint, pname: GLenum, pointer: **mut c_void) { (storage::GetVertexAttribPointerv.f)(index, pname, pointer) }
+#[inline] pub unsafe fn GetVertexAttribdv(index: GLuint, pname: GLenum, params: *mut GLdouble) { (storage::GetVertexAttribdv.f)(index, pname, params) }
+#[inline] pub unsafe fn GetVertexAttribfv(index: GLuint, pname: GLenum, params: *mut GLfloat) { (storage::GetVertexAttribfv.f)(index, pname, params) }
+#[inline] pub unsafe fn GetVertexAttribiv(index: GLuint, pname: GLenum, params: *mut GLint) { (storage::GetVertexAttribiv.f)(index, pname, params) }
+#[inline] pub fn Hint(target: GLenum, mode: GLenum) { unsafe { (storage::Hint.f)(target, mode) } }
+#[inline] pub fn InvalidateBufferData(buffer: GLuint) { unsafe { (storage::InvalidateBufferData.f)(buffer) } }
+#[inline] pub fn InvalidateBufferSubData(buffer: GLuint, offset: GLintptr, length: GLsizeiptr) { unsafe { (storage::InvalidateBufferSubData.f)(buffer, offset, length) } }
+#[inline] pub unsafe fn InvalidateFramebuffer(target: GLenum, numAttachments: GLsizei, attachments: *GLenum) { (storage::InvalidateFramebuffer.f)(target, numAttachments, attachments) }
+#[inline] pub unsafe fn InvalidateSubFramebuffer(target: GLenum, numAttachments: GLsizei, attachments: *GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei) { (storage::InvalidateSubFramebuffer.f)(target, numAttachments, attachments, x, y, width, height) }
+#[inline] pub fn InvalidateTexImage(texture: GLuint, level: GLint) { unsafe { (storage::InvalidateTexImage.f)(texture, level) } }
+#[inline] pub fn InvalidateTexSubImage(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei) { unsafe { (storage::InvalidateTexSubImage.f)(texture, level, xoffset, yoffset, zoffset, width, height, depth) } }
+#[inline] pub fn IsBuffer(buffer: GLuint) -> GLboolean { unsafe { (storage::IsBuffer.f)(buffer) } }
+#[inline] pub fn IsEnabled(cap: GLenum) -> GLboolean { unsafe { (storage::IsEnabled.f)(cap) } }
+#[inline] pub fn IsEnabledi(target: GLenum, index: GLuint) -> GLboolean { unsafe { (storage::IsEnabledi.f)(target, index) } }
+#[inline] pub fn IsFramebuffer(framebuffer: GLuint) -> GLboolean { unsafe { (storage::IsFramebuffer.f)(framebuffer) } }
+#[inline] pub fn IsProgram(program: GLuint) -> GLboolean { unsafe { (storage::IsProgram.f)(program) } }
+#[inline] pub fn IsProgramPipeline(pipeline: GLuint) -> GLboolean { unsafe { (storage::IsProgramPipeline.f)(pipeline) } }
+#[inline] pub fn IsQuery(id: GLuint) -> GLboolean { unsafe { (storage::IsQuery.f)(id) } }
+#[inline] pub fn IsRenderbuffer(renderbuffer: GLuint) -> GLboolean { unsafe { (storage::IsRenderbuffer.f)(renderbuffer) } }
+#[inline] pub fn IsSampler(sampler: GLuint) -> GLboolean { unsafe { (storage::IsSampler.f)(sampler) } }
+#[inline] pub fn IsShader(shader: GLuint) -> GLboolean { unsafe { (storage::IsShader.f)(shader) } }
+#[inline] pub fn IsSync(sync: GLsync) -> GLboolean { unsafe { (storage::IsSync.f)(sync) } }
+#[inline] pub fn IsTexture(texture: GLuint) -> GLboolean { unsafe { (storage::IsTexture.f)(texture) } }
+#[inline] pub fn IsTransformFeedback(id: GLuint) -> GLboolean { unsafe { (storage::IsTransformFeedback.f)(id) } }
+#[inline] pub fn IsVertexArray(array: GLuint) -> GLboolean { unsafe { (storage::IsVertexArray.f)(array) } }
+#[inline] pub fn LineWidth(width: GLfloat) { unsafe { (storage::LineWidth.f)(width) } }
+#[inline] pub fn LinkProgram(program: GLuint) { unsafe { (storage::LinkProgram.f)(program) } }
+#[inline] pub fn LogicOp(opcode: GLenum) { unsafe { (storage::LogicOp.f)(opcode) } }
+#[inline] pub fn MapBuffer(target: GLenum, access: GLenum) -> *c_void { unsafe { (storage::MapBuffer.f)(target, access) } }
+#[inline] pub fn MapBufferRange(target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *c_void { unsafe { (storage::MapBufferRange.f)(target, offset, length, access) } }
+#[inline] pub fn MemoryBarrier(barriers: GLbitfield) { unsafe { (storage::MemoryBarrier.f)(barriers) } }
+#[inline] pub fn MinSampleShading(value: GLfloat) { unsafe { (storage::MinSampleShading.f)(value) } }
+#[inline] pub unsafe fn MultiDrawArrays(mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei) { (storage::MultiDrawArrays.f)(mode, first, count, drawcount) }
+#[inline] pub unsafe fn MultiDrawArraysIndirect(mode: GLenum, indirect: *c_void, drawcount: GLsizei, stride: GLsizei) { (storage::MultiDrawArraysIndirect.f)(mode, indirect, drawcount, stride) }
+#[inline] pub unsafe fn MultiDrawElements(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **c_void, drawcount: GLsizei) { (storage::MultiDrawElements.f)(mode, count, type_, indices, drawcount) }
+#[inline] pub unsafe fn MultiDrawElementsBaseVertex(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **c_void, drawcount: GLsizei, basevertex: *GLint) { (storage::MultiDrawElementsBaseVertex.f)(mode, count, type_, indices, drawcount, basevertex) }
+#[inline] pub unsafe fn MultiDrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *c_void, drawcount: GLsizei, stride: GLsizei) { (storage::MultiDrawElementsIndirect.f)(mode, type_, indirect, drawcount, stride) }
+#[inline] pub fn MultiTexCoordP1ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP1ui.f)(texture, type_, coords) } }
+#[inline] pub unsafe fn MultiTexCoordP1uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP1uiv.f)(texture, type_, coords) }
+#[inline] pub fn MultiTexCoordP2ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP2ui.f)(texture, type_, coords) } }
+#[inline] pub unsafe fn MultiTexCoordP2uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP2uiv.f)(texture, type_, coords) }
+#[inline] pub fn MultiTexCoordP3ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP3ui.f)(texture, type_, coords) } }
+#[inline] pub unsafe fn MultiTexCoordP3uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP3uiv.f)(texture, type_, coords) }
+#[inline] pub fn MultiTexCoordP4ui(texture: GLenum, type_: GLenum, coords: GLuint) { unsafe { (storage::MultiTexCoordP4ui.f)(texture, type_, coords) } }
+#[inline] pub unsafe fn MultiTexCoordP4uiv(texture: GLenum, type_: GLenum, coords: *GLuint) { (storage::MultiTexCoordP4uiv.f)(texture, type_, coords) }
+#[inline] pub fn NormalP3ui(type_: GLenum, coords: GLuint) { unsafe { (storage::NormalP3ui.f)(type_, coords) } }
+#[inline] pub unsafe fn NormalP3uiv(type_: GLenum, coords: *GLuint) { (storage::NormalP3uiv.f)(type_, coords) }
+#[inline] pub unsafe fn ObjectLabel(identifier: GLenum, name: GLuint, length: GLsizei, label: *GLchar) { (storage::ObjectLabel.f)(identifier, name, length, label) }
+#[inline] pub unsafe fn ObjectPtrLabel(ptr: *c_void, length: GLsizei, label: *GLchar) { (storage::ObjectPtrLabel.f)(ptr, length, label) }
+#[inline] pub unsafe fn PatchParameterfv(pname: GLenum, values: *GLfloat) { (storage::PatchParameterfv.f)(pname, values) }
+#[inline] pub fn PatchParameteri(pname: GLenum, value: GLint) { unsafe { (storage::PatchParameteri.f)(pname, value) } }
+#[inline] pub fn PauseTransformFeedback() { unsafe { (storage::PauseTransformFeedback.f)() } }
+#[inline] pub fn PixelStoref(pname: GLenum, param: GLfloat) { unsafe { (storage::PixelStoref.f)(pname, param) } }
+#[inline] pub fn PixelStorei(pname: GLenum, param: GLint) { unsafe { (storage::PixelStorei.f)(pname, param) } }
+#[inline] pub fn PointParameterf(pname: GLenum, param: GLfloat) { unsafe { (storage::PointParameterf.f)(pname, param) } }
+#[inline] pub unsafe fn PointParameterfv(pname: GLenum, params: *GLfloat) { (storage::PointParameterfv.f)(pname, params) }
+#[inline] pub fn PointParameteri(pname: GLenum, param: GLint) { unsafe { (storage::PointParameteri.f)(pname, param) } }
+#[inline] pub unsafe fn PointParameteriv(pname: GLenum, params: *GLint) { (storage::PointParameteriv.f)(pname, params) }
+#[inline] pub fn PointSize(size: GLfloat) { unsafe { (storage::PointSize.f)(size) } }
+#[inline] pub fn PolygonMode(face: GLenum, mode: GLenum) { unsafe { (storage::PolygonMode.f)(face, mode) } }
+#[inline] pub fn PolygonOffset(factor: GLfloat, units: GLfloat) { unsafe { (storage::PolygonOffset.f)(factor, units) } }
+#[inline] pub fn PopDebugGroup() { unsafe { (storage::PopDebugGroup.f)() } }
+#[inline] pub fn PrimitiveRestartIndex(index: GLuint) { unsafe { (storage::PrimitiveRestartIndex.f)(index) } }
+#[inline] pub unsafe fn ProgramBinary(program: GLuint, binaryFormat: GLenum, binary: *c_void, length: GLsizei) { (storage::ProgramBinary.f)(program, binaryFormat, binary, length) }
+#[inline] pub fn ProgramParameteri(program: GLuint, pname: GLenum, value: GLint) { unsafe { (storage::ProgramParameteri.f)(program, pname, value) } }
+#[inline] pub fn ProgramUniform1d(program: GLuint, location: GLint, v0: GLdouble) { unsafe { (storage::ProgramUniform1d.f)(program, location, v0) } }
+#[inline] pub unsafe fn ProgramUniform1dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform1dv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform1f(program: GLuint, location: GLint, v0: GLfloat) { unsafe { (storage::ProgramUniform1f.f)(program, location, v0) } }
+#[inline] pub unsafe fn ProgramUniform1fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform1fv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform1i(program: GLuint, location: GLint, v0: GLint) { unsafe { (storage::ProgramUniform1i.f)(program, location, v0) } }
+#[inline] pub unsafe fn ProgramUniform1iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform1iv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform1ui(program: GLuint, location: GLint, v0: GLuint) { unsafe { (storage::ProgramUniform1ui.f)(program, location, v0) } }
+#[inline] pub unsafe fn ProgramUniform1uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform1uiv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform2d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble) { unsafe { (storage::ProgramUniform2d.f)(program, location, v0, v1) } }
+#[inline] pub unsafe fn ProgramUniform2dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform2dv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform2f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat) { unsafe { (storage::ProgramUniform2f.f)(program, location, v0, v1) } }
+#[inline] pub unsafe fn ProgramUniform2fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform2fv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform2i(program: GLuint, location: GLint, v0: GLint, v1: GLint) { unsafe { (storage::ProgramUniform2i.f)(program, location, v0, v1) } }
+#[inline] pub unsafe fn ProgramUniform2iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform2iv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform2ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint) { unsafe { (storage::ProgramUniform2ui.f)(program, location, v0, v1) } }
+#[inline] pub unsafe fn ProgramUniform2uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform2uiv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform3d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble) { unsafe { (storage::ProgramUniform3d.f)(program, location, v0, v1, v2) } }
+#[inline] pub unsafe fn ProgramUniform3dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform3dv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform3f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { unsafe { (storage::ProgramUniform3f.f)(program, location, v0, v1, v2) } }
+#[inline] pub unsafe fn ProgramUniform3fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform3fv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform3i(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint) { unsafe { (storage::ProgramUniform3i.f)(program, location, v0, v1, v2) } }
+#[inline] pub unsafe fn ProgramUniform3iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform3iv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform3ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { unsafe { (storage::ProgramUniform3ui.f)(program, location, v0, v1, v2) } }
+#[inline] pub unsafe fn ProgramUniform3uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform3uiv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform4d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble) { unsafe { (storage::ProgramUniform4d.f)(program, location, v0, v1, v2, v3) } }
+#[inline] pub unsafe fn ProgramUniform4dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble) { (storage::ProgramUniform4dv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform4f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { unsafe { (storage::ProgramUniform4f.f)(program, location, v0, v1, v2, v3) } }
+#[inline] pub unsafe fn ProgramUniform4fv(program: GLuint, location: GLint, count: GLsizei, value: *GLfloat) { (storage::ProgramUniform4fv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform4i(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { unsafe { (storage::ProgramUniform4i.f)(program, location, v0, v1, v2, v3) } }
+#[inline] pub unsafe fn ProgramUniform4iv(program: GLuint, location: GLint, count: GLsizei, value: *GLint) { (storage::ProgramUniform4iv.f)(program, location, count, value) }
+#[inline] pub fn ProgramUniform4ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { unsafe { (storage::ProgramUniform4ui.f)(program, location, v0, v1, v2, v3) } }
+#[inline] pub unsafe fn ProgramUniform4uiv(program: GLuint, location: GLint, count: GLsizei, value: *GLuint) { (storage::ProgramUniform4uiv.f)(program, location, count, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix2dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix2fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix2x3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix2x3dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix2x3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix2x3fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix2x4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix2x4dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix2x4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix2x4fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix3dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix3fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix3x2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix3x2dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix3x2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix3x2fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix3x4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix3x4dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix3x4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix3x4fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix4dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix4fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix4x2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix4x2dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix4x2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix4x2fv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix4x3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::ProgramUniformMatrix4x3dv.f)(program, location, count, transpose, value) }
+#[inline] pub unsafe fn ProgramUniformMatrix4x3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::ProgramUniformMatrix4x3fv.f)(program, location, count, transpose, value) }
+#[inline] pub fn ProvokingVertex(mode: GLenum) { unsafe { (storage::ProvokingVertex.f)(mode) } }
+#[inline] pub unsafe fn PushDebugGroup(source: GLenum, id: GLuint, length: GLsizei, message: *GLchar) { (storage::PushDebugGroup.f)(source, id, length, message) }
+#[inline] pub fn QueryCounter(id: GLuint, target: GLenum) { unsafe { (storage::QueryCounter.f)(id, target) } }
+#[inline] pub fn ReadBuffer(mode: GLenum) { unsafe { (storage::ReadBuffer.f)(mode) } }
+#[inline] pub unsafe fn ReadPixels(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *mut c_void) { (storage::ReadPixels.f)(x, y, width, height, format, type_, pixels) }
+#[inline] pub fn ReleaseShaderCompiler() { unsafe { (storage::ReleaseShaderCompiler.f)() } }
+#[inline] pub fn RenderbufferStorage(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::RenderbufferStorage.f)(target, internalformat, width, height) } }
+#[inline] pub fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::RenderbufferStorageMultisample.f)(target, samples, internalformat, width, height) } }
+#[inline] pub fn ResumeTransformFeedback() { unsafe { (storage::ResumeTransformFeedback.f)() } }
+#[inline] pub fn SampleCoverage(value: GLfloat, invert: GLboolean) { unsafe { (storage::SampleCoverage.f)(value, invert) } }
+#[inline] pub fn SampleMaski(index: GLuint, mask: GLbitfield) { unsafe { (storage::SampleMaski.f)(index, mask) } }
+#[inline] pub unsafe fn SamplerParameterIiv(sampler: GLuint, pname: GLenum, param: *GLint) { (storage::SamplerParameterIiv.f)(sampler, pname, param) }
+#[inline] pub unsafe fn SamplerParameterIuiv(sampler: GLuint, pname: GLenum, param: *GLuint) { (storage::SamplerParameterIuiv.f)(sampler, pname, param) }
+#[inline] pub fn SamplerParameterf(sampler: GLuint, pname: GLenum, param: GLfloat) { unsafe { (storage::SamplerParameterf.f)(sampler, pname, param) } }
+#[inline] pub unsafe fn SamplerParameterfv(sampler: GLuint, pname: GLenum, param: *GLfloat) { (storage::SamplerParameterfv.f)(sampler, pname, param) }
+#[inline] pub fn SamplerParameteri(sampler: GLuint, pname: GLenum, param: GLint) { unsafe { (storage::SamplerParameteri.f)(sampler, pname, param) } }
+#[inline] pub unsafe fn SamplerParameteriv(sampler: GLuint, pname: GLenum, param: *GLint) { (storage::SamplerParameteriv.f)(sampler, pname, param) }
+#[inline] pub fn Scissor(x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::Scissor.f)(x, y, width, height) } }
+#[inline] pub unsafe fn ScissorArrayv(first: GLuint, count: GLsizei, v: *GLint) { (storage::ScissorArrayv.f)(first, count, v) }
+#[inline] pub fn ScissorIndexed(index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::ScissorIndexed.f)(index, left, bottom, width, height) } }
+#[inline] pub unsafe fn ScissorIndexedv(index: GLuint, v: *GLint) { (storage::ScissorIndexedv.f)(index, v) }
+#[inline] pub fn SecondaryColorP3ui(type_: GLenum, color: GLuint) { unsafe { (storage::SecondaryColorP3ui.f)(type_, color) } }
+#[inline] pub unsafe fn SecondaryColorP3uiv(type_: GLenum, color: *GLuint) { (storage::SecondaryColorP3uiv.f)(type_, color) }
+#[inline] pub unsafe fn ShaderBinary(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *c_void, length: GLsizei) { (storage::ShaderBinary.f)(count, shaders, binaryformat, binary, length) }
+#[inline] pub unsafe fn ShaderSource(shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint) { (storage::ShaderSource.f)(shader, count, string, length) }
+#[inline] pub fn ShaderStorageBlockBinding(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint) { unsafe { (storage::ShaderStorageBlockBinding.f)(program, storageBlockIndex, storageBlockBinding) } }
+#[inline] pub fn StencilFunc(func: GLenum, ref_: GLint, mask: GLuint) { unsafe { (storage::StencilFunc.f)(func, ref_, mask) } }
+#[inline] pub fn StencilFuncSeparate(face: GLenum, func: GLenum, ref_: GLint, mask: GLuint) { unsafe { (storage::StencilFuncSeparate.f)(face, func, ref_, mask) } }
+#[inline] pub fn StencilMask(mask: GLuint) { unsafe { (storage::StencilMask.f)(mask) } }
+#[inline] pub fn StencilMaskSeparate(face: GLenum, mask: GLuint) { unsafe { (storage::StencilMaskSeparate.f)(face, mask) } }
+#[inline] pub fn StencilOp(fail: GLenum, zfail: GLenum, zpass: GLenum) { unsafe { (storage::StencilOp.f)(fail, zfail, zpass) } }
+#[inline] pub fn StencilOpSeparate(face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum) { unsafe { (storage::StencilOpSeparate.f)(face, sfail, dpfail, dppass) } }
+#[inline] pub fn TexBuffer(target: GLenum, internalformat: GLenum, buffer: GLuint) { unsafe { (storage::TexBuffer.f)(target, internalformat, buffer) } }
+#[inline] pub fn TexBufferRange(target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) { unsafe { (storage::TexBufferRange.f)(target, internalformat, buffer, offset, size) } }
+#[inline] pub fn TexCoordP1ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP1ui.f)(type_, coords) } }
+#[inline] pub unsafe fn TexCoordP1uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP1uiv.f)(type_, coords) }
+#[inline] pub fn TexCoordP2ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP2ui.f)(type_, coords) } }
+#[inline] pub unsafe fn TexCoordP2uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP2uiv.f)(type_, coords) }
+#[inline] pub fn TexCoordP3ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP3ui.f)(type_, coords) } }
+#[inline] pub unsafe fn TexCoordP3uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP3uiv.f)(type_, coords) }
+#[inline] pub fn TexCoordP4ui(type_: GLenum, coords: GLuint) { unsafe { (storage::TexCoordP4ui.f)(type_, coords) } }
+#[inline] pub unsafe fn TexCoordP4uiv(type_: GLenum, coords: *GLuint) { (storage::TexCoordP4uiv.f)(type_, coords) }
+#[inline] pub unsafe fn TexImage1D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *c_void) { (storage::TexImage1D.f)(target, level, internalformat, width, border, format, type_, pixels) }
+#[inline] pub unsafe fn TexImage2D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *c_void) { (storage::TexImage2D.f)(target, level, internalformat, width, height, border, format, type_, pixels) }
+#[inline] pub fn TexImage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexImage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) } }
+#[inline] pub unsafe fn TexImage3D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *c_void) { (storage::TexImage3D.f)(target, level, internalformat, width, height, depth, border, format, type_, pixels) }
+#[inline] pub fn TexImage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexImage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) } }
+#[inline] pub unsafe fn TexParameterIiv(target: GLenum, pname: GLenum, params: *GLint) { (storage::TexParameterIiv.f)(target, pname, params) }
+#[inline] pub unsafe fn TexParameterIuiv(target: GLenum, pname: GLenum, params: *GLuint) { (storage::TexParameterIuiv.f)(target, pname, params) }
+#[inline] pub fn TexParameterf(target: GLenum, pname: GLenum, param: GLfloat) { unsafe { (storage::TexParameterf.f)(target, pname, param) } }
+#[inline] pub unsafe fn TexParameterfv(target: GLenum, pname: GLenum, params: *GLfloat) { (storage::TexParameterfv.f)(target, pname, params) }
+#[inline] pub fn TexParameteri(target: GLenum, pname: GLenum, param: GLint) { unsafe { (storage::TexParameteri.f)(target, pname, param) } }
+#[inline] pub unsafe fn TexParameteriv(target: GLenum, pname: GLenum, params: *GLint) { (storage::TexParameteriv.f)(target, pname, params) }
+#[inline] pub fn TexStorage1D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) { unsafe { (storage::TexStorage1D.f)(target, levels, internalformat, width) } }
+#[inline] pub fn TexStorage2D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::TexStorage2D.f)(target, levels, internalformat, width, height) } }
+#[inline] pub fn TexStorage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexStorage2DMultisample.f)(target, samples, internalformat, width, height, fixedsamplelocations) } }
+#[inline] pub fn TexStorage3D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) { unsafe { (storage::TexStorage3D.f)(target, levels, internalformat, width, height, depth) } }
+#[inline] pub fn TexStorage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) { unsafe { (storage::TexStorage3DMultisample.f)(target, samples, internalformat, width, height, depth, fixedsamplelocations) } }
+#[inline] pub unsafe fn TexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *c_void) { (storage::TexSubImage1D.f)(target, level, xoffset, width, format, type_, pixels) }
+#[inline] pub unsafe fn TexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *c_void) { (storage::TexSubImage2D.f)(target, level, xoffset, yoffset, width, height, format, type_, pixels) }
+#[inline] pub unsafe fn TexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *c_void) { (storage::TexSubImage3D.f)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels) }
+#[inline] pub fn TextureView(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint) { unsafe { (storage::TextureView.f)(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers) } }
+#[inline] pub unsafe fn TransformFeedbackVaryings(program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum) { (storage::TransformFeedbackVaryings.f)(program, count, varyings, bufferMode) }
+#[inline] pub fn Uniform1d(location: GLint, x: GLdouble) { unsafe { (storage::Uniform1d.f)(location, x) } }
+#[inline] pub unsafe fn Uniform1dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform1dv.f)(location, count, value) }
+#[inline] pub fn Uniform1f(location: GLint, v0: GLfloat) { unsafe { (storage::Uniform1f.f)(location, v0) } }
+#[inline] pub unsafe fn Uniform1fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform1fv.f)(location, count, value) }
+#[inline] pub fn Uniform1i(location: GLint, v0: GLint) { unsafe { (storage::Uniform1i.f)(location, v0) } }
+#[inline] pub unsafe fn Uniform1iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform1iv.f)(location, count, value) }
+#[inline] pub fn Uniform1ui(location: GLint, v0: GLuint) { unsafe { (storage::Uniform1ui.f)(location, v0) } }
+#[inline] pub unsafe fn Uniform1uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform1uiv.f)(location, count, value) }
+#[inline] pub fn Uniform2d(location: GLint, x: GLdouble, y: GLdouble) { unsafe { (storage::Uniform2d.f)(location, x, y) } }
+#[inline] pub unsafe fn Uniform2dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform2dv.f)(location, count, value) }
+#[inline] pub fn Uniform2f(location: GLint, v0: GLfloat, v1: GLfloat) { unsafe { (storage::Uniform2f.f)(location, v0, v1) } }
+#[inline] pub unsafe fn Uniform2fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform2fv.f)(location, count, value) }
+#[inline] pub fn Uniform2i(location: GLint, v0: GLint, v1: GLint) { unsafe { (storage::Uniform2i.f)(location, v0, v1) } }
+#[inline] pub unsafe fn Uniform2iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform2iv.f)(location, count, value) }
+#[inline] pub fn Uniform2ui(location: GLint, v0: GLuint, v1: GLuint) { unsafe { (storage::Uniform2ui.f)(location, v0, v1) } }
+#[inline] pub unsafe fn Uniform2uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform2uiv.f)(location, count, value) }
+#[inline] pub fn Uniform3d(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble) { unsafe { (storage::Uniform3d.f)(location, x, y, z) } }
+#[inline] pub unsafe fn Uniform3dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform3dv.f)(location, count, value) }
+#[inline] pub fn Uniform3f(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) { unsafe { (storage::Uniform3f.f)(location, v0, v1, v2) } }
+#[inline] pub unsafe fn Uniform3fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform3fv.f)(location, count, value) }
+#[inline] pub fn Uniform3i(location: GLint, v0: GLint, v1: GLint, v2: GLint) { unsafe { (storage::Uniform3i.f)(location, v0, v1, v2) } }
+#[inline] pub unsafe fn Uniform3iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform3iv.f)(location, count, value) }
+#[inline] pub fn Uniform3ui(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) { unsafe { (storage::Uniform3ui.f)(location, v0, v1, v2) } }
+#[inline] pub unsafe fn Uniform3uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform3uiv.f)(location, count, value) }
+#[inline] pub fn Uniform4d(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { unsafe { (storage::Uniform4d.f)(location, x, y, z, w) } }
+#[inline] pub unsafe fn Uniform4dv(location: GLint, count: GLsizei, value: *GLdouble) { (storage::Uniform4dv.f)(location, count, value) }
+#[inline] pub fn Uniform4f(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) { unsafe { (storage::Uniform4f.f)(location, v0, v1, v2, v3) } }
+#[inline] pub unsafe fn Uniform4fv(location: GLint, count: GLsizei, value: *GLfloat) { (storage::Uniform4fv.f)(location, count, value) }
+#[inline] pub fn Uniform4i(location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) { unsafe { (storage::Uniform4i.f)(location, v0, v1, v2, v3) } }
+#[inline] pub unsafe fn Uniform4iv(location: GLint, count: GLsizei, value: *GLint) { (storage::Uniform4iv.f)(location, count, value) }
+#[inline] pub fn Uniform4ui(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) { unsafe { (storage::Uniform4ui.f)(location, v0, v1, v2, v3) } }
+#[inline] pub unsafe fn Uniform4uiv(location: GLint, count: GLsizei, value: *GLuint) { (storage::Uniform4uiv.f)(location, count, value) }
+#[inline] pub fn UniformBlockBinding(program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint) { unsafe { (storage::UniformBlockBinding.f)(program, uniformBlockIndex, uniformBlockBinding) } }
+#[inline] pub unsafe fn UniformMatrix2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix2dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix2fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix2x3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix2x3dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix2x3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix2x3fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix2x4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix2x4dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix2x4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix2x4fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix3dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix3fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix3x2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix3x2dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix3x2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix3x2fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix3x4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix3x4dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix3x4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix3x4fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix4dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix4fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix4x2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix4x2dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix4x2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix4x2fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix4x3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLdouble) { (storage::UniformMatrix4x3dv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformMatrix4x3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *GLfloat) { (storage::UniformMatrix4x3fv.f)(location, count, transpose, value) }
+#[inline] pub unsafe fn UniformSubroutinesuiv(shadertype: GLenum, count: GLsizei, indices: *GLuint) { (storage::UniformSubroutinesuiv.f)(shadertype, count, indices) }
+#[inline] pub fn UnmapBuffer(target: GLenum) -> GLboolean { unsafe { (storage::UnmapBuffer.f)(target) } }
+#[inline] pub fn UseProgram(program: GLuint) { unsafe { (storage::UseProgram.f)(program) } }
+#[inline] pub fn UseProgramStages(pipeline: GLuint, stages: GLbitfield, program: GLuint) { unsafe { (storage::UseProgramStages.f)(pipeline, stages, program) } }
+#[inline] pub fn ValidateProgram(program: GLuint) { unsafe { (storage::ValidateProgram.f)(program) } }
+#[inline] pub fn ValidateProgramPipeline(pipeline: GLuint) { unsafe { (storage::ValidateProgramPipeline.f)(pipeline) } }
+#[inline] pub fn VertexAttrib1d(index: GLuint, x: GLdouble) { unsafe { (storage::VertexAttrib1d.f)(index, x) } }
+#[inline] pub unsafe fn VertexAttrib1dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib1dv.f)(index, v) }
+#[inline] pub fn VertexAttrib1f(index: GLuint, x: GLfloat) { unsafe { (storage::VertexAttrib1f.f)(index, x) } }
+#[inline] pub unsafe fn VertexAttrib1fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib1fv.f)(index, v) }
+#[inline] pub fn VertexAttrib1s(index: GLuint, x: GLshort) { unsafe { (storage::VertexAttrib1s.f)(index, x) } }
+#[inline] pub unsafe fn VertexAttrib1sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib1sv.f)(index, v) }
+#[inline] pub fn VertexAttrib2d(index: GLuint, x: GLdouble, y: GLdouble) { unsafe { (storage::VertexAttrib2d.f)(index, x, y) } }
+#[inline] pub unsafe fn VertexAttrib2dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib2dv.f)(index, v) }
+#[inline] pub fn VertexAttrib2f(index: GLuint, x: GLfloat, y: GLfloat) { unsafe { (storage::VertexAttrib2f.f)(index, x, y) } }
+#[inline] pub unsafe fn VertexAttrib2fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib2fv.f)(index, v) }
+#[inline] pub fn VertexAttrib2s(index: GLuint, x: GLshort, y: GLshort) { unsafe { (storage::VertexAttrib2s.f)(index, x, y) } }
+#[inline] pub unsafe fn VertexAttrib2sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib2sv.f)(index, v) }
+#[inline] pub fn VertexAttrib3d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) { unsafe { (storage::VertexAttrib3d.f)(index, x, y, z) } }
+#[inline] pub unsafe fn VertexAttrib3dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib3dv.f)(index, v) }
+#[inline] pub fn VertexAttrib3f(index: GLuint, x: GLfloat, y: GLfloat, z: GLfloat) { unsafe { (storage::VertexAttrib3f.f)(index, x, y, z) } }
+#[inline] pub unsafe fn VertexAttrib3fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib3fv.f)(index, v) }
+#[inline] pub fn VertexAttrib3s(index: GLuint, x: GLshort, y: GLshort, z: GLshort) { unsafe { (storage::VertexAttrib3s.f)(index, x, y, z) } }
+#[inline] pub unsafe fn VertexAttrib3sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib3sv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4Nbv(index: GLuint, v: *GLbyte) { (storage::VertexAttrib4Nbv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4Niv(index: GLuint, v: *GLint) { (storage::VertexAttrib4Niv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4Nsv(index: GLuint, v: *GLshort) { (storage::VertexAttrib4Nsv.f)(index, v) }
+#[inline] pub fn VertexAttrib4Nub(index: GLuint, x: GLubyte, y: GLubyte, z: GLubyte, w: GLubyte) { unsafe { (storage::VertexAttrib4Nub.f)(index, x, y, z, w) } }
+#[inline] pub unsafe fn VertexAttrib4Nubv(index: GLuint, v: *GLubyte) { (storage::VertexAttrib4Nubv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4Nuiv(index: GLuint, v: *GLuint) { (storage::VertexAttrib4Nuiv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4Nusv(index: GLuint, v: *GLushort) { (storage::VertexAttrib4Nusv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4bv(index: GLuint, v: *GLbyte) { (storage::VertexAttrib4bv.f)(index, v) }
+#[inline] pub fn VertexAttrib4d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { unsafe { (storage::VertexAttrib4d.f)(index, x, y, z, w) } }
+#[inline] pub unsafe fn VertexAttrib4dv(index: GLuint, v: *GLdouble) { (storage::VertexAttrib4dv.f)(index, v) }
+#[inline] pub fn VertexAttrib4f(index: GLuint, x: GLfloat, y: GLfloat, z: GLfloat, w: GLfloat) { unsafe { (storage::VertexAttrib4f.f)(index, x, y, z, w) } }
+#[inline] pub unsafe fn VertexAttrib4fv(index: GLuint, v: *GLfloat) { (storage::VertexAttrib4fv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4iv(index: GLuint, v: *GLint) { (storage::VertexAttrib4iv.f)(index, v) }
+#[inline] pub fn VertexAttrib4s(index: GLuint, x: GLshort, y: GLshort, z: GLshort, w: GLshort) { unsafe { (storage::VertexAttrib4s.f)(index, x, y, z, w) } }
+#[inline] pub unsafe fn VertexAttrib4sv(index: GLuint, v: *GLshort) { (storage::VertexAttrib4sv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4ubv(index: GLuint, v: *GLubyte) { (storage::VertexAttrib4ubv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4uiv(index: GLuint, v: *GLuint) { (storage::VertexAttrib4uiv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttrib4usv(index: GLuint, v: *GLushort) { (storage::VertexAttrib4usv.f)(index, v) }
+#[inline] pub fn VertexAttribBinding(attribindex: GLuint, bindingindex: GLuint) { unsafe { (storage::VertexAttribBinding.f)(attribindex, bindingindex) } }
+#[inline] pub fn VertexAttribDivisor(index: GLuint, divisor: GLuint) { unsafe { (storage::VertexAttribDivisor.f)(index, divisor) } }
+#[inline] pub fn VertexAttribFormat(attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) { unsafe { (storage::VertexAttribFormat.f)(attribindex, size, type_, normalized, relativeoffset) } }
+#[inline] pub fn VertexAttribI1i(index: GLuint, x: GLint) { unsafe { (storage::VertexAttribI1i.f)(index, x) } }
+#[inline] pub unsafe fn VertexAttribI1iv(index: GLuint, v: *GLint) { (storage::VertexAttribI1iv.f)(index, v) }
+#[inline] pub fn VertexAttribI1ui(index: GLuint, x: GLuint) { unsafe { (storage::VertexAttribI1ui.f)(index, x) } }
+#[inline] pub unsafe fn VertexAttribI1uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI1uiv.f)(index, v) }
+#[inline] pub fn VertexAttribI2i(index: GLuint, x: GLint, y: GLint) { unsafe { (storage::VertexAttribI2i.f)(index, x, y) } }
+#[inline] pub unsafe fn VertexAttribI2iv(index: GLuint, v: *GLint) { (storage::VertexAttribI2iv.f)(index, v) }
+#[inline] pub fn VertexAttribI2ui(index: GLuint, x: GLuint, y: GLuint) { unsafe { (storage::VertexAttribI2ui.f)(index, x, y) } }
+#[inline] pub unsafe fn VertexAttribI2uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI2uiv.f)(index, v) }
+#[inline] pub fn VertexAttribI3i(index: GLuint, x: GLint, y: GLint, z: GLint) { unsafe { (storage::VertexAttribI3i.f)(index, x, y, z) } }
+#[inline] pub unsafe fn VertexAttribI3iv(index: GLuint, v: *GLint) { (storage::VertexAttribI3iv.f)(index, v) }
+#[inline] pub fn VertexAttribI3ui(index: GLuint, x: GLuint, y: GLuint, z: GLuint) { unsafe { (storage::VertexAttribI3ui.f)(index, x, y, z) } }
+#[inline] pub unsafe fn VertexAttribI3uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI3uiv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttribI4bv(index: GLuint, v: *GLbyte) { (storage::VertexAttribI4bv.f)(index, v) }
+#[inline] pub fn VertexAttribI4i(index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint) { unsafe { (storage::VertexAttribI4i.f)(index, x, y, z, w) } }
+#[inline] pub unsafe fn VertexAttribI4iv(index: GLuint, v: *GLint) { (storage::VertexAttribI4iv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttribI4sv(index: GLuint, v: *GLshort) { (storage::VertexAttribI4sv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttribI4ubv(index: GLuint, v: *GLubyte) { (storage::VertexAttribI4ubv.f)(index, v) }
+#[inline] pub fn VertexAttribI4ui(index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint) { unsafe { (storage::VertexAttribI4ui.f)(index, x, y, z, w) } }
+#[inline] pub unsafe fn VertexAttribI4uiv(index: GLuint, v: *GLuint) { (storage::VertexAttribI4uiv.f)(index, v) }
+#[inline] pub unsafe fn VertexAttribI4usv(index: GLuint, v: *GLushort) { (storage::VertexAttribI4usv.f)(index, v) }
+#[inline] pub fn VertexAttribIFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { unsafe { (storage::VertexAttribIFormat.f)(attribindex, size, type_, relativeoffset) } }
+#[inline] pub unsafe fn VertexAttribIPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *c_void) { (storage::VertexAttribIPointer.f)(index, size, type_, stride, pointer) }
+#[inline] pub fn VertexAttribL1d(index: GLuint, x: GLdouble) { unsafe { (storage::VertexAttribL1d.f)(index, x) } }
+#[inline] pub unsafe fn VertexAttribL1dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL1dv.f)(index, v) }
+#[inline] pub fn VertexAttribL2d(index: GLuint, x: GLdouble, y: GLdouble) { unsafe { (storage::VertexAttribL2d.f)(index, x, y) } }
+#[inline] pub unsafe fn VertexAttribL2dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL2dv.f)(index, v) }
+#[inline] pub fn VertexAttribL3d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) { unsafe { (storage::VertexAttribL3d.f)(index, x, y, z) } }
+#[inline] pub unsafe fn VertexAttribL3dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL3dv.f)(index, v) }
+#[inline] pub fn VertexAttribL4d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) { unsafe { (storage::VertexAttribL4d.f)(index, x, y, z, w) } }
+#[inline] pub unsafe fn VertexAttribL4dv(index: GLuint, v: *GLdouble) { (storage::VertexAttribL4dv.f)(index, v) }
+#[inline] pub fn VertexAttribLFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) { unsafe { (storage::VertexAttribLFormat.f)(attribindex, size, type_, relativeoffset) } }
+#[inline] pub unsafe fn VertexAttribLPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *c_void) { (storage::VertexAttribLPointer.f)(index, size, type_, stride, pointer) }
+#[inline] pub fn VertexAttribP1ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP1ui.f)(index, type_, normalized, value) } }
+#[inline] pub unsafe fn VertexAttribP1uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP1uiv.f)(index, type_, normalized, value) }
+#[inline] pub fn VertexAttribP2ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP2ui.f)(index, type_, normalized, value) } }
+#[inline] pub unsafe fn VertexAttribP2uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP2uiv.f)(index, type_, normalized, value) }
+#[inline] pub fn VertexAttribP3ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP3ui.f)(index, type_, normalized, value) } }
+#[inline] pub unsafe fn VertexAttribP3uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP3uiv.f)(index, type_, normalized, value) }
+#[inline] pub fn VertexAttribP4ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) { unsafe { (storage::VertexAttribP4ui.f)(index, type_, normalized, value) } }
+#[inline] pub unsafe fn VertexAttribP4uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint) { (storage::VertexAttribP4uiv.f)(index, type_, normalized, value) }
+#[inline] pub unsafe fn VertexAttribPointer(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *c_void) { (storage::VertexAttribPointer.f)(index, size, type_, normalized, stride, pointer) }
+#[inline] pub fn VertexBindingDivisor(bindingindex: GLuint, divisor: GLuint) { unsafe { (storage::VertexBindingDivisor.f)(bindingindex, divisor) } }
+#[inline] pub fn VertexP2ui(type_: GLenum, value: GLuint) { unsafe { (storage::VertexP2ui.f)(type_, value) } }
+#[inline] pub unsafe fn VertexP2uiv(type_: GLenum, value: *GLuint) { (storage::VertexP2uiv.f)(type_, value) }
+#[inline] pub fn VertexP3ui(type_: GLenum, value: GLuint) { unsafe { (storage::VertexP3ui.f)(type_, value) } }
+#[inline] pub unsafe fn VertexP3uiv(type_: GLenum, value: *GLuint) { (storage::VertexP3uiv.f)(type_, value) }
+#[inline] pub fn VertexP4ui(type_: GLenum, value: GLuint) { unsafe { (storage::VertexP4ui.f)(type_, value) } }
+#[inline] pub unsafe fn VertexP4uiv(type_: GLenum, value: *GLuint) { (storage::VertexP4uiv.f)(type_, value) }
+#[inline] pub fn Viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei) { unsafe { (storage::Viewport.f)(x, y, width, height) } }
+#[inline] pub unsafe fn ViewportArrayv(first: GLuint, count: GLsizei, v: *GLfloat) { (storage::ViewportArrayv.f)(first, count, v) }
+#[inline] pub fn ViewportIndexedf(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat) { unsafe { (storage::ViewportIndexedf.f)(index, x, y, w, h) } }
+#[inline] pub unsafe fn ViewportIndexedfv(index: GLuint, v: *GLfloat) { (storage::ViewportIndexedfv.f)(index, v) }
+#[inline] pub fn WaitSync(sync: GLsync, flags: GLbitfield, timeout: GLuint64) { unsafe { (storage::WaitSync.f)(sync, flags, timeout) } }
 
 pub struct FnPtr<F> { f: F, is_loaded: bool }
 
@@ -1987,8 +1987,8 @@ mod storage {
     fn_ptr!(fn BlendFuncSeparatei(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum))
     fn_ptr!(fn BlendFunci(buf: GLuint, src: GLenum, dst: GLenum))
     fn_ptr!(fn BlitFramebuffer(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum))
-    fn_ptr!(fn BufferData(target: GLenum, size: GLsizeiptr, data: *GLvoid, usage: GLenum))
-    fn_ptr!(fn BufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *GLvoid))
+    fn_ptr!(fn BufferData(target: GLenum, size: GLsizeiptr, data: *c_void, usage: GLenum))
+    fn_ptr!(fn BufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *c_void))
     fn_ptr!(fn CheckFramebufferStatus(target: GLenum) -> GLenum)
     fn_ptr!(fn ClampColor(target: GLenum, clamp: GLenum))
     fn_ptr!(fn Clear(mask: GLbitfield))
@@ -2010,12 +2010,12 @@ mod storage {
     fn_ptr!(fn ColorP4ui(type_: GLenum, color: GLuint))
     fn_ptr!(fn ColorP4uiv(type_: GLenum, color: *GLuint))
     fn_ptr!(fn CompileShader(shader: GLuint))
-    fn_ptr!(fn CompressedTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid))
-    fn_ptr!(fn CompressedTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid))
-    fn_ptr!(fn CompressedTexImage3D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *GLvoid))
-    fn_ptr!(fn CompressedTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid))
-    fn_ptr!(fn CompressedTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid))
-    fn_ptr!(fn CompressedTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *GLvoid))
+    fn_ptr!(fn CompressedTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *c_void))
+    fn_ptr!(fn CompressedTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *c_void))
+    fn_ptr!(fn CompressedTexImage3D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *c_void))
+    fn_ptr!(fn CompressedTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *c_void))
+    fn_ptr!(fn CompressedTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *c_void))
+    fn_ptr!(fn CompressedTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *c_void))
     fn_ptr!(fn CopyBufferSubData(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr))
     fn_ptr!(fn CopyImageSubData(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei))
     fn_ptr!(fn CopyTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint))
@@ -2055,20 +2055,20 @@ mod storage {
     fn_ptr!(fn DispatchCompute(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint))
     fn_ptr!(fn DispatchComputeIndirect(indirect: GLintptr))
     fn_ptr!(fn DrawArrays(mode: GLenum, first: GLint, count: GLsizei))
-    fn_ptr!(fn DrawArraysIndirect(mode: GLenum, indirect: *GLvoid))
+    fn_ptr!(fn DrawArraysIndirect(mode: GLenum, indirect: *c_void))
     fn_ptr!(fn DrawArraysInstanced(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei))
     fn_ptr!(fn DrawArraysInstancedBaseInstance(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint))
     fn_ptr!(fn DrawBuffer(mode: GLenum))
     fn_ptr!(fn DrawBuffers(n: GLsizei, bufs: *GLenum))
-    fn_ptr!(fn DrawElements(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid))
-    fn_ptr!(fn DrawElementsBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint))
-    fn_ptr!(fn DrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *GLvoid))
-    fn_ptr!(fn DrawElementsInstanced(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei))
+    fn_ptr!(fn DrawElements(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void))
+    fn_ptr!(fn DrawElementsBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, basevertex: GLint))
+    fn_ptr!(fn DrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *c_void))
+    fn_ptr!(fn DrawElementsInstanced(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei))
     fn_ptr!(fn DrawElementsInstancedBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, baseinstance: GLuint))
-    fn_ptr!(fn DrawElementsInstancedBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *GLvoid, instancecount: GLsizei, basevertex: GLint))
+    fn_ptr!(fn DrawElementsInstancedBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, basevertex: GLint))
     fn_ptr!(fn DrawElementsInstancedBaseVertexBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *c_void, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint))
-    fn_ptr!(fn DrawRangeElements(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid))
-    fn_ptr!(fn DrawRangeElementsBaseVertex(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *GLvoid, basevertex: GLint))
+    fn_ptr!(fn DrawRangeElements(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *c_void))
+    fn_ptr!(fn DrawRangeElementsBaseVertex(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *c_void, basevertex: GLint))
     fn_ptr!(fn DrawTransformFeedback(mode: GLenum, id: GLuint))
     fn_ptr!(fn DrawTransformFeedbackInstanced(mode: GLenum, id: GLuint, instancecount: GLsizei))
     fn_ptr!(fn DrawTransformFeedbackStream(mode: GLenum, id: GLuint, stream: GLuint))
@@ -2115,32 +2115,32 @@ mod storage {
     fn_ptr!(fn GetAttachedShaders(program: GLuint, maxCount: GLsizei, count: *mut GLsizei, shaders: *mut GLuint))
     fn_ptr!(fn GetAttribLocation(program: GLuint, name: *GLchar) -> GLint)
     fn_ptr!(fn GetBooleani_v(target: GLenum, index: GLuint, data: *mut GLboolean))
-    fn_ptr!(fn GetBooleanv(pname: GLenum, params: *mut GLboolean))
+    fn_ptr!(fn GetBooleanv(pname: GLenum, data: *mut GLboolean))
     fn_ptr!(fn GetBufferParameteri64v(target: GLenum, pname: GLenum, params: *mut GLint64))
     fn_ptr!(fn GetBufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint))
-    fn_ptr!(fn GetBufferPointerv(target: GLenum, pname: GLenum, params: **mut GLvoid))
-    fn_ptr!(fn GetBufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *mut GLvoid))
-    fn_ptr!(fn GetCompressedTexImage(target: GLenum, level: GLint, img: *mut GLvoid))
+    fn_ptr!(fn GetBufferPointerv(target: GLenum, pname: GLenum, params: **mut c_void))
+    fn_ptr!(fn GetBufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *mut c_void))
+    fn_ptr!(fn GetCompressedTexImage(target: GLenum, level: GLint, img: *mut c_void))
     fn_ptr!(fn GetDebugMessageLog(count: GLuint, bufSize: GLsizei, sources: *mut GLenum, types: *mut GLenum, ids: *mut GLuint, severities: *mut GLenum, lengths: *mut GLsizei, messageLog: *mut GLchar) -> GLuint)
     fn_ptr!(fn GetDoublei_v(target: GLenum, index: GLuint, data: *mut GLdouble))
-    fn_ptr!(fn GetDoublev(pname: GLenum, params: *mut GLdouble))
+    fn_ptr!(fn GetDoublev(pname: GLenum, data: *mut GLdouble))
     fn_ptr!(fn GetError() -> GLenum)
     fn_ptr!(fn GetFloati_v(target: GLenum, index: GLuint, data: *mut GLfloat))
-    fn_ptr!(fn GetFloatv(pname: GLenum, params: *mut GLfloat))
+    fn_ptr!(fn GetFloatv(pname: GLenum, data: *mut GLfloat))
     fn_ptr!(fn GetFragDataIndex(program: GLuint, name: *GLchar) -> GLint)
     fn_ptr!(fn GetFragDataLocation(program: GLuint, name: *GLchar) -> GLint)
     fn_ptr!(fn GetFramebufferAttachmentParameteriv(target: GLenum, attachment: GLenum, pname: GLenum, params: *mut GLint))
     fn_ptr!(fn GetFramebufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint))
     fn_ptr!(fn GetInteger64i_v(target: GLenum, index: GLuint, data: *mut GLint64))
-    fn_ptr!(fn GetInteger64v(pname: GLenum, params: *mut GLint64))
+    fn_ptr!(fn GetInteger64v(pname: GLenum, data: *mut GLint64))
     fn_ptr!(fn GetIntegeri_v(target: GLenum, index: GLuint, data: *mut GLint))
-    fn_ptr!(fn GetIntegerv(pname: GLenum, params: *mut GLint))
+    fn_ptr!(fn GetIntegerv(pname: GLenum, data: *mut GLint))
     fn_ptr!(fn GetInternalformati64v(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint64))
     fn_ptr!(fn GetInternalformativ(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint))
     fn_ptr!(fn GetMultisamplefv(pname: GLenum, index: GLuint, val: *mut GLfloat))
     fn_ptr!(fn GetObjectLabel(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar))
     fn_ptr!(fn GetObjectPtrLabel(ptr: *c_void, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar))
-    fn_ptr!(fn GetProgramBinary(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, binaryFormat: *mut GLenum, binary: *mut GLvoid))
+    fn_ptr!(fn GetProgramBinary(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, binaryFormat: *mut GLenum, binary: *mut c_void))
     fn_ptr!(fn GetProgramInfoLog(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar))
     fn_ptr!(fn GetProgramInterfaceiv(program: GLuint, programInterface: GLenum, pname: GLenum, params: *mut GLint))
     fn_ptr!(fn GetProgramPipelineInfoLog(pipeline: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar))
@@ -2172,7 +2172,7 @@ mod storage {
     fn_ptr!(fn GetSubroutineIndex(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLuint)
     fn_ptr!(fn GetSubroutineUniformLocation(program: GLuint, shadertype: GLenum, name: *GLchar) -> GLint)
     fn_ptr!(fn GetSynciv(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *mut GLsizei, values: *mut GLint))
-    fn_ptr!(fn GetTexImage(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *mut GLvoid))
+    fn_ptr!(fn GetTexImage(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *mut c_void))
     fn_ptr!(fn GetTexLevelParameterfv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLfloat))
     fn_ptr!(fn GetTexLevelParameteriv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLint))
     fn_ptr!(fn GetTexParameterIiv(target: GLenum, pname: GLenum, params: *mut GLint))
@@ -2191,7 +2191,7 @@ mod storage {
     fn_ptr!(fn GetVertexAttribIiv(index: GLuint, pname: GLenum, params: *mut GLint))
     fn_ptr!(fn GetVertexAttribIuiv(index: GLuint, pname: GLenum, params: *mut GLuint))
     fn_ptr!(fn GetVertexAttribLdv(index: GLuint, pname: GLenum, params: *mut GLdouble))
-    fn_ptr!(fn GetVertexAttribPointerv(index: GLuint, pname: GLenum, pointer: **mut GLvoid))
+    fn_ptr!(fn GetVertexAttribPointerv(index: GLuint, pname: GLenum, pointer: **mut c_void))
     fn_ptr!(fn GetVertexAttribdv(index: GLuint, pname: GLenum, params: *mut GLdouble))
     fn_ptr!(fn GetVertexAttribfv(index: GLuint, pname: GLenum, params: *mut GLfloat))
     fn_ptr!(fn GetVertexAttribiv(index: GLuint, pname: GLenum, params: *mut GLint))
@@ -2225,8 +2225,8 @@ mod storage {
     fn_ptr!(fn MinSampleShading(value: GLfloat))
     fn_ptr!(fn MultiDrawArrays(mode: GLenum, first: *GLint, count: *GLsizei, drawcount: GLsizei))
     fn_ptr!(fn MultiDrawArraysIndirect(mode: GLenum, indirect: *c_void, drawcount: GLsizei, stride: GLsizei))
-    fn_ptr!(fn MultiDrawElements(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei))
-    fn_ptr!(fn MultiDrawElementsBaseVertex(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **GLvoid, drawcount: GLsizei, basevertex: *GLint))
+    fn_ptr!(fn MultiDrawElements(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **c_void, drawcount: GLsizei))
+    fn_ptr!(fn MultiDrawElementsBaseVertex(mode: GLenum, count: *GLsizei, type_: GLenum, indices: **c_void, drawcount: GLsizei, basevertex: *GLint))
     fn_ptr!(fn MultiDrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *c_void, drawcount: GLsizei, stride: GLsizei))
     fn_ptr!(fn MultiTexCoordP1ui(texture: GLenum, type_: GLenum, coords: GLuint))
     fn_ptr!(fn MultiTexCoordP1uiv(texture: GLenum, type_: GLenum, coords: *GLuint))
@@ -2254,7 +2254,7 @@ mod storage {
     fn_ptr!(fn PolygonOffset(factor: GLfloat, units: GLfloat))
     fn_ptr!(fn PopDebugGroup())
     fn_ptr!(fn PrimitiveRestartIndex(index: GLuint))
-    fn_ptr!(fn ProgramBinary(program: GLuint, binaryFormat: GLenum, binary: *GLvoid, length: GLsizei))
+    fn_ptr!(fn ProgramBinary(program: GLuint, binaryFormat: GLenum, binary: *c_void, length: GLsizei))
     fn_ptr!(fn ProgramParameteri(program: GLuint, pname: GLenum, value: GLint))
     fn_ptr!(fn ProgramUniform1d(program: GLuint, location: GLint, v0: GLdouble))
     fn_ptr!(fn ProgramUniform1dv(program: GLuint, location: GLint, count: GLsizei, value: *GLdouble))
@@ -2310,7 +2310,7 @@ mod storage {
     fn_ptr!(fn PushDebugGroup(source: GLenum, id: GLuint, length: GLsizei, message: *GLchar))
     fn_ptr!(fn QueryCounter(id: GLuint, target: GLenum))
     fn_ptr!(fn ReadBuffer(mode: GLenum))
-    fn_ptr!(fn ReadPixels(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *mut GLvoid))
+    fn_ptr!(fn ReadPixels(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *mut c_void))
     fn_ptr!(fn ReleaseShaderCompiler())
     fn_ptr!(fn RenderbufferStorage(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei))
     fn_ptr!(fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei))
@@ -2329,7 +2329,7 @@ mod storage {
     fn_ptr!(fn ScissorIndexedv(index: GLuint, v: *GLint))
     fn_ptr!(fn SecondaryColorP3ui(type_: GLenum, color: GLuint))
     fn_ptr!(fn SecondaryColorP3uiv(type_: GLenum, color: *GLuint))
-    fn_ptr!(fn ShaderBinary(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *GLvoid, length: GLsizei))
+    fn_ptr!(fn ShaderBinary(count: GLsizei, shaders: *GLuint, binaryformat: GLenum, binary: *c_void, length: GLsizei))
     fn_ptr!(fn ShaderSource(shader: GLuint, count: GLsizei, string: **GLchar, length: *GLint))
     fn_ptr!(fn ShaderStorageBlockBinding(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint))
     fn_ptr!(fn StencilFunc(func: GLenum, ref_: GLint, mask: GLuint))
@@ -2348,10 +2348,10 @@ mod storage {
     fn_ptr!(fn TexCoordP3uiv(type_: GLenum, coords: *GLuint))
     fn_ptr!(fn TexCoordP4ui(type_: GLenum, coords: GLuint))
     fn_ptr!(fn TexCoordP4uiv(type_: GLenum, coords: *GLuint))
-    fn_ptr!(fn TexImage1D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid))
-    fn_ptr!(fn TexImage2D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid))
+    fn_ptr!(fn TexImage1D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *c_void))
+    fn_ptr!(fn TexImage2D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *c_void))
     fn_ptr!(fn TexImage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean))
-    fn_ptr!(fn TexImage3D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *GLvoid))
+    fn_ptr!(fn TexImage3D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *c_void))
     fn_ptr!(fn TexImage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean))
     fn_ptr!(fn TexParameterIiv(target: GLenum, pname: GLenum, params: *GLint))
     fn_ptr!(fn TexParameterIuiv(target: GLenum, pname: GLenum, params: *GLuint))
@@ -2364,9 +2364,9 @@ mod storage {
     fn_ptr!(fn TexStorage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean))
     fn_ptr!(fn TexStorage3D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei))
     fn_ptr!(fn TexStorage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean))
-    fn_ptr!(fn TexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid))
-    fn_ptr!(fn TexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid))
-    fn_ptr!(fn TexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *GLvoid))
+    fn_ptr!(fn TexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *c_void))
+    fn_ptr!(fn TexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *c_void))
+    fn_ptr!(fn TexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *c_void))
     fn_ptr!(fn TextureView(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint))
     fn_ptr!(fn TransformFeedbackVaryings(program: GLuint, count: GLsizei, varyings: **GLchar, bufferMode: GLenum))
     fn_ptr!(fn Uniform1d(location: GLint, x: GLdouble))
@@ -2486,7 +2486,7 @@ mod storage {
     fn_ptr!(fn VertexAttribI4uiv(index: GLuint, v: *GLuint))
     fn_ptr!(fn VertexAttribI4usv(index: GLuint, v: *GLushort))
     fn_ptr!(fn VertexAttribIFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint))
-    fn_ptr!(fn VertexAttribIPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid))
+    fn_ptr!(fn VertexAttribIPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *c_void))
     fn_ptr!(fn VertexAttribL1d(index: GLuint, x: GLdouble))
     fn_ptr!(fn VertexAttribL1dv(index: GLuint, v: *GLdouble))
     fn_ptr!(fn VertexAttribL2d(index: GLuint, x: GLdouble, y: GLdouble))
@@ -2496,7 +2496,7 @@ mod storage {
     fn_ptr!(fn VertexAttribL4d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble))
     fn_ptr!(fn VertexAttribL4dv(index: GLuint, v: *GLdouble))
     fn_ptr!(fn VertexAttribLFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint))
-    fn_ptr!(fn VertexAttribLPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *GLvoid))
+    fn_ptr!(fn VertexAttribLPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *c_void))
     fn_ptr!(fn VertexAttribP1ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint))
     fn_ptr!(fn VertexAttribP1uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint))
     fn_ptr!(fn VertexAttribP2ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint))
@@ -2505,7 +2505,7 @@ mod storage {
     fn_ptr!(fn VertexAttribP3uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint))
     fn_ptr!(fn VertexAttribP4ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint))
     fn_ptr!(fn VertexAttribP4uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *GLuint))
-    fn_ptr!(fn VertexAttribPointer(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *GLvoid))
+    fn_ptr!(fn VertexAttribPointer(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *c_void))
     fn_ptr!(fn VertexBindingDivisor(bindingindex: GLuint, divisor: GLuint))
     fn_ptr!(fn VertexP2ui(type_: GLenum, value: GLuint))
     fn_ptr!(fn VertexP2uiv(type_: GLenum, value: *GLuint))
@@ -2527,7 +2527,7 @@ macro_rules! fn_mod(
             pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }
             
             #[inline]
-            pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern "C" fn()>) {
+            pub fn load_with(loadfn: |symbol: &str| -> Option<extern "C" fn()>) {
                 unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name) }
             }
         }
@@ -3141,8 +3141,8 @@ mod failing {
     failing!(fn BlendFuncSeparatei(GLuint, GLenum, GLenum, GLenum, GLenum))
     failing!(fn BlendFunci(GLuint, GLenum, GLenum))
     failing!(fn BlitFramebuffer(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum))
-    failing!(fn BufferData(GLenum, GLsizeiptr, *GLvoid, GLenum))
-    failing!(fn BufferSubData(GLenum, GLintptr, GLsizeiptr, *GLvoid))
+    failing!(fn BufferData(GLenum, GLsizeiptr, *c_void, GLenum))
+    failing!(fn BufferSubData(GLenum, GLintptr, GLsizeiptr, *c_void))
     failing!(fn CheckFramebufferStatus(GLenum) -> GLenum)
     failing!(fn ClampColor(GLenum, GLenum))
     failing!(fn Clear(GLbitfield))
@@ -3164,12 +3164,12 @@ mod failing {
     failing!(fn ColorP4ui(GLenum, GLuint))
     failing!(fn ColorP4uiv(GLenum, *GLuint))
     failing!(fn CompileShader(GLuint))
-    failing!(fn CompressedTexImage1D(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *GLvoid))
-    failing!(fn CompressedTexImage2D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *GLvoid))
-    failing!(fn CompressedTexImage3D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *GLvoid))
-    failing!(fn CompressedTexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *GLvoid))
-    failing!(fn CompressedTexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid))
-    failing!(fn CompressedTexSubImage3D(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *GLvoid))
+    failing!(fn CompressedTexImage1D(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *c_void))
+    failing!(fn CompressedTexImage2D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *c_void))
+    failing!(fn CompressedTexImage3D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *c_void))
+    failing!(fn CompressedTexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *c_void))
+    failing!(fn CompressedTexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *c_void))
+    failing!(fn CompressedTexSubImage3D(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *c_void))
     failing!(fn CopyBufferSubData(GLenum, GLenum, GLintptr, GLintptr, GLsizeiptr))
     failing!(fn CopyImageSubData(GLuint, GLenum, GLint, GLint, GLint, GLint, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei))
     failing!(fn CopyTexImage1D(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint))
@@ -3209,20 +3209,20 @@ mod failing {
     failing!(fn DispatchCompute(GLuint, GLuint, GLuint))
     failing!(fn DispatchComputeIndirect(GLintptr))
     failing!(fn DrawArrays(GLenum, GLint, GLsizei))
-    failing!(fn DrawArraysIndirect(GLenum, *GLvoid))
+    failing!(fn DrawArraysIndirect(GLenum, *c_void))
     failing!(fn DrawArraysInstanced(GLenum, GLint, GLsizei, GLsizei))
     failing!(fn DrawArraysInstancedBaseInstance(GLenum, GLint, GLsizei, GLsizei, GLuint))
     failing!(fn DrawBuffer(GLenum))
     failing!(fn DrawBuffers(GLsizei, *GLenum))
-    failing!(fn DrawElements(GLenum, GLsizei, GLenum, *GLvoid))
-    failing!(fn DrawElementsBaseVertex(GLenum, GLsizei, GLenum, *GLvoid, GLint))
-    failing!(fn DrawElementsIndirect(GLenum, GLenum, *GLvoid))
-    failing!(fn DrawElementsInstanced(GLenum, GLsizei, GLenum, *GLvoid, GLsizei))
+    failing!(fn DrawElements(GLenum, GLsizei, GLenum, *c_void))
+    failing!(fn DrawElementsBaseVertex(GLenum, GLsizei, GLenum, *c_void, GLint))
+    failing!(fn DrawElementsIndirect(GLenum, GLenum, *c_void))
+    failing!(fn DrawElementsInstanced(GLenum, GLsizei, GLenum, *c_void, GLsizei))
     failing!(fn DrawElementsInstancedBaseInstance(GLenum, GLsizei, GLenum, *c_void, GLsizei, GLuint))
-    failing!(fn DrawElementsInstancedBaseVertex(GLenum, GLsizei, GLenum, *GLvoid, GLsizei, GLint))
+    failing!(fn DrawElementsInstancedBaseVertex(GLenum, GLsizei, GLenum, *c_void, GLsizei, GLint))
     failing!(fn DrawElementsInstancedBaseVertexBaseInstance(GLenum, GLsizei, GLenum, *c_void, GLsizei, GLint, GLuint))
-    failing!(fn DrawRangeElements(GLenum, GLuint, GLuint, GLsizei, GLenum, *GLvoid))
-    failing!(fn DrawRangeElementsBaseVertex(GLenum, GLuint, GLuint, GLsizei, GLenum, *GLvoid, GLint))
+    failing!(fn DrawRangeElements(GLenum, GLuint, GLuint, GLsizei, GLenum, *c_void))
+    failing!(fn DrawRangeElementsBaseVertex(GLenum, GLuint, GLuint, GLsizei, GLenum, *c_void, GLint))
     failing!(fn DrawTransformFeedback(GLenum, GLuint))
     failing!(fn DrawTransformFeedbackInstanced(GLenum, GLuint, GLsizei))
     failing!(fn DrawTransformFeedbackStream(GLenum, GLuint, GLuint))
@@ -3272,9 +3272,9 @@ mod failing {
     failing!(fn GetBooleanv(GLenum, *mut GLboolean))
     failing!(fn GetBufferParameteri64v(GLenum, GLenum, *mut GLint64))
     failing!(fn GetBufferParameteriv(GLenum, GLenum, *mut GLint))
-    failing!(fn GetBufferPointerv(GLenum, GLenum, **mut GLvoid))
-    failing!(fn GetBufferSubData(GLenum, GLintptr, GLsizeiptr, *mut GLvoid))
-    failing!(fn GetCompressedTexImage(GLenum, GLint, *mut GLvoid))
+    failing!(fn GetBufferPointerv(GLenum, GLenum, **mut c_void))
+    failing!(fn GetBufferSubData(GLenum, GLintptr, GLsizeiptr, *mut c_void))
+    failing!(fn GetCompressedTexImage(GLenum, GLint, *mut c_void))
     failing!(fn GetDebugMessageLog(GLuint, GLsizei, *mut GLenum, *mut GLenum, *mut GLuint, *mut GLenum, *mut GLsizei, *mut GLchar) -> GLuint)
     failing!(fn GetDoublei_v(GLenum, GLuint, *mut GLdouble))
     failing!(fn GetDoublev(GLenum, *mut GLdouble))
@@ -3294,7 +3294,7 @@ mod failing {
     failing!(fn GetMultisamplefv(GLenum, GLuint, *mut GLfloat))
     failing!(fn GetObjectLabel(GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar))
     failing!(fn GetObjectPtrLabel(*c_void, GLsizei, *mut GLsizei, *mut GLchar))
-    failing!(fn GetProgramBinary(GLuint, GLsizei, *mut GLsizei, *mut GLenum, *mut GLvoid))
+    failing!(fn GetProgramBinary(GLuint, GLsizei, *mut GLsizei, *mut GLenum, *mut c_void))
     failing!(fn GetProgramInfoLog(GLuint, GLsizei, *mut GLsizei, *mut GLchar))
     failing!(fn GetProgramInterfaceiv(GLuint, GLenum, GLenum, *mut GLint))
     failing!(fn GetProgramPipelineInfoLog(GLuint, GLsizei, *mut GLsizei, *mut GLchar))
@@ -3326,7 +3326,7 @@ mod failing {
     failing!(fn GetSubroutineIndex(GLuint, GLenum, *GLchar) -> GLuint)
     failing!(fn GetSubroutineUniformLocation(GLuint, GLenum, *GLchar) -> GLint)
     failing!(fn GetSynciv(GLsync, GLenum, GLsizei, *mut GLsizei, *mut GLint))
-    failing!(fn GetTexImage(GLenum, GLint, GLenum, GLenum, *mut GLvoid))
+    failing!(fn GetTexImage(GLenum, GLint, GLenum, GLenum, *mut c_void))
     failing!(fn GetTexLevelParameterfv(GLenum, GLint, GLenum, *mut GLfloat))
     failing!(fn GetTexLevelParameteriv(GLenum, GLint, GLenum, *mut GLint))
     failing!(fn GetTexParameterIiv(GLenum, GLenum, *mut GLint))
@@ -3345,7 +3345,7 @@ mod failing {
     failing!(fn GetVertexAttribIiv(GLuint, GLenum, *mut GLint))
     failing!(fn GetVertexAttribIuiv(GLuint, GLenum, *mut GLuint))
     failing!(fn GetVertexAttribLdv(GLuint, GLenum, *mut GLdouble))
-    failing!(fn GetVertexAttribPointerv(GLuint, GLenum, **mut GLvoid))
+    failing!(fn GetVertexAttribPointerv(GLuint, GLenum, **mut c_void))
     failing!(fn GetVertexAttribdv(GLuint, GLenum, *mut GLdouble))
     failing!(fn GetVertexAttribfv(GLuint, GLenum, *mut GLfloat))
     failing!(fn GetVertexAttribiv(GLuint, GLenum, *mut GLint))
@@ -3379,8 +3379,8 @@ mod failing {
     failing!(fn MinSampleShading(GLfloat))
     failing!(fn MultiDrawArrays(GLenum, *GLint, *GLsizei, GLsizei))
     failing!(fn MultiDrawArraysIndirect(GLenum, *c_void, GLsizei, GLsizei))
-    failing!(fn MultiDrawElements(GLenum, *GLsizei, GLenum, **GLvoid, GLsizei))
-    failing!(fn MultiDrawElementsBaseVertex(GLenum, *GLsizei, GLenum, **GLvoid, GLsizei, *GLint))
+    failing!(fn MultiDrawElements(GLenum, *GLsizei, GLenum, **c_void, GLsizei))
+    failing!(fn MultiDrawElementsBaseVertex(GLenum, *GLsizei, GLenum, **c_void, GLsizei, *GLint))
     failing!(fn MultiDrawElementsIndirect(GLenum, GLenum, *c_void, GLsizei, GLsizei))
     failing!(fn MultiTexCoordP1ui(GLenum, GLenum, GLuint))
     failing!(fn MultiTexCoordP1uiv(GLenum, GLenum, *GLuint))
@@ -3408,7 +3408,7 @@ mod failing {
     failing!(fn PolygonOffset(GLfloat, GLfloat))
     failing!(fn PopDebugGroup())
     failing!(fn PrimitiveRestartIndex(GLuint))
-    failing!(fn ProgramBinary(GLuint, GLenum, *GLvoid, GLsizei))
+    failing!(fn ProgramBinary(GLuint, GLenum, *c_void, GLsizei))
     failing!(fn ProgramParameteri(GLuint, GLenum, GLint))
     failing!(fn ProgramUniform1d(GLuint, GLint, GLdouble))
     failing!(fn ProgramUniform1dv(GLuint, GLint, GLsizei, *GLdouble))
@@ -3464,7 +3464,7 @@ mod failing {
     failing!(fn PushDebugGroup(GLenum, GLuint, GLsizei, *GLchar))
     failing!(fn QueryCounter(GLuint, GLenum))
     failing!(fn ReadBuffer(GLenum))
-    failing!(fn ReadPixels(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *mut GLvoid))
+    failing!(fn ReadPixels(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *mut c_void))
     failing!(fn ReleaseShaderCompiler())
     failing!(fn RenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei))
     failing!(fn RenderbufferStorageMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei))
@@ -3483,7 +3483,7 @@ mod failing {
     failing!(fn ScissorIndexedv(GLuint, *GLint))
     failing!(fn SecondaryColorP3ui(GLenum, GLuint))
     failing!(fn SecondaryColorP3uiv(GLenum, *GLuint))
-    failing!(fn ShaderBinary(GLsizei, *GLuint, GLenum, *GLvoid, GLsizei))
+    failing!(fn ShaderBinary(GLsizei, *GLuint, GLenum, *c_void, GLsizei))
     failing!(fn ShaderSource(GLuint, GLsizei, **GLchar, *GLint))
     failing!(fn ShaderStorageBlockBinding(GLuint, GLuint, GLuint))
     failing!(fn StencilFunc(GLenum, GLint, GLuint))
@@ -3502,10 +3502,10 @@ mod failing {
     failing!(fn TexCoordP3uiv(GLenum, *GLuint))
     failing!(fn TexCoordP4ui(GLenum, GLuint))
     failing!(fn TexCoordP4uiv(GLenum, *GLuint))
-    failing!(fn TexImage1D(GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, *GLvoid))
-    failing!(fn TexImage2D(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid))
+    failing!(fn TexImage1D(GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, *c_void))
+    failing!(fn TexImage2D(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, *c_void))
     failing!(fn TexImage2DMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean))
-    failing!(fn TexImage3D(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *GLvoid))
+    failing!(fn TexImage3D(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *c_void))
     failing!(fn TexImage3DMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean))
     failing!(fn TexParameterIiv(GLenum, GLenum, *GLint))
     failing!(fn TexParameterIuiv(GLenum, GLenum, *GLuint))
@@ -3518,9 +3518,9 @@ mod failing {
     failing!(fn TexStorage2DMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean))
     failing!(fn TexStorage3D(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei))
     failing!(fn TexStorage3DMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean))
-    failing!(fn TexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *GLvoid))
-    failing!(fn TexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *GLvoid))
-    failing!(fn TexSubImage3D(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *GLvoid))
+    failing!(fn TexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *c_void))
+    failing!(fn TexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *c_void))
+    failing!(fn TexSubImage3D(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *c_void))
     failing!(fn TextureView(GLuint, GLenum, GLuint, GLenum, GLuint, GLuint, GLuint, GLuint))
     failing!(fn TransformFeedbackVaryings(GLuint, GLsizei, **GLchar, GLenum))
     failing!(fn Uniform1d(GLint, GLdouble))
@@ -3640,7 +3640,7 @@ mod failing {
     failing!(fn VertexAttribI4uiv(GLuint, *GLuint))
     failing!(fn VertexAttribI4usv(GLuint, *GLushort))
     failing!(fn VertexAttribIFormat(GLuint, GLint, GLenum, GLuint))
-    failing!(fn VertexAttribIPointer(GLuint, GLint, GLenum, GLsizei, *GLvoid))
+    failing!(fn VertexAttribIPointer(GLuint, GLint, GLenum, GLsizei, *c_void))
     failing!(fn VertexAttribL1d(GLuint, GLdouble))
     failing!(fn VertexAttribL1dv(GLuint, *GLdouble))
     failing!(fn VertexAttribL2d(GLuint, GLdouble, GLdouble))
@@ -3650,7 +3650,7 @@ mod failing {
     failing!(fn VertexAttribL4d(GLuint, GLdouble, GLdouble, GLdouble, GLdouble))
     failing!(fn VertexAttribL4dv(GLuint, *GLdouble))
     failing!(fn VertexAttribLFormat(GLuint, GLint, GLenum, GLuint))
-    failing!(fn VertexAttribLPointer(GLuint, GLint, GLenum, GLsizei, *GLvoid))
+    failing!(fn VertexAttribLPointer(GLuint, GLint, GLenum, GLsizei, *c_void))
     failing!(fn VertexAttribP1ui(GLuint, GLenum, GLboolean, GLuint))
     failing!(fn VertexAttribP1uiv(GLuint, GLenum, GLboolean, *GLuint))
     failing!(fn VertexAttribP2ui(GLuint, GLenum, GLboolean, GLuint))
@@ -3659,7 +3659,7 @@ mod failing {
     failing!(fn VertexAttribP3uiv(GLuint, GLenum, GLboolean, *GLuint))
     failing!(fn VertexAttribP4ui(GLuint, GLenum, GLboolean, GLuint))
     failing!(fn VertexAttribP4uiv(GLuint, GLenum, GLboolean, *GLuint))
-    failing!(fn VertexAttribPointer(GLuint, GLint, GLenum, GLboolean, GLsizei, *GLvoid))
+    failing!(fn VertexAttribPointer(GLuint, GLint, GLenum, GLboolean, GLsizei, *c_void))
     failing!(fn VertexBindingDivisor(GLuint, GLuint))
     failing!(fn VertexP2ui(GLenum, GLuint))
     failing!(fn VertexP2uiv(GLenum, *GLuint))
@@ -3680,7 +3680,7 @@ mod failing {
 /// ~~~
 /// let gl = gl::load_with(glfw::get_proc_address);
 /// ~~~
-pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern "C" fn()>) {
+pub fn load_with(loadfn: |symbol: &str| -> Option<extern "C" fn()>) {
     ActiveShaderProgram::load_with(|s| loadfn(s));
     ActiveTexture::load_with(|s| loadfn(s));
     AttachShader::load_with(|s| loadfn(s));

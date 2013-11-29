@@ -36,8 +36,8 @@ use extra::getopts::groups::*;
 
 use std::os;
 use std::path::Path;
-use std::rt::io;
-use std::rt::io::{File, Reader, Writer};
+use std::io;
+use std::io::{File, Reader, Writer};
 use std::str;
 
 use registry::*;
@@ -173,7 +173,7 @@ impl<'self, W: Writer> Generator<'self, W> {
     }
 
     fn write_indent(&mut self) {
-        do (TAB_WIDTH * self.indent).times {
+        for _ in range(0, TAB_WIDTH * self.indent) {
             self.write_str(" ");
         }
     }
@@ -315,7 +315,7 @@ impl<'self, W: Writer> Generator<'self, W> {
     fn write_fns(&mut self) {
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "\\#[fixed_stack_segment] \\#[inline] pub {}fn {}({}){} \\{ {}(storage::{}.f)({}){} \\}",
+                "\\#[inline] pub {}fn {}({}){} \\{ {}(storage::{}.f)({}){} \\}",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
                 gen_param_list(c, true),
@@ -369,7 +369,7 @@ impl<'self, W: Writer> Generator<'self, W> {
         self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
         self.write_line("            ");
         self.write_line("            #[inline]");
-        self.write_line("            pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
+        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"C\" fn()>) {");
         self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name) }");
         self.write_line("            }");
         self.write_line("        }");
@@ -392,7 +392,7 @@ impl<'self, W: Writer> Generator<'self, W> {
         self.write_line("/// ~~~");
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
-        self.write_line("pub fn load_with(loadfn: &fn(symbol: &str) -> Option<extern \"C\" fn()>) {");
+        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"C\" fn()>) {");
         self.incr_indent();
         for c in self.registry.cmd_iter() {
             self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident))
