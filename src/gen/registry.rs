@@ -112,14 +112,14 @@ pub struct EnumIterator<'self> {
 
 impl<'self> Iterator<&'self Enum> for EnumIterator<'self> {
     fn next(&mut self) -> Option<&'self Enum> {
-        do self.iter.next().and_then |def| {
+        self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.ident) {
                 self.seen.insert(def.ident.clone());
                 Some(def)
             } else {
                 self.next()
             }
-        }
+        })
     }
 }
 
@@ -130,14 +130,14 @@ pub struct CmdIterator<'self> {
 
 impl<'self> Iterator<&'self Cmd> for CmdIterator<'self> {
     fn next(&mut self) -> Option<&'self Cmd> {
-        do self.iter.next().and_then |def| {
+        self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.proto.ident) {
                 self.seen.insert(def.proto.ident.clone());
                 Some(def)
             } else {
                 self.next()
             }
-        }
+        })
     }
 }
 
@@ -680,7 +680,7 @@ impl FromXML for Extension {
     fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = a.get_clone("name");
-        let supported = a.get("supported").split_iter('|').map(|x| x.to_owned()).to_owned_vec();
+        let supported = a.get("supported").split('|').map(|x| x.to_owned()).to_owned_vec();
         let mut require = ~[];
         loop {
             match r.recv() {
