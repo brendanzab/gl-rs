@@ -61,7 +61,7 @@ fn main() {
     };
 
     let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
-        ~"gl"  => (Path::init("gl.xml"), Gl),
+        ~"gl"  => (Path::new("gl.xml"), Gl),
         ~"glx" => fail!("glx generation unimplemented"),
         ~"wgl" => fail!("wgl generation unimplemented"),
         ns     => fail!("Unexpected opengl namespace '{}'", ns)
