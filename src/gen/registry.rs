@@ -105,13 +105,13 @@ impl Registry {
     }
 }
 
-pub struct EnumIterator<'self> {
+pub struct EnumIterator<'a> {
     priv seen: HashSet<~str>,
-    priv iter: VecIterator<'self, Enum>,
+    priv iter: VecIterator<'a, Enum>,
 }
 
-impl<'self> Iterator<&'self Enum> for EnumIterator<'self> {
-    fn next(&mut self) -> Option<&'self Enum> {
+impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
+    fn next(&mut self) -> Option<&'a Enum> {
         self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.ident) {
                 self.seen.insert(def.ident.clone());
@@ -123,13 +123,13 @@ impl<'self> Iterator<&'self Enum> for EnumIterator<'self> {
     }
 }
 
-pub struct CmdIterator<'self> {
+pub struct CmdIterator<'a> {
     priv seen: HashSet<~str>,
-    priv iter: VecIterator<'self, Cmd>,
+    priv iter: VecIterator<'a, Cmd>,
 }
 
-impl<'self> Iterator<&'self Cmd> for CmdIterator<'self> {
-    fn next(&mut self) -> Option<&'self Cmd> {
+impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
+    fn next(&mut self) -> Option<&'a Cmd> {
         self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.proto.ident) {
                 self.seen.insert(def.proto.ident.clone());
@@ -241,7 +241,7 @@ pub struct Filter {
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
-impl<'self> RegistryBuilder {
+impl<'a> RegistryBuilder {
     fn parse(data: &str, ns: Ns, filter: Option<Filter>) -> Registry {
         RegistryBuilder {
             ns: ns,
