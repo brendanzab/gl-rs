@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "glrsgen",
-       author = "Brendan Zabarauskas",
-       vers = "0.1")];
+#[pkgid = "glrsgen"];
 #[comment = "OpenGL function loader generator."];
 #[license = "ASL2"];
+
+
 #[feature(globs)];
 #[feature(macro_rules)];
 
@@ -184,20 +184,6 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_str("\n");
     }
 
-    fn write_comment(&mut self, s: &str) {
-        self.write_indent();
-        self.write_str("// ");
-        self.write_str(s);
-        self.write_str("\n");
-    }
-
-    fn write_doc_comment(&mut self, s: &str) {
-        self.write_indent();
-        self.write_str("/// ");
-        self.write_str(s);
-        self.write_str("\n");
-    }
-
     fn write_enum(&mut self, enm: &Enum, ty: &str) {
         let ident = if (enm.ident[0] as char).is_digit() {
             "_" + enm.ident
@@ -236,10 +222,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// limitations under the License.");
         self.write_line("");
         let ns = self.ns.to_str();
-        self.write_line(format!("\\#[link(name = \"{}\",", ns));
-        self.write_line("       author = \"Brendan Zabarauskas\",");
-        self.write_line("       url = \"https://github.com/bjz/gl-rs\",");
-        self.write_line("       vers = \"0.1\")];");
+        self.write_line(format!(r#"\#[pkgid = "github.com/bjz/gl-rs\#{}:0.1"];"#, ns));
         self.write_line("#[comment = \"An OpenGL function loader.\"];");
         self.write_line("#[license = \"ASL2\"];");
         self.write_line("#[crate_type = \"lib\"];");
