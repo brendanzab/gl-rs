@@ -91,10 +91,10 @@ fn main() {
 
 static TAB_WIDTH: uint = 4;
 
-struct Generator<'self, W> {
+struct Generator<'a, W> {
     ns: Ns,
-    writer: &'self mut W,
-    registry: &'self Registry,
+    writer: &'a mut W,
+    registry: &'a Registry,
     indent: uint,
 }
 
@@ -150,7 +150,7 @@ fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> ~str {
     }) + cmd.proto.ident
 }
 
-impl<'self, W: Writer> Generator<'self, W> {
+impl<'a, W: Writer> Generator<'a, W> {
     fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> Generator<'a, W> {
         Generator {
             ns: ns,
