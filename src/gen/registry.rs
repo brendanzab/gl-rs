@@ -230,7 +230,7 @@ pub struct GlxOpcode {
 struct RegistryBuilder {
     ns: Ns,
     filter: Option<Filter>,
-    port: SaxPort,
+    port: Port<ParseResult>,
 }
 
 pub struct Filter {
