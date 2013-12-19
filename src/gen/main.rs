@@ -260,7 +260,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("pub struct FnPtr<F> { f: F, is_loaded: bool }");
         self.write_line("");
         self.write_line("impl<F> FnPtr<F> {");
-        self.write_line("    pub fn new(ptr: Option<extern \"C\" fn()>, failing_fn: F) -> FnPtr<F> {");
+        self.write_line("    pub fn new(ptr: Option<extern \"system\" fn()>, failing_fn: F) -> FnPtr<F> {");
         self.write_line("        use std::cast::transmute;");
         self.write_line("        match ptr {");
         self.write_line("            Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },");
@@ -277,10 +277,10 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("use super::types::*;");
         self.write_line("");
         self.write_line("macro_rules! failing(");
-        self.write_line("    (fn $name:ident()) => (pub extern \"C\" fn $name() { fail!(stringify!($name was not loaded)) });");
-        self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (pub extern \"C\" fn $name() -> $ret_ty { fail!(stringify!($name was not loaded)) });");
-        self.write_line("    (fn $name:ident($($arg_ty:ty),*)) => (pub extern \"C\" fn $name($(_: $arg_ty),*) { fail!(stringify!($name was not loaded)) });");
-        self.write_line("    (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern \"C\" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });");
+        self.write_line("    (fn $name:ident()) => (pub extern \"system\" fn $name() { fail!(stringify!($name was not loaded)) });");
+        self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (pub extern \"system\" fn $name() -> $ret_ty { fail!(stringify!($name was not loaded)) });");
+        self.write_line("    (fn $name:ident($($arg_ty:ty),*)) => (pub extern \"system\" fn $name($(_: $arg_ty),*) { fail!(stringify!($name was not loaded)) });");
+        self.write_line("    (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern \"system\" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });");
         self.write_line(")");
         self.write_line("");
         for c in self.registry.cmd_iter() {
@@ -319,16 +319,16 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("");
         self.write_line("macro_rules! fn_ptr(");
         self.write_line("    (fn $name:ident()) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn()> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn()> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
         self.write_line("    );");
         self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn() -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn() -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
         self.write_line("    );");
         self.write_line("    (fn $name:ident($($arg:ident : $arg_ty:ty),*)) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn($($arg: $arg_ty),*)> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn($($arg: $arg_ty),*)> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
         self.write_line("    );");
         self.write_line("    (fn $name:ident($($arg:ident : $arg_ty:ty),*) -> $ret_ty:ty) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"C\" fn($($arg: $arg_ty),*) -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
+        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn($($arg: $arg_ty),*) -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
         self.write_line("    );");
         self.write_line(")");
         self.write_line("");
@@ -352,7 +352,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
         self.write_line("            ");
         self.write_line("            #[inline]");
-        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"C\" fn()>) {");
+        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"system\" fn()>) {");
         self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name) }");
         self.write_line("            }");
         self.write_line("        }");
@@ -375,7 +375,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("/// ~~~");
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
-        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"C\" fn()>) {");
+        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"system\" fn()>) {");
         self.incr_indent();
         for c in self.registry.cmd_iter() {
             self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident))
