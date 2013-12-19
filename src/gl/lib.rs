@@ -1,12 +1,12 @@
 // Copyright 2013 The gl-rs developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@ use self::types::*;
 
 pub mod types {
     use std::libc::*;
-    
+
     // Common types from OpenGL 1.1
     pub type GLenum = c_uint;
     pub type GLboolean = c_uchar;
@@ -50,18 +50,18 @@ pub mod types {
     pub type GLeglImageOES = *c_void;
     pub type GLchar = c_char;
     pub type GLcharARB = c_char;
-    
+
     #[cfg(target_os = "macos")]
     pub type GLhandleARB = *c_void;
     #[cfg(not(target_os = "macos"))]
     pub type GLhandleARB = c_uint;
-    
+
     pub type GLhalfARB = c_ushort;
     pub type GLhalf = c_ushort;
-    
+
     // Must be 32 bits
     pub type GLfixed = GLint;
-    
+
     pub type GLintptr = ptrdiff_t;
     pub type GLsizeiptr = ptrdiff_t;
     pub type GLint64 = i64;
@@ -70,20 +70,20 @@ pub mod types {
     pub type GLsizeiptrARB = ptrdiff_t;
     pub type GLint64EXT = i64;
     pub type GLuint64EXT = u64;
-    
+
     pub struct __GLsync;
     pub type GLsync = *__GLsync;
-    
+
     // compatible with OpenCL cl_context
     pub struct _cl_context;
     pub struct _cl_event;
-    
-    pub type GLDEBUGPROC = extern "C" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
-    pub type GLDEBUGPROCARB = extern "C" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
-    pub type GLDEBUGPROCKHR = extern "C" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
-    
+
+    pub type GLDEBUGPROC = extern "system" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
+    pub type GLDEBUGPROCARB = extern "system" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
+    pub type GLDEBUGPROCKHR = extern "system" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
+
     // Vendor extension types
-    pub type GLDEBUGPROCAMD = extern "C" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
+    pub type GLDEBUGPROCAMD = extern "system" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *GLchar, userParam: *c_void);
     pub type GLhalfNV = c_ushort;
     pub type GLvdpauSurfaceNV = GLintptr;
 }
@@ -1927,7 +1927,7 @@ pub static NUM_SAMPLE_COUNTS: GLenum = 0x9380;
 pub struct FnPtr<F> { f: F, is_loaded: bool }
 
 impl<F> FnPtr<F> {
-    pub fn new(ptr: Option<extern "C" fn()>, failing_fn: F) -> FnPtr<F> {
+    pub fn new(ptr: Option<extern "system" fn()>, failing_fn: F) -> FnPtr<F> {
         use std::cast::transmute;
         match ptr {
             Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },
@@ -1939,22 +1939,22 @@ impl<F> FnPtr<F> {
 mod storage {
     use std::libc::*;
     use super::types::*;
-    
+
     macro_rules! fn_ptr(
         (fn $name:ident()) => (
-            pub static mut $name: ::FnPtr<extern "C" fn()> = ::FnPtr { f: ::failing::$name, is_loaded: false };
+            pub static mut $name: ::FnPtr<extern "system" fn()> = ::FnPtr { f: ::failing::$name, is_loaded: false };
         );
         (fn $name:ident() -> $ret_ty:ty) => (
-            pub static mut $name: ::FnPtr<extern "C" fn() -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };
+            pub static mut $name: ::FnPtr<extern "system" fn() -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };
         );
         (fn $name:ident($($arg:ident : $arg_ty:ty),*)) => (
-            pub static mut $name: ::FnPtr<extern "C" fn($($arg: $arg_ty),*)> = ::FnPtr { f: ::failing::$name, is_loaded: false };
+            pub static mut $name: ::FnPtr<extern "system" fn($($arg: $arg_ty),*)> = ::FnPtr { f: ::failing::$name, is_loaded: false };
         );
         (fn $name:ident($($arg:ident : $arg_ty:ty),*) -> $ret_ty:ty) => (
-            pub static mut $name: ::FnPtr<extern "C" fn($($arg: $arg_ty),*) -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };
+            pub static mut $name: ::FnPtr<extern "system" fn($($arg: $arg_ty),*) -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };
         );
     )
-    
+
     fn_ptr!(fn ActiveShaderProgram(pipeline: GLuint, program: GLuint))
     fn_ptr!(fn ActiveTexture(texture: GLenum))
     fn_ptr!(fn AttachShader(program: GLuint, shader: GLuint))
@@ -2525,9 +2525,9 @@ macro_rules! fn_mod(
         pub mod $name {
             #[inline]
             pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }
-            
+
             #[inline]
-            pub fn load_with(loadfn: |symbol: &str| -> Option<extern "C" fn()>) {
+            pub fn load_with(loadfn: |symbol: &str| -> Option<extern "system" fn()>) {
                 unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name) }
             }
         }
@@ -3101,14 +3101,14 @@ fn_mod!(WaitSync, "glWaitSync")
 mod failing {
     use std::libc::*;
     use super::types::*;
-    
+
     macro_rules! failing(
-        (fn $name:ident()) => (pub extern "C" fn $name() { fail!(stringify!($name was not loaded)) });
-        (fn $name:ident() -> $ret_ty:ty) => (pub extern "C" fn $name() -> $ret_ty { fail!(stringify!($name was not loaded)) });
-        (fn $name:ident($($arg_ty:ty),*)) => (pub extern "C" fn $name($(_: $arg_ty),*) { fail!(stringify!($name was not loaded)) });
-        (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern "C" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });
+        (fn $name:ident()) => (pub extern "system" fn $name() { fail!(stringify!($name was not loaded)) });
+        (fn $name:ident() -> $ret_ty:ty) => (pub extern "system" fn $name() -> $ret_ty { fail!(stringify!($name was not loaded)) });
+        (fn $name:ident($($arg_ty:ty),*)) => (pub extern "system" fn $name($(_: $arg_ty),*) { fail!(stringify!($name was not loaded)) });
+        (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern "system" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });
     )
-    
+
     failing!(fn ActiveShaderProgram(GLuint, GLuint))
     failing!(fn ActiveTexture(GLenum))
     failing!(fn AttachShader(GLuint, GLuint))
@@ -3680,7 +3680,7 @@ mod failing {
 /// ~~~
 /// let gl = gl::load_with(glfw::get_proc_address);
 /// ~~~
-pub fn load_with(loadfn: |symbol: &str| -> Option<extern "C" fn()>) {
+pub fn load_with(loadfn: |symbol: &str| -> Option<extern "system" fn()>) {
     ActiveShaderProgram::load_with(|s| loadfn(s));
     ActiveTexture::load_with(|s| loadfn(s));
     AttachShader::load_with(|s| loadfn(s));
