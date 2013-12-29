@@ -184,7 +184,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_str("\n");
     }
 
-    fn write_enum(&mut self, enm: &Enum, ty: &str) {
+    fn write_enum(&mut self, enm: &Enum) {
         let ident = if (enm.ident[0] as char).is_digit() {
             "_" + enm.ident
         } else {
@@ -193,7 +193,10 @@ impl<'a, W: Writer> Generator<'a, W> {
 
         let ty = match ident {
             ~"TRUE" | ~"FALSE" => ~"GLboolean",
-            _ => ty.to_owned(),
+            _ => match enm.ty {
+                Some(~"ull") => ~"GLuint64",
+                _ => ~"GLenum"
+            }
         };
 
         self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value))
@@ -201,7 +204,7 @@ impl<'a, W: Writer> Generator<'a, W> {
 
     fn write_enums(&mut self) {
         for e in self.registry.enum_iter() {
-            self.write_enum(e, "GLenum");
+            self.write_enum(e);
         }
     }
 

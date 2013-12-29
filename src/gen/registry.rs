@@ -161,6 +161,7 @@ pub struct Enum {
     ident: ~str,
     value: ~str,
     alias: Option<~str>,
+    ty: Option<~str>,
 }
 
 pub struct CmdNs {
@@ -516,6 +517,7 @@ impl<'a> RegistryBuilder {
                             ident:  trim_enum_prefix(atts.get("name"), self.ns).to_owned(),
                             value:  atts.get_clone("value"),
                             alias:  atts.find_clone("alias"),
+                            ty:     atts.find_clone("type"),
                         }
                     );
                     self.expect_end_element("enum");
