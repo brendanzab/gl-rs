@@ -13,10 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "gl",
-       author = "Brendan Zabarauskas",
-       url = "https://github.com/bjz/gl-rs",
-       vers = "0.1")];
+#[crate_id = "github.com/bjz/gl-rs#gl:0.1"];
 #[comment = "An OpenGL function loader."];
 #[license = "ASL2"];
 #[crate_type = "lib"];
