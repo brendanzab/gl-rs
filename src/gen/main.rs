@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[pkgid = "glrsgen"];
+#[crate_id = "github.com/bjz/gl-rs#gen:0.1"];
 #[comment = "OpenGL function loader generator."];
 #[license = "ASL2"];
 
@@ -222,7 +222,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// limitations under the License.");
         self.write_line("");
         let ns = self.ns.to_str();
-        self.write_line(format!(r#"\#[pkgid = "github.com/bjz/gl-rs\#{}:0.1"];"#, ns));
+        self.write_line(format!(r#"\#[crate_id = "github.com/bjz/gl-rs\#{}:0.1"];"#, ns));
         self.write_line("#[comment = \"An OpenGL function loader.\"];");
         self.write_line("#[license = \"ASL2\"];");
         self.write_line("#[crate_type = \"lib\"];");
