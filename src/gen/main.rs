@@ -30,7 +30,7 @@
 //! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/glx.xml`
 //! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml`
 
-extern mod extra;
+extern mod extra = "extra#0.10-pre";
 
 use extra::getopts::groups::*;
 
@@ -83,7 +83,7 @@ fn main() {
             File::open(&path)
                 .expect(format!("Could not read {}", path.display()))
                 .read_to_end()
-            ), ns, filter
+            ).expect("registry source not utf8!"), ns, filter
     );
 
     Generator::write(&mut io::stdout(), &reg, ns);
@@ -98,16 +98,18 @@ struct Generator<'a, W> {
     indent: uint,
 }
 
-fn gen_binding_ident<'a>(binding: &'a Binding, use_idents: bool) -> &'a str {
+fn gen_binding_ident(binding: &Binding, use_idents: bool) -> ~str {
+    // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
+    // fixed
     if use_idents {
         match binding.ident.as_slice() {
-            "in" => &'a "in_",
-            "ref" => &'a "ref_",
-            "type" => &'a "type_",
-            ident => ident,
+            "in" => ~"in_",
+            "ref" => ~"ref_",
+            "type" => ~"type_",
+            ident => ident.to_owned(),
         }
     } else {
-        &'a "_"
+        ~"_"
     }
 }
 

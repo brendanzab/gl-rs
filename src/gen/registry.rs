@@ -17,7 +17,7 @@ extern mod sax;
 
 use extra::treemap::TreeSet;
 use std::hashmap::HashSet;
-use std::vec::VecIterator;
+use std::vec::Items;
 use self::sax::*;
 
 pub enum Ns { Gl, Glx, Wgl }
@@ -107,7 +107,7 @@ impl Registry {
 
 pub struct EnumIterator<'a> {
     priv seen: HashSet<~str>,
-    priv iter: VecIterator<'a, Enum>,
+    priv iter: Items<'a, Enum>,
 }
 
 impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
@@ -125,7 +125,7 @@ impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
 
 pub struct CmdIterator<'a> {
     priv seen: HashSet<~str>,
-    priv iter: VecIterator<'a, Cmd>,
+    priv iter: Items<'a, Cmd>,
 }
 
 impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
