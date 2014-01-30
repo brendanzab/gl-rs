@@ -26,7 +26,7 @@ fn start(argc: int, argv: **u8) -> int {
 fn main() {
     glfw::set_error_callback(~ErrorContext);
 
-    do glfw::start {
+    glfw::start(proc() {
         // Choose a GL profile that is compatible with OS X 10.7+
         glfw::window_hint::context_version(3, 2);
         glfw::window_hint::opengl_profile(glfw::OpenGlCoreProfile);
@@ -49,7 +49,7 @@ fn main() {
             // Swap buffers
             window.swap_buffers();
         }
-    }
+    });
 }
 
 struct ErrorContext;
