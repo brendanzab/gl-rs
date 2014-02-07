@@ -14,8 +14,9 @@
 // limitations under the License.
 
 extern mod sax;
+extern mod collections;
 
-use extra::treemap::TreeSet;
+use self::collections::TreeSet;
 use std::hashmap::HashSet;
 use std::vec::Items;
 use self::sax::*;

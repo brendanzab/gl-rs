@@ -17,7 +17,6 @@
 #[comment = "OpenGL function loader generator."];
 #[license = "ASL2"];
 
-
 #[feature(globs)];
 #[feature(macro_rules)];
 
@@ -31,8 +30,9 @@
 //! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml`
 
 extern mod extra = "extra#0.10-pre";
+extern mod getopts;
 
-use extra::getopts::groups::*;
+use getopts::{optopt, optmulti, optflag, getopts, usage};
 
 use std::os;
 use std::path::Path;
@@ -80,9 +80,9 @@ fn main() {
 
     let reg = Registry::from_xml(
         str::from_utf8_owned(
-            File::open(&path)
+            File::open(&path).ok()
                 .expect(format!("Could not read {}", path.display()))
-                .read_to_end()
+                .read_to_end().unwrap()
             ).expect("registry source not utf8!"), ns, filter
     );
 
@@ -170,8 +170,9 @@ impl<'a, W: Writer> Generator<'a, W> {
         if self.indent > 0 { self.indent -= 1 }
     }
 
+    #[allow(unused_must_use)]
     fn write_str(&mut self, s: &str) {
-        self.writer.write(s.as_bytes())
+        self.writer.write(s.as_bytes());
     }
 
     fn write_indent(&mut self) {
