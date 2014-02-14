@@ -52,13 +52,19 @@ fn main() {
         optopt("", "profile", "Profile to generate (core by default)", "core|compatability"),
         optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
         optmulti("", "extension", "Extension to include", ""),
+        optflag("h", "help", "Print usage information"),
         optflag("", "full", "Generate API for all profiles, versions and extensions"),
     ];
 
     let args = match getopts(os::args(), opts) {
         Ok(a) => a,
-        Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("generator", opts)),
+        Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("glrsgen", opts)),
     };
+
+    if args.opt_present("help") {
+        println!("{}", usage("glrsgen", opts));
+        return;
+    }
 
     let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
         ~"gl"  => (Path::new("gl.xml"), Gl),
