@@ -3,8 +3,11 @@ before_install:
   - sudo apt-get update
 install:
   - sudo apt-get install rust-nightly
+  - cd ..
   - git clone https://github.com/bjz/sax-rs.git
-  - ln -s ../sax-rs/src/sax/ src/sax
+  - cd sax-rs
+  - sudo make install
+  - cd ../gl-rs
 script:
-  - rustpkg build gen
-  - rustpkg build gl
+  - make gen
+  - make

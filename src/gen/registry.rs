@@ -248,7 +248,7 @@ impl<'a> RegistryBuilder {
         RegistryBuilder {
             ns: ns,
             filter: filter,
-            port: parse_xml(data),
+            port: parse_str(data),
         }.consume_registry()
     }
 
