@@ -29,8 +29,8 @@
 //! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/glx.xml`
 //! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml`
 
-extern mod extra = "extra#0.10-pre";
-extern mod getopts;
+extern crate extra = "extra#0.10-pre";
+extern crate getopts;
 
 use getopts::{optopt, optmulti, optflag, getopts, usage};
 
