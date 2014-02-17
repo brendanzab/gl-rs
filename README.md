@@ -5,7 +5,7 @@ An OpenGL function pointer loader for the Rust Programming Language.
 ## Compilation
 
 ~~~
-rustpkg build --opt-level=3 gl
+make
 ~~~
 
 ## Usage
