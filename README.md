@@ -13,7 +13,7 @@ rustpkg build --opt-level=3 gl
 You can import the pointer style loader and type aliases like so:
 
 ~~~rust
-extern mod gl;
+extern crate gl;
 // include the OpenGL type aliases
 use gl::types::*;
 ~~~

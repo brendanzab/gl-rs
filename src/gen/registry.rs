@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern mod sax;
-extern mod collections;
+extern crate sax;
+extern crate collections;
 
 use self::collections::TreeSet;
 use std::hashmap::HashSet;

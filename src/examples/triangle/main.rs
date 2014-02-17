@@ -16,8 +16,8 @@
 #[feature(globs)];
 #[feature(macro_rules)];
 
-extern mod glfw;
-extern mod gl;
+extern crate glfw;
+extern crate gl;
 
 use std::cast;
 use std::ptr;

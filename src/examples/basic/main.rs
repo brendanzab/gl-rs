@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern mod glfw;
-extern mod gl;
+extern crate glfw;
+extern crate gl;
 
 #[link_args="-lglfw"] extern {}
 
