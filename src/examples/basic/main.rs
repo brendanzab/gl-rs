@@ -13,14 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate glfw;
+extern crate native;
+extern crate glfw = "glfw-rs";
 extern crate gl;
-
-#[link_args="-lglfw"] extern {}
 
 #[start]
 fn start(argc: int, argv: **u8) -> int {
-    std::rt::start_on_main_thread(argc, argv, main)
+    native::start(argc, argv, main)
 }
 
 fn main() {

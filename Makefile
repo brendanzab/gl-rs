@@ -53,7 +53,7 @@ examples: $(EXAMPLES:%=$(EXAMPLES_DIR)/%)
 
 $(EXAMPLES_DIR)/% : $(EXAMPLES:%=src/examples/%/main.rs)
 	@mkdir -p $(EXAMPLES_DIR)
-	@echo $(RUSTC) -L/usr/lib -L/usr/local/lib -Llib --out-dir=$(EXAMPLES_DIR) -O src/examples/$*/main.rs
+	$(RUSTC) -L/usr/lib -L/usr/local/lib -o $(EXAMPLES_DIR)/$* -O -C link-args="-lglfw" src/examples/$*/main.rs
 
 gen: src/gen/main.rs
 	@mkdir -p bin
