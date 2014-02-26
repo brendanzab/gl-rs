@@ -17,7 +17,9 @@ extern crate sax;
 extern crate collections;
 
 use self::collections::TreeSet;
-use std::hashmap::HashSet;
+use self::collections::HashSet;
+use std::fmt;
+use std::from_str::FromStr;
 use std::vec::Items;
 use self::sax::*;
 
@@ -34,12 +36,12 @@ impl FromStr for Ns {
     }
 }
 
-impl ToStr for Ns {
-    fn to_str(&self) -> ~str {
+impl fmt::Show for Ns {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Gl  => ~"gl",
-            Glx => ~"glx",
-            Wgl => ~"wgl",
+            Gl  => write!(fmt.buf, "gl"),
+            Glx => write!(fmt.buf, "glx"),
+            Wgl => write!(fmt.buf, "wgl"),
         }
     }
 }
