@@ -102,6 +102,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "const GLvdpauSurfaceNV *"  => "*GLvdpauSurfaceNV",
         "const GLvoid *"            => "*GLvoid",
         "const void *"              => "*c_void",
+        "const void **"             => "**c_void",
         "const void *const*"        => "**c_void",
         "const GLboolean **"        => "**GLboolean",
         "const GLchar **"           => "**GLchar",
