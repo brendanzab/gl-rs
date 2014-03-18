@@ -16,7 +16,8 @@
 #[feature(globs)];
 #[feature(macro_rules)];
 
-extern crate glfw;
+extern crate native;
+extern crate glfw = "glfw-rs";
 extern crate gl;
 
 use std::cast;
@@ -26,8 +27,6 @@ use std::mem;
 use std::vec;
 
 use gl::types::*;
-
-#[link_args="-lglfw"] extern {}
 
 // Vertex data
 static VERTEX_DATA: [GLfloat, ..6] = [
@@ -53,7 +52,7 @@ static FS_SRC: &'static str =
 
 #[start]
 fn start(argc: int, argv: **u8) -> int {
-    std::rt::start_on_main_thread(argc, argv, main)
+    native::start(argc, argv, main)
 }
 
 fn compile_shader(src: &str, ty: GLenum) -> GLuint {
@@ -72,8 +71,8 @@ fn compile_shader(src: &str, ty: GLenum) -> GLuint {
             let mut len = 0;
             gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
             let mut buf = vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
-            gl::GetShaderInfoLog(shader, len, ptr::mut_null(), vec::raw::to_mut_ptr(buf) as *mut GLchar);
-            fail!(str::raw::from_utf8(buf));
+            gl::GetShaderInfoLog(shader, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
+            fail!(str::raw::from_utf8(buf).to_owned());
         }
     }
     shader
@@ -94,8 +93,8 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint {
             let mut len: GLint = 0;
             gl::GetProgramiv(program, gl::INFO_LOG_LENGTH, &mut len);
             let mut buf = vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
-            gl::GetProgramInfoLog(program, len, ptr::mut_null(), vec::raw::to_mut_ptr(buf) as *mut GLchar);
-            fail!(str::raw::from_utf8(buf));
+            gl::GetProgramInfoLog(program, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
+            fail!(str::raw::from_utf8(buf).to_owned());
         }
     }
     program
