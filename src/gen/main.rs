@@ -19,6 +19,7 @@
 
 #[feature(globs)];
 #[feature(macro_rules)];
+#[feature(phase)];
 
 //! Requires libxml2
 //!
@@ -29,8 +30,10 @@
 //! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/glx.xml`
 //! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml`
 
-extern crate extra = "extra#0.10-pre";
 extern crate getopts;
+
+#[phase(syntax, link)]
+extern crate log;
 
 use getopts::{optopt, optmulti, optflag, getopts, usage};
 
@@ -66,10 +69,10 @@ fn main() {
         return;
     }
 
-    let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl") {
-        ~"gl"  => (Path::new("gl.xml"), Gl),
-        ~"glx" => fail!("glx generation unimplemented"),
-        ~"wgl" => fail!("wgl generation unimplemented"),
+    let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl").as_slice() {
+        "gl"  => (Path::new("gl.xml"), Gl),
+        "glx" => fail!("glx generation unimplemented"),
+        "wgl" => fail!("wgl generation unimplemented"),
         ns     => fail!("Unexpected opengl namespace '{}'", ns)
     };
 
@@ -128,21 +131,21 @@ fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
 fn gen_param_list(cmd: &Cmd, use_idents: bool) -> ~str {
     cmd.params.iter()
         .map(|b| gen_binding(b, use_idents))
-        .to_owned_vec()
+        .collect::<Vec<~str>>()
         .connect(", ")
 }
 
 fn gen_param_ident_list(cmd: &Cmd) -> ~str {
     cmd.params.iter()
         .map(|b| gen_binding_ident(b, true))
-        .to_owned_vec()
+        .collect::<Vec<~str>>()
         .connect(", ")
 }
 
 fn gen_param_ty_list(cmd: &Cmd) -> ~str {
     cmd.params.iter()
         .map(|b| ty::to_rust_ty(b.ty))
-        .to_owned_vec()
+        .collect::<Vec<&str>>()
         .connect(", ")
 }
 
@@ -200,11 +203,11 @@ impl<'a, W: Writer> Generator<'a, W> {
             enm.ident.clone()
         };
 
-        let ty = match ident {
-            ~"TRUE" | ~"FALSE" => ~"GLboolean",
+        let ty = match ident.as_slice() {
+            "TRUE" | "FALSE" => "GLboolean",
             _ => match enm.ty {
-                Some(~"ull") => ~"GLuint64",
-                _ => ~"GLenum"
+                Some(ref s) if s.as_slice() == "ull" => "GLuint64",
+                _ => "GLenum"
             }
         };
 
