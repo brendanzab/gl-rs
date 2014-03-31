@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[crate_id = "github.com/bjz/gl-rs#gen:0.1"];
-#[comment = "OpenGL function loader generator."];
-#[license = "ASL2"];
+#![crate_id = "github.com/bjz/gl-rs#gen:0.1"]
+#![comment = "OpenGL function loader generator."]
+#![license = "ASL2"]
 
-#[feature(globs)];
-#[feature(macro_rules)];
-#[feature(phase)];
+#![feature(globs)]
+#![feature(macro_rules)]
+#![feature(phase)]
 
 //! Requires libxml2
 //!
@@ -237,13 +237,13 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// limitations under the License.");
         self.write_line("");
         let ns = self.ns.to_str();
-        self.write_line(format!(r#"\#[crate_id = "github.com/bjz/gl-rs\#{}:0.1"];"#, ns));
-        self.write_line("#[comment = \"An OpenGL function loader.\"];");
-        self.write_line("#[license = \"ASL2\"];");
-        self.write_line("#[crate_type = \"lib\"];");
+        self.write_line(format!(r#"\#![crate_id = "github.com/bjz/gl-rs\#{}:0.1"]"#, ns));
+        self.write_line("#![comment = \"An OpenGL function loader.\"]");
+        self.write_line("#![license = \"ASL2\"]");
+        self.write_line("#![crate_type = \"lib\"]");
         self.write_line("");
-        self.write_line("#[feature(macro_rules)];");
-        self.write_line("#[feature(globs)];");
+        self.write_line("#![feature(macro_rules)]");
+        self.write_line("#![feature(globs)]");
         self.write_line("");
         self.write_line("use std::libc::*;");
         self.write_line("use self::types::*;");

@@ -334,12 +334,12 @@ impl<'a> RegistryBuilder {
 
                 // add enum namespace
                 StartElement(ref s, _) if s.as_slice() == "enums" => {
-                    registry.enums.extend(&mut self.consume_enums().move_iter())
+                    registry.enums.extend(self.consume_enums().move_iter())
                 }
 
                 // add command namespace
                 StartElement(ref s, _) if s.as_slice() == "commands" => {
-                    registry.cmds.extend(&mut self.consume_cmds().move_iter());
+                    registry.cmds.extend(self.consume_cmds().move_iter());
                 }
 
                 StartElement(ref s, ref atts) if s.as_slice() == "feature" => {
@@ -382,8 +382,8 @@ impl<'a> RegistryBuilder {
                     // XXX: verify that the string comparison with <= actually works as desired
                     if f.api == filter.api && f.number <= filter.version {
                         for req in f.requires.iter() {
-                            desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
+                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                         }
                     }
                     if f.number == filter.version {
@@ -420,8 +420,8 @@ impl<'a> RegistryBuilder {
                             fail!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
                         }
                         for req in ext.requires.iter() {
-                            desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
+                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                         }
                     }
                 }

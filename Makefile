@@ -75,7 +75,7 @@ $(EXAMPLES_DIR)/% : $(EXAMPLES:%=src/examples/%/main.rs)
 
 gen: src/gen/main.rs
 	@mkdir -p bin
-	$(RUSTC) -L/usr/lib -L/usr/local/lib -Llib -O $? -o bin/glrsgen
+	$(RUSTC) -O -Llib/ $? -o bin/glrsgen
 
 install: lib
 	@mkdir -p $(LIB_INSTALL_DIR)
@@ -95,6 +95,7 @@ clean:
 .PHONY: \
 	all \
 	lib \
+	gen \
 	check \
 	doc \
 	install \
