@@ -68,11 +68,11 @@ fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
 }
 
 pub struct Registry {
-    groups: Vec<Group>,
-    enums: Vec<Enum>,
-    cmds: Vec<Cmd>,
-    features: Vec<Feature>,
-    extensions: Vec<Extension>,
+    pub groups: Vec<Group>,
+    pub enums: Vec<Enum>,
+    pub cmds: Vec<Cmd>,
+    pub features: Vec<Feature>,
+    pub extensions: Vec<Extension>,
 }
 
 impl Registry {
@@ -110,8 +110,8 @@ impl Registry {
 }
 
 pub struct EnumIterator<'a> {
-    priv seen: HashSet<~str>,
-    priv iter: Items<'a, Enum>,
+    seen: HashSet<~str>,
+    iter: Items<'a, Enum>,
 }
 
 impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
@@ -128,8 +128,8 @@ impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
 }
 
 pub struct CmdIterator<'a> {
-    priv seen: HashSet<~str>,
-    priv iter: Items<'a, Cmd>,
+    seen: HashSet<~str>,
+    iter: Items<'a, Cmd>,
 }
 
 impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
@@ -146,103 +146,103 @@ impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
 }
 
 pub struct Group {
-    name: ~str,
-    enums: Vec<~str>,
+    pub name: ~str,
+    pub enums: Vec<~str>,
 }
 
 pub struct EnumNs {
-    namespace: ~str,
-    group: Option<~str>,
-    ty: Option<~str>,
-    start: Option<~str>,
-    end: Option<~str>,
-    vendor: Option<~str>,
-    comment: Option<~str>,
-    defs: Vec<Enum>,
+    pub namespace: ~str,
+    pub group: Option<~str>,
+    pub ty: Option<~str>,
+    pub start: Option<~str>,
+    pub end: Option<~str>,
+    pub vendor: Option<~str>,
+    pub comment: Option<~str>,
+    pub defs: Vec<Enum>,
 }
 
 pub struct Enum {
-    ident: ~str,
-    value: ~str,
-    alias: Option<~str>,
-    ty: Option<~str>,
+    pub ident: ~str,
+    pub value: ~str,
+    pub alias: Option<~str>,
+    pub ty: Option<~str>,
 }
 
 pub struct CmdNs {
-    namespace: ~str,
-    defs: Vec<Cmd>,
+    pub namespace: ~str,
+    pub defs: Vec<Cmd>,
 }
 
 pub struct Binding {
-    ident: ~str,
-    ty: ~str,
-    group: Option<~str>,
+    pub ident: ~str,
+    pub ty: ~str,
+    pub group: Option<~str>,
 }
 
 pub struct Cmd {
-    proto: Binding,
-    params: Vec<Binding>,
-    is_safe: bool,
-    alias: Option<~str>,
-    vecequiv: Option<~str>,
-    glx: Option<GlxOpcode>,
+    pub proto: Binding,
+    pub params: Vec<Binding>,
+    pub is_safe: bool,
+    pub alias: Option<~str>,
+    pub vecequiv: Option<~str>,
+    pub glx: Option<GlxOpcode>,
 }
 
 #[deriving(Clone)]
 pub struct Feature {
-    api: ~str,
-    name: ~str,
-    number: ~str,
-    requires: Vec<Require>,
-    removes: Vec<Remove>,
+    pub api: ~str,
+    pub name: ~str,
+    pub number: ~str,
+    pub requires: Vec<Require>,
+    pub removes: Vec<Remove>,
 }
 
 #[deriving(Clone)]
 pub struct Require {
-    comment: Option<~str>,
+    pub comment: Option<~str>,
     /// A reference to the earlier types, by name
-    enums: Vec<~str>,
+    pub enums: Vec<~str>,
     /// A reference to the earlier types, by name
-    commands: Vec<~str>,
+    pub commands: Vec<~str>,
 }
 
 #[deriving(Clone)]
 pub struct Remove {
     // always core, for now
-    profile: ~str,
-    comment: ~str,
+    pub profile: ~str,
+    pub comment: ~str,
     /// A reference to the earlier types, by name
-    enums: Vec<~str>,
+    pub enums: Vec<~str>,
     /// A reference to the earlier types, by name
-    commands: Vec<~str>,
+    pub commands: Vec<~str>,
 }
 
 #[deriving(Clone)]
 pub struct Extension {
-    name: ~str,
+    pub name: ~str,
     /// which apis this extension is defined for (see Feature.api)
-    supported: Vec<~str>,
-    requires: Vec<Require>,
+    pub supported: Vec<~str>,
+    pub requires: Vec<Require>,
 }
 
 pub struct GlxOpcode {
-    ty: ~str,
-    opcode: ~str,
-    name: Option<~str>,
-    comment: Option<~str>,
+    pub ty: ~str,
+    pub opcode: ~str,
+    pub name: Option<~str>,
+    pub comment: Option<~str>,
 }
 
 struct RegistryBuilder {
-    ns: Ns,
-    filter: Option<Filter>,
-    port: Receiver<ParseResult>,
+    pub ns: Ns,
+    pub filter: Option<Filter>,
+    pub port: Receiver<ParseResult>,
 }
 
 pub struct Filter {
-    extensions: Vec<~str>,
-    profile: ~str,
-    version: ~str,
-    api: ~str,
+    pub extensions: Vec<~str>,
+    pub profile: ~str,
+    pub version: ~str,
+    pub api: ~str,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
@@ -334,12 +334,12 @@ impl<'a> RegistryBuilder {
 
                 // add enum namespace
                 StartElement(ref s, _) if s.as_slice() == "enums" => {
-                    registry.enums.extend(&mut self.consume_enums().move_iter())
+                    registry.enums.extend(self.consume_enums().move_iter());
                 }
 
                 // add command namespace
                 StartElement(ref s, _) if s.as_slice() == "commands" => {
-                    registry.cmds.extend(&mut self.consume_cmds().move_iter());
+                    registry.cmds.extend(self.consume_cmds().move_iter());
                 }
 
                 StartElement(ref s, ref atts) if s.as_slice() == "feature" => {
@@ -382,8 +382,8 @@ impl<'a> RegistryBuilder {
                     // XXX: verify that the string comparison with <= actually works as desired
                     if f.api == filter.api && f.number <= filter.version {
                         for req in f.requires.iter() {
-                            desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
+                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                         }
                     }
                     if f.number == filter.version {
@@ -420,8 +420,8 @@ impl<'a> RegistryBuilder {
                             fail!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
                         }
                         for req in ext.requires.iter() {
-                            desired_enums.extend(&mut req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(&mut req.commands.iter().map(|x| x.clone()));
+                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                         }
                     }
                 }
