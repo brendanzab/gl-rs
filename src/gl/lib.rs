@@ -21,11 +21,13 @@
 #![feature(macro_rules)]
 #![feature(globs)]
 
-use std::libc::*;
+extern crate libc;
+
+use libc::{c_void};
 use self::types::*;
 
 pub mod types {
-    use std::libc::*;
+    use libc::*;
     
     // Common types from OpenGL 1.1
     pub type GLenum = c_uint;
@@ -1938,7 +1940,7 @@ impl<F> FnPtr<F> {
 }
 
 mod storage {
-    use std::libc::*;
+    use libc::*;
     use super::types::*;
     
     macro_rules! fn_ptr(
@@ -3100,7 +3102,7 @@ fn_mod!(ViewportIndexedfv, "glViewportIndexedfv")
 fn_mod!(WaitSync, "glWaitSync")
 
 mod failing {
-    use std::libc::*;
+    use libc::*;
     use super::types::*;
     
     macro_rules! failing(
