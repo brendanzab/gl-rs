@@ -13,19 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[crate_id = "github.com/bjz/gl-rs#gl:0.1"];
-#[comment = "An OpenGL function loader."];
-#[license = "ASL2"];
-#[crate_type = "lib"];
+#![crate_id = "github.com/bjz/gl-rs#gl:0.1"]
+#![comment = "An OpenGL function loader."]
+#![license = "ASL2"]
+#![crate_type = "lib"]
 
-#[feature(macro_rules)];
-#[feature(globs)];
+#![feature(macro_rules)]
+#![feature(globs)]
+#![allow(non_camel_case_types)]
 
-use std::libc::*;
+extern crate libc;
+
+use libc::*;
 use self::types::*;
 
 pub mod types {
-    use std::libc::*;
+    use libc::*;
     
     // Common types from OpenGL 1.1
     pub type GLenum = c_uint;
@@ -1105,7 +1108,7 @@ pub static CONTEXT_PROFILE_MASK: GLenum = 0x9126;
 #[inline] pub fn RenderbufferStorage(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::RenderbufferStorage.f)(target, internalformat, width, height) } }
 #[inline] pub fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::RenderbufferStorageMultisample.f)(target, samples, internalformat, width, height) } }
 #[inline] pub fn SampleCoverage(value: GLfloat, invert: GLboolean) { unsafe { (storage::SampleCoverage.f)(value, invert) } }
-#[inline] pub fn SampleMaski(maskNumber: GLuint, mask: GLbitfield) { unsafe { (storage::SampleMaski.f)(maskNumber, mask) } }
+#[inline] pub fn SampleMaski(index: GLuint, mask: GLbitfield) { unsafe { (storage::SampleMaski.f)(index, mask) } }
 #[inline] pub unsafe fn SamplerParameterIiv(sampler: GLuint, pname: GLenum, param: *GLint) { (storage::SamplerParameterIiv.f)(sampler, pname, param) }
 #[inline] pub unsafe fn SamplerParameterIuiv(sampler: GLuint, pname: GLenum, param: *GLuint) { (storage::SamplerParameterIuiv.f)(sampler, pname, param) }
 #[inline] pub fn SamplerParameterf(sampler: GLuint, pname: GLenum, param: GLfloat) { unsafe { (storage::SamplerParameterf.f)(sampler, pname, param) } }
@@ -1265,14 +1268,14 @@ impl<F> FnPtr<F> {
     pub fn new(ptr: Option<extern "system" fn()>, failing_fn: F) -> FnPtr<F> {
         use std::cast::transmute;
         match ptr {
-            Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },
+            std::option::Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },
             None => FnPtr { f: failing_fn, is_loaded: false },
         }
     }
 }
 
 mod storage {
-    use std::libc::*;
+    use libc::*;
     use super::types::*;
     
     macro_rules! fn_ptr(
@@ -1511,7 +1514,7 @@ mod storage {
     fn_ptr!(fn RenderbufferStorage(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei))
     fn_ptr!(fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei))
     fn_ptr!(fn SampleCoverage(value: GLfloat, invert: GLboolean))
-    fn_ptr!(fn SampleMaski(maskNumber: GLuint, mask: GLbitfield))
+    fn_ptr!(fn SampleMaski(index: GLuint, mask: GLbitfield))
     fn_ptr!(fn SamplerParameterIiv(sampler: GLuint, pname: GLenum, param: *GLint))
     fn_ptr!(fn SamplerParameterIuiv(sampler: GLuint, pname: GLenum, param: *GLuint))
     fn_ptr!(fn SamplerParameterf(sampler: GLuint, pname: GLenum, param: GLfloat))
@@ -2056,7 +2059,7 @@ fn_mod!(Viewport, "glViewport")
 fn_mod!(WaitSync, "glWaitSync")
 
 mod failing {
-    use std::libc::*;
+    use libc::*;
     use super::types::*;
     
     macro_rules! failing(
