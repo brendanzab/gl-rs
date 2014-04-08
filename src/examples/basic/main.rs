@@ -13,48 +13,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate glfw;
 extern crate gl;
+extern crate glfw;
+extern crate native;
 
-#[link_args="-lglfw"] extern {}
+use glfw::Context;
 
 #[start]
 fn start(argc: int, argv: **u8) -> int {
-    std::rt::start_on_main_thread(argc, argv, main)
+    native::start(argc, argv, main)
 }
 
 fn main() {
-    glfw::set_error_callback(~ErrorContext);
+    let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
 
-    glfw::start(proc() {
-        // Choose a GL profile that is compatible with OS X 10.7+
-        glfw::window_hint::context_version(3, 2);
-        glfw::window_hint::opengl_profile(glfw::OpenGlCoreProfile);
-        glfw::window_hint::opengl_forward_compat(true);
+    // Choose a GL profile that is compatible with OS X 10.7+
+    glfw.window_hint(glfw::ContextVersion(3, 2));
+    glfw.window_hint(glfw::OpenglForwardCompat(true));
+    glfw.window_hint(glfw::OpenglProfile(glfw::OpenGlCoreProfile));
 
-        let window = glfw::Window::create(800, 600, "OpenGL", glfw::Windowed).unwrap();
-        window.make_context_current();
+    let (window, _) = glfw.create_window(800, 600, "OpenGL", glfw::Windowed)
+        .expect("Failed to create GLFW window.");
 
-        // Load the OpenGL function pointers
-        gl::load_with(glfw::get_proc_address);
+    // It is essential to make the context current before calling `gl::load_with`.
+    window.make_current();
 
-        while !window.should_close() {
-            // Poll events
-            glfw::poll_events();
+    // Load the OpenGL function pointers
+    gl::load_with(|s| glfw.get_proc_address(s));
 
-            // Clear the screen to black
-            gl::ClearColor(0.3, 0.3, 0.3, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+    while !window.should_close() {
+        // Poll events
+        glfw.poll_events();
 
-            // Swap buffers
-            window.swap_buffers();
-        }
-    });
-}
+        // Clear the screen to black
+        gl::ClearColor(0.3, 0.3, 0.3, 1.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT);
 
-struct ErrorContext;
-impl glfw::ErrorCallback for ErrorContext {
-    fn call(&self, _: glfw::Error, description: ~str) {
-        println!("GLFW Error: {:s}", description);
+        // Swap buffers
+        window.swap_buffers();
     }
 }

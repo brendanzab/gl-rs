@@ -13,21 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[feature(globs)];
-#[feature(macro_rules)];
+#![feature(globs)]
 
-extern crate glfw;
 extern crate gl;
-
-use std::cast;
-use std::ptr;
-use std::str;
-use std::mem;
-use std::vec;
+extern crate glfw;
+extern crate native;
 
 use gl::types::*;
-
-#[link_args="-lglfw"] extern {}
+use glfw::Context;
+use std::cast;
+use std::mem;
+use std::ptr;
+use std::slice;
+use std::str;
 
 // Vertex data
 static VERTEX_DATA: [GLfloat, ..6] = [
@@ -53,7 +51,7 @@ static FS_SRC: &'static str =
 
 #[start]
 fn start(argc: int, argv: **u8) -> int {
-    std::rt::start_on_main_thread(argc, argv, main)
+    native::start(argc, argv, main)
 }
 
 fn compile_shader(src: &str, ty: GLenum) -> GLuint {
@@ -71,9 +69,9 @@ fn compile_shader(src: &str, ty: GLenum) -> GLuint {
         if status != (gl::TRUE as GLint) {
             let mut len = 0;
             gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buf = vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
-            gl::GetShaderInfoLog(shader, len, ptr::mut_null(), vec::raw::to_mut_ptr(buf) as *mut GLchar);
-            fail!(str::raw::from_utf8(buf));
+            let mut buf = slice::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
+            gl::GetShaderInfoLog(shader, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
+            fail!(str::from_utf8_owned(buf).expect("ShaderInfoLog not valid utf8"));
         }
     }
     shader
@@ -93,90 +91,84 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint {
         if status != (gl::TRUE as GLint) {
             let mut len: GLint = 0;
             gl::GetProgramiv(program, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buf = vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
-            gl::GetProgramInfoLog(program, len, ptr::mut_null(), vec::raw::to_mut_ptr(buf) as *mut GLchar);
-            fail!(str::raw::from_utf8(buf));
+            let mut buf = slice::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
+            gl::GetProgramInfoLog(program, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
+            fail!(str::from_utf8_owned(buf).expect("ProgramInfoLog not valid utf8"));
         }
     }
     program
 }
 
 fn main() {
-    glfw::set_error_callback(~ErrorContext);
+    let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
 
-    glfw::start(proc() {
-        // Choose a GL profile that is compatible with OS X 10.7+
-        glfw::window_hint::context_version(3, 2);
-        glfw::window_hint::opengl_profile(glfw::OpenGlCoreProfile);
-        glfw::window_hint::opengl_forward_compat(true);
+    // Choose a GL profile that is compatible with OS X 10.7+
+    glfw.window_hint(glfw::ContextVersion(3, 2));
+    glfw.window_hint(glfw::OpenglForwardCompat(true));
+    glfw.window_hint(glfw::OpenglProfile(glfw::OpenGlCoreProfile));
 
-        let window = glfw::Window::create(800, 600, "OpenGL", glfw::Windowed).unwrap();
-        window.make_context_current();
+    let (window, _) = glfw.create_window(800, 600, "OpenGL", glfw::Windowed)
+        .expect("Failed to create GLFW window.");
 
-        // Load the OpenGL function pointers
-        gl::load_with(glfw::get_proc_address);
+    // It is essential to make the context current before calling `gl::load_with`.
+    window.make_current();
 
-        // Create GLSL shaders
-        let vs = compile_shader(VS_SRC, gl::VERTEX_SHADER);
-        let fs = compile_shader(FS_SRC, gl::FRAGMENT_SHADER);
-        let program = link_program(vs, fs);
+    // Load the OpenGL function pointers
+    gl::load_with(|s| glfw.get_proc_address(s));
 
-        let mut vao = 0;
-        let mut vbo = 0;
+    // Create GLSL shaders
+    let vs = compile_shader(VS_SRC, gl::VERTEX_SHADER);
+    let fs = compile_shader(FS_SRC, gl::FRAGMENT_SHADER);
+    let program = link_program(vs, fs);
 
-        unsafe {
-            // Create Vertex Array Object
-            gl::GenVertexArrays(1, &mut vao);
-            gl::BindVertexArray(vao);
+    let mut vao = 0;
+    let mut vbo = 0;
 
-            // Create a Vertex Buffer Object and copy the vertex data to it
-            gl::GenBuffers(1, &mut vbo);
-            gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-            gl::BufferData(gl::ARRAY_BUFFER,
-                           (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-                           cast::transmute(&VERTEX_DATA[0]),
-                           gl::STATIC_DRAW);
+    unsafe {
+        // Create Vertex Array Object
+        gl::GenVertexArrays(1, &mut vao);
+        gl::BindVertexArray(vao);
 
-            // Use shader program
-            gl::UseProgram(program);
-            "out_color".with_c_str(|ptr| gl::BindFragDataLocation(program, 0, ptr));
+        // Create a Vertex Buffer Object and copy the vertex data to it
+        gl::GenBuffers(1, &mut vbo);
+        gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
+        gl::BufferData(gl::ARRAY_BUFFER,
+                       (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                       cast::transmute(&VERTEX_DATA[0]),
+                       gl::STATIC_DRAW);
 
-            // Specify the layout of the vertex data
-            let pos_attr = "position".with_c_str(|ptr| gl::GetAttribLocation(program, ptr));
-            gl::EnableVertexAttribArray(pos_attr as GLuint);
-            gl::VertexAttribPointer(pos_attr as GLuint, 2, gl::FLOAT,
-                                    gl::FALSE as GLboolean, 0, ptr::null());
-        }
+        // Use shader program
+        gl::UseProgram(program);
+        "out_color".with_c_str(|ptr| gl::BindFragDataLocation(program, 0, ptr));
 
-        while !window.should_close() {
-            // Poll events
-            glfw::poll_events();
+        // Specify the layout of the vertex data
+        let pos_attr = "position".with_c_str(|ptr| gl::GetAttribLocation(program, ptr));
+        gl::EnableVertexAttribArray(pos_attr as GLuint);
+        gl::VertexAttribPointer(pos_attr as GLuint, 2, gl::FLOAT,
+                                gl::FALSE as GLboolean, 0, ptr::null());
+    }
 
-            // Clear the screen to black
-            gl::ClearColor(0.3, 0.3, 0.3, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+    while !window.should_close() {
+        // Poll events
+        glfw.poll_events();
 
-            // Draw a triangle from the 3 vertices
-            gl::DrawArrays(gl::TRIANGLES, 0, 3);
+        // Clear the screen to black
+        gl::ClearColor(0.3, 0.3, 0.3, 1.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT);
 
-            // Swap buffers
-            window.swap_buffers();
-        }
+        // Draw a triangle from the 3 vertices
+        gl::DrawArrays(gl::TRIANGLES, 0, 3);
 
-        // Cleanup
-        gl::DeleteProgram(program);
-        gl::DeleteShader(fs);
-        gl::DeleteShader(vs);
-        unsafe {
-            gl::DeleteBuffers(1, &vbo);
-            gl::DeleteVertexArrays(1, &vao);
-        }
-    });
-}
+        // Swap buffers
+        window.swap_buffers();
+    }
 
-struct ErrorContext;
-impl glfw::ErrorCallback for ErrorContext {
-    fn call(&self, _: glfw::Error, description: ~str) {
-        println!("GLFW Error: {:s}", description);
+    // Cleanup
+    gl::DeleteProgram(program);
+    gl::DeleteShader(fs);
+    gl::DeleteShader(vs);
+    unsafe {
+        gl::DeleteBuffers(1, &vbo);
+        gl::DeleteVertexArrays(1, &vao);
     }
 }
