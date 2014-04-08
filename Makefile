@@ -19,6 +19,8 @@ RUSTDOC             = rustdoc
 SRC_DIR             = src
 TEST_DIR            = test
 LIB_FILE            = $(SRC_DIR)/gl/lib.rs
+GEN_FILE            = $(SRC_DIR)/gen/main.rs
+EXAMPLE_FILES       = $(SRC_DIR)/examples/*.rs
 
 # Generated previous OpenGL versions.
 VERSIONS            = 21 30 31 32 33
@@ -29,23 +31,13 @@ endef
 
 $(foreach vers,$(VERSIONS),$(eval $(call VERSION_LIB_FILES,$(vers))))
 
-CRATE_NAME          = $(shell $(RUSTC) --crate-name $(LIB_FILE))
-CRATE_FILES         = $(shell $(RUSTC) --crate-file-name $(LIB_FILE))
-
-EXAMPLES       			= basic triangle
-EXAMPLES_DIR				= examples
-
 DOC_DIR             = doc
+EXAMPLES_DIR        = examples
 LIB_DIR             = lib
 
-INSTALL_PREFIX      = /usr/local
-LIB_INSTALL_DIR     = $(INSTALL_PREFIX)/lib
+all: gen lib examples doc
 
-all: lib doc
-
-lib: $(CRATE_FILES)
-
-$(CRATE_FILES): $(LIB_FILE)
+lib:
 	@mkdir -p $(LIB_DIR)
 	$(RUSTC) --out-dir=$(LIB_DIR) -O $(LIB_FILE)
 
@@ -67,36 +59,40 @@ doc:
 	@mkdir -p $(DOC_DIR)
 	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
 
-examples: $(EXAMPLES:%=$(EXAMPLES_DIR)/%)
+examples-dir:
+	mkdir -p $(EXAMPLES_DIR)
 
-$(EXAMPLES_DIR)/% : $(EXAMPLES:%=src/examples/%/main.rs)
-	@mkdir -p $(EXAMPLES_DIR)
-	@echo $(RUSTC) -L/usr/lib -L/usr/local/lib -Llib --out-dir=$(EXAMPLES_DIR) -O src/examples/$*/main.rs
+examples-deps:
+	make lib -C deps/glfw-rs
 
-gen: src/gen/main.rs
+$(EXAMPLE_FILES): lib examples-dir examples-deps
+	$(RUSTC) -L deps/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $@
+
+examples: $(EXAMPLE_FILES)
+
+gen-deps:
+	make lib -C deps/sax-rs
+
+gen: gen-deps
 	@mkdir -p bin
-	$(RUSTC) -L/usr/lib -L/usr/local/lib -Llib -O $? -o bin/glrsgen
-
-install: lib
-	@mkdir -p $(LIB_INSTALL_DIR)
-	@ $(foreach crate, $(CRATE_FILES), \
-		cp $(LIB_DIR)/$(crate) $(LIB_INSTALL_DIR)/$(crate) && \
-		echo "Installed $(crate) to $(LIB_INSTALL_DIR)" ; \
-	)
-
-uninstall:
-	@-rm $(LIB_INSTALL_DIR)/lib$(CRATE_NAME)-*.rlib ||:
+	$(RUSTC) -L deps/sax-rs/lib $(GEN_FILE) -o bin/glrsgen
 
 clean:
 	rm -rf $(LIB_DIR)
 	rm -rf $(TEST_DIR)
 	rm -rf $(DOC_DIR)
+	make clean -C deps/glfw-rs
+	make clean -C deps/sax-rs
 
 .PHONY: \
 	all \
 	lib \
 	check \
 	doc \
-	install \
-	uninstall \
+	examples \
+	examples-deps\
+	examples-dir \
+	gen \
+	gen-deps \
+	$(EXAMPLE_FILES) \
 	clean

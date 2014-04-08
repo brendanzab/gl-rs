@@ -3,11 +3,17 @@ before_install:
   - sudo apt-get update
 install:
   - sudo apt-get install rust-nightly
-  - cd ..
-  - git clone https://github.com/bjz/sax-rs.git
-  - cd sax-rs
-  - sudo make install
-  - cd ../gl-rs
-script:
-  - make gen
+  # libxml2
+  - sudo apt-get install libxml2
+  # glfw
+  - sudo apt-get install libXxf86vm-dev
+  - git clone https://github.com/glfw/glfw.git
+  - cd glfw
+  - git checkout 3.0.3
+  - cmake -DBUILD_SHARED_LIBS=ON .
   - make
+  - sudo make install
+  - cd ..
+script:
+  - make
+  - make clean
