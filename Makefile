@@ -21,7 +21,7 @@ TEST_DIR            = test
 LIB_FILE            = $(SRC_DIR)/gl/lib.rs
 
 # Generated previous OpenGL versions.
-VERSIONS            = 21 30 31 33
+VERSIONS            = 21 30 31 32 33
 
 define VERSION_LIB_FILES
 VERSION_LIB_FILES_$(1)   := $(SRC_DIR)/gl/gl$(1).rs

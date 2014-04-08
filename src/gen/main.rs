@@ -244,15 +244,21 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("");
         self.write_line("#![feature(macro_rules)]");
         self.write_line("#![feature(globs)]");
+<<<<<<< HEAD
+=======
+        self.write_line("#![allow(non_camel_case_types)]");
+>>>>>>> upstream/master
         self.write_line("");
-        self.write_line("use std::libc::*;");
+        self.write_line("extern crate libc;");
+        self.write_line("");
+        self.write_line("use libc::*;");
         self.write_line("use self::types::*;");
     }
 
     fn write_type_aliases(&mut self) {
         self.write_line("pub mod types {");
         self.incr_indent();
-        self.write_line("use std::libc::*;");
+        self.write_line("use libc::*;");
         self.write_line("");
         match self.ns {
             Gl => {
@@ -278,7 +284,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("    pub fn new(ptr: Option<extern \"system\" fn()>, failing_fn: F) -> FnPtr<F> {");
         self.write_line("        use std::cast::transmute;");
         self.write_line("        match ptr {");
-        self.write_line("            Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },");
+        self.write_line("            std::option::Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },");
         self.write_line("            None => FnPtr { f: failing_fn, is_loaded: false },");
         self.write_line("        }");
         self.write_line("    }");
@@ -288,7 +294,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     fn write_failing_fns(&mut self) {
         self.write_line("mod failing {");
         self.incr_indent();
-        self.write_line("use std::libc::*;");
+        self.write_line("use libc::*;");
         self.write_line("use super::types::*;");
         self.write_line("");
         self.write_line("macro_rules! failing(");
@@ -329,7 +335,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     fn write_ptrs(&mut self) {
         self.write_line("mod storage {");
         self.incr_indent();
-        self.write_line("use std::libc::*;");
+        self.write_line("use libc::*;");
         self.write_line("use super::types::*;");
         self.write_line("");
         self.write_line("macro_rules! fn_ptr(");

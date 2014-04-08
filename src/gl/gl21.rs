@@ -20,12 +20,15 @@
 
 #![feature(macro_rules)]
 #![feature(globs)]
+#![allow(non_camel_case_types)]
 
-use std::libc::*;
+extern crate libc;
+
+use libc::*;
 use self::types::*;
 
 pub mod types {
-    use std::libc::*;
+    use libc::*;
     
     // Common types from OpenGL 1.1
     pub type GLenum = c_uint;
@@ -1514,14 +1517,14 @@ impl<F> FnPtr<F> {
     pub fn new(ptr: Option<extern "system" fn()>, failing_fn: F) -> FnPtr<F> {
         use std::cast::transmute;
         match ptr {
-            Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },
+            std::option::Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },
             None => FnPtr { f: failing_fn, is_loaded: false },
         }
     }
 }
 
 mod storage {
-    use std::libc::*;
+    use libc::*;
     use super::types::*;
     
     macro_rules! fn_ptr(
@@ -2659,7 +2662,7 @@ fn_mod!(WindowPos3s, "glWindowPos3s")
 fn_mod!(WindowPos3sv, "glWindowPos3sv")
 
 mod failing {
-    use std::libc::*;
+    use libc::*;
     use super::types::*;
     
     macro_rules! failing(
