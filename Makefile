@@ -20,11 +20,20 @@ SRC_DIR             = src
 TEST_DIR            = test
 LIB_FILE            = $(SRC_DIR)/gl/lib.rs
 
+# Generated previous OpenGL versions.
+VERSIONS            = 21 30 31 32 33
+
+define VERSION_LIB_FILES
+VERSION_LIB_FILES_$(1)   := $(SRC_DIR)/gl/gl$(1).rs
+endef
+
+$(foreach vers,$(VERSIONS),$(eval $(call VERSION_LIB_FILES,$(vers))))
+
 CRATE_NAME          = $(shell $(RUSTC) --crate-name $(LIB_FILE))
 CRATE_FILES         = $(shell $(RUSTC) --crate-file-name $(LIB_FILE))
 
-EXAMPLES       			= basic triangle
-EXAMPLES_DIR				= examples
+EXAMPLES            = basic triangle
+EXAMPLES_DIR        = examples
 
 DOC_DIR             = doc
 LIB_DIR             = lib
@@ -39,6 +48,15 @@ lib: $(CRATE_FILES)
 $(CRATE_FILES): $(LIB_FILE)
 	@mkdir -p $(LIB_DIR)
 	$(RUSTC) --out-dir=$(LIB_DIR) -O $(LIB_FILE)
+
+# Targets for previous OpenGL versions
+define TARGET_CRATES
+lib-$(1): $(VERSION_LIB_FILES_$(1))
+	@mkdir -p $(LIB_DIR)
+	$(RUSTC) --out-dir=$(LIB_DIR) -O $(VERSION_LIB_FILES_$(1))
+endef
+
+$(foreach vers,$(VERSIONS),$(eval $(call TARGET_CRATES,$(vers))))
 
 check:
 	@mkdir -p $(TEST_DIR)
@@ -57,7 +75,7 @@ $(EXAMPLES_DIR)/% : $(EXAMPLES:%=src/examples/%/main.rs)
 
 gen: src/gen/main.rs
 	@mkdir -p bin
-	$(RUSTC) -L/usr/lib -L/usr/local/lib -Llib -O $? -o bin/glrsgen
+	$(RUSTC) -L. -O $? -o bin/glrsgen
 
 install: lib
 	@mkdir -p $(LIB_INSTALL_DIR)

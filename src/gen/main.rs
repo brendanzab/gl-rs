@@ -244,7 +244,10 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("");
         self.write_line("#![feature(macro_rules)]");
         self.write_line("#![feature(globs)]");
+<<<<<<< HEAD
+=======
         self.write_line("#![allow(non_camel_case_types)]");
+>>>>>>> upstream/master
         self.write_line("");
         self.write_line("extern crate libc;");
         self.write_line("");

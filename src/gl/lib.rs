@@ -1117,6 +1117,7 @@ pub static DOUBLE_MAT3x2: GLenum = 0x8F4B;
 pub static DOUBLE_MAT3x4: GLenum = 0x8F4C;
 pub static DOUBLE_MAT4x2: GLenum = 0x8F4D;
 pub static DOUBLE_MAT4x3: GLenum = 0x8F4E;
+pub static VERTEX_BINDING_BUFFER: GLenum = 0x8F4F;
 pub static R8_SNORM: GLenum = 0x8F94;
 pub static RG8_SNORM: GLenum = 0x8F95;
 pub static RGB8_SNORM: GLenum = 0x8F96;
@@ -1725,7 +1726,7 @@ pub static NUM_SAMPLE_COUNTS: GLenum = 0x9380;
 #[inline] pub fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) { unsafe { (storage::RenderbufferStorageMultisample.f)(target, samples, internalformat, width, height) } }
 #[inline] pub fn ResumeTransformFeedback() { unsafe { (storage::ResumeTransformFeedback.f)() } }
 #[inline] pub fn SampleCoverage(value: GLfloat, invert: GLboolean) { unsafe { (storage::SampleCoverage.f)(value, invert) } }
-#[inline] pub fn SampleMaski(index: GLuint, mask: GLbitfield) { unsafe { (storage::SampleMaski.f)(index, mask) } }
+#[inline] pub fn SampleMaski(maskNumber: GLuint, mask: GLbitfield) { unsafe { (storage::SampleMaski.f)(maskNumber, mask) } }
 #[inline] pub unsafe fn SamplerParameterIiv(sampler: GLuint, pname: GLenum, param: *GLint) { (storage::SamplerParameterIiv.f)(sampler, pname, param) }
 #[inline] pub unsafe fn SamplerParameterIuiv(sampler: GLuint, pname: GLenum, param: *GLuint) { (storage::SamplerParameterIuiv.f)(sampler, pname, param) }
 #[inline] pub fn SamplerParameterf(sampler: GLuint, pname: GLenum, param: GLfloat) { unsafe { (storage::SamplerParameterf.f)(sampler, pname, param) } }
@@ -2320,7 +2321,7 @@ mod storage {
     fn_ptr!(fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei))
     fn_ptr!(fn ResumeTransformFeedback())
     fn_ptr!(fn SampleCoverage(value: GLfloat, invert: GLboolean))
-    fn_ptr!(fn SampleMaski(index: GLuint, mask: GLbitfield))
+    fn_ptr!(fn SampleMaski(maskNumber: GLuint, mask: GLbitfield))
     fn_ptr!(fn SamplerParameterIiv(sampler: GLuint, pname: GLenum, param: *GLint))
     fn_ptr!(fn SamplerParameterIuiv(sampler: GLuint, pname: GLenum, param: *GLuint))
     fn_ptr!(fn SamplerParameterf(sampler: GLuint, pname: GLenum, param: GLfloat))
