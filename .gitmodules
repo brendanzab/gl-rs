@@ -1,0 +1,6 @@
+[submodule "deps/sax-rs"]
+	path = deps/sax-rs
+	url = https://github.com/bjz/sax-rs.git
+[submodule "deps/glfw-rs"]
+	path = deps/glfw-rs
+	url = https://github.com/bjz/glfw-rs.git

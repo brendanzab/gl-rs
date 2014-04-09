@@ -41,7 +41,6 @@ use std::os;
 use std::path::Path;
 use std::io;
 use std::io::{File, Reader, Writer};
-use std::str;
 
 use registry::*;
 
@@ -88,11 +87,10 @@ fn main() {
     };
 
     let reg = Registry::from_xml(
-        str::from_utf8_owned(
-            File::open(&path).ok()
-                .expect(format!("Could not read {}", path.display()))
-                .read_to_end().unwrap()
-            ).expect("registry source not utf8!"), ns, filter
+        File::open(&path).ok()
+            .expect(format!("Could not read {}", path.display()))
+            .read_to_str().ok()
+                .expect("registry source not utf8!"), ns, filter
     );
 
     Generator::write(&mut io::stdout(), &reg, ns);

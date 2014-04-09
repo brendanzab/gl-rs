@@ -2,6 +2,7 @@
 .rust
 bin
 build
+examples
 lib
 doc
 test
