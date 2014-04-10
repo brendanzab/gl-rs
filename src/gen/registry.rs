@@ -607,7 +607,7 @@ impl<'a> RegistryBuilder {
 
     fn consume_binding(&self, group: Option<~str>) -> Binding {
         // consume type
-        let mut ty = ~"";
+        let mut ty = StrBuf::new();
         loop {
             match self.recv() {
                 Characters(ch) => ty.push_str(ch),
@@ -622,7 +622,7 @@ impl<'a> RegistryBuilder {
         self.expect_end_element("name");
         Binding {
             ident: ident,
-            ty: ty,
+            ty: ty.into_owned(),
             group: group,
         }
     }
