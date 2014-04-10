@@ -22,33 +22,31 @@ LIB_FILE            = $(SRC_DIR)/gl/lib.rs
 GEN_FILE            = $(SRC_DIR)/gen/main.rs
 EXAMPLE_FILES       = $(SRC_DIR)/examples/*.rs
 
-# Generated previous OpenGL versions.
-VERSIONS            = 21 30 31 32 33
-
-define VERSION_LIB_FILES
-VERSION_LIB_FILES_$(1)   := $(SRC_DIR)/gl/gl$(1).rs
-endef
-
-$(foreach vers,$(VERSIONS),$(eval $(call VERSION_LIB_FILES,$(vers))))
-
+BIN_DIR             = bin
+DEPS_DIR            = deps
 DOC_DIR             = doc
 EXAMPLES_DIR        = examples
 LIB_DIR             = lib
 
-all: gen lib examples doc
+GLRSGEN             = $(BIN_DIR)/glrsgen
 
-lib:
-	@mkdir -p $(LIB_DIR)
-	$(RUSTC) --out-dir=$(LIB_DIR) -O $(LIB_FILE)
+GL_NAMESPACE        ?= gl
+GL_API              ?= gl
+GL_PROFILE          ?= core
+GL_VERSION          ?= 4.3
+GL_EXTENSIONS       ?=
+GL_FULL             ?=
+GL_XML              ?= $(DEPS_DIR)/khronos-api/$(GL_API).xml
 
-# Targets for previous OpenGL versions
-define TARGET_CRATES
-lib-$(1): $(VERSION_LIB_FILES_$(1))
-	@mkdir -p $(LIB_DIR)
-	$(RUSTC) --out-dir=$(LIB_DIR) -O $(VERSION_LIB_FILES_$(1))
-endef
+GEN_FLAGS           ?= \
+	--namespace $(GL_NAMESPACE) \
+	--api $(GL_API) \
+	--profile $(GL_PROFILE) \
+	--version $(GL_VERSION) --xml $(GL_XML) \
+	$(foreach EXTENSION, $(GL_EXTENSIONS), --extension $(EXTENSION)) \
+	$(if $(GL_FULL), --full)
 
-$(foreach vers,$(VERSIONS),$(eval $(call TARGET_CRATES,$(vers))))	
+all: lib examples doc
 	
 check:
 	@mkdir -p $(TEST_DIR)
@@ -63,26 +61,33 @@ examples-dir:
 	mkdir -p $(EXAMPLES_DIR)
 
 examples-deps:
-	make lib -C deps/glfw-rs
+	make lib -C $(DEPS_DIR)/glfw-rs
 
 $(EXAMPLE_FILES): lib examples-dir examples-deps
-	$(RUSTC) -L deps/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $@
+	$(RUSTC) -L $(DEPS_DIR)/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $@
 
 examples: $(EXAMPLE_FILES)
 
 gen-deps:
-	make lib -C deps/sax-rs
+	make lib -C $(DEPS_DIR)/sax-rs
 
 gen: gen-deps
-	@mkdir -p bin
-	$(RUSTC) -L deps/sax-rs/lib $(GEN_FILE) -o bin/glrsgen
+	@mkdir -p $(BIN_DIR)
+	$(RUSTC) -L $(DEPS_DIR)/sax-rs/lib $(GEN_FILE) -o $(GLRSGEN)
+
+gen-lib: gen
+	$(GLRSGEN) $(GEN_FLAGS) > $(LIB_FILE)
+
+lib: gen-lib
+	$(RUSTC) $(LIB_FILE) -O --out-dir=$(LIB_DIR)
 
 clean:
-	rm -rf $(LIB_DIR)
+	rm -f $(LIB_FILE)
+	rm -rf $(BIN_DIR)
 	rm -rf $(TEST_DIR)
 	rm -rf $(DOC_DIR)
-	make clean -C deps/glfw-rs
-	make clean -C deps/sax-rs
+	make clean -C $(DEPS_DIR)/glfw-rs
+	make clean -C $(DEPS_DIR)/sax-rs
 
 .PHONY: \
 	all \
@@ -94,5 +99,6 @@ clean:
 	examples-dir \
 	gen \
 	gen-deps \
+	gen-lib \
 	$(EXAMPLE_FILES) \
 	clean
