@@ -4,8 +4,30 @@ An OpenGL function pointer loader for the Rust Programming Language.
 
 ## Compilation
 
+To compile the library, examples, and documentation:
+
 ~~~
 make
+~~~
+
+### Custom loader configuration
+
+The following variables can be customised when compiling the library:
+
+~~~make
+GL_NAMESPACE        ?= gl
+GL_API              ?= gl
+GL_PROFILE          ?= core
+GL_VERSION          ?= 4.3
+GL_EXTENSIONS       ?=
+GL_FULL             ?=
+GL_XML              ?= ./deps/khronos-api/$(GL_API).xml
+~~~
+
+For example:
+
+~~~
+GL_VERSION=2.1 GL_PROFILE=compatability make lib
 ~~~
 
 ## Usage
@@ -58,13 +80,6 @@ if gl::Viewport::is_loaded() {
     // do something...
 }
 ~~~
-
-## Generating the loader
-
-The loader in `gl.rs` is generated using the [XML API Registry]
-(http://www.opengl.org/discussion_boards/showthread.php/181927-New-XML-based-API-Registry-released?p=1251775).
-If you would like to generate the loader yourself, please refer to the README
-in the `src/gen` directory.
 
 ## Todo
 
