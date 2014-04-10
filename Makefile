@@ -47,13 +47,13 @@ GEN_FLAGS           ?= \
 	$(if $(GL_FULL), --full)
 
 all: lib examples doc
-	
+
 check:
 	@mkdir -p $(TEST_DIR)
 	$(RUSTC) --out-dir=$(TEST_DIR) --test $(LIB_FILE)
 	$(TEST_DIR)/gl
 
-doc: 
+doc:
 	@mkdir -p $(DOC_DIR)
 	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
 
@@ -76,6 +76,7 @@ gen: gen-deps
 	$(RUSTC) -L $(DEPS_DIR)/sax-rs/lib $(GEN_FILE) -o $(GLRSGEN)
 
 gen-lib: gen
+	@mkdir -p $(LIB_DIR)
 	$(GLRSGEN) $(GEN_FLAGS) > $(LIB_FILE)
 
 lib: gen-lib
