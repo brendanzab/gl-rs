@@ -6,3 +6,4 @@ examples
 lib
 doc
 test
+src/gl/lib.rs
