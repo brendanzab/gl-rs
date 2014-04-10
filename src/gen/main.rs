@@ -56,6 +56,7 @@ fn main() {
         optmulti("", "extension", "Extension to include", ""),
         optflag("h", "help", "Print usage information"),
         optflag("", "full", "Generate API for all profiles, versions and extensions"),
+        optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
     ];
 
     let args = match getopts(os::args(), opts) {
@@ -68,12 +69,16 @@ fn main() {
         return;
     }
 
-    let (path, ns) = match args.opt_str("namespace").unwrap_or(~"gl").as_slice() {
-        "gl"  => (Path::new("gl.xml"), Gl),
+    let ns = match args.opt_str("namespace").unwrap_or(~"gl").as_slice() {
+        "gl"  => Gl,
         "glx" => fail!("glx generation unimplemented"),
         "wgl" => fail!("wgl generation unimplemented"),
         ns     => fail!("Unexpected opengl namespace '{}'", ns)
     };
+
+    let path = Path::new(
+        args.opt_str("xml").unwrap_or(format!("{}.xml", ns))
+    );
 
     let filter = if args.opt_present("full") {
         None
