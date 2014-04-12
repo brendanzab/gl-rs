@@ -69,6 +69,8 @@ $(EXAMPLE_FILES): lib examples-dir examples-deps
 examples: $(EXAMPLE_FILES)
 
 gen-deps:
+	@git submodule init
+	@git submodule update
 	make lib -C $(DEPS_DIR)/sax-rs
 
 gen: gen-deps
