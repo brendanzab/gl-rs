@@ -48,6 +48,10 @@ GEN_FLAGS           ?= \
 
 all: lib examples doc
 
+submodule-update:
+	@git submodule init
+	@git submodule update
+
 check:
 	@mkdir -p $(TEST_DIR)
 	$(RUSTC) --out-dir=$(TEST_DIR) --test $(LIB_FILE)
@@ -60,7 +64,7 @@ doc:
 examples-dir:
 	mkdir -p $(EXAMPLES_DIR)
 
-examples-deps:
+examples-deps: submodule-update
 	make lib -C $(DEPS_DIR)/glfw-rs
 
 $(EXAMPLE_FILES): lib examples-dir examples-deps
@@ -68,9 +72,7 @@ $(EXAMPLE_FILES): lib examples-dir examples-deps
 
 examples: $(EXAMPLE_FILES)
 
-gen-deps:
-	@git submodule init
-	@git submodule update
+gen-deps: submodule-update
 	make lib -C $(DEPS_DIR)/sax-rs
 
 gen: gen-deps
