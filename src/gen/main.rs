@@ -69,7 +69,7 @@ fn main() {
         return;
     }
 
-    let ns = match args.opt_str("namespace").unwrap_or(~"gl").as_slice() {
+    let ns = match args.opt_str("namespace").unwrap_or("gl".to_owned()).as_slice() {
         "gl"  => Gl,
         "glx" => fail!("glx generation unimplemented"),
         "wgl" => fail!("wgl generation unimplemented"),
@@ -85,9 +85,9 @@ fn main() {
     } else {
         Some(Filter {
             extensions: args.opt_strs("extension"),
-            profile: args.opt_str("profile").unwrap_or(~"core"),
-            version: args.opt_str("version").unwrap_or(~"4.3"),
-            api: args.opt_str("api").unwrap_or(~"gl"),
+            profile: args.opt_str("profile").unwrap_or("core".to_owned()),
+            version: args.opt_str("version").unwrap_or("4.3".to_owned()),
+            api: args.opt_str("api").unwrap_or("gl".to_owned()),
         })
     };
 
@@ -115,13 +115,13 @@ fn gen_binding_ident(binding: &Binding, use_idents: bool) -> ~str {
     // fixed
     if use_idents {
         match binding.ident.as_slice() {
-            "in" => ~"in_",
-            "ref" => ~"ref_",
-            "type" => ~"type_",
+            "in" => "in_".to_owned(),
+            "ref" => "ref_".to_owned(),
+            "type" => "type_".to_owned(),
             ident => ident.to_owned(),
         }
     } else {
-        ~"_"
+        "_".to_owned()
     }
 }
 

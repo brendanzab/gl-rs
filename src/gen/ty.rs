@@ -15,7 +15,7 @@
 
 pub fn to_return_suffix(ty: &str) -> ~str {
     match ty {
-        "c_void" | "VOID" | "GLvoid" => ~"",
+        "c_void" | "VOID" | "GLvoid" => "".to_owned(),
         ty_str => " -> " + ty_str.replace("*mut ", "*"),
     }
 }

@@ -314,8 +314,8 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement(~"comment")),
-                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement(~"types")),
+                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_owned())),
+                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_owned())),
 
                 // add groups
                 StartElement(ref s, _) if s.as_slice() == "groups" => {
@@ -428,8 +428,8 @@ impl<'a> RegistryBuilder {
 
                 Registry {
                     groups: groups,
-                    enums: enums.move_iter().filter(|e| desired_enums.contains(&(~"GL_" + e.ident))).collect::<Vec<Enum>>(),
-                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&(~"gl" + c.proto.ident))).collect::<Vec<Cmd>>(),
+                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_owned() + e.ident))).collect::<Vec<Enum>>(),
+                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_owned() + c.proto.ident))).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),
                     extensions: Vec::new(),
@@ -512,7 +512,7 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement(~"unused")),
+                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_owned())),
 
                 // add enum definition
                 StartElement(ref s, ref atts) if s.as_slice() == "enum" => {
