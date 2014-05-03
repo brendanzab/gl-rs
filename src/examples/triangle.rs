@@ -24,7 +24,6 @@ use glfw::Context;
 use std::cast;
 use std::mem;
 use std::ptr;
-use std::slice;
 use std::str;
 
 // Vertex data
@@ -69,9 +68,9 @@ fn compile_shader(src: &str, ty: GLenum) -> GLuint {
         if status != (gl::TRUE as GLint) {
             let mut len = 0;
             gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buf = slice::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
+            let mut buf = Vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
             gl::GetShaderInfoLog(shader, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
-            fail!(str::from_utf8_owned(buf).expect("ShaderInfoLog not valid utf8"));
+            fail!("{}", str::from_utf8(buf.as_slice()).expect("ShaderInfoLog not valid utf8"));
         }
     }
     shader
@@ -91,9 +90,9 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint {
         if status != (gl::TRUE as GLint) {
             let mut len: GLint = 0;
             gl::GetProgramiv(program, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buf = slice::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
+            let mut buf = Vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
             gl::GetProgramInfoLog(program, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
-            fail!(str::from_utf8_owned(buf).expect("ProgramInfoLog not valid utf8"));
+            fail!("{}", str::from_utf8(buf.as_slice()).expect("ProgramInfoLog not valid utf8"));
         }
     }
     program
