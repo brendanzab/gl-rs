@@ -59,7 +59,7 @@ fn main() {
         optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
     ];
 
-    let args = match getopts(os::args(), opts) {
+    let args = match getopts(os::args().as_slice(), opts) {
         Ok(a) => a,
         Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("glrsgen", opts)),
     };
