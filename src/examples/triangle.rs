@@ -21,7 +21,6 @@ extern crate native;
 
 use gl::types::*;
 use glfw::Context;
-use std::cast;
 use std::mem;
 use std::ptr;
 use std::str;
@@ -133,7 +132,7 @@ fn main() {
         gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
         gl::BufferData(gl::ARRAY_BUFFER,
                        (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-                       cast::transmute(&VERTEX_DATA[0]),
+                       mem::transmute(&VERTEX_DATA[0]),
                        gl::STATIC_DRAW);
 
         // Use shader program

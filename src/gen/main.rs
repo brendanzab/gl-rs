@@ -282,7 +282,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("");
         self.write_line("impl<F> FnPtr<F> {");
         self.write_line("    pub fn new(ptr: Option<extern \"system\" fn()>, failing_fn: F) -> FnPtr<F> {");
-        self.write_line("        use std::cast::transmute;");
+        self.write_line("        use std::mem::transmute;");
         self.write_line("        match ptr {");
         self.write_line("            std::option::Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },");
         self.write_line("            None => FnPtr { f: failing_fn, is_loaded: false },");
