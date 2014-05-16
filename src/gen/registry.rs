@@ -40,9 +40,9 @@ impl FromStr for Ns {
 impl fmt::Show for Ns {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Gl  => write!(fmt.buf, "gl"),
-            Glx => write!(fmt.buf, "glx"),
-            Wgl => write!(fmt.buf, "wgl"),
+            Gl  => write!(fmt, "gl"),
+            Glx => write!(fmt, "glx"),
+            Wgl => write!(fmt, "wgl"),
         }
     }
 }
