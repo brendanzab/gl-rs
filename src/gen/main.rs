@@ -59,7 +59,8 @@ fn main() {
         optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
     ];
 
-    let args = match getopts(os::args().as_slice(), opts) {
+    let os_args = os::args().iter().map(|x| x.to_strbuf()).collect::<Vec<StrBuf>>();
+    let args = match getopts(os_args.as_slice(), opts) {
         Ok(a) => a,
         Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("glrsgen", opts)),
     };
@@ -69,7 +70,7 @@ fn main() {
         return;
     }
 
-    let ns = match args.opt_str("namespace").unwrap_or("gl".to_owned()).as_slice() {
+    let ns = match args.opt_str("namespace").unwrap_or("gl".to_strbuf()).as_slice() {
         "gl"  => Gl,
         "glx" => fail!("glx generation unimplemented"),
         "wgl" => fail!("wgl generation unimplemented"),
@@ -77,7 +78,7 @@ fn main() {
     };
 
     let path = Path::new(
-        args.opt_str("xml").unwrap_or(format!("{}.xml", ns))
+        args.opt_str("xml").unwrap_or(format_strbuf!("{}.xml", ns))
     );
 
     let filter = if args.opt_present("full") {
@@ -85,9 +86,9 @@ fn main() {
     } else {
         Some(Filter {
             extensions: args.opt_strs("extension"),
-            profile: args.opt_str("profile").unwrap_or("core".to_owned()),
-            version: args.opt_str("version").unwrap_or("4.3".to_owned()),
-            api: args.opt_str("api").unwrap_or("gl".to_owned()),
+            profile: args.opt_str("profile").unwrap_or("core".to_strbuf()),
+            version: args.opt_str("version").unwrap_or("4.3".to_strbuf()),
+            api: args.opt_str("api").unwrap_or("gl".to_strbuf()),
         })
     };
 
@@ -110,58 +111,58 @@ struct Generator<'a, W> {
     indent: uint,
 }
 
-fn gen_binding_ident(binding: &Binding, use_idents: bool) -> ~str {
+fn gen_binding_ident(binding: &Binding, use_idents: bool) -> StrBuf {
     // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
     // fixed
     if use_idents {
         match binding.ident.as_slice() {
-            "in" => "in_".to_owned(),
-            "ref" => "ref_".to_owned(),
-            "type" => "type_".to_owned(),
-            ident => ident.to_owned(),
+            "in" => "in_".to_strbuf(),
+            "ref" => "ref_".to_strbuf(),
+            "type" => "type_".to_strbuf(),
+            ident => ident.to_strbuf(),
         }
     } else {
-        "_".to_owned()
+        "_".to_strbuf()
     }
 }
 
-fn gen_binding(binding: &Binding, use_idents: bool) -> ~str {
-    format!("{}: {}",
+fn gen_binding(binding: &Binding, use_idents: bool) -> StrBuf {
+    format_strbuf!("{}: {}",
         gen_binding_ident(binding, use_idents),
-        ty::to_rust_ty(binding.ty))
+        ty::to_rust_ty(binding.ty.as_slice()))
 }
 
-fn gen_param_list(cmd: &Cmd, use_idents: bool) -> ~str {
+fn gen_param_list(cmd: &Cmd, use_idents: bool) -> StrBuf {
     cmd.params.iter()
         .map(|b| gen_binding(b, use_idents))
-        .collect::<Vec<~str>>()
-        .connect(", ")
+        .collect::<Vec<StrBuf>>()
+        .connect(", ").to_strbuf()
 }
 
-fn gen_param_ident_list(cmd: &Cmd) -> ~str {
+fn gen_param_ident_list(cmd: &Cmd) -> StrBuf {
     cmd.params.iter()
         .map(|b| gen_binding_ident(b, true))
-        .collect::<Vec<~str>>()
-        .connect(", ")
+        .collect::<Vec<StrBuf>>()
+        .connect(", ").to_strbuf()
 }
 
-fn gen_param_ty_list(cmd: &Cmd) -> ~str {
+fn gen_param_ty_list(cmd: &Cmd) -> StrBuf {
     cmd.params.iter()
-        .map(|b| ty::to_rust_ty(b.ty))
+        .map(|b| ty::to_rust_ty(b.ty.as_slice()))
         .collect::<Vec<&str>>()
-        .connect(", ")
+        .connect(", ").to_strbuf()
 }
 
-fn gen_return_suffix(cmd: &Cmd) -> ~str {
-    ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty))
+fn gen_return_suffix(cmd: &Cmd) -> StrBuf {
+    ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty.as_slice()))
 }
 
-fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> ~str {
+fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> StrBuf {
     (match *ns {
         Gl => "gl",
         Glx => "glx",
         Wgl => "wgl",
-    }) + cmd.proto.ident
+    }).to_strbuf().append(cmd.proto.ident.as_slice())
 }
 
 impl<'a, W: Writer> Generator<'a, W> {
@@ -200,8 +201,8 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     fn write_enum(&mut self, enm: &Enum) {
-        let ident = if (enm.ident[0] as char).is_digit() {
-            "_" + enm.ident
+        let ident = if (enm.ident.as_slice()[0] as char).is_digit() {
+            format_strbuf!("_{}", enm.ident)
         } else {
             enm.ident.clone()
         };
