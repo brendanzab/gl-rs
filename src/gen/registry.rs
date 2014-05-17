@@ -83,7 +83,7 @@ impl Registry {
 
     /// Returns a set of all the types used in the supplied registry. This is useful
     /// for working out what conversions are needed for the specific registry.
-    pub fn get_tys(&self) -> TreeSet<~str> {
+    pub fn get_tys(&self) -> TreeSet<StrBuf> {
         let mut tys = TreeSet::new();
         for def in self.cmds.iter() {
             tys.insert(def.proto.ty.clone());
@@ -110,7 +110,7 @@ impl Registry {
 }
 
 pub struct EnumIterator<'a> {
-    seen: HashSet<~str>,
+    seen: HashSet<StrBuf>,
     iter: Items<'a, Enum>,
 }
 
@@ -128,7 +128,7 @@ impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
 }
 
 pub struct CmdIterator<'a> {
-    seen: HashSet<~str>,
+    seen: HashSet<StrBuf>,
     iter: Items<'a, Cmd>,
 }
 
@@ -146,90 +146,90 @@ impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
 }
 
 pub struct Group {
-    pub name: ~str,
-    pub enums: Vec<~str>,
+    pub name: StrBuf,
+    pub enums: Vec<StrBuf>,
 }
 
 pub struct EnumNs {
-    pub namespace: ~str,
-    pub group: Option<~str>,
-    pub ty: Option<~str>,
-    pub start: Option<~str>,
-    pub end: Option<~str>,
-    pub vendor: Option<~str>,
-    pub comment: Option<~str>,
+    pub namespace: StrBuf,
+    pub group: Option<StrBuf>,
+    pub ty: Option<StrBuf>,
+    pub start: Option<StrBuf>,
+    pub end: Option<StrBuf>,
+    pub vendor: Option<StrBuf>,
+    pub comment: Option<StrBuf>,
     pub defs: Vec<Enum>,
 }
 
 pub struct Enum {
-    pub ident: ~str,
-    pub value: ~str,
-    pub alias: Option<~str>,
-    pub ty: Option<~str>,
+    pub ident: StrBuf,
+    pub value: StrBuf,
+    pub alias: Option<StrBuf>,
+    pub ty: Option<StrBuf>,
 }
 
 pub struct CmdNs {
-    pub namespace: ~str,
+    pub namespace: StrBuf,
     pub defs: Vec<Cmd>,
 }
 
 pub struct Binding {
-    pub ident: ~str,
-    pub ty: ~str,
-    pub group: Option<~str>,
+    pub ident: StrBuf,
+    pub ty: StrBuf,
+    pub group: Option<StrBuf>,
 }
 
 pub struct Cmd {
     pub proto: Binding,
     pub params: Vec<Binding>,
     pub is_safe: bool,
-    pub alias: Option<~str>,
-    pub vecequiv: Option<~str>,
+    pub alias: Option<StrBuf>,
+    pub vecequiv: Option<StrBuf>,
     pub glx: Option<GlxOpcode>,
 }
 
 #[deriving(Clone)]
 pub struct Feature {
-    pub api: ~str,
-    pub name: ~str,
-    pub number: ~str,
+    pub api: StrBuf,
+    pub name: StrBuf,
+    pub number: StrBuf,
     pub requires: Vec<Require>,
     pub removes: Vec<Remove>,
 }
 
 #[deriving(Clone)]
 pub struct Require {
-    pub comment: Option<~str>,
+    pub comment: Option<StrBuf>,
     /// A reference to the earlier types, by name
-    pub enums: Vec<~str>,
+    pub enums: Vec<StrBuf>,
     /// A reference to the earlier types, by name
-    pub commands: Vec<~str>,
+    pub commands: Vec<StrBuf>,
 }
 
 #[deriving(Clone)]
 pub struct Remove {
     // always core, for now
-    pub profile: ~str,
-    pub comment: ~str,
+    pub profile: StrBuf,
+    pub comment: StrBuf,
     /// A reference to the earlier types, by name
-    pub enums: Vec<~str>,
+    pub enums: Vec<StrBuf>,
     /// A reference to the earlier types, by name
-    pub commands: Vec<~str>,
+    pub commands: Vec<StrBuf>,
 }
 
 #[deriving(Clone)]
 pub struct Extension {
-    pub name: ~str,
+    pub name: StrBuf,
     /// which apis this extension is defined for (see Feature.api)
-    pub supported: Vec<~str>,
+    pub supported: Vec<StrBuf>,
     pub requires: Vec<Require>,
 }
 
 pub struct GlxOpcode {
-    pub ty: ~str,
-    pub opcode: ~str,
-    pub name: Option<~str>,
-    pub comment: Option<~str>,
+    pub ty: StrBuf,
+    pub opcode: StrBuf,
+    pub name: Option<StrBuf>,
+    pub comment: Option<StrBuf>,
 }
 
 struct RegistryBuilder {
@@ -239,10 +239,10 @@ struct RegistryBuilder {
 }
 
 pub struct Filter {
-    pub extensions: Vec<~str>,
-    pub profile: ~str,
-    pub version: ~str,
-    pub api: ~str,
+    pub extensions: Vec<StrBuf>,
+    pub profile: StrBuf,
+    pub version: StrBuf,
+    pub api: StrBuf,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
@@ -260,7 +260,7 @@ impl<'a> RegistryBuilder {
             match self.port.recv() {
                 Ok(StartDocument) => (),
                 Ok(Comment(_)) => (),
-                Ok(Characters(ref ch)) if ch.is_whitespace() => (),
+                Ok(Characters(ref ch)) if ch.as_slice().is_whitespace() => (),
                 Ok(EndDocument) => fail!("The end of the document has been reached"),
                 Ok(event) => return event,
                 Err(err) => fail!("XML error: {}", err.to_str()),
@@ -268,7 +268,7 @@ impl<'a> RegistryBuilder {
         }
     }
 
-    fn expect_characters(&self) -> ~str {
+    fn expect_characters(&self) -> StrBuf {
         match self.recv() {
             Characters(ref ch) => ch.clone(),
             msg => fail!("Expected characters, found: {}", msg.to_str()),
@@ -277,14 +277,14 @@ impl<'a> RegistryBuilder {
 
     fn expect_start_element(&self, name: &str) -> Attributes {
         match self.recv() {
-            StartElement(ref n, ref atts) if name == *n => atts.clone(),
+            StartElement(ref n, ref atts) if name == n.as_slice() => atts.clone(),
             msg => fail!("Expected <{}>, found: {}", name, msg.to_str()),
         }
     }
 
     fn expect_end_element(&self, name: &str) {
         match self.recv() {
-            EndElement(ref n) if name == *n => (),
+            EndElement(ref n) if name == n.as_slice() => (),
             msg => fail!("Expected </{}>, found: {}", name, msg.to_str()),
         }
     }
@@ -314,8 +314,8 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_owned())),
-                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_owned())),
+                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_strbuf())),
+                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_strbuf())),
 
                 // add groups
                 StartElement(ref s, _) if s.as_slice() == "groups" => {
@@ -428,8 +428,8 @@ impl<'a> RegistryBuilder {
 
                 Registry {
                     groups: groups,
-                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_owned() + e.ident))).collect::<Vec<Enum>>(),
-                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_owned() + c.proto.ident))).collect::<Vec<Cmd>>(),
+                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_strbuf().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
+                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_strbuf().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),
                     extensions: Vec::new(),
@@ -453,32 +453,32 @@ impl<'a> RegistryBuilder {
 
                     let n = name.clone();
 
-                    if one == n {
+                    if one == n.as_slice() {
                         ones.push(FromXML::convert(self, atts));
-                    } else if "type" == n {
+                    } else if "type" == n.as_slice() {
                         // XXX: GL1.1 contains types, which we never care about anyway.
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
                         continue;
-                    } else if two == n {
+                    } else if two == n.as_slice() {
                         twos.push(FromXML::convert(self, atts));
                     } else {
                         fail!("Unexpected element: <{:?} {:?}>", n, atts);
                     }
                 },
-                EndElement(name) => {
+                EndElement(ref name) => {
                     debug!("Found end element </{:?}>", name);
 
-                    if (&[one, two]).iter().any(|&x| x == name) {
+                    if (&[one, two]).iter().any(|&x| x == name.as_slice()) {
                         continue;
-                    } else if "type" == name {
+                    } else if "type" == name.as_slice() {
                         // XXX: GL1.1 contains types, which we never care about anyway.
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
                         continue;
-                    } else if end == name {
+                    } else if end == name.as_slice() {
                         return (ones, twos);
                     } else {
                         fail!("Unexpected end element {}", name);
@@ -488,7 +488,7 @@ impl<'a> RegistryBuilder {
         }
     }
 
-    fn consume_group(&self, name: ~str) -> Group {
+    fn consume_group(&self, name: StrBuf) -> Group {
         let mut enms = Vec::new();
         loop {
             match self.recv() {
@@ -512,13 +512,13 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_owned())),
+                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_strbuf())),
 
                 // add enum definition
                 StartElement(ref s, ref atts) if s.as_slice() == "enum" => {
                     enums.push(
                         Enum {
-                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_owned(),
+                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_strbuf(),
                             value:  atts.get_clone("value"),
                             alias:  atts.find_clone("alias"),
                             ty:     atts.find_clone("type"),
@@ -557,7 +557,7 @@ impl<'a> RegistryBuilder {
         // consume command prototype
         let proto_atts = self.expect_start_element("proto");
         let mut proto = self.consume_binding(proto_atts.find_clone("group"));
-        proto.ident = trim_cmd_prefix(proto.ident, self.ns).to_owned();
+        proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_strbuf();
         self.expect_end_element("proto");
 
         let mut params = Vec::new();
@@ -593,7 +593,7 @@ impl<'a> RegistryBuilder {
                 msg => fail!("Expected </command>, found: {}", msg.to_str()),
             }
         }
-        let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.contains_char('*'));
+        let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.as_slice().contains_char('*'));
 
         Cmd {
             proto: proto,
@@ -605,12 +605,12 @@ impl<'a> RegistryBuilder {
         }
     }
 
-    fn consume_binding(&self, group: Option<~str>) -> Binding {
+    fn consume_binding(&self, group: Option<StrBuf>) -> Binding {
         // consume type
         let mut ty = StrBuf::new();
         loop {
             match self.recv() {
-                Characters(ch) => ty.push_str(ch),
+                Characters(ch) => ty.push_str(ch.as_slice()),
                 StartElement(ref s, _) if s.as_slice() == "ptype" => (),
                 EndElement(ref s) if s.as_slice() == "ptype" => (),
                 StartElement(ref s, _) if s.as_slice() == "name" => break,
@@ -622,7 +622,7 @@ impl<'a> RegistryBuilder {
         self.expect_end_element("name");
         Binding {
             ident: ident,
-            ty: ty.into_owned(),
+            ty: ty.into_strbuf(),
             group: group,
         }
     }
@@ -686,7 +686,7 @@ impl FromXML for Extension {
     fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = a.get_clone("name");
-        let supported = a.get("supported").split('|').map(|x| x.to_owned()).collect::<Vec<~str>>();
+        let supported = a.get("supported").split('|').map(|x| x.to_strbuf()).collect::<Vec<StrBuf>>();
         let mut require = Vec::new();
         loop {
             match r.recv() {
@@ -706,8 +706,8 @@ impl FromXML for Extension {
     }
 }
 
-impl FromXML for ~str {
-    fn convert(_: &RegistryBuilder, a: &sax::Attributes) -> ~str {
+impl FromXML for StrBuf {
+    fn convert(_: &RegistryBuilder, a: &sax::Attributes) -> StrBuf {
         a.get_clone("name")
     }
 }
