@@ -96,7 +96,7 @@ fn main() {
         File::open(&path).ok()
             .expect(format!("Could not read {}", path.display()))
             .read_to_str().ok()
-                .expect("registry source not utf8!"), ns, filter
+            .expect( "registry source not utf8!" ).as_slice(), ns, filter
     );
 
     Generator::write(&mut io::stdout(), &reg, ns);
@@ -215,7 +215,7 @@ impl<'a, W: Writer> Generator<'a, W> {
             }
         };
 
-        self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value))
+        self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value).as_slice())
     }
 
     fn write_enums(&mut self) {
@@ -241,7 +241,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// limitations under the License.");
         self.write_line("");
         let ns = self.ns.to_str();
-        self.write_line(format!(r#"\#![crate_id = "github.com/bjz/gl-rs\#{}:0.1"]"#, ns));
+        self.write_line(format!(r#"\#![crate_id = "github.com/bjz/gl-rs\#{}:0.1"]"#, ns).as_slice());
         self.write_line("#![comment = \"An OpenGL function loader.\"]");
         self.write_line("#![license = \"ASL2\"]");
         self.write_line("#![crate_type = \"lib\"]");
@@ -311,7 +311,7 @@ impl<'a, W: Writer> Generator<'a, W> {
                 c.proto.ident,
                 gen_param_ty_list(c),
                 gen_return_suffix(c)
-            ));
+            ).as_slice());
         }
         self.decr_indent();
         self.write_line("}");
@@ -329,7 +329,7 @@ impl<'a, W: Writer> Generator<'a, W> {
                 c.proto.ident,
                 gen_param_ident_list(c),
                 if !c.is_safe { "" } else { " }" }
-            ));
+            ).as_slice());
         }
     }
 
@@ -360,7 +360,7 @@ impl<'a, W: Writer> Generator<'a, W> {
                 c.proto.ident,
                 gen_param_list(c, true),
                 gen_return_suffix(c)
-            ));
+            ).as_slice());
         };
         self.decr_indent();
         self.write_line("}");
@@ -386,7 +386,7 @@ impl<'a, W: Writer> Generator<'a, W> {
             self.write_line(format!(
                 "fn_mod!({}, \"{}\")",
                 c.proto.ident,
-                gen_symbol_name(&ns, c)));
+                gen_symbol_name(&ns, c)).as_slice());
         }
     }
 
@@ -400,7 +400,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"system\" fn()>) {");
         self.incr_indent();
         for c in self.registry.cmd_iter() {
-            self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident))
+            self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident).as_slice())
         }
         self.decr_indent();
         self.write_line("}");
