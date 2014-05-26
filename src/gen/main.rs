@@ -59,7 +59,7 @@ fn main() {
         optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
     ];
 
-    let os_args = os::args().iter().map(|x| x.to_strbuf()).collect::<Vec<StrBuf>>();
+    let os_args = os::args().iter().map(|x| x.to_strbuf()).collect::<Vec<String>>();
     let args = match getopts(os_args.as_slice(), opts) {
         Ok(a) => a,
         Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("glrsgen", opts)),
@@ -111,7 +111,7 @@ struct Generator<'a, W> {
     indent: uint,
 }
 
-fn gen_binding_ident(binding: &Binding, use_idents: bool) -> StrBuf {
+fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
     // fixed
     if use_idents {
@@ -126,38 +126,38 @@ fn gen_binding_ident(binding: &Binding, use_idents: bool) -> StrBuf {
     }
 }
 
-fn gen_binding(binding: &Binding, use_idents: bool) -> StrBuf {
+fn gen_binding(binding: &Binding, use_idents: bool) -> String {
     format_strbuf!("{}: {}",
         gen_binding_ident(binding, use_idents),
         ty::to_rust_ty(binding.ty.as_slice()))
 }
 
-fn gen_param_list(cmd: &Cmd, use_idents: bool) -> StrBuf {
+fn gen_param_list(cmd: &Cmd, use_idents: bool) -> String {
     cmd.params.iter()
         .map(|b| gen_binding(b, use_idents))
-        .collect::<Vec<StrBuf>>()
+        .collect::<Vec<String>>()
         .connect(", ").to_strbuf()
 }
 
-fn gen_param_ident_list(cmd: &Cmd) -> StrBuf {
+fn gen_param_ident_list(cmd: &Cmd) -> String {
     cmd.params.iter()
         .map(|b| gen_binding_ident(b, true))
-        .collect::<Vec<StrBuf>>()
+        .collect::<Vec<String>>()
         .connect(", ").to_strbuf()
 }
 
-fn gen_param_ty_list(cmd: &Cmd) -> StrBuf {
+fn gen_param_ty_list(cmd: &Cmd) -> String {
     cmd.params.iter()
         .map(|b| ty::to_rust_ty(b.ty.as_slice()))
         .collect::<Vec<&str>>()
         .connect(", ").to_strbuf()
 }
 
-fn gen_return_suffix(cmd: &Cmd) -> StrBuf {
+fn gen_return_suffix(cmd: &Cmd) -> String {
     ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty.as_slice()))
 }
 
-fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> StrBuf {
+fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
     (match *ns {
         Gl => "gl",
         Glx => "glx",

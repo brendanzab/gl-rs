@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub fn to_return_suffix(ty: &str) -> StrBuf {
+pub fn to_return_suffix(ty: &str) -> String {
     match ty {
         "c_void" | "VOID" | "GLvoid" => "".to_strbuf(),
         ty_str => format_strbuf!(" -> {}", ty_str.replace("*mut ", "*")),

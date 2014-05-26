@@ -83,7 +83,7 @@ impl Registry {
 
     /// Returns a set of all the types used in the supplied registry. This is useful
     /// for working out what conversions are needed for the specific registry.
-    pub fn get_tys(&self) -> TreeSet<StrBuf> {
+    pub fn get_tys(&self) -> TreeSet<String> {
         let mut tys = TreeSet::new();
         for def in self.cmds.iter() {
             tys.insert(def.proto.ty.clone());
@@ -110,7 +110,7 @@ impl Registry {
 }
 
 pub struct EnumIterator<'a> {
-    seen: HashSet<StrBuf>,
+    seen: HashSet<String>,
     iter: Items<'a, Enum>,
 }
 
@@ -128,7 +128,7 @@ impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
 }
 
 pub struct CmdIterator<'a> {
-    seen: HashSet<StrBuf>,
+    seen: HashSet<String>,
     iter: Items<'a, Cmd>,
 }
 
@@ -146,90 +146,90 @@ impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
 }
 
 pub struct Group {
-    pub name: StrBuf,
-    pub enums: Vec<StrBuf>,
+    pub name: String,
+    pub enums: Vec<String>,
 }
 
 pub struct EnumNs {
-    pub namespace: StrBuf,
-    pub group: Option<StrBuf>,
-    pub ty: Option<StrBuf>,
-    pub start: Option<StrBuf>,
-    pub end: Option<StrBuf>,
-    pub vendor: Option<StrBuf>,
-    pub comment: Option<StrBuf>,
+    pub namespace: String,
+    pub group: Option<String>,
+    pub ty: Option<String>,
+    pub start: Option<String>,
+    pub end: Option<String>,
+    pub vendor: Option<String>,
+    pub comment: Option<String>,
     pub defs: Vec<Enum>,
 }
 
 pub struct Enum {
-    pub ident: StrBuf,
-    pub value: StrBuf,
-    pub alias: Option<StrBuf>,
-    pub ty: Option<StrBuf>,
+    pub ident: String,
+    pub value: String,
+    pub alias: Option<String>,
+    pub ty: Option<String>,
 }
 
 pub struct CmdNs {
-    pub namespace: StrBuf,
+    pub namespace: String,
     pub defs: Vec<Cmd>,
 }
 
 pub struct Binding {
-    pub ident: StrBuf,
-    pub ty: StrBuf,
-    pub group: Option<StrBuf>,
+    pub ident: String,
+    pub ty: String,
+    pub group: Option<String>,
 }
 
 pub struct Cmd {
     pub proto: Binding,
     pub params: Vec<Binding>,
     pub is_safe: bool,
-    pub alias: Option<StrBuf>,
-    pub vecequiv: Option<StrBuf>,
+    pub alias: Option<String>,
+    pub vecequiv: Option<String>,
     pub glx: Option<GlxOpcode>,
 }
 
 #[deriving(Clone)]
 pub struct Feature {
-    pub api: StrBuf,
-    pub name: StrBuf,
-    pub number: StrBuf,
+    pub api: String,
+    pub name: String,
+    pub number: String,
     pub requires: Vec<Require>,
     pub removes: Vec<Remove>,
 }
 
 #[deriving(Clone)]
 pub struct Require {
-    pub comment: Option<StrBuf>,
+    pub comment: Option<String>,
     /// A reference to the earlier types, by name
-    pub enums: Vec<StrBuf>,
+    pub enums: Vec<String>,
     /// A reference to the earlier types, by name
-    pub commands: Vec<StrBuf>,
+    pub commands: Vec<String>,
 }
 
 #[deriving(Clone)]
 pub struct Remove {
     // always core, for now
-    pub profile: StrBuf,
-    pub comment: StrBuf,
+    pub profile: String,
+    pub comment: String,
     /// A reference to the earlier types, by name
-    pub enums: Vec<StrBuf>,
+    pub enums: Vec<String>,
     /// A reference to the earlier types, by name
-    pub commands: Vec<StrBuf>,
+    pub commands: Vec<String>,
 }
 
 #[deriving(Clone)]
 pub struct Extension {
-    pub name: StrBuf,
+    pub name: String,
     /// which apis this extension is defined for (see Feature.api)
-    pub supported: Vec<StrBuf>,
+    pub supported: Vec<String>,
     pub requires: Vec<Require>,
 }
 
 pub struct GlxOpcode {
-    pub ty: StrBuf,
-    pub opcode: StrBuf,
-    pub name: Option<StrBuf>,
-    pub comment: Option<StrBuf>,
+    pub ty: String,
+    pub opcode: String,
+    pub name: Option<String>,
+    pub comment: Option<String>,
 }
 
 struct RegistryBuilder {
@@ -239,10 +239,10 @@ struct RegistryBuilder {
 }
 
 pub struct Filter {
-    pub extensions: Vec<StrBuf>,
-    pub profile: StrBuf,
-    pub version: StrBuf,
-    pub api: StrBuf,
+    pub extensions: Vec<String>,
+    pub profile: String,
+    pub version: String,
+    pub api: String,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
@@ -268,7 +268,7 @@ impl<'a> RegistryBuilder {
         }
     }
 
-    fn expect_characters(&self) -> StrBuf {
+    fn expect_characters(&self) -> String {
         match self.recv() {
             Characters(ref ch) => ch.clone(),
             msg => fail!("Expected characters, found: {}", msg.to_str()),
@@ -488,7 +488,7 @@ impl<'a> RegistryBuilder {
         }
     }
 
-    fn consume_group(&self, name: StrBuf) -> Group {
+    fn consume_group(&self, name: String) -> Group {
         let mut enms = Vec::new();
         loop {
             match self.recv() {
@@ -605,9 +605,9 @@ impl<'a> RegistryBuilder {
         }
     }
 
-    fn consume_binding(&self, group: Option<StrBuf>) -> Binding {
+    fn consume_binding(&self, group: Option<String>) -> Binding {
         // consume type
-        let mut ty = StrBuf::new();
+        let mut ty = String::new();
         loop {
             match self.recv() {
                 Characters(ch) => ty.push_str(ch.as_slice()),
@@ -686,7 +686,7 @@ impl FromXML for Extension {
     fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = a.get_clone("name");
-        let supported = a.get("supported").split('|').map(|x| x.to_strbuf()).collect::<Vec<StrBuf>>();
+        let supported = a.get("supported").split('|').map(|x| x.to_strbuf()).collect::<Vec<String>>();
         let mut require = Vec::new();
         loop {
             match r.recv() {
@@ -706,8 +706,8 @@ impl FromXML for Extension {
     }
 }
 
-impl FromXML for StrBuf {
-    fn convert(_: &RegistryBuilder, a: &sax::Attributes) -> StrBuf {
+impl FromXML for String {
+    fn convert(_: &RegistryBuilder, a: &sax::Attributes) -> String {
         a.get_clone("name")
     }
 }
