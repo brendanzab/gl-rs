@@ -314,8 +314,8 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_strbuf())),
-                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_strbuf())),
+                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_string())),
+                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_string())),
 
                 // add groups
                 StartElement(ref s, _) if s.as_slice() == "groups" => {
@@ -343,7 +343,7 @@ impl<'a> RegistryBuilder {
                 }
 
                 StartElement(ref s, ref atts) if s.as_slice() == "feature" => {
-                    debug!("Parsing feature: {:?}", atts);
+                    debug!("Parsing feature: {}", atts);
                     registry.features.push(FromXML::convert(self, atts));
                 }
 
@@ -398,11 +398,11 @@ impl<'a> RegistryBuilder {
                         for rem in f.removes.iter() {
                             if rem.profile == filter.profile {
                                 for enm in rem.enums.iter() {
-                                    debug!("Removing {:?}", enm);
+                                    debug!("Removing {}", enm);
                                     desired_enums.remove(enm);
                                 }
                                 for cmd in rem.commands.iter() {
-                                    debug!("Removing {:?}", cmd);
+                                    debug!("Removing {}", cmd);
                                     desired_cmds.remove(cmd);
                                 }
                             }
@@ -428,8 +428,8 @@ impl<'a> RegistryBuilder {
 
                 Registry {
                     groups: groups,
-                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_strbuf().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
-                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_strbuf().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
+                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
+                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),
                     extensions: Vec::new(),
@@ -448,8 +448,8 @@ impl<'a> RegistryBuilder {
         loop {
             match self.recv() {
                 StartElement(ref name, ref atts) => {
-                    debug!("Found start element <{:?} {:?}>", name, atts);
-                    debug!("one and two are {:?} and {:?}", one, two);
+                    debug!("Found start element <{} {}>", name, atts);
+                    debug!("one and two are {} and {}", one, two);
 
                     let n = name.clone();
 
@@ -464,11 +464,11 @@ impl<'a> RegistryBuilder {
                     } else if two == n.as_slice() {
                         twos.push(FromXML::convert(self, atts));
                     } else {
-                        fail!("Unexpected element: <{:?} {:?}>", n, atts);
+                        fail!("Unexpected element: <{} {}>", n, atts);
                     }
                 },
                 EndElement(ref name) => {
-                    debug!("Found end element </{:?}>", name);
+                    debug!("Found end element </{}>", name);
 
                     if (&[one, two]).iter().any(|&x| x == name.as_slice()) {
                         continue;
@@ -512,13 +512,13 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_strbuf())),
+                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_string())),
 
                 // add enum definition
                 StartElement(ref s, ref atts) if s.as_slice() == "enum" => {
                     enums.push(
                         Enum {
-                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_strbuf(),
+                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_string(),
                             value:  atts.get_clone("value"),
                             alias:  atts.find_clone("alias"),
                             ty:     atts.find_clone("type"),
@@ -557,7 +557,7 @@ impl<'a> RegistryBuilder {
         // consume command prototype
         let proto_atts = self.expect_start_element("proto");
         let mut proto = self.consume_binding(proto_atts.find_clone("group"));
-        proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_strbuf();
+        proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_string();
         self.expect_end_element("proto");
 
         let mut params = Vec::new();
@@ -622,7 +622,7 @@ impl<'a> RegistryBuilder {
         self.expect_end_element("name");
         Binding {
             ident: ident,
-            ty: ty.into_strbuf(),
+            ty: ty.into_string(),
             group: group,
         }
     }
@@ -686,7 +686,7 @@ impl FromXML for Extension {
     fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = a.get_clone("name");
-        let supported = a.get("supported").split('|').map(|x| x.to_strbuf()).collect::<Vec<String>>();
+        let supported = a.get("supported").split('|').map(|x| x.to_string()).collect::<Vec<String>>();
         let mut require = Vec::new();
         loop {
             match r.recv() {

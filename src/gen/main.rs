@@ -59,7 +59,7 @@ fn main() {
         optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
     ];
 
-    let os_args = os::args().iter().map(|x| x.to_strbuf()).collect::<Vec<String>>();
+    let os_args = os::args().iter().map(|x| x.to_string()).collect::<Vec<String>>();
     let args = match getopts(os_args.as_slice(), opts) {
         Ok(a) => a,
         Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("glrsgen", opts)),
@@ -70,7 +70,7 @@ fn main() {
         return;
     }
 
-    let ns = match args.opt_str("namespace").unwrap_or("gl".to_strbuf()).as_slice() {
+    let ns = match args.opt_str("namespace").unwrap_or("gl".to_string()).as_slice() {
         "gl"  => Gl,
         "glx" => fail!("glx generation unimplemented"),
         "wgl" => fail!("wgl generation unimplemented"),
@@ -78,7 +78,7 @@ fn main() {
     };
 
     let path = Path::new(
-        args.opt_str("xml").unwrap_or(format_strbuf!("{}.xml", ns))
+        args.opt_str("xml").unwrap_or(format!("{}.xml", ns))
     );
 
     let filter = if args.opt_present("full") {
@@ -86,9 +86,9 @@ fn main() {
     } else {
         Some(Filter {
             extensions: args.opt_strs("extension"),
-            profile: args.opt_str("profile").unwrap_or("core".to_strbuf()),
-            version: args.opt_str("version").unwrap_or("4.3".to_strbuf()),
-            api: args.opt_str("api").unwrap_or("gl".to_strbuf()),
+            profile: args.opt_str("profile").unwrap_or("core".to_string()),
+            version: args.opt_str("version").unwrap_or("4.3".to_string()),
+            api: args.opt_str("api").unwrap_or("gl".to_string()),
         })
     };
 
@@ -116,18 +116,18 @@ fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     // fixed
     if use_idents {
         match binding.ident.as_slice() {
-            "in" => "in_".to_strbuf(),
-            "ref" => "ref_".to_strbuf(),
-            "type" => "type_".to_strbuf(),
-            ident => ident.to_strbuf(),
+            "in" => "in_".to_string(),
+            "ref" => "ref_".to_string(),
+            "type" => "type_".to_string(),
+            ident => ident.to_string(),
         }
     } else {
-        "_".to_strbuf()
+        "_".to_string()
     }
 }
 
 fn gen_binding(binding: &Binding, use_idents: bool) -> String {
-    format_strbuf!("{}: {}",
+    format!("{}: {}",
         gen_binding_ident(binding, use_idents),
         ty::to_rust_ty(binding.ty.as_slice()))
 }
@@ -136,21 +136,21 @@ fn gen_param_list(cmd: &Cmd, use_idents: bool) -> String {
     cmd.params.iter()
         .map(|b| gen_binding(b, use_idents))
         .collect::<Vec<String>>()
-        .connect(", ").to_strbuf()
+        .connect(", ").to_string()
 }
 
 fn gen_param_ident_list(cmd: &Cmd) -> String {
     cmd.params.iter()
         .map(|b| gen_binding_ident(b, true))
         .collect::<Vec<String>>()
-        .connect(", ").to_strbuf()
+        .connect(", ").to_string()
 }
 
 fn gen_param_ty_list(cmd: &Cmd) -> String {
     cmd.params.iter()
         .map(|b| ty::to_rust_ty(b.ty.as_slice()))
         .collect::<Vec<&str>>()
-        .connect(", ").to_strbuf()
+        .connect(", ").to_string()
 }
 
 fn gen_return_suffix(cmd: &Cmd) -> String {
@@ -162,7 +162,7 @@ fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
         Gl => "gl",
         Glx => "glx",
         Wgl => "wgl",
-    }).to_strbuf().append(cmd.proto.ident.as_slice())
+    }).to_string().append(cmd.proto.ident.as_slice())
 }
 
 impl<'a, W: Writer> Generator<'a, W> {
@@ -202,7 +202,7 @@ impl<'a, W: Writer> Generator<'a, W> {
 
     fn write_enum(&mut self, enm: &Enum) {
         let ident = if (enm.ident.as_slice()[0] as char).is_digit() {
-            format_strbuf!("_{}", enm.ident)
+            format!("_{}", enm.ident)
         } else {
             enm.ident.clone()
         };
