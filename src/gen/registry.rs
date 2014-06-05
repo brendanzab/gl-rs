@@ -314,8 +314,8 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_string())),
-                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_string())),
+                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_str())),
+                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_str())),
 
                 // add groups
                 StartElement(ref s, _) if s.as_slice() == "groups" => {
@@ -428,8 +428,8 @@ impl<'a> RegistryBuilder {
 
                 Registry {
                     groups: groups,
-                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
-                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
+                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_str().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
+                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_str().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),
                     extensions: Vec::new(),
@@ -512,13 +512,13 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_string())),
+                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_str())),
 
                 // add enum definition
                 StartElement(ref s, ref atts) if s.as_slice() == "enum" => {
                     enums.push(
                         Enum {
-                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_string(),
+                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_str(),
                             value:  atts.get_clone("value"),
                             alias:  atts.find_clone("alias"),
                             ty:     atts.find_clone("type"),
@@ -557,7 +557,7 @@ impl<'a> RegistryBuilder {
         // consume command prototype
         let proto_atts = self.expect_start_element("proto");
         let mut proto = self.consume_binding(proto_atts.find_clone("group"));
-        proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_string();
+        proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_str();
         self.expect_end_element("proto");
 
         let mut params = Vec::new();
@@ -622,7 +622,7 @@ impl<'a> RegistryBuilder {
         self.expect_end_element("name");
         Binding {
             ident: ident,
-            ty: ty.into_string(),
+            ty: ty,
             group: group,
         }
     }
@@ -686,7 +686,7 @@ impl FromXML for Extension {
     fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = a.get_clone("name");
-        let supported = a.get("supported").split('|').map(|x| x.to_string()).collect::<Vec<String>>();
+        let supported = a.get("supported").split('|').map(|x| x.to_str()).collect::<Vec<String>>();
         let mut require = Vec::new();
         loop {
             match r.recv() {

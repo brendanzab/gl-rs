@@ -15,7 +15,7 @@
 
 pub fn to_return_suffix(ty: &str) -> String {
     match ty {
-        "c_void" | "VOID" | "GLvoid" => "".to_string(),
+        "c_void" | "VOID" | "GLvoid" => "".to_str(),
         ty_str => format!(" -> {}", ty_str.replace("*mut ", "*")),
     }
 }
