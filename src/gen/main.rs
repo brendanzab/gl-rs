@@ -94,7 +94,7 @@ fn main() {
 
     let reg = Registry::from_xml(
         File::open(&path).ok()
-            .expect(format!("Could not read {}", path.display()))
+            .expect(format!("Could not read {}", path.display()).as_slice())
             .read_to_str().ok()
             .expect( "registry source not utf8!" ).as_slice(), ns, filter
     );
@@ -249,6 +249,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("#![feature(macro_rules)]");
         self.write_line("#![feature(globs)]");
         self.write_line("#![allow(non_camel_case_types)]");
+        self.write_line("#![allow(non_snake_case_functions)]");
         self.write_line("");
         self.write_line("extern crate libc;");
         self.write_line("");
