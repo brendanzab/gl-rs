@@ -64,7 +64,7 @@ doc:
 examples-dir:
 	mkdir -p $(EXAMPLES_DIR)
 
-examples-deps: submodule-update
+examples-deps:
 	make lib -C $(DEPS_DIR)/glfw-rs
 
 $(EXAMPLE_FILES): lib examples-dir examples-deps
@@ -72,7 +72,7 @@ $(EXAMPLE_FILES): lib examples-dir examples-deps
 
 examples: $(EXAMPLE_FILES)
 
-gen-deps: submodule-update
+gen-deps:
 	make lib -C $(DEPS_DIR)/sax-rs
 
 gen: gen-deps
