@@ -17,7 +17,7 @@ extern crate sax;
 extern crate collections;
 
 use self::collections::TreeSet;
-use self::collections::HashSet;
+use std::collections::HashSet;
 use std::fmt;
 use std::from_str::FromStr;
 use std::slice::Items;

@@ -94,7 +94,7 @@ fn main() {
 
     let reg = Registry::from_xml(
         File::open(&path).ok()
-            .expect(format!("Could not read {}", path.display()))
+            .expect(format!("Could not read {}", path.display()).as_slice())
             .read_to_str().ok()
             .expect( "registry source not utf8!" ).as_slice(), ns, filter
     );
