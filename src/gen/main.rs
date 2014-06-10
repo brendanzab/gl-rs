@@ -32,7 +32,7 @@
 
 extern crate getopts;
 
-#[phase(syntax, link)]
+#[phase(plugin, link)]
 extern crate log;
 
 use getopts::{optopt, optmulti, optflag, getopts, usage};
