@@ -32,7 +32,7 @@
 
 extern crate getopts;
 
-#[phase(syntax, link)]
+#[phase(plugin, link)]
 extern crate log;
 
 use getopts::{optopt, optmulti, optflag, getopts, usage};
@@ -241,7 +241,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// limitations under the License.");
         self.write_line("");
         let ns = self.ns.to_str();
-        self.write_line(format!(r#"\#![crate_id = "github.com/bjz/gl-rs\#{}:0.1"]"#, ns).as_slice());
+        self.write_line(format!("#![crate_id = \"github.com/bjz/gl-rs#{}:0.1\"]", ns).as_slice());
         self.write_line("#![comment = \"An OpenGL function loader.\"]");
         self.write_line("#![license = \"ASL2\"]");
         self.write_line("#![crate_type = \"lib\"]");
@@ -321,7 +321,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     fn write_fns(&mut self) {
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "\\#[inline] pub {}fn {}({}){} \\{ {}(storage::{}.f)({}){} \\}",
+                "#[inline] pub {}fn {}({}){} {{ {}(storage::{}.f)({}){} }}",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
                 gen_param_list(c, true),
