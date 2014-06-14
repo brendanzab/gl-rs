@@ -241,7 +241,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// limitations under the License.");
         self.write_line("");
         let ns = self.ns.to_str();
-        self.write_line(format!(r#"\#![crate_id = "github.com/bjz/gl-rs\#{}:0.1"]"#, ns).as_slice());
+        self.write_line(format!("#![crate_id = \"github.com/bjz/gl-rs#{}:0.1\"]", ns).as_slice());
         self.write_line("#![comment = \"An OpenGL function loader.\"]");
         self.write_line("#![license = \"ASL2\"]");
         self.write_line("#![crate_type = \"lib\"]");
@@ -284,9 +284,8 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("");
         self.write_line("impl<F> FnPtr<F> {");
         self.write_line("    pub fn new(ptr: Option<extern \"system\" fn()>, failing_fn: F) -> FnPtr<F> {");
-        self.write_line("        use std::mem::transmute;");
         self.write_line("        match ptr {");
-        self.write_line("            std::option::Some(p) => FnPtr { f: unsafe { transmute(p) }, is_loaded: true },");
+        self.write_line("            std::option::Some(p) => FnPtr { f: unsafe { std::ptr::read(&p as *_ as *F) }, is_loaded: true },");
         self.write_line("            None => FnPtr { f: failing_fn, is_loaded: false },");
         self.write_line("        }");
         self.write_line("    }");
@@ -321,7 +320,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     fn write_fns(&mut self) {
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "\\#[inline] pub {}fn {}({}){} \\{ {}(storage::{}.f)({}){} \\}",
+                "#[inline] pub {}fn {}({}){} {{ {}(storage::{}.f)({}){} }}",
                 if c.is_safe { "" } else { "unsafe " },
                 c.proto.ident,
                 gen_param_list(c, true),
