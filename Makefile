@@ -46,6 +46,11 @@ GEN_FLAGS           ?= \
 	$(foreach EXTENSION, $(GL_EXTENSIONS), --extension $(EXTENSION)) \
 	$(if $(GL_FULL), --full)
 
+MAKE=make
+ifeq ($(OS),Windows_NT)
+	MAKE=mingw32-make
+endif
+
 all: lib examples doc
 
 submodule-update:
@@ -65,7 +70,7 @@ examples-dir:
 	mkdir -p $(EXAMPLES_DIR)
 
 examples-deps:
-	make lib -C $(DEPS_DIR)/glfw-rs
+	$(MAKE) lib -C $(DEPS_DIR)/glfw-rs
 
 $(EXAMPLE_FILES): lib examples-dir examples-deps
 	$(RUSTC) -L $(DEPS_DIR)/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $@
@@ -73,7 +78,7 @@ $(EXAMPLE_FILES): lib examples-dir examples-deps
 examples: $(EXAMPLE_FILES)
 
 gen-deps:
-	make lib -C $(DEPS_DIR)/sax-rs
+	$(MAKE) lib -C $(DEPS_DIR)/sax-rs
 
 gen: gen-deps
 	@mkdir -p $(BIN_DIR)
@@ -91,8 +96,8 @@ clean:
 	rm -rf $(BIN_DIR)
 	rm -rf $(TEST_DIR)
 	rm -rf $(DOC_DIR)
-	make clean -C $(DEPS_DIR)/glfw-rs
-	make clean -C $(DEPS_DIR)/sax-rs
+	$(MAKE) clean -C $(DEPS_DIR)/glfw-rs
+	$(MAKE) clean -C $(DEPS_DIR)/sax-rs
 
 .PHONY: \
 	all \
@@ -108,3 +113,4 @@ clean:
 	gen-lib \
 	$(EXAMPLE_FILES) \
 	clean
+
