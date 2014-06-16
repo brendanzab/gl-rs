@@ -250,10 +250,13 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("#![feature(globs)]");
         self.write_line("#![allow(non_camel_case_types)]");
         self.write_line("#![allow(non_snake_case_functions)]");
+        self.write_line("#![allow(unused_variable)]");
         self.write_line("");
         self.write_line("extern crate libc;");
         self.write_line("");
         self.write_line("use libc::*;");
+        self.write_line("use std::mem;");
+        self.write_line("");
         self.write_line("use self::types::*;");
     }
 
@@ -280,13 +283,14 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     fn write_fnptr_struct_def(&mut self) {
-        self.write_line("pub struct FnPtr<F> { f: F, is_loaded: bool }");
+        self.write_line("pub struct FnPtr { f: *libc::c_void, is_loaded: bool }");
         self.write_line("");
-        self.write_line("impl<F> FnPtr<F> {");
-        self.write_line("    pub fn new(ptr: Option<extern \"system\" fn()>, failing_fn: F) -> FnPtr<F> {");
-        self.write_line("        match ptr {");
-        self.write_line("            std::option::Some(p) => FnPtr { f: unsafe { std::ptr::read(&p as *_ as *F) }, is_loaded: true },");
-        self.write_line("            None => FnPtr { f: failing_fn, is_loaded: false },");
+        self.write_line("impl FnPtr {");
+        self.write_line("    pub fn new(ptr: *libc::c_void, failing_fn: *libc::c_void) -> FnPtr {");
+        self.write_line("        if ptr.is_null() {");
+        self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
+        self.write_line("        } else {");
+        self.write_line("            FnPtr { f: ptr, is_loaded: true }");
         self.write_line("        }");
         self.write_line("    }");
         self.write_line("}");
@@ -298,19 +302,14 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("use libc::*;");
         self.write_line("use super::types::*;");
         self.write_line("");
-        self.write_line("macro_rules! failing(");
-        self.write_line("    (fn $name:ident()) => (pub extern \"system\" fn $name() { fail!(stringify!($name was not loaded)) });");
-        self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (pub extern \"system\" fn $name() -> $ret_ty { fail!(stringify!($name was not loaded)) });");
-        self.write_line("    (fn $name:ident($($arg_ty:ty),*)) => (pub extern \"system\" fn $name($(_: $arg_ty),*) { fail!(stringify!($name was not loaded)) });");
-        self.write_line("    (fn $name:ident($($arg_ty:ty),*) -> $ret_ty:ty) => (pub extern \"system\" fn $name($(_: $arg_ty),*) -> $ret_ty { fail!(stringify!($name was not loaded)) });");
-        self.write_line(")");
-        self.write_line("");
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "failing!(fn {}({}){})",
-                c.proto.ident,
-                gen_param_ty_list(c),
-                gen_return_suffix(c)
+                "pub extern \"system\" fn {name}({params}){return_suffix} {{ \
+                    fail!(\"`{name}` was not loaded\") \
+                }}",
+                name = c.proto.ident,
+                params = gen_param_list(c, true),
+                return_suffix = gen_return_suffix(c)
             ).as_slice());
         }
         self.decr_indent();
@@ -319,47 +318,51 @@ impl<'a, W: Writer> Generator<'a, W> {
 
     fn write_fns(&mut self) {
         for c in self.registry.cmd_iter() {
-            self.write_line(format!(
-                "#[inline] pub {}fn {}({}){} {{ {}(storage::{}.f)({}){} }}",
-                if c.is_safe { "" } else { "unsafe " },
-                c.proto.ident,
-                gen_param_list(c, true),
-                gen_return_suffix(c),
-                if !c.is_safe { "" } else { "unsafe { " },
-                c.proto.ident,
-                gen_param_ident_list(c),
-                if !c.is_safe { "" } else { " }" }
-            ).as_slice());
+            self.write_line(
+                if c.is_safe {
+                    format!(
+                        "#[inline] pub fn {name}({params}){return_suffix} {{ \
+                            unsafe {{ \
+                                mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
+                                    (storage::{name}.f)({idents}) \
+                            }} \
+                        }}",
+                        name = c.proto.ident,
+                        params = gen_param_list(c, true),
+                        types = gen_param_ty_list(c),
+                        return_suffix = gen_return_suffix(c),
+                        idents = gen_param_ident_list(c),
+                    )
+                } else {
+                    format!(
+                        "#[inline] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
+                            mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
+                                (storage::{name}.f)({idents}) \
+                        }}",
+                        name = c.proto.ident,
+                        typed_params = gen_param_list(c, true),
+                        return_suffix = gen_return_suffix(c),
+                        idents = gen_param_ident_list(c),
+                    )
+                }.as_slice()
+            );
         }
     }
 
     fn write_ptrs(&mut self) {
         self.write_line("mod storage {");
         self.incr_indent();
-        self.write_line("use libc::*;");
-        self.write_line("use super::types::*;");
-        self.write_line("");
-        self.write_line("macro_rules! fn_ptr(");
-        self.write_line("    (fn $name:ident()) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn()> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
-        self.write_line("    );");
-        self.write_line("    (fn $name:ident() -> $ret_ty:ty) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn() -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
-        self.write_line("    );");
-        self.write_line("    (fn $name:ident($($arg:ident : $arg_ty:ty),*)) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn($($arg: $arg_ty),*)> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
-        self.write_line("    );");
-        self.write_line("    (fn $name:ident($($arg:ident : $arg_ty:ty),*) -> $ret_ty:ty) => (");
-        self.write_line("        pub static mut $name: ::FnPtr<extern \"system\" fn($($arg: $arg_ty),*) -> $ret_ty> = ::FnPtr { f: ::failing::$name, is_loaded: false };");
-        self.write_line("    );");
-        self.write_line(")");
+        self.write_line("use libc;");
+        self.write_line("use failing;");
+        self.write_line("use FnPtr;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "fn_ptr!(fn {}({}){})",
-                c.proto.ident,
-                gen_param_list(c, true),
-                gen_return_suffix(c)
+                "pub static mut {name}: FnPtr = FnPtr {{ \
+                    f: failing::{name} as *libc::c_void, \
+                    is_loaded: false \
+                }};",
+                name = c.proto.ident,
             ).as_slice());
         };
         self.decr_indent();
@@ -367,27 +370,38 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     fn write_fn_mods(&mut self) {
-        self.write_line("macro_rules! fn_mod(");
-        self.write_line("    ($name:ident, $sym:expr) => (");
+        self.write_line("macro_rules! fn_mod {");
+        self.write_line("    ($name:ident, $sym:expr) => {");
         self.write_line("        pub mod $name {");
         self.write_line("            #[inline]");
         self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
         self.write_line("            ");
-        self.write_line("            #[inline]");
-        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"system\" fn()>) {");
-        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name) }");
+        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> *::libc::c_void) {");
+        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name as *::libc::c_void) }");
         self.write_line("            }");
         self.write_line("        }");
-        self.write_line("    )");
-        self.write_line(")");
+        self.write_line("    }");
+        self.write_line("}");
         self.write_line("");
         for c in self.registry.cmd_iter() {
             let ns = self.ns;
             self.write_line(format!(
-                "fn_mod!({}, \"{}\")",
-                c.proto.ident,
-                gen_symbol_name(&ns, c)).as_slice());
+                "fn_mod!({name}, \"{symbol}\")",
+                name = c.proto.ident,
+                symbol = gen_symbol_name(&ns, c)
+            ).as_slice());
         }
+        // for c in self.registry.cmd_iter() {
+        //     self.write_line(format!(
+        //         "pub mod {name} {{ \
+        //             #[inline] \
+        //             pub fn is_loaded() -> bool {{ \
+        //                 unsafe {{ ::storage::{name}.is_loaded }} \
+        //             }} \
+        //         }}",
+        //         name = c.proto.ident,
+        //     ).as_slice());
+        // }
     }
 
     fn write_load_fn(&mut self) {
@@ -397,10 +411,10 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("/// ~~~");
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
-        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> Option<extern \"system\" fn()>) {");
+        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *libc::c_void) {");
         self.incr_indent();
         for c in self.registry.cmd_iter() {
-            self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident).as_slice())
+            self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident).as_slice());
         }
         self.decr_indent();
         self.write_line("}");
