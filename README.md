@@ -30,6 +30,14 @@ For example:
 GL_VERSION=2.1 GL_PROFILE=compatability make lib
 ~~~
 
+### Compiling with Rust-Empty
+
+The following command compiles to the folder 'target/cpu-vendor-os/lib':
+
+`make gen-lib && make -f rust-empty.mk`
+
+For more information see [Rust-Empty](https://github.com/bvssvni/rust-empty)
+
 ## Usage
 
 You can import the pointer style loader and type aliases like so:
