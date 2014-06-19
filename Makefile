@@ -77,8 +77,10 @@ $(EXAMPLE_FILES): lib examples-dir examples-deps
 
 examples: $(EXAMPLE_FILES)
 
-gen-deps:
+gen-deps: $(DEPS_DIR)/sax-rs/README.md
 	$(MAKE) lib -C $(DEPS_DIR)/sax-rs
+
+$(DEPS_DIR)/sax-rs/README.md: submodule-update
 
 gen: gen-deps
 	@mkdir -p $(BIN_DIR)
