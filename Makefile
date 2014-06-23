@@ -18,7 +18,7 @@ RUSTDOC             = rustdoc
 
 SRC_DIR             = src
 TEST_DIR            = test
-LIB_FILE            = $(SRC_DIR)/gl/lib.rs
+LIB_FILE            = $(SRC_DIR)/gl.rs
 GEN_FILE            = $(SRC_DIR)/gen/main.rs
 EXAMPLE_FILES       = $(SRC_DIR)/examples/*.rs
 
