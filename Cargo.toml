@@ -1,6 +1,6 @@
 [package]
 
-name = "gl-rs"
+name = "gl"
 version = "0.0.1"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
