@@ -62,7 +62,7 @@ fn main() {
     let os_args = os::args().iter().map(|x| x.to_str()).collect::<Vec<String>>();
     let args = match getopts(os_args.as_slice(), opts) {
         Ok(a) => a,
-        Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("glrsgen", opts)),
+        Err(x) => fail!("Error: {}\n{}", x, usage("glrsgen", opts)),
     };
 
     if args.opt_present("help") {
