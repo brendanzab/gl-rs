@@ -62,7 +62,7 @@ fn main() {
     let os_args = os::args().iter().map(|x| x.to_str()).collect::<Vec<String>>();
     let args = match getopts(os_args.as_slice(), opts) {
         Ok(a) => a,
-        Err(x) => fail!("Error: {}\n{}", x.to_err_msg(), usage("glrsgen", opts)),
+        Err(x) => fail!("Error: {}\n{}", x, usage("glrsgen", opts)),
     };
 
     if args.opt_present("help") {
@@ -283,10 +283,10 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     fn write_fnptr_struct_def(&mut self) {
-        self.write_line("pub struct FnPtr { f: *libc::c_void, is_loaded: bool }");
+        self.write_line("pub struct FnPtr { f: *const libc::c_void, is_loaded: bool }");
         self.write_line("");
         self.write_line("impl FnPtr {");
-        self.write_line("    pub fn new(ptr: *libc::c_void, failing_fn: *libc::c_void) -> FnPtr {");
+        self.write_line("    pub fn new(ptr: *const libc::c_void, failing_fn: *const libc::c_void) -> FnPtr {");
         self.write_line("        if ptr.is_null() {");
         self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
         self.write_line("        } else {");
@@ -359,7 +359,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
                 "pub static mut {name}: FnPtr = FnPtr {{ \
-                    f: failing::{name} as *libc::c_void, \
+                    f: failing::{name} as *const libc::c_void, \
                     is_loaded: false \
                 }};",
                 name = c.proto.ident,
@@ -376,8 +376,8 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("            #[inline]");
         self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
         self.write_line("            ");
-        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> *::libc::c_void) {");
-        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name as *::libc::c_void) }");
+        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> *const ::libc::c_void) {");
+        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name as *const ::libc::c_void) }");
         self.write_line("            }");
         self.write_line("        }");
         self.write_line("    }");
@@ -411,7 +411,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("/// ~~~");
         self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
         self.write_line("/// ~~~");
-        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *libc::c_void) {");
+        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *const libc::c_void) {");
         self.incr_indent();
         for c in self.registry.cmd_iter() {
             self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident).as_slice());
