@@ -201,7 +201,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     fn write_enum(&mut self, enm: &Enum) {
-        let ident = if (enm.ident.as_slice()[0] as char).is_digit() {
+        let ident = if (enm.ident.as_slice().char_at(0)).is_digit() {
             format!("_{}", enm.ident)
         } else {
             enm.ident.clone()
