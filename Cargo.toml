@@ -10,8 +10,8 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 [[lib]]
 
 name = "gl"
-path = "src/gl_bind.rs"
+path = "src/lib.rs"
 
 [dependencies.gl_generator]
 
-path = "src/gen"
+path = "src/gl_generator"
