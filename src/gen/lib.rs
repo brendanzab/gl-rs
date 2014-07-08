@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![crate_id = "github.com/bjz/gl-rs#gen:0.1"]
+#![crate_name = "gen"]
 #![comment = "OpenGL function loader generator."]
 #![license = "ASL2"]
 
@@ -110,7 +110,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
 
     // generating the registry of all bindings
     let reg = Registry::from_xml(
-        match 
+        match
             match File::open(&path) {
                                 Ok(f) => f,
                                 Err(err) => {

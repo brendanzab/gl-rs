@@ -141,7 +141,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// limitations under the License.");
         self.write_line("");
         let ns = self.ns.to_str();
-        self.write_line(format!("#![crate_id = \"github.com/bjz/gl-rs#{}:0.1\"]", ns).as_slice());
+        self.write_line(format!("#![crate_name = \"{}\"]", ns).as_slice());
         self.write_line("#![comment = \"An OpenGL function loader.\"]");
         self.write_line("#![license = \"ASL2\"]");
         self.write_line("#![crate_type = \"lib\"]");
