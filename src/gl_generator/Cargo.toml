@@ -11,7 +11,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 
 name = "gl_generator"
 crate_type = ["dylib"]
-path = "lib.rs"
+path = "src/gl_generator.rs"
 
 [dependencies.sax-rs]
 

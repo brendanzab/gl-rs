@@ -26,7 +26,7 @@
 #![allow(unused_variable)]
 
 #[phase(plugin)]
-extern crate gen;
+extern crate gl_generator;
 
 extern crate libc;
 

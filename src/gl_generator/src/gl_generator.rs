@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![crate_name = "gen"]
+#![crate_name = "gl_generator"]
 #![comment = "OpenGL function loader generator."]
 #![license = "ASL2"]
 
