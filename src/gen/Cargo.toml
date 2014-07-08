@@ -1,6 +1,6 @@
 [package]
 
-name = "gl"
+name = "gl_generator"
 version = "0.0.1"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
@@ -9,9 +9,10 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 
 [[lib]]
 
-name = "gl"
-path = "src/gl_bind.rs"
+name = "gl_generator"
+crate_type = ["dylib"]
+path = "lib.rs"
 
-[dependencies.gl_generator]
+[dependencies.sax-rs]
 
-path = "src/gen"
+git = "https://github.com/bjz/sax-rs"
