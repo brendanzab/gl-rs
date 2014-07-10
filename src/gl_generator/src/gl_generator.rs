@@ -34,7 +34,7 @@ use std::io::{File, Reader};
 
 use syntax::parse::token;
 use syntax::ast::{ Item, TokenTree };
-use syntax::ext::base::{expr_to_str, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
+use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
 use syntax::codemap::Span;
 
 use registry::*;
@@ -108,7 +108,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
                                     ecx.span_err(span, format!("{}", err).as_slice());
                                     return DummyResult::any(span)
                                 }
-                            }.read_to_str()
+                            }.read_to_string()
         {
             Ok(s) => s,
             Err(_) => {
@@ -131,7 +131,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             return DummyResult::any(span)
         }
     };
-    let mut parser = ::syntax::parse::new_parser_from_source_str(ecx.parse_sess(), ecx.cfg(), "".to_string(), content);
+    let mut parser = ::syntax::parse::new_parser_from_source_str(ecx.parse_sess(), ecx.cfg(), "unknown".to_string(), content);
 
     // getting all the items defined by the bindings
     let mut items = Vec::new();
@@ -160,10 +160,10 @@ fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::Toke
     }
 
     match (
-        expr_to_str(ecx, values.get(0).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_str(ecx, values.get(1).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_str(ecx, values.get(2).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_str(ecx, values.get(3).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values.get(0).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values.get(1).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values.get(2).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values.get(3).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
     ) {
         (Some(a), Some(b), Some(c), Some(d)) => Some((a, b, c, d)),
         _ => None
