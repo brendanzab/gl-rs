@@ -23,15 +23,6 @@
 #![feature(plugin_registrar)]
 #![feature(quote)]
 
-//! Requires libxml2
-//!
-//! This will be used to generate the loader from the [registry xml files]
-//! (https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/):
-//!
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/gl.xml`
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/glx.xml`
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml`
-
 #[phase(plugin, link)]
 extern crate log;
 
