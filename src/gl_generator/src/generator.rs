@@ -16,13 +16,13 @@ fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     // fixed
     if use_idents {
         match binding.ident.as_slice() {
-            "in" => "in_".to_str(),
-            "ref" => "ref_".to_str(),
-            "type" => "type_".to_str(),
-            ident => ident.to_str(),
+            "in" => "in_".to_string(),
+            "ref" => "ref_".to_string(),
+            "type" => "type_".to_string(),
+            ident => ident.to_string(),
         }
     } else {
-        "_".to_str()
+        "_".to_string()
     }
 }
 
@@ -62,7 +62,7 @@ fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
         Gl => "gl",
         Glx => "glx",
         Wgl => "wgl",
-    }).to_str().append(cmd.proto.ident.as_slice())
+    }).to_string().append(cmd.proto.ident.as_slice())
 }
 
 impl<'a, W: Writer> Generator<'a, W> {
@@ -140,7 +140,7 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// See the License for the specific language governing permissions and");
         self.write_line("// limitations under the License.");
         self.write_line("");
-        let ns = self.ns.to_str();
+        let ns = self.ns.to_string();
         self.write_line(format!("#![crate_name = \"{}\"]", ns).as_slice());
         self.write_line("#![comment = \"An OpenGL function loader.\"]");
         self.write_line("#![license = \"ASL2\"]");

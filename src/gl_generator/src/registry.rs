@@ -263,7 +263,7 @@ impl<'a> RegistryBuilder {
                 Ok(Characters(ref ch)) if ch.as_slice().is_whitespace() => (),
                 Ok(EndDocument) => fail!("The end of the document has been reached"),
                 Ok(event) => return event,
-                Err(err) => fail!("XML error: {}", err.to_str()),
+                Err(err) => fail!("XML error: {}", err.to_string()),
             }
         }
     }
@@ -271,21 +271,21 @@ impl<'a> RegistryBuilder {
     fn expect_characters(&self) -> String {
         match self.recv() {
             Characters(ref ch) => ch.clone(),
-            msg => fail!("Expected characters, found: {}", msg.to_str()),
+            msg => fail!("Expected characters, found: {}", msg.to_string()),
         }
     }
 
     fn expect_start_element(&self, name: &str) -> Attributes {
         match self.recv() {
             StartElement(ref n, ref atts) if name == n.as_slice() => atts.clone(),
-            msg => fail!("Expected <{}>, found: {}", name, msg.to_str()),
+            msg => fail!("Expected <{}>, found: {}", name, msg.to_string()),
         }
     }
 
     fn expect_end_element(&self, name: &str) {
         match self.recv() {
             EndElement(ref n) if name == n.as_slice() => (),
-            msg => fail!("Expected </{}>, found: {}", name, msg.to_str()),
+            msg => fail!("Expected </{}>, found: {}", name, msg.to_string()),
         }
     }
 
@@ -293,7 +293,7 @@ impl<'a> RegistryBuilder {
         loop {
             match self.recv() {
                 EndDocument => fail!("Expected {}, but reached the end of the document.",
-                                     event.to_str()),
+                                     event.to_string()),
                 ref msg if *msg == event => break,
                 _ => (),
             }
@@ -314,8 +314,8 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_str())),
-                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_str())),
+                StartElement(ref s, _) if s.as_slice() == "comment" => self.skip_until(EndElement("comment".to_string())),
+                StartElement(ref s, _) if s.as_slice() == "types" => self.skip_until(EndElement("types".to_string())),
 
                 // add groups
                 StartElement(ref s, _) if s.as_slice() == "groups" => {
@@ -327,7 +327,7 @@ impl<'a> RegistryBuilder {
                                 );
                             }
                             EndElement(ref s) if s.as_slice() == "groups" => break,
-                            msg => fail!("Expected </groups>, found: {}", msg.to_str()),
+                            msg => fail!("Expected </groups>, found: {}", msg.to_string()),
                         }
                     }
                 }
@@ -354,7 +354,7 @@ impl<'a> RegistryBuilder {
                                 registry.extensions.push(FromXML::convert(self, atts));
                             }
                             EndElement(ref s) if s.as_slice() == "extensions" => break,
-                            msg => fail!("Unexpected message {}", msg.to_str()),
+                            msg => fail!("Unexpected message {}", msg.to_string()),
                         }
                     }
                 }
@@ -363,7 +363,7 @@ impl<'a> RegistryBuilder {
                 EndElement(ref s) if s.as_slice() == "registry" => break,
 
                 // error handling
-                msg => fail!("Expected </registry>, found: {}", msg.to_str()),
+                msg => fail!("Expected </registry>, found: {}", msg.to_string()),
             }
         }
 
@@ -428,8 +428,8 @@ impl<'a> RegistryBuilder {
 
                 Registry {
                     groups: groups,
-                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_str().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
-                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_str().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
+                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
+                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),
                     extensions: Vec::new(),
@@ -484,7 +484,7 @@ impl<'a> RegistryBuilder {
                         fail!("Unexpected end element {}", name);
                     }
                 },
-                msg => fail!("Unexpected message {}", msg.to_str()) }
+                msg => fail!("Unexpected message {}", msg.to_string()) }
         }
     }
 
@@ -497,7 +497,7 @@ impl<'a> RegistryBuilder {
                     self.expect_end_element("enum");
                 }
                 EndElement(ref s) if s.as_slice() == "group" => break,
-                msg => fail!("Expected </group>, found: {}", msg.to_str()),
+                msg => fail!("Expected </group>, found: {}", msg.to_string()),
             }
         }
         Group {
@@ -512,13 +512,13 @@ impl<'a> RegistryBuilder {
             match self.recv() {
                 // ignores
                 Characters(_) | Comment(_) => (),
-                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_str())),
+                StartElement(ref s, _) if s.as_slice() == "unused" => self.skip_until(EndElement("unused".to_string())),
 
                 // add enum definition
                 StartElement(ref s, ref atts) if s.as_slice() == "enum" => {
                     enums.push(
                         Enum {
-                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_str(),
+                            ident:  trim_enum_prefix(atts.get("name"), self.ns).to_string(),
                             value:  atts.get_clone("value"),
                             alias:  atts.find_clone("alias"),
                             ty:     atts.find_clone("type"),
@@ -530,7 +530,7 @@ impl<'a> RegistryBuilder {
                 // finished building the namespace
                 EndElement(ref s) if s.as_slice() == "enums" => break,
                 // error handling
-                msg => fail!("Expected </enums>, found: {}", msg.to_str()),
+                msg => fail!("Expected </enums>, found: {}", msg.to_string()),
             }
         }
         enums
@@ -547,7 +547,7 @@ impl<'a> RegistryBuilder {
                 // finished building the namespace
                 EndElement(ref s) if s.as_slice() == "commands" => break,
                 // error handling
-                msg => fail!("Expected </commands>, found: {}", msg.to_str()),
+                msg => fail!("Expected </commands>, found: {}", msg.to_string()),
             }
         }
         cmds
@@ -557,7 +557,7 @@ impl<'a> RegistryBuilder {
         // consume command prototype
         let proto_atts = self.expect_start_element("proto");
         let mut proto = self.consume_binding(proto_atts.find_clone("group"));
-        proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_str();
+        proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_string();
         self.expect_end_element("proto");
 
         let mut params = Vec::new();
@@ -590,7 +590,7 @@ impl<'a> RegistryBuilder {
                     self.expect_end_element("glx");
                 }
                 EndElement(ref s) if s.as_slice() == "command" => break,
-                msg => fail!("Expected </command>, found: {}", msg.to_str()),
+                msg => fail!("Expected </command>, found: {}", msg.to_string()),
             }
         }
         let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.as_slice().contains_char('*'));
@@ -614,7 +614,7 @@ impl<'a> RegistryBuilder {
                 StartElement(ref s, _) if s.as_slice() == "ptype" => (),
                 EndElement(ref s) if s.as_slice() == "ptype" => (),
                 StartElement(ref s, _) if s.as_slice() == "name" => break,
-                msg => fail!("Expected binding, found: {}", msg.to_str()),
+                msg => fail!("Expected binding, found: {}", msg.to_string()),
             }
         }
         // consume identifier
@@ -686,7 +686,7 @@ impl FromXML for Extension {
     fn convert(r: &RegistryBuilder, a: &sax::Attributes) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = a.get_clone("name");
-        let supported = a.get("supported").split('|').map(|x| x.to_str()).collect::<Vec<String>>();
+        let supported = a.get("supported").split('|').map(|x| x.to_string()).collect::<Vec<String>>();
         let mut require = Vec::new();
         loop {
             match r.recv() {
@@ -694,7 +694,7 @@ impl FromXML for Extension {
                     require.push(FromXML::convert(r, atts));
                 }
                 EndElement(ref s) if s.as_slice() == "extension" => break,
-                msg => fail!("Unexpected message {}", msg.to_str())
+                msg => fail!("Unexpected message {}", msg.to_string())
             }
         }
 

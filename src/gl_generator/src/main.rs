@@ -21,15 +21,6 @@
 #![feature(macro_rules)]
 #![feature(phase)]
 
-//! Requires libxml2
-//!
-//! This will be used to generate the loader from the [registry xml files]
-//! (https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/):
-//!
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/gl.xml`
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/glx.xml`
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml`
-
 extern crate getopts;
 
 #[phase(plugin, link)]
@@ -60,7 +51,7 @@ fn main() {
         optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
     ];
 
-    let os_args = os::args().iter().map(|x| x.to_str()).collect::<Vec<String>>();
+    let os_args = os::args().iter().map(|x| x.to_string()).collect::<Vec<String>>();
     let args = match getopts(os_args.as_slice(), opts) {
         Ok(a) => a,
         Err(x) => fail!("Error: {}\n{}", x, usage("glrsgen", opts)),
@@ -71,7 +62,7 @@ fn main() {
         return;
     }
 
-    let ns = match args.opt_str("namespace").unwrap_or("gl".to_str()).as_slice() {
+    let ns = match args.opt_str("namespace").unwrap_or("gl".to_string()).as_slice() {
         "gl"  => Gl,
         "glx" => fail!("glx generation unimplemented"),
         "wgl" => fail!("wgl generation unimplemented"),
@@ -87,16 +78,16 @@ fn main() {
     } else {
         Some(Filter {
             extensions: args.opt_strs("extension"),
-            profile: args.opt_str("profile").unwrap_or("core".to_str()),
-            version: args.opt_str("version").unwrap_or("4.3".to_str()),
-            api: args.opt_str("api").unwrap_or("gl".to_str()),
+            profile: args.opt_str("profile").unwrap_or("core".to_string()),
+            version: args.opt_str("version").unwrap_or("4.3".to_string()),
+            api: args.opt_str("api").unwrap_or("gl".to_string()),
         })
     };
 
     let reg = Registry::from_xml(
         File::open(&path).ok()
             .expect(format!("Could not read {}", path.display()).as_slice())
-            .read_to_str().ok()
+            .read_to_string().ok()
             .expect( "registry source not utf8!" ).as_slice(), ns, filter
     );
 
