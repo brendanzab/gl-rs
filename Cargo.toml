@@ -7,8 +7,11 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Arseny Kapoulkine"
 ]
 
-build = "./.build.sh"
-
 [[lib]]
 
 name = "gl"
+path = "src/lib.rs"
+
+[dependencies.gl_generator]
+
+path = "src/gl_generator"

@@ -1,110 +1,10 @@
-// Copyright 2013 The gl-rs developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directory of this distribution.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#![crate_id = "github.com/bjz/gl-rs#gen:0.1"]
-#![comment = "OpenGL function loader generator."]
-#![license = "ASL2"]
-
-#![feature(globs)]
-#![feature(macro_rules)]
-#![feature(phase)]
-
-//! Requires libxml2
-//!
-//! This will be used to generate the loader from the [registry xml files]
-//! (https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/):
-//!
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/gl.xml`
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/glx.xml`
-//! - `$ wget --no-check-certificate https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/wgl.xml`
-
-extern crate getopts;
-
-#[phase(plugin, link)]
-extern crate log;
-
-use getopts::{optopt, optmulti, optflag, getopts, usage};
-
-use std::os;
-use std::path::Path;
-use std::io;
-use std::io::{File, Reader, Writer};
-
 use registry::*;
-
-pub mod registry;
-pub mod ty;
-
-fn main() {
-    let opts = &[
-        optopt("", "namespace", "OpenGL namespace (gl by default)", "gl|glx|wgl"),
-        optopt("", "api", "API to generate bindings for (gl by default)", "gl|gles1|gles2"),
-        optopt("", "profile", "Profile to generate (core by default)", "core|compatability"),
-        optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
-        optmulti("", "extension", "Extension to include", ""),
-        optflag("h", "help", "Print usage information"),
-        optflag("", "full", "Generate API for all profiles, versions and extensions"),
-        optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
-    ];
-
-    let os_args = os::args().iter().map(|x| x.to_str()).collect::<Vec<String>>();
-    let args = match getopts(os_args.as_slice(), opts) {
-        Ok(a) => a,
-        Err(x) => fail!("Error: {}\n{}", x, usage("glrsgen", opts)),
-    };
-
-    if args.opt_present("help") {
-        println!("{}", usage("glrsgen", opts));
-        return;
-    }
-
-    let ns = match args.opt_str("namespace").unwrap_or("gl".to_str()).as_slice() {
-        "gl"  => Gl,
-        "glx" => fail!("glx generation unimplemented"),
-        "wgl" => fail!("wgl generation unimplemented"),
-        ns     => fail!("Unexpected opengl namespace '{}'", ns)
-    };
-
-    let path = Path::new(
-        args.opt_str("xml").unwrap_or(format!("{}.xml", ns))
-    );
-
-    let filter = if args.opt_present("full") {
-        None
-    } else {
-        Some(Filter {
-            extensions: args.opt_strs("extension"),
-            profile: args.opt_str("profile").unwrap_or("core".to_str()),
-            version: args.opt_str("version").unwrap_or("4.3".to_str()),
-            api: args.opt_str("api").unwrap_or("gl".to_str()),
-        })
-    };
-
-    let reg = Registry::from_xml(
-        File::open(&path).ok()
-            .expect(format!("Could not read {}", path.display()).as_slice())
-            .read_to_str().ok()
-            .expect( "registry source not utf8!" ).as_slice(), ns, filter
-    );
-
-    Generator::write(&mut io::stdout(), &reg, ns);
-}
+use ty;
+use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
 
-struct Generator<'a, W> {
+pub struct Generator<'a, W> {
     ns: Ns,
     writer: &'a mut W,
     registry: &'a Registry,
@@ -116,13 +16,13 @@ fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     // fixed
     if use_idents {
         match binding.ident.as_slice() {
-            "in" => "in_".to_str(),
-            "ref" => "ref_".to_str(),
-            "type" => "type_".to_str(),
-            ident => ident.to_str(),
+            "in" => "in_".to_string(),
+            "ref" => "ref_".to_string(),
+            "type" => "type_".to_string(),
+            ident => ident.to_string(),
         }
     } else {
-        "_".to_str()
+        "_".to_string()
     }
 }
 
@@ -162,7 +62,7 @@ fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
         Gl => "gl",
         Glx => "glx",
         Wgl => "wgl",
-    }).to_str().append(cmd.proto.ident.as_slice())
+    }).to_string().append(cmd.proto.ident.as_slice())
 }
 
 impl<'a, W: Writer> Generator<'a, W> {
@@ -201,7 +101,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     fn write_enum(&mut self, enm: &Enum) {
-        let ident = if (enm.ident.as_slice()[0] as char).is_digit() {
+        let ident = if (enm.ident.as_slice().char_at(0)).is_digit() {
             format!("_{}", enm.ident)
         } else {
             enm.ident.clone()
@@ -240,8 +140,8 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("// See the License for the specific language governing permissions and");
         self.write_line("// limitations under the License.");
         self.write_line("");
-        let ns = self.ns.to_str();
-        self.write_line(format!("#![crate_id = \"github.com/bjz/gl-rs#{}:0.1\"]", ns).as_slice());
+        let ns = self.ns.to_string();
+        self.write_line(format!("#![crate_name = \"{}\"]", ns).as_slice());
         self.write_line("#![comment = \"An OpenGL function loader.\"]");
         self.write_line("#![license = \"ASL2\"]");
         self.write_line("#![crate_type = \"lib\"]");
@@ -420,12 +320,14 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("}");
     }
 
-    fn write(writer: &mut W, registry: &Registry, ns: Ns) {
+    pub fn write(writer: &mut W, registry: &Registry, ns: Ns, write_header: bool) {
         let mut gen = Generator::new(writer, registry, ns);
 
-        // header with licence, metadata and imports
-        gen.write_header();
-        gen.write_line("");
+        if write_header {
+            // header with licence, metadata and imports
+            gen.write_header();
+            gen.write_line("");
+        }
 
         // type aliases
         gen.write_type_aliases();

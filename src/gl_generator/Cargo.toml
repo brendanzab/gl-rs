@@ -1,0 +1,18 @@
+[package]
+
+name = "gl_generator"
+version = "0.0.1"
+authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
+        "Corey Richardson",
+        "Arseny Kapoulkine"
+]
+
+[[lib]]
+
+name = "gl_generator"
+crate_type = ["dylib"]
+path = "src/gl_generator.rs"
+
+[dependencies.sax-rs]
+
+git = "https://github.com/bjz/sax-rs"
