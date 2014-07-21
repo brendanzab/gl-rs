@@ -67,7 +67,7 @@ impl MacResult for MacroResult {
 // handler for generate_gl_bindings!
 fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box<MacResult> {
     // getting the arguments from the macro
-    let (nsLiteral, api, profile, version) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
+    let (nsLiteral, api, profile, version, exts) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
         Some(t) => t,
         None => return DummyResult::any(span)
     };
@@ -93,7 +93,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
     );
 
     let filter = Some(Filter {
-        extensions: vec!(),
+        extensions: exts.unwrap_or("".to_string()).as_slice().split(',').map(|s| s.to_string()).collect(),
         profile: profile,
         version: version,
         api: api,
@@ -148,24 +148,25 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
     box MacroResult { content: items } as Box<MacResult>
 }
 
-fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::TokenTree]) -> Option<(String, String, String, String)> {
+fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::TokenTree]) -> Option<(String, String, String, String, Option<String>)> {
     let values = match get_exprs_from_tts(ecx, span, tts) {
         Some(v) => v,
         None => return None
     };
 
-    if values.len() != 4 {
-        ecx.span_err(span, format!("expected 4 arguments but only got {}", values.len()).as_slice());
+    if values.len() != 4 && values.len() != 5 {
+        ecx.span_err(span, format!("expected 4 or 5 arguments but only got {}", values.len()).as_slice());
         return None;
     }
 
     match (
-        expr_to_string(ecx, values.get(0).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values.get(1).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values.get(2).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values.get(3).clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values[0].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values[1].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values[2].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values[3].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        values.as_slice().get(4).and_then(|e| expr_to_string(ecx, *e, "expected string literal")).map(|e| match e { (s, _) => s.get().to_string() }),
     ) {
-        (Some(a), Some(b), Some(c), Some(d)) => Some((a, b, c, d)),
+        (Some(a), Some(b), Some(c), Some(d), e) => Some((a, b, c, d, e)),
         _ => None
     }
 }
