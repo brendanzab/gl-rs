@@ -35,4 +35,4 @@ use std::mem;
 
 use self::types::*;
 
-generate_gl_bindings!("gl", "gl", "core", "4.3", "GL_EXT_texture_filter_anisotropic")
+generate_gl_bindings!("gl", "gl", "core", "4.3", "static", "GL_EXT_texture_filter_anisotropic")

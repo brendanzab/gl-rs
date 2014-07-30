@@ -20,16 +20,16 @@ use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
 
-pub struct Generator<'a, W> {
+pub struct StaticGenerator<'a, W> {
     ns: Ns,
     writer: &'a mut W,
     registry: &'a Registry,
     indent: uint,
 }
 
-impl<'a, W: Writer> Generator<'a, W> {
-    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> Generator<'a, W> {
-        Generator {
+impl<'a, W: Writer> StaticGenerator<'a, W> {
+    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> StaticGenerator<'a, W> {
+        StaticGenerator {
             ns: ns,
             writer: writer,
             registry: registry,
@@ -283,7 +283,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     pub fn write(writer: &mut W, registry: &Registry, ns: Ns, write_header: bool) {
-        let mut gen = Generator::new(writer, registry, ns);
+        let mut gen = StaticGenerator::new(writer, registry, ns);
 
         if write_header {
             // header with licence, metadata and imports

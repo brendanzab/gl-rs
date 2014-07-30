@@ -38,8 +38,10 @@ use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt
 use syntax::codemap::Span;
 
 use registry::*;
+use static_gen::StaticGenerator;
 
-pub mod generator;
+mod common;
+pub mod static_gen;
 pub mod registry;
 pub mod ty;
 
@@ -67,7 +69,7 @@ impl MacResult for MacroResult {
 // handler for generate_gl_bindings!
 fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box<MacResult> {
     // getting the arguments from the macro
-    let (nsLiteral, api, profile, version, exts) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
+    let (nsLiteral, api, profile, version, generator, exts) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
         Some(t) => t,
         None => return DummyResult::any(span)
     };
@@ -121,7 +123,14 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
 
     // generating the Rust bindings as a source code into "buffer"
     let mut buffer = ::std::io::MemWriter::new();
-    generator::Generator::write(&mut buffer, &reg, ns, false);
+    match generator.as_slice() {
+        "static" => StaticGenerator::write(&mut buffer, &reg, ns, false),
+        "struct" => unimplemented!(),
+        generator => {
+            ecx.span_err(span, format!("unknown generator type: {}", generator).as_slice());
+            return DummyResult::any(span)
+        },
+    }
 
     // creating a new Rust parser from these bindings
     let content = match String::from_utf8(buffer.unwrap()) {
@@ -148,14 +157,14 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
     box MacroResult { content: items } as Box<MacResult>
 }
 
-fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::TokenTree]) -> Option<(String, String, String, String, Option<String>)> {
+fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::TokenTree]) -> Option<(String, String, String, String, String, Option<String>)> {
     let values = match get_exprs_from_tts(ecx, span, tts) {
         Some(v) => v,
         None => return None
     };
 
-    if values.len() != 4 && values.len() != 5 {
-        ecx.span_err(span, format!("expected 4 or 5 arguments but only got {}", values.len()).as_slice());
+    if values.len() != 5 && values.len() != 6 {
+        ecx.span_err(span, format!("expected 5 or 6 arguments but only got {}", values.len()).as_slice());
         return None;
     }
 
@@ -164,9 +173,10 @@ fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::Toke
         expr_to_string(ecx, values[1].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
         expr_to_string(ecx, values[2].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
         expr_to_string(ecx, values[3].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
-        values.as_slice().get(4).and_then(|e| expr_to_string(ecx, *e, "expected string literal")).map(|e| match e { (s, _) => s.get().to_string() }),
+        expr_to_string(ecx, values[4].clone(), "expected string literal").map(|e| match e { (s, _) => s.get().to_string() }),
+        values.as_slice().get(5).and_then(|e| expr_to_string(ecx, *e, "expected string literal")).map(|e| match e { (s, _) => s.get().to_string() }),
     ) {
-        (Some(a), Some(b), Some(c), Some(d), e) => Some((a, b, c, d, e)),
+        (Some(a), Some(b), Some(c), Some(d), Some(e), f) => Some((a, b, c, d, e, f)),
         _ => None
     }
 }

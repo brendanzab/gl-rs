@@ -34,10 +34,11 @@ use std::io;
 use std::io::{File, Reader};
 
 use registry::*;
+use static_gen::StaticGenerator;
 
 mod common;
-pub mod generator;
 pub mod registry;
+pub mod static_gen;
 pub mod ty;
 
 fn main() {
@@ -47,6 +48,7 @@ fn main() {
         optopt("", "profile", "Profile to generate (core by default)", "core|compatability"),
         optopt("", "version", "Version to generate bindings for (4.3 by default)", ""),
         optmulti("", "extension", "Extension to include", ""),
+        optopt("", "generator", "The type of generator to use (static by default)", "static|struct"),
         optflag("h", "help", "Print usage information"),
         optflag("", "full", "Generate API for all profiles, versions and extensions"),
         optopt("", "xml", "The xml spec file (<namespace>.xml by default)", ""),
@@ -92,5 +94,9 @@ fn main() {
             .expect( "registry source not utf8!" ).as_slice(), ns, filter
     );
 
-    generator::Generator::write(&mut io::stdout(), &reg, ns, true);
+    match args.opt_str("generator").unwrap_or("static".to_string()).as_slice() {
+        "static"  => StaticGenerator::write(&mut io::stdout(), &reg, ns, true),
+        "struct" => unimplemented!(),
+        generator => fail!("Unexpected generator type '{}'", generator)
+    };
 }
