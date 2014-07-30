@@ -35,6 +35,7 @@ use std::io::{File, Reader};
 
 use registry::*;
 
+mod common;
 pub mod generator;
 pub mod registry;
 pub mod ty;

@@ -15,6 +15,7 @@
 
 use registry::*;
 use ty;
+use common;
 use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
@@ -24,60 +25,6 @@ pub struct Generator<'a, W> {
     writer: &'a mut W,
     registry: &'a Registry,
     indent: uint,
-}
-
-fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
-    // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
-    // fixed
-    if use_idents {
-        match binding.ident.as_slice() {
-            "in" => "in_".to_string(),
-            "ref" => "ref_".to_string(),
-            "type" => "type_".to_string(),
-            ident => ident.to_string(),
-        }
-    } else {
-        "_".to_string()
-    }
-}
-
-fn gen_binding(binding: &Binding, use_idents: bool) -> String {
-    format!("{}: {}",
-        gen_binding_ident(binding, use_idents),
-        ty::to_rust_ty(binding.ty.as_slice()))
-}
-
-fn gen_param_list(cmd: &Cmd, use_idents: bool) -> String {
-    cmd.params.iter()
-        .map(|b| gen_binding(b, use_idents))
-        .collect::<Vec<String>>()
-        .connect(", ")
-}
-
-fn gen_param_ident_list(cmd: &Cmd) -> String {
-    cmd.params.iter()
-        .map(|b| gen_binding_ident(b, true))
-        .collect::<Vec<String>>()
-        .connect(", ")
-}
-
-fn gen_param_ty_list(cmd: &Cmd) -> String {
-    cmd.params.iter()
-        .map(|b| ty::to_rust_ty(b.ty.as_slice()))
-        .collect::<Vec<&str>>()
-        .connect(", ")
-}
-
-fn gen_return_suffix(cmd: &Cmd) -> String {
-    ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty.as_slice()))
-}
-
-fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
-    (match *ns {
-        Gl => "gl",
-        Glx => "glx",
-        Wgl => "wgl",
-    }).to_string().append(cmd.proto.ident.as_slice())
 }
 
 impl<'a, W: Writer> Generator<'a, W> {
@@ -223,8 +170,8 @@ impl<'a, W: Writer> Generator<'a, W> {
                     fail!(\"`{name}` was not loaded\") \
                 }}",
                 name = c.proto.ident,
-                params = gen_param_list(c, true),
-                return_suffix = gen_return_suffix(c)
+                params = common::gen_param_list(c, true),
+                return_suffix = common::gen_return_suffix(c)
             ).as_slice());
         }
         self.decr_indent();
@@ -243,10 +190,10 @@ impl<'a, W: Writer> Generator<'a, W> {
                             }} \
                         }}",
                         name = c.proto.ident,
-                        params = gen_param_list(c, true),
-                        types = gen_param_ty_list(c),
-                        return_suffix = gen_return_suffix(c),
-                        idents = gen_param_ident_list(c),
+                        params = common::gen_param_list(c, true),
+                        types = common::gen_param_ty_list(c),
+                        return_suffix = common::gen_return_suffix(c),
+                        idents = common::gen_param_ident_list(c),
                     )
                 } else {
                     format!(
@@ -255,9 +202,9 @@ impl<'a, W: Writer> Generator<'a, W> {
                                 (storage::{name}.f)({idents}) \
                         }}",
                         name = c.proto.ident,
-                        typed_params = gen_param_list(c, true),
-                        return_suffix = gen_return_suffix(c),
-                        idents = gen_param_ident_list(c),
+                        typed_params = common::gen_param_list(c, true),
+                        return_suffix = common::gen_return_suffix(c),
+                        idents = common::gen_param_ident_list(c),
                     )
                 }.as_slice()
             );
@@ -303,7 +250,7 @@ impl<'a, W: Writer> Generator<'a, W> {
             self.write_line(format!(
                 "fn_mod!({name}, \"{symbol}\")",
                 name = c.proto.ident,
-                symbol = gen_symbol_name(&ns, c)
+                symbol = common::gen_symbol_name(&ns, c)
             ).as_slice());
         }
         // for c in self.registry.cmd_iter() {
