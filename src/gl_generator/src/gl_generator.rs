@@ -16,6 +16,7 @@
 #![crate_name = "gl_generator"]
 #![comment = "OpenGL function loader generator."]
 #![license = "ASL2"]
+#![crate_type = "dylib"]
 
 #![feature(phase)]
 #![feature(globs)]
@@ -39,9 +40,11 @@ use syntax::codemap::Span;
 
 use registry::*;
 use static_gen::StaticGenerator;
+use struct_gen::StructGenerator;
 
 mod common;
 pub mod static_gen;
+pub mod struct_gen;
 pub mod registry;
 pub mod ty;
 
@@ -125,7 +128,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
     let mut buffer = ::std::io::MemWriter::new();
     match generator.as_slice() {
         "static" => StaticGenerator::write(&mut buffer, &reg, ns, false),
-        "struct" => unimplemented!(),
+        "struct" => StructGenerator::write(&mut buffer, &reg, ns, false),
         generator => {
             ecx.span_err(span, format!("unknown generator type: {}", generator).as_slice());
             return DummyResult::any(span)

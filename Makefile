@@ -18,9 +18,9 @@ RUSTDOC             = rustdoc
 
 SRC_DIR             = src
 TEST_DIR            = test
-LIB_FILE            = $(SRC_DIR)/gl.rs
+GL_LIB_FILE         = $(SRC_DIR)/gl.rs
 GEN_FILE            = $(SRC_DIR)/gl_generator/src/main.rs
-EXAMPLE_FILES       = $(SRC_DIR)/examples/*.rs
+GEN_MACRO_FILE      = $(SRC_DIR)/gl_generator/src/gl_generator.rs
 
 BIN_DIR             = bin
 DEPS_DIR            = deps
@@ -35,6 +35,7 @@ GL_API              ?= gl
 GL_PROFILE          ?= core
 GL_VERSION          ?= 4.3
 GL_EXTENSIONS       ?=
+GL_GENERATOR        ?=
 GL_FULL             ?=
 GL_XML              ?= $(DEPS_DIR)/khronos-api/$(GL_API).xml
 
@@ -44,6 +45,7 @@ GEN_FLAGS           ?= \
 	--profile $(GL_PROFILE) \
 	--version $(GL_VERSION) --xml $(GL_XML) \
 	$(foreach EXTENSION, $(GL_EXTENSIONS), --extension $(EXTENSION)) \
+	$(if $(GL_GENERATOR), --generator $(GL_GENERATOR)) \
 	$(if $(GL_FULL), --full)
 
 MAKE=make
@@ -51,31 +53,11 @@ ifeq ($(OS),Windows_NT)
 	MAKE=mingw32-make
 endif
 
-all: lib examples doc
+all: gl-lib gen-macro examples doc
 
 submodule-update:
 	@git submodule init
 	@git submodule update
-
-check:
-	@mkdir -p $(TEST_DIR)
-	$(RUSTC) --out-dir=$(TEST_DIR) --test $(LIB_FILE)
-	$(TEST_DIR)/gl
-
-doc:
-	@mkdir -p $(DOC_DIR)
-	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
-
-examples-dir:
-	mkdir -p $(EXAMPLES_DIR)
-
-examples-deps:
-	$(MAKE) lib -C $(DEPS_DIR)/glfw-rs
-
-$(EXAMPLE_FILES): lib examples-dir examples-deps
-	$(RUSTC) -L $(DEPS_DIR)/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $@
-
-examples: $(EXAMPLE_FILES)
 
 gen-deps: $(DEPS_DIR)/sax-rs/README.md
 	$(MAKE) lib -C $(DEPS_DIR)/sax-rs
@@ -88,31 +70,64 @@ gen: gen-deps
 
 gen-lib: gen
 	@mkdir -p $(LIB_DIR)
-	$(GLRSGEN) $(GEN_FLAGS) > $(LIB_FILE)
+	$(GLRSGEN) $(GEN_FLAGS) > $(GL_LIB_FILE)
 
-lib: gen-lib
-	$(RUSTC) $(LIB_FILE) -O --out-dir=$(LIB_DIR)
+gl-lib: gen-lib
+	$(RUSTC) $(GL_LIB_FILE) -O --out-dir=$(LIB_DIR)
+
+gen-macro: gen-deps
+	@mkdir -p $(LIB_DIR)
+	$(RUSTC) -L $(DEPS_DIR)/sax-rs/lib $(GEN_MACRO_FILE) -O --out-dir=$(LIB_DIR)
+
+check:
+	@mkdir -p $(TEST_DIR)
+	$(RUSTC) --out-dir=$(TEST_DIR) --test $(GL_LIB_FILE)
+	$(TEST_DIR)/gl
+
+doc:
+	@mkdir -p $(DOC_DIR)
+	$(RUSTDOC) -o $(DOC_DIR) $(GL_LIB_FILE)
+
+examples-dir:
+	mkdir -p $(EXAMPLES_DIR)
+
+examples-deps: examples-dir
+	$(MAKE) lib -C $(DEPS_DIR)/glfw-rs
+
+example-static-basic: gl-lib examples-dir examples-deps
+	$(RUSTC) -L $(DEPS_DIR)/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $(SRC_DIR)/examples/static_basic.rs
+
+example-static-triangle:
+	$(RUSTC) -L $(DEPS_DIR)/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $(SRC_DIR)/examples/static_triangle.rs
+
+example-struct-triangle: gen-macro examples-dir examples-deps
+	$(RUSTC) -L $(DEPS_DIR)/glfw-rs/lib -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $(SRC_DIR)/examples/struct_triangle.rs
+
+examples: example-static-basic example-static-triangle example-struct-triangle
 
 clean:
-	rm -f $(LIB_FILE)
+	rm -rf $(LIB_DIR)
 	rm -rf $(BIN_DIR)
 	rm -rf $(TEST_DIR)
 	rm -rf $(DOC_DIR)
+	rm -rf $(EXAMPLES_DIR)
 	$(MAKE) clean -C $(DEPS_DIR)/glfw-rs
 	$(MAKE) clean -C $(DEPS_DIR)/sax-rs
 
 .PHONY: \
 	all \
 	submodule-update \
-	lib \
-	check \
-	doc \
-	examples \
-	examples-deps\
-	examples-dir \
 	gen \
 	gen-deps \
 	gen-lib \
-	$(EXAMPLE_FILES) \
+	gen-macro \
+	gl-lib \
+	check \
+	doc \
+	examples-dir \
+	examples-deps\
+	example-static-basic \
+	example-static-triangle \
+	example-struct-triangle \
+	examples \
 	clean
-

@@ -20,16 +20,16 @@ use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
 
-pub struct StaticGenerator<'a, W> {
+pub struct StructGenerator<'a, W> {
     ns: Ns,
     writer: &'a mut W,
     registry: &'a Registry,
     indent: uint,
 }
 
-impl<'a, W: Writer> StaticGenerator<'a, W> {
-    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> StaticGenerator<'a, W> {
-        StaticGenerator {
+impl<'a, W: Writer> StructGenerator<'a, W> {
+    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> StructGenerator<'a, W> {
+        StructGenerator {
             ns: ns,
             writer: writer,
             registry: registry,
@@ -116,6 +116,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("");
         self.write_line("extern crate libc;");
         self.write_line("");
+        self.write_line("use libc::*;");
         self.write_line("use std::mem;");
         self.write_line("");
         self.write_line("use self::types::*;");
@@ -150,12 +151,17 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("}");
         self.write_line("");
         self.write_line("impl FnPtr {");
-        self.write_line("    pub fn new(ptr: *const libc::c_void, failing_fn: *const libc::c_void) -> FnPtr {");
+        self.write_line("    fn new(ptr: *const libc::c_void, failing_fn: *const libc::c_void) -> FnPtr {");
         self.write_line("        if ptr.is_null() {");
         self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
         self.write_line("        } else {");
         self.write_line("            FnPtr { f: ptr, is_loaded: true }");
         self.write_line("        }");
+        self.write_line("    }");
+        self.write_line("");
+        self.write_line("    #[inline]");
+        self.write_line("    pub fn is_loaded(&self) -> bool {");
+        self.write_line("        self.is_loaded");
         self.write_line("    }");
         self.write_line("}");
     }
@@ -163,7 +169,6 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     fn write_failing_fns(&mut self) {
         self.write_line("mod failing {");
         self.incr_indent();
-        self.write_line("use libc;");
         self.write_line("use super::types::*;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
@@ -180,15 +185,58 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("}");
     }
 
-    fn write_fns(&mut self) {
+    fn write_struct(&mut self) {
+        let ns = self.ns;
+        self.write_line("#[allow(uppercase_variables)]");
+        self.write_line(format!("pub struct {:c} {{", ns).as_slice());
+        self.incr_indent();
+        for c in self.registry.cmd_iter() {
+            self.write_line(format!(
+                "{name}: FnPtr,",
+                name = c.proto.ident,
+            ).as_slice());
+        }
+        self.decr_indent();
+        self.write_line("}");
+    }
+
+    fn write_impl(&mut self) {
+        let ns = self.ns;
+        self.write_line(format!("impl {:c} {{", ns).as_slice());
+        self.incr_indent();
+        let ns = self.ns;
+        self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
+        self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
+        self.write_line("///");
+        self.write_line("/// ~~~rust");
+        self.write_line("/// let gl = Gl::load_with(|s| glfw.get_proc_address(s));");
+        self.write_line("/// ~~~");
+        self.write_line(format!(
+            "pub fn load_with(loadfn: |symbol: &str| -> *const libc::c_void) -> {:c} {{", ns
+        ).as_slice());
+        self.incr_indent();
+        self.write_line(format!("{:c} {{", ns).as_slice());
+        self.incr_indent();
+        for c in self.registry.cmd_iter() {
+            self.write_line(format!(
+                "{name}: FnPtr::new(loadfn(\"{symbol}\"), failing::{name} as *const libc::c_void),",
+                name = c.proto.ident,
+                symbol = common::gen_symbol_name(&ns, c)
+            ).as_slice());
+        }
+        self.decr_indent();
+        self.write_line("}");
+        self.decr_indent();
+        self.write_line("}");
+        self.write_line("");
         for c in self.registry.cmd_iter() {
             self.write_line(
                 if c.is_safe {
                     format!(
-                        "#[inline] pub fn {name}({params}){return_suffix} {{ \
+                        "#[inline] pub fn {name}(&self, {params}){return_suffix} {{ \
                             unsafe {{ \
                                 mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
-                                    (storage::{name}.f)({idents}) \
+                                    (self.{name}.f)({idents}) \
                             }} \
                         }}",
                         name = c.proto.ident,
@@ -199,9 +247,9 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
                     )
                 } else {
                     format!(
-                        "#[inline] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
+                        "#[inline] pub unsafe fn {name}(&self, {typed_params}){return_suffix} {{ \
                             mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
-                                (storage::{name}.f)({idents}) \
+                                (self.{name}.f)({idents}) \
                         }}",
                         name = c.proto.ident,
                         typed_params = common::gen_param_list(c, true),
@@ -211,81 +259,12 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
                 }.as_slice()
             );
         }
-    }
-
-    fn write_ptrs(&mut self) {
-        self.write_line("mod storage {");
-        self.incr_indent();
-        self.write_line("use libc;");
-        self.write_line("use failing;");
-        self.write_line("use FnPtr;");
-        self.write_line("");
-        for c in self.registry.cmd_iter() {
-            self.write_line(format!(
-                "pub static mut {name}: FnPtr = FnPtr {{ \
-                    f: failing::{name} as *const libc::c_void, \
-                    is_loaded: false \
-                }};",
-                name = c.proto.ident,
-            ).as_slice());
-        };
-        self.decr_indent();
-        self.write_line("}");
-    }
-
-    fn write_fn_mods(&mut self) {
-        self.write_line("macro_rules! fn_mod {");
-        self.write_line("    ($name:ident, $sym:expr) => {");
-        self.write_line("        pub mod $name {");
-        self.write_line("            #[inline]");
-        self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
-        self.write_line("            ");
-        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> *const ::libc::c_void) {");
-        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name as *const ::libc::c_void) }");
-        self.write_line("            }");
-        self.write_line("        }");
-        self.write_line("    }");
-        self.write_line("}");
-        self.write_line("");
-        for c in self.registry.cmd_iter() {
-            let ns = self.ns;
-            self.write_line(format!(
-                "fn_mod!({name}, \"{symbol}\")",
-                name = c.proto.ident,
-                symbol = common::gen_symbol_name(&ns, c)
-            ).as_slice());
-        }
-        // for c in self.registry.cmd_iter() {
-        //     self.write_line(format!(
-        //         "pub mod {name} {{ \
-        //             #[inline] \
-        //             pub fn is_loaded() -> bool {{ \
-        //                 unsafe {{ ::storage::{name}.is_loaded }} \
-        //             }} \
-        //         }}",
-        //         name = c.proto.ident,
-        //     ).as_slice());
-        // }
-    }
-
-    fn write_load_fn(&mut self) {
-        self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
-        self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
-        self.write_line("///");
-        self.write_line("/// ~~~rust");
-        self.write_line("/// gl::load_with(|s| glfw.get_proc_address(s));");
-        self.write_line("/// ~~~");
-        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *const libc::c_void) {");
-        self.incr_indent();
-        for c in self.registry.cmd_iter() {
-            self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident).as_slice());
-        }
         self.decr_indent();
         self.write_line("}");
     }
 
     pub fn write(writer: &mut W, registry: &Registry, ns: Ns, write_header: bool) {
-        let mut gen = StaticGenerator::new(writer, registry, ns);
+        let mut gen = StructGenerator::new(writer, registry, ns);
 
         if write_header {
             // header with licence, metadata and imports
@@ -301,28 +280,20 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         gen.write_enums();
         gen.write_line("");
 
-        // safe and unsafe OpenGl functions
-        gen.write_fns();
-        gen.write_line("");
-
         // FnPtr struct def
         gen.write_fnptr_struct_def();
-        gen.write_line("");
-
-        // static muts for storing function pointers
-        gen.write_ptrs();
-        gen.write_line("");
-
-        // functions for querying the status of individual function pointers
-        gen.write_fn_mods();
         gen.write_line("");
 
         // failing functions to assign to the function pointers
         gen.write_failing_fns();
         gen.write_line("");
 
-        // loader function
-        gen.write_load_fn();
+        // struct for storing function pointers
+        gen.write_struct();
+        gen.write_line("");
+
+        // opengl functions as methods on the struct
+        gen.write_impl();
         gen.write_line("");
     }
 }

@@ -35,10 +35,12 @@ use std::io::{File, Reader};
 
 use registry::*;
 use static_gen::StaticGenerator;
+use struct_gen::StructGenerator;
 
 mod common;
 pub mod registry;
 pub mod static_gen;
+pub mod struct_gen;
 pub mod ty;
 
 fn main() {
@@ -96,7 +98,7 @@ fn main() {
 
     match args.opt_str("generator").unwrap_or("static".to_string()).as_slice() {
         "static"  => StaticGenerator::write(&mut io::stdout(), &reg, ns, true),
-        "struct" => unimplemented!(),
+        "struct" => StructGenerator::write(&mut io::stdout(), &reg, ns, true),
         generator => fail!("Unexpected generator type '{}'", generator)
     };
 }
