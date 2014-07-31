@@ -1,10 +1,10 @@
 .DS_store
 .rust
-bin
-build
-examples
-lib
-doc
-test
+/bin/
+/build/
+/examples/
+/lib/
+/doc/
+/test/
 target
 src/gl.rs

@@ -20,6 +20,7 @@ GL_API              ?= gl
 GL_PROFILE          ?= core
 GL_VERSION          ?= 4.3
 GL_EXTENSIONS       ?=
+GL_GENERATOR        ?=
 GL_FULL             ?=
 GL_XML              ?= ./deps/khronos-api/$(GL_API).xml
 ~~~

@@ -1,73 +1,35 @@
+// Copyright 2013-2014 The gl-rs developers. For a full listing of the authors,
+// refer to the AUTHORS file at the top-level directory of this distribution.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 use registry::*;
 use ty;
+use common;
 use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
 
-pub struct Generator<'a, W> {
+pub struct StaticGenerator<'a, W> {
     ns: Ns,
     writer: &'a mut W,
     registry: &'a Registry,
     indent: uint,
 }
 
-fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
-    // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
-    // fixed
-    if use_idents {
-        match binding.ident.as_slice() {
-            "in" => "in_".to_string(),
-            "ref" => "ref_".to_string(),
-            "type" => "type_".to_string(),
-            ident => ident.to_string(),
-        }
-    } else {
-        "_".to_string()
-    }
-}
-
-fn gen_binding(binding: &Binding, use_idents: bool) -> String {
-    format!("{}: {}",
-        gen_binding_ident(binding, use_idents),
-        ty::to_rust_ty(binding.ty.as_slice()))
-}
-
-fn gen_param_list(cmd: &Cmd, use_idents: bool) -> String {
-    cmd.params.iter()
-        .map(|b| gen_binding(b, use_idents))
-        .collect::<Vec<String>>()
-        .connect(", ")
-}
-
-fn gen_param_ident_list(cmd: &Cmd) -> String {
-    cmd.params.iter()
-        .map(|b| gen_binding_ident(b, true))
-        .collect::<Vec<String>>()
-        .connect(", ")
-}
-
-fn gen_param_ty_list(cmd: &Cmd) -> String {
-    cmd.params.iter()
-        .map(|b| ty::to_rust_ty(b.ty.as_slice()))
-        .collect::<Vec<&str>>()
-        .connect(", ")
-}
-
-fn gen_return_suffix(cmd: &Cmd) -> String {
-    ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty.as_slice()))
-}
-
-fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
-    (match *ns {
-        Gl => "gl",
-        Glx => "glx",
-        Wgl => "wgl",
-    }).to_string().append(cmd.proto.ident.as_slice())
-}
-
-impl<'a, W: Writer> Generator<'a, W> {
-    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> Generator<'a, W> {
-        Generator {
+impl<'a, W: Writer> StaticGenerator<'a, W> {
+    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> StaticGenerator<'a, W> {
+        StaticGenerator {
             ns: ns,
             writer: writer,
             registry: registry,
@@ -154,7 +116,6 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("");
         self.write_line("extern crate libc;");
         self.write_line("");
-        self.write_line("use libc::*;");
         self.write_line("use std::mem;");
         self.write_line("");
         self.write_line("use self::types::*;");
@@ -163,7 +124,6 @@ impl<'a, W: Writer> Generator<'a, W> {
     fn write_type_aliases(&mut self) {
         self.write_line("pub mod types {");
         self.incr_indent();
-        self.write_line("use libc::*;");
         self.write_line("");
         match self.ns {
             Gl => {
@@ -183,7 +143,10 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     fn write_fnptr_struct_def(&mut self) {
-        self.write_line("pub struct FnPtr { f: *const libc::c_void, is_loaded: bool }");
+        self.write_line("pub struct FnPtr {");
+        self.write_line("    f: *const libc::c_void,");
+        self.write_line("    is_loaded: bool,");
+        self.write_line("}");
         self.write_line("");
         self.write_line("impl FnPtr {");
         self.write_line("    pub fn new(ptr: *const libc::c_void, failing_fn: *const libc::c_void) -> FnPtr {");
@@ -199,7 +162,6 @@ impl<'a, W: Writer> Generator<'a, W> {
     fn write_failing_fns(&mut self) {
         self.write_line("mod failing {");
         self.incr_indent();
-        self.write_line("use libc::*;");
         self.write_line("use super::types::*;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
@@ -208,8 +170,8 @@ impl<'a, W: Writer> Generator<'a, W> {
                     fail!(\"`{name}` was not loaded\") \
                 }}",
                 name = c.proto.ident,
-                params = gen_param_list(c, true),
-                return_suffix = gen_return_suffix(c)
+                params = common::gen_param_list(c, true),
+                return_suffix = common::gen_return_suffix(c)
             ).as_slice());
         }
         self.decr_indent();
@@ -228,10 +190,10 @@ impl<'a, W: Writer> Generator<'a, W> {
                             }} \
                         }}",
                         name = c.proto.ident,
-                        params = gen_param_list(c, true),
-                        types = gen_param_ty_list(c),
-                        return_suffix = gen_return_suffix(c),
-                        idents = gen_param_ident_list(c),
+                        params = common::gen_param_list(c, true),
+                        types = common::gen_param_ty_list(c),
+                        return_suffix = common::gen_return_suffix(c),
+                        idents = common::gen_param_ident_list(c),
                     )
                 } else {
                     format!(
@@ -240,9 +202,9 @@ impl<'a, W: Writer> Generator<'a, W> {
                                 (storage::{name}.f)({idents}) \
                         }}",
                         name = c.proto.ident,
-                        typed_params = gen_param_list(c, true),
-                        return_suffix = gen_return_suffix(c),
-                        idents = gen_param_ident_list(c),
+                        typed_params = common::gen_param_list(c, true),
+                        return_suffix = common::gen_return_suffix(c),
+                        idents = common::gen_param_ident_list(c),
                     )
                 }.as_slice()
             );
@@ -288,7 +250,7 @@ impl<'a, W: Writer> Generator<'a, W> {
             self.write_line(format!(
                 "fn_mod!({name}, \"{symbol}\")",
                 name = c.proto.ident,
-                symbol = gen_symbol_name(&ns, c)
+                symbol = common::gen_symbol_name(&ns, c)
             ).as_slice());
         }
         // for c in self.registry.cmd_iter() {
@@ -308,8 +270,8 @@ impl<'a, W: Writer> Generator<'a, W> {
         self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
         self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
         self.write_line("///");
-        self.write_line("/// ~~~");
-        self.write_line("/// let gl = gl::load_with(glfw::get_proc_address);");
+        self.write_line("/// ~~~rust");
+        self.write_line("/// gl::load_with(|s| glfw.get_proc_address(s));");
         self.write_line("/// ~~~");
         self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *const libc::c_void) {");
         self.incr_indent();
@@ -321,7 +283,7 @@ impl<'a, W: Writer> Generator<'a, W> {
     }
 
     pub fn write(writer: &mut W, registry: &Registry, ns: Ns, write_header: bool) {
-        let mut gen = Generator::new(writer, registry, ns);
+        let mut gen = StaticGenerator::new(writer, registry, ns);
 
         if write_header {
             // header with licence, metadata and imports

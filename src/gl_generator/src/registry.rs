@@ -47,6 +47,16 @@ impl fmt::Show for Ns {
     }
 }
 
+impl fmt::Char for Ns {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Gl  => write!(fmt, "Gl"),
+            Glx => write!(fmt, "Glx"),
+            Wgl => write!(fmt, "Wgl"),
+        }
+    }
+}
+
 fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
     if s.starts_with(trim) { s.slice_from(trim.len()) } else { s }
 }
