@@ -33,7 +33,6 @@ use self::gl::types::*;
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case_functions)]
 pub mod gl {
-    use super::libc;
     use std::mem;
     use self::types::*;
     generate_gl_bindings!("gl", "gl", "core", "3.2", "struct")
@@ -150,7 +149,7 @@ fn main() {
                       gl::STATIC_DRAW);
 
         // Use shader program
-        gl::UseProgram(program);
+        gl.UseProgram(program);
         "out_color".with_c_str(|ptr| gl.BindFragDataLocation(program, 0, ptr));
 
         // Specify the layout of the vertex data

@@ -124,7 +124,6 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     fn write_type_aliases(&mut self) {
         self.write_line("pub mod types {");
         self.incr_indent();
-        self.write_line("use libc::*;");
         self.write_line("");
         match self.ns {
             Gl => {
@@ -163,7 +162,6 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     fn write_failing_fns(&mut self) {
         self.write_line("mod failing {");
         self.incr_indent();
-        self.write_line("use libc;");
         self.write_line("use super::types::*;");
         self.write_line("");
         for c in self.registry.cmd_iter() {

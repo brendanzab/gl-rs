@@ -112,11 +112,9 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("#![feature(globs)]");
         self.write_line("#![allow(non_camel_case_types)]");
         self.write_line("#![allow(non_snake_case_functions)]");
-        self.write_line("#![allow(unused_variable)]");
         self.write_line("");
         self.write_line("extern crate libc;");
         self.write_line("");
-        self.write_line("use libc::*;");
         self.write_line("use std::mem;");
         self.write_line("");
         self.write_line("use self::types::*;");
@@ -125,7 +123,6 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
     fn write_type_aliases(&mut self) {
         self.write_line("pub mod types {");
         self.incr_indent();
-        self.write_line("use libc::*;");
         self.write_line("");
         match self.ns {
             Gl => {
@@ -146,12 +143,12 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
 
     fn write_fnptr_struct_def(&mut self) {
         self.write_line("pub struct FnPtr {");
-        self.write_line("    f: *const libc::c_void,");
+        self.write_line("    f: *const ::libc::c_void,");
         self.write_line("    is_loaded: bool,");
         self.write_line("}");
         self.write_line("");
         self.write_line("impl FnPtr {");
-        self.write_line("    fn new(ptr: *const libc::c_void, failing_fn: *const libc::c_void) -> FnPtr {");
+        self.write_line("    fn new(ptr: *const ::libc::c_void, failing_fn: *const ::libc::c_void) -> FnPtr {");
         self.write_line("        if ptr.is_null() {");
         self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
         self.write_line("        } else {");
@@ -172,6 +169,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("use super::types::*;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
+            self.write_line("#[allow(unused_variable)]");
             self.write_line(format!(
                 "pub extern \"system\" fn {name}({params}){return_suffix} {{ \
                     fail!(\"`{name}` was not loaded\") \
@@ -212,14 +210,14 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("/// let gl = Gl::load_with(|s| glfw.get_proc_address(s));");
         self.write_line("/// ~~~");
         self.write_line(format!(
-            "pub fn load_with(loadfn: |symbol: &str| -> *const libc::c_void) -> {:c} {{", ns
+            "pub fn load_with(loadfn: |symbol: &str| -> *const ::libc::c_void) -> {:c} {{", ns
         ).as_slice());
         self.incr_indent();
         self.write_line(format!("{:c} {{", ns).as_slice());
         self.incr_indent();
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "{name}: FnPtr::new(loadfn(\"{symbol}\"), failing::{name} as *const libc::c_void),",
+                "{name}: FnPtr::new(loadfn(\"{symbol}\"), failing::{name} as *const ::libc::c_void),",
                 name = c.proto.ident,
                 symbol = common::gen_symbol_name(&ns, c)
             ).as_slice());
