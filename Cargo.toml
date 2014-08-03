@@ -9,11 +9,6 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 
 build = "git submodule update --init --recursive"
 
-[[lib]]
-
-name = "gl"
-path = "src/lib.rs"
-
 [dependencies.gl_generator]
 
 path = "src/gl_generator"

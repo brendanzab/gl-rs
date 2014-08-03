@@ -1,13 +1,6 @@
+language: rust
+
 install:
-  # cargo
-  - curl -O http://static.rust-lang.org/cargo-dist/cargo-nightly-linux.tar.gz
-  - tar xf cargo-nightly-linux.tar.gz
-  # rustc
-  - wget http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-  - tar xzf rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-  - export PATH=$PATH:$(pwd)/rust-nightly-x86_64-unknown-linux-gnu/bin
-  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/rust-nightly-x86_64-unknown-linux-gnu/lib
-  - rustc -v
   # libxml2
   - sudo apt-get install libxml2
   # glfw
@@ -19,7 +12,3 @@ install:
   - make
   - sudo make install
   - cd ..
-script:
-  - ./cargo-nightly/bin/cargo build
-  - make
-  - make clean
