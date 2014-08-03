@@ -10,7 +10,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 [[lib]]
 
 name = "gl_generator"
-crate_type = ["dylib"]
+plugin = true
 path = "src/gl_generator.rs"
 
 [dependencies.sax-rs]
