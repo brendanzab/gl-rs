@@ -1,8 +1,6 @@
 language: rust
 
 install:
-  # libxml2
-  - sudo apt-get install libxml2
   # glfw
   - sudo apt-get install libXxf86vm-dev
   - git clone https://github.com/glfw/glfw.git
