@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![experimental]
+
 use registry::*;
 use ty;
 use common;
@@ -77,6 +79,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             }
         };
 
+        self.write_line("#[stable]");
         self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value).as_slice())
     }
 
@@ -186,6 +189,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
     fn write_struct(&mut self) {
         let ns = self.ns;
         self.write_line("#[allow(uppercase_variables)]");
+        self.write_line("#[stable]");
         self.write_line(format!("pub struct {:c} {{", ns).as_slice());
         self.incr_indent();
         for c in self.registry.cmd_iter() {
@@ -209,6 +213,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("/// ~~~ignore");
         self.write_line("/// let gl = Gl::load_with(|s| glfw.get_proc_address(s));");
         self.write_line("/// ~~~");
+        self.write_line("#[unstable]");
         self.write_line(format!(
             "pub fn load_with(loadfn: |symbol: &str| -> *const ::libc::c_void) -> {:c} {{", ns
         ).as_slice());
@@ -231,7 +236,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             self.write_line(
                 if c.is_safe {
                     format!(
-                        "#[inline] pub fn {name}(&self, {params}){return_suffix} {{ \
+                        "#[inline] #[unstable] pub fn {name}(&self, {params}){return_suffix} {{ \
                             unsafe {{ \
                                 mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
                                     (self.{name}.f)({idents}) \
@@ -245,7 +250,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                     )
                 } else {
                     format!(
-                        "#[inline] pub unsafe fn {name}(&self, {typed_params}){return_suffix} {{ \
+                        "#[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}){return_suffix} {{ \
                             mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
                                 (self.{name}.f)({idents}) \
                         }}",

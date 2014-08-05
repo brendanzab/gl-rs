@@ -13,6 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! # gl_generator
+//!
+//! `gl_generator` is an OpenGL bindings generator plugin. It defines a macro named
+//!  `generate_gl_bindings!` which can be used to generate all constants and functions of a
+//!  given OpenGL version.
+//!
+//! ## Example
+//!
+//! ```rust
+//! #[phase(plugin)]
+//! extern crate gl_generator;
+//! extern crate libc;
+//! 
+//! use std::mem;
+//! use self::types::*;
+//!
+//! generate_gl_bindings!("gl", "core", "4.5", "static", [ "GL_EXT_texture_filter_anisotropic" ])
+//! ```
+//!
+//! ## Parameters
+//!
+//! * API: Can be `gl`, `wgl`, `glx`, `egl`. Only `gl` is supported for the moment.
+//! * Profile: Can be `core` or `compatibility`. `core` will only include all functions supported
+//!    by the requested version it self, while `compatibility` will include all the functions from
+//!    previous versions as well.
+//! * Version: The requested OpenGL version in the format `x.x`.
+//! * Generator: Can be `static` or `struct`.
+//! * Extensions (optional): An array of extensions to include in the bindings.
+//! 
+
+
 #![crate_name = "gl_generator"]
 #![comment = "OpenGL function loader generator."]
 #![license = "ASL2"]
