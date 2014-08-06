@@ -1,0 +1,16 @@
+[package]
+
+name = "static-triangle"
+version = "0.1.0"
+authors = [
+]
+
+[[bin]]
+name = "static-triangle"
+path = "main.rs"
+
+[dependencies.gl]
+path = "../../"
+
+[dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs.git"

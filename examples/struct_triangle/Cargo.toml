@@ -1,0 +1,16 @@
+[package]
+
+name = "struct-triangle"
+version = "0.1.0"
+authors = [
+]
+
+[[bin]]
+name = "struct-triangle"
+path = "main.rs"
+
+[dependencies.gl_generator]
+path = "../../"
+
+[dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs.git"
