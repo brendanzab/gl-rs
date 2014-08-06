@@ -72,12 +72,12 @@ impl MacResult for MacroResult {
 // handler for generate_gl_bindings!
 fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box<MacResult> {
     // getting the arguments from the macro
-    let (nsLiteral, api, profile, version, generator, exts) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
+    let (ns_literal, api, profile, version, generator, exts) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
         Some(t) => t,
         None => return DummyResult::any(span)
     };
 
-    let ns = match nsLiteral.as_slice() {
+    let ns = match ns_literal.as_slice() {
         "gl"  => Gl,
         "glx" => {
             ecx.span_err(span, "glx generation unimplemented");
@@ -93,8 +93,14 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         }
     };
 
-    let file_name = format!("deps/khronos-api/{}.xml", nsLiteral);
-    let path = Path::new(file_name.clone());
+    let path = {
+        use std::os;
+        let p = Path::new(ecx.codemap().span_to_filename(span));
+        let mut p = os::make_absolute(&p);
+        p.pop(); p.pop(); p.pop();
+        p.push(format!("deps/khronos-api/{}.xml", ns_literal));
+        p
+    };
 
     let filter = Some(Filter {
         extensions: exts.unwrap_or("".to_string()).as_slice().split(',').map(|s| s.to_string()).collect(),
@@ -142,7 +148,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             return DummyResult::any(span)
         }
     };
-    let mut parser = ::syntax::parse::new_parser_from_source_str(ecx.parse_sess(), ecx.cfg(), file_name.to_string(), content);
+    let mut parser = ::syntax::parse::new_parser_from_source_str(ecx.parse_sess(), ecx.cfg(), path.display().to_string(), content);
 
     // getting all the items defined by the bindings
     let mut items = Vec::new();
