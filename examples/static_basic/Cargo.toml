@@ -1,0 +1,18 @@
+[package]
+
+name = "static-basic"
+version = "0.1.0"
+authors = [
+]
+
+build = "git submodule update --init --recursive"
+
+[[bin]]
+name = "static-basic"
+path = "main.rs"
+
+[dependencies.gl]
+path = "../../"
+
+[dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs.git"

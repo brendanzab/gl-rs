@@ -10,9 +10,8 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 [[lib]]
 
 name = "gl_generator"
+path = "lib.rs"
 plugin = true
-path = "src/lib.rs"
 
 [dependencies.rust-xml]
 git = "https://github.com/netvl/rust-xml"
-
