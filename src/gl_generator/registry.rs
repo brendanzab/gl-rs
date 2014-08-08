@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate xml = "rust-xml";
+extern crate xml;
 extern crate collections;
 
 use self::collections::TreeSet;
