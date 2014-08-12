@@ -591,7 +591,18 @@ impl<'a> RegistryBuilder {
                     params.push(
                         self.consume_binding(get_attribute(attributes.as_slice(), "group"))
                     );
-                    self.expect_end_element("param");
+
+                    // FIXME: command `glPathGlyphIndexRangeNV` contains a [2] right before </param>
+                    //  we are ignoring this right now (let's hope no-one uses glPathGlyphIndexRangeNV)
+                    // original line is: self.expect_end_element("param");
+                    loop {
+                        match self.recv() {
+                            events::EndElement{ref name}
+                                if name.local_name.as_slice() == "param" => break,
+                            events::Characters(ref value) if value.as_slice() == "[2]" => (),
+                            msg => fail!("Expected </param>, found: {}", msg.to_string()),
+                        }
+                    }
                 }
                 events::StartElement{ref name, ref attributes, ref namespace} if name.local_name.as_slice() == "alias" => {
                     alias = get_attribute(attributes.as_slice(), "alias");
