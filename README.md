@@ -2,42 +2,14 @@
 
 An OpenGL function pointer loader for the Rust Programming Language.
 
-## Compilation
+## Installation
 
-To compile the library, examples, and documentation:
+To use the library, add this to your `Cargo.toml`:
 
-~~~
-make
-~~~
-
-### Custom loader configuration
-
-The following variables can be customised when compiling the library:
-
-~~~make
-GL_NAMESPACE        ?= gl
-GL_API              ?= gl
-GL_PROFILE          ?= core
-GL_VERSION          ?= 4.3
-GL_EXTENSIONS       ?=
-GL_GENERATOR        ?=
-GL_FULL             ?=
-GL_XML              ?= ./deps/khronos-api/$(GL_API).xml
-~~~
-
-For example:
-
-~~~
-GL_VERSION=2.1 GL_PROFILE=compatability make lib
-~~~
-
-### Compiling with Rust-Empty
-
-The following command compiles to the folder 'target/cpu-vendor-os/lib':
-
-`make gen-lib && make -f rust-empty.mk`
-
-For more information see [Rust-Empty](https://github.com/bvssvni/rust-empty)
+```toml
+[dependencies.gl]
+git = "https://github.com/bjz/gl-rs"
+```
 
 ## Usage
 
@@ -64,7 +36,7 @@ gl::Viewport::load_with(|s| glfw.get_proc_address(s));
 ~~~
 
 Calling a function that has not been loaded will result in a failure like:
-`fail!("gl::Viewport was not loaded")`, which aviods a segfault. This feature
+`fail!("gl::Viewport was not loaded")`, which avoids a segfault. This feature
 does not cause any run time overhead because the failing functions are
 assigned only when `load_with` is called.
 
@@ -89,7 +61,3 @@ if gl::Viewport::is_loaded() {
     // do something...
 }
 ~~~
-
-## Todo
-
-- Make the generator work properly GLX and WGL.
