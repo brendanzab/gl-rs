@@ -15,3 +15,6 @@ plugin = true
 
 [dependencies.rust-xml]
 git = "https://github.com/netvl/rust-xml"
+
+[dependencies.khronos_api]
+path = "../khronos_api"

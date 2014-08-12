@@ -58,6 +58,7 @@
 #[phase(plugin, link)]
 extern crate log;
 
+extern crate khronos_api;
 extern crate rustc;
 extern crate syntax;
 
@@ -108,8 +109,8 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         None => return DummyResult::any(span)
     };
 
-    let ns = match api.as_slice() {
-        "gl"  => Gl,
+    let (ns, source) = match api.as_slice() {
+        "gl"  => (Gl, khronos_api::GL_XML),
         "glx" => {
             ecx.span_err(span, "glx generation unimplemented");
             return DummyResult::any(span)
@@ -124,15 +125,6 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         }
     };
 
-    let path = {
-        use std::os;
-        let p = Path::new(ecx.codemap().span_to_filename(span));
-        let mut p = os::make_absolute(&p);
-        p.pop(); p.pop(); p.pop();
-        p.push(format!("deps/khronos-api/{}.xml", api));
-        p
-    };
-
     let filter = Some(Filter {
         extensions: extensions,
         profile: profile,
@@ -142,17 +134,15 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
 
     // generating the registry of all bindings
     let reg = {
+        use std::io::BufReader;
         use std::task;
 
-        let mut file = match File::open(&path) {
-            Ok(f) => f,
-            Err(err) => {
-                ecx.span_err(span, format!("{}", err).as_slice());
-                return DummyResult::any(span)
-            }
-        };
+        let result = task::try(proc() {
+            let reader = BufReader::new(source.as_bytes());
+            Registry::from_xml(reader, ns, filter)
+        });
 
-        match task::try(proc() Registry::from_xml(file, ns, filter)) {
+        match result {
             Ok(reg) => reg,
             Err(err) => {
                 use std::any::{Any, AnyRefExt};
@@ -236,7 +226,8 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             return DummyResult::any(span)
         }
     };
-    let mut parser = ::syntax::parse::new_parser_from_source_str(ecx.parse_sess(), ecx.cfg(), path.display().to_string(), content);
+    let mut parser = ::syntax::parse::new_parser_from_source_str(ecx.parse_sess(), ecx.cfg(),
+        Path::new(ecx.codemap().span_to_filename(span)).display().to_string(), content);
 
     // getting all the items defined by the bindings
     let mut items = Vec::new();
