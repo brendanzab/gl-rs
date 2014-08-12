@@ -21,7 +21,6 @@ use std::cell::RefCell;
 use std::collections::HashSet;
 use std::fmt;
 use std::from_str::FromStr;
-use std::io::MemReader;
 use std::slice::Items;
 
 use self::xml::reader::events;
@@ -89,8 +88,15 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml(data: &str, ns: Ns, filter: Option<Filter>) -> Registry {
-        RegistryBuilder::parse(data, ns, filter)
+    pub fn from_xml<R: Reader>(data: R, ns: Ns, filter: Option<Filter>) -> Registry {
+        use std::io::BufferedReader;
+        let data = BufferedReader::new(data);
+
+        RegistryBuilder {
+            ns: ns,
+            filter: filter,
+            port: RefCell::new(xml::reader::EventReader::new(data)),
+        }.consume_registry()
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
@@ -244,10 +250,10 @@ pub struct GlxOpcode {
     pub comment: Option<String>,
 }
 
-struct RegistryBuilder {
+struct RegistryBuilder<R> {
     pub ns: Ns,
     pub filter: Option<Filter>,
-    pub port: RefCell<xml::reader::EventReader<MemReader>>,
+    pub port: RefCell<xml::reader::EventReader<R>>,
 }
 
 pub struct Filter {
@@ -258,15 +264,7 @@ pub struct Filter {
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
-impl<'a> RegistryBuilder {
-    fn parse(data: &str, ns: Ns, filter: Option<Filter>) -> Registry {
-        RegistryBuilder {
-            ns: ns,
-            filter: filter,
-            port: RefCell::new(xml::reader::EventReader::new(MemReader::new(data.as_bytes().to_vec()))),
-        }.consume_registry()
-    }
-
+impl<'a, R: Buffer> RegistryBuilder<R> {
     fn recv(&self) -> events::XmlEvent {
         for event in self.port.borrow_mut().events() {
             match event {
@@ -654,11 +652,11 @@ fn get_attribute(a: &[xml::common::Attribute], name: &str) -> Option<String> {
 }
 
 trait FromXML {
-    fn convert(r: &RegistryBuilder, a: &[xml::common::Attribute]) -> Self;
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Self;
 }
 
 impl FromXML for Require {
-    fn convert(r: &RegistryBuilder, a: &[xml::common::Attribute]) -> Require {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Require {
         debug!("Doing a FromXML on Require");
         let comment = get_attribute(a, "comment");
         let (enums, commands) = r.consume_two("enum", "command", "require");
@@ -671,7 +669,7 @@ impl FromXML for Require {
 }
 
 impl FromXML for Remove {
-    fn convert(r: &RegistryBuilder, a: &[xml::common::Attribute]) -> Remove {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Remove {
         debug!("Doing a FromXML on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let comment = get_attribute(a, "comment").unwrap();
@@ -687,7 +685,7 @@ impl FromXML for Remove {
 }
 
 impl FromXML for Feature {
-    fn convert(r: &RegistryBuilder, a: &[xml::common::Attribute]) -> Feature {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Feature {
         debug!("Doing a FromXML on Feature");
         let api      = get_attribute(a, "api").unwrap();
         let name     = get_attribute(a, "name").unwrap();
@@ -708,7 +706,7 @@ impl FromXML for Feature {
 }
 
 impl FromXML for Extension {
-    fn convert(r: &RegistryBuilder, a: &[xml::common::Attribute]) -> Extension {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap().as_slice().split('|').map(|x| x.to_string()).collect::<Vec<String>>();
@@ -732,7 +730,7 @@ impl FromXML for Extension {
 }
 
 impl FromXML for String {
-    fn convert(_: &RegistryBuilder, a: &[xml::common::Attribute]) -> String {
+    fn convert<R: Buffer>(_: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> String {
         get_attribute(a, "name").unwrap()
     }
 }
