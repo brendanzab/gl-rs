@@ -575,9 +575,8 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
     fn consume_cmd(&self) -> Cmd {
         // consume command prototype
         let proto_attr = self.expect_start_element("proto");
-        let mut proto = self.consume_binding(get_attribute(proto_attr.as_slice(), "group"));
+        let mut proto = self.consume_binding("proto", get_attribute(proto_attr.as_slice(), "group"));
         proto.ident = trim_cmd_prefix(proto.ident.as_slice(), self.ns).to_string();
-        self.expect_end_element("proto");
 
         let mut params = Vec::new();
         let mut alias = None;
@@ -587,20 +586,8 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
             match self.recv() {
                 events::StartElement{ref name, ref attributes, ref namespace} if name.local_name.as_slice() == "param" => {
                     params.push(
-                        self.consume_binding(get_attribute(attributes.as_slice(), "group"))
+                        self.consume_binding("param", get_attribute(attributes.as_slice(), "group"))
                     );
-
-                    // FIXME: command `glPathGlyphIndexRangeNV` contains a [2] right before </param>
-                    //  we are ignoring this right now (let's hope no-one uses glPathGlyphIndexRangeNV)
-                    // original line is: self.expect_end_element("param");
-                    loop {
-                        match self.recv() {
-                            events::EndElement{ref name}
-                                if name.local_name.as_slice() == "param" => break,
-                            events::Characters(ref value) if value.as_slice() == "[2]" => (),
-                            msg => fail!("Expected </param>, found: {}", msg.to_string()),
-                        }
-                    }
                 }
                 events::StartElement{ref name, ref attributes, ref namespace} if name.local_name.as_slice() == "alias" => {
                     alias = get_attribute(attributes.as_slice(), "alias");
@@ -635,7 +622,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
         }
     }
 
-    fn consume_binding(&self, group: Option<String>) -> Binding {
+    fn consume_binding(&self, outside_tag: &str, group: Option<String>) -> Binding {
         // consume type
         let mut ty = String::new();
         loop {
@@ -647,9 +634,20 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 msg => fail!("Expected binding, found: {}", msg.to_string()),
             }
         }
+
         // consume identifier
         let ident = self.expect_characters();
         self.expect_end_element("name");
+
+        // consume the type suffix
+        loop {
+            match self.recv() {
+                events::Characters(ch) => ty.push_str(ch.as_slice()),
+                events::EndElement{ref name} if name.local_name.as_slice() == outside_tag => break,
+                msg => fail!("Expected binding, found: {}", msg.to_string()),
+            }
+        }
+
         Binding {
             ident: ident,
             ty: ty,
