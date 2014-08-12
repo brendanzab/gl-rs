@@ -121,15 +121,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             }
         };
 
-        let file_content = match file.read_to_string() {
-            Ok(s) => s,
-            Err(_) => {
-                ecx.span_err(span, "registry source not utf8!");
-                return DummyResult::any(span)
-            }
-        };
-
-        match task::try(proc() Registry::from_xml(file_content.as_slice(), ns, filter)) {
+        match task::try(proc() Registry::from_xml(file, ns, filter)) {
             Ok(reg) => reg,
             Err(err) => {
                 use std::any::{Any, AnyRefExt};
