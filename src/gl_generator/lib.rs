@@ -110,38 +110,103 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
     });
 
     // generating the registry of all bindings
-    let reg = Registry::from_xml(
-        match
-            match File::open(&path) {
-                                Ok(f) => f,
-                                Err(err) => {
-                                    ecx.span_err(span, format!("{}", err).as_slice());
-                                    return DummyResult::any(span)
-                                }
-                            }.read_to_string()
-        {
+    let reg = {
+        use std::task;
+
+        let mut file = match File::open(&path) {
+            Ok(f) => f,
+            Err(err) => {
+                ecx.span_err(span, format!("{}", err).as_slice());
+                return DummyResult::any(span)
+            }
+        };
+
+        let file_content = match file.read_to_string() {
             Ok(s) => s,
             Err(_) => {
                 ecx.span_err(span, "registry source not utf8!");
                 return DummyResult::any(span)
             }
+        };
 
-        }.as_slice(), ns, filter
-    );
+        match task::try(proc() Registry::from_xml(file_content.as_slice(), ns, filter)) {
+            Ok(reg) => reg,
+            Err(err) => {
+                use std::any::{Any, AnyRefExt};
+                let err: &Any = err;
+
+                match err {
+                    err if err.is::<String>() => {
+                        ecx.span_err(span, "error while parsing the registry");
+                        ecx.span_err(span, err.downcast_ref::<String>().unwrap().as_slice());
+                    },
+                    err if err.is::<&'static str>() => {
+                        ecx.span_err(span, "error while parsing the registry");
+                        ecx.span_err(span, err.downcast_ref::<&'static str>().unwrap().as_slice());
+                    },
+                    _ => {
+                        ecx.span_err(span, "unknown error while parsing the registry");
+                    }
+                }
+
+                return DummyResult::any(span);
+            }
+        }
+    };
 
     // generating the Rust bindings as a source code into "buffer"
-    let mut buffer = ::std::io::MemWriter::new();
-    match generator.as_slice() {
-        "static" => StaticGenerator::write(&mut buffer, &reg, ns, false),
-        "struct" => StructGenerator::write(&mut buffer, &reg, ns, false),
-        generator => {
-            ecx.span_err(span, format!("unknown generator type: {}", generator).as_slice());
-            return DummyResult::any(span)
-        },
-    }
+    let buffer = {
+        use std::io::MemWriter;
+        use std::task;
+
+        // calling the generator
+        let result = match generator.as_slice() {
+            "static" => task::try(proc() {
+                let mut buffer = MemWriter::new();
+                StaticGenerator::write(&mut buffer, &reg, ns, false);
+                buffer
+            }),
+
+            "struct" => task::try(proc() {
+                let mut buffer = MemWriter::new();
+                StructGenerator::write(&mut buffer, &reg, ns, false);
+                buffer
+            }),
+
+            generator => {
+                ecx.span_err(span, format!("unknown generator type: {}", generator).as_slice());
+                return DummyResult::any(span);
+            },
+        };
+
+        // processing the result
+        match result {
+            Ok(buffer) => buffer.unwrap(),
+            Err(err) => {
+                use std::any::{Any, AnyRefExt};
+                let err: &Any = err;
+
+                match err {
+                    err if err.is::<String>() => {
+                        ecx.span_err(span, "error while generating the bindings");
+                        ecx.span_err(span, err.downcast_ref::<String>().unwrap().as_slice());
+                    },
+                    err if err.is::<&'static str>() => {
+                        ecx.span_err(span, "error while generating the bindings");
+                        ecx.span_err(span, err.downcast_ref::<&'static str>().unwrap().as_slice());
+                    },
+                    _ => {
+                        ecx.span_err(span, "unknown error while generating the bindings");
+                    }
+                }
+
+                return DummyResult::any(span);
+            }
+        }
+    };
 
     // creating a new Rust parser from these bindings
-    let content = match String::from_utf8(buffer.unwrap()) {
+    let content = match String::from_utf8(buffer) {
         Ok(s) => s,
         Err(err) => {
             ecx.span_err(span, format!("{}", err).as_slice());
