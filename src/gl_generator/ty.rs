@@ -71,6 +71,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "GLsizei *"                 => "*mut GLsizei",
         "GLubyte *"                 => "*mut GLubyte",
         "GLuint *"                  => "*mut GLuint",
+        "GLuint [2]"                => "*mut [GLuint, ..2]",
         "GLuint64 *"                => "*mut GLuint64",
         "GLuint64EXT *"             => "*mut GLuint64EXT",
         "GLushort *"                => "*mut GLushort",
