@@ -206,7 +206,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
         self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
         self.write_line("///");
-        self.write_line("/// ~~~rust");
+        self.write_line("/// ~~~ignore");
         self.write_line("/// let gl = Gl::load_with(|s| glfw.get_proc_address(s));");
         self.write_line("/// ~~~");
         self.write_line(format!(
