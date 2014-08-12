@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![experimental]
+
 pub fn to_return_suffix(ty: &str) -> String {
     match ty {
         "::libc::c_void" | "c_void" | "VOID" | "GLvoid" => "".to_string(),

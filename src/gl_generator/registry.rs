@@ -13,8 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate xml;
+#![experimental]
+
 extern crate collections;
+extern crate xml;
 
 use self::collections::TreeSet;
 use std::cell::RefCell;
