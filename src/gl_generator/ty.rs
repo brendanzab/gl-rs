@@ -86,6 +86,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "const GLdouble *"          => "*const GLdouble",
         "const GLenum *"            => "*const GLenum",
         "const GLfixed *"           => "*const GLfixed",
+        "const GLfloat"             => "GLfloat",
         "const GLfloat *"           => "*const GLfloat",
         "const GLhalfNV *"          => "*const GLhalfNV",
         "const GLint *"             => "*const GLint",
