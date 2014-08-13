@@ -17,10 +17,14 @@
 //! 
 //! You can import the pointer style loader and type aliases like so:
 //! 
-//! ~~~rust
+//! ~~~no_run
+//! # #![feature(globs)]
+//! # #![allow(unused_imports)]
 //! extern crate gl;
+//! # fn main() {
 //! // include the OpenGL type aliases
 //! use gl::types::*;
+//! # }
 //! ~~~
 //! 
 //! You can load the function pointers into their respective function pointers
@@ -28,7 +32,7 @@
 //! context library, This is how it would look using [glfw-rs]
 //! (https://github.com/bjz/glfw-rs):
 //! 
-//! ~~~rust
+//! ~~~ignore
 //! // the supplied function must be of the type:
 //! // `&fn(symbol: &str) -> Option<extern "C" fn()>`
 //! gl::load_with(|s| glfw.get_proc_address(s));
@@ -42,15 +46,21 @@
 //! does not cause any run time overhead because the failing functions are
 //! assigned only when `load_with` is called.
 //! 
-//! ~~~rust
+//! ~~~no_run
+//! # #![allow(path_statement)]
+//! # extern crate gl;
+//! # fn main() {
 //! // accessing an enum
-//! gl::RED_BITS;
+//! gl::TEXTURE_2D;
 //! 
 //! // calling a function
 //! gl::DrawArrays(gl::TRIANGLES, 0, 3);
 //! 
 //! // functions that take pointers are unsafe
+//! # let shader = 0;
+//! # let c_str: *const i8 = std::ptr::null();
 //! unsafe { gl::ShaderSource(shader, 1, &c_str, std::ptr::null()) };
+//! # }
 //! ~~~
 //! 
 //! Each function pointer has an associated boolean value allowing you to
@@ -58,7 +68,7 @@
 //! corresponding global boolean that is set when `load_with` is called, so there
 //! shouldn't be much overhead.
 //! 
-//! ~~~rust
+//! ~~~no_run
 //! if gl::Viewport::is_loaded() {
 //!     // do something...
 //! }
