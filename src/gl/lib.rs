@@ -80,18 +80,9 @@
 #![license = "ASL2"]
 #![crate_type = "lib"]
 
-#![feature(macro_rules)]
-#![feature(globs)]
 #![feature(phase)]
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case_functions)]
-#![allow(unused_variable)]
 
 #[phase(plugin)]
 extern crate gl_generator;
-extern crate libc;
-
-use std::mem;
-use self::types::*;
 
 generate_gl_bindings!("gl", "core", "4.5", "static", [ "GL_EXT_texture_filter_anisotropic" ])
