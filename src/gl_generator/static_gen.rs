@@ -72,10 +72,10 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         };
 
         let ty = match ident.as_slice() {
-            "TRUE" | "FALSE" => "GLboolean",
+            "TRUE" | "FALSE" => "types::GLboolean",
             _ => match enm.ty {
-                Some(ref s) if s.as_slice() == "ull" => "GLuint64",
-                _ => "GLenum"
+                Some(ref s) if s.as_slice() == "ull" => "types::GLuint64",
+                _ => "types::GLenum"
             }
         };
 
@@ -90,38 +90,10 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     }
 
     fn write_header(&mut self) {
-        self.write_line("// Copyright 2013 The gl-rs developers. For a full listing of the authors,");
-        self.write_line("// refer to the AUTHORS file at the top-level directory of this distribution.");
-        self.write_line("// ");
-        self.write_line("// Licensed under the Apache License, Version 2.0 (the \"License\");");
-        self.write_line("// you may not use this file except in compliance with the License.");
-        self.write_line("// You may obtain a copy of the License at");
-        self.write_line("// ");
-        self.write_line("//     http://www.apache.org/licenses/LICENSE-2.0");
-        self.write_line("// ");
-        self.write_line("// Unless required by applicable law or agreed to in writing, software");
-        self.write_line("// distributed under the License is distributed on an \"AS IS\" BASIS,");
-        self.write_line("// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
-        self.write_line("// See the License for the specific language governing permissions and");
-        self.write_line("// limitations under the License.");
-        self.write_line("");
-        let ns = self.ns.to_string();
-        self.write_line(format!("#![crate_name = \"{}\"]", ns).as_slice());
-        self.write_line("#![comment = \"An OpenGL function loader.\"]");
-        self.write_line("#![license = \"ASL2\"]");
-        self.write_line("#![crate_type = \"lib\"]");
-        self.write_line("");
-        self.write_line("#![feature(macro_rules)]");
-        self.write_line("#![feature(globs)]");
-        self.write_line("#![allow(non_camel_case_types)]");
-        self.write_line("#![allow(non_snake_case_functions)]");
-        self.write_line("#![allow(unused_variable)]");
-        self.write_line("");
-        self.write_line("extern crate libc;");
-        self.write_line("");
-        self.write_line("use std::mem;");
-        self.write_line("");
-        self.write_line("use self::types::*;");
+        self.write_line("mod __gl_imports {");
+        self.write_line("    extern crate libc;");
+        self.write_line("    pub use std::mem;");
+        self.write_line("}");
     }
 
     fn write_type_aliases(&mut self) {
@@ -131,15 +103,30 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("");
         match self.ns {
             Gl => {
-                for alias in ty::GL_ALIASES.iter() { self.write_line(*alias) }
+                for alias in ty::GL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line(*alias)
+                }
             }
             Glx => {
-                for alias in ty::X_ALIASES.iter() { self.write_line(*alias) }
-                for alias in ty::GLX_ALIASES.iter() { self.write_line(*alias) }
+                for alias in ty::X_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line(*alias)
+                }
+                for alias in ty::GLX_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line(*alias)
+                }
             }
             Wgl => {
-                for alias in ty::WIN_ALIASES.iter() { self.write_line(*alias) }
-                for alias in ty::WGL_ALIASES.iter() { self.write_line(*alias) }
+                for alias in ty::WIN_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line(*alias)
+                }
+                for alias in ty::WGL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line(*alias)
+                }
             }
         }
         self.decr_indent();
@@ -148,12 +135,12 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
 
     fn write_fnptr_struct_def(&mut self) {
         self.write_line("pub struct FnPtr {");
-        self.write_line("    f: *const libc::c_void,");
+        self.write_line("    f: *const __gl_imports::libc::c_void,");
         self.write_line("    is_loaded: bool,");
         self.write_line("}");
         self.write_line("");
         self.write_line("impl FnPtr {");
-        self.write_line("    pub fn new(ptr: *const libc::c_void, failing_fn: *const libc::c_void) -> FnPtr {");
+        self.write_line("    pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {");
         self.write_line("        if ptr.is_null() {");
         self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
         self.write_line("        } else {");
@@ -166,11 +153,13 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     fn write_failing_fns(&mut self) {
         self.write_line("mod failing {");
         self.incr_indent();
-        self.write_line("use super::types::*;");
+        self.write_line("use super::types;");
+        self.write_line("use super::__gl_imports;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "pub extern \"system\" fn {name}({params}){return_suffix} {{ \
+                "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                pub extern \"system\" fn {name}({params}){return_suffix} {{ \
                     fail!(\"`{name}` was not loaded\") \
                 }}",
                 name = c.proto.ident,
@@ -187,9 +176,10 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
             self.write_line(
                 if c.is_safe {
                     format!(
-                        "#[inline] #[unstable] pub fn {name}({params}){return_suffix} {{ \
+                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                        #[inline] #[unstable] pub fn {name}({params}){return_suffix} {{ \
                             unsafe {{ \
-                                mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
+                                __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
                                     (storage::{name}.f)({idents}) \
                             }} \
                         }}",
@@ -201,8 +191,9 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
                     )
                 } else {
                     format!(
-                        "#[inline] #[unstable] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
-                            mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
+                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                        #[inline] #[unstable] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
+                            __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
                                 (storage::{name}.f)({idents}) \
                         }}",
                         name = c.proto.ident,
@@ -218,9 +209,9 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     fn write_ptrs(&mut self) {
         self.write_line("mod storage {");
         self.incr_indent();
-        self.write_line("use libc;");
-        self.write_line("use failing;");
-        self.write_line("use FnPtr;");
+        self.write_line("use super::__gl_imports::libc;");
+        self.write_line("use super::failing;");
+        self.write_line("use super::FnPtr;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
@@ -236,27 +227,27 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     }
 
     fn write_fn_mods(&mut self) {
-        self.write_line("macro_rules! fn_mod {");
-        self.write_line("    ($name:ident, $sym:expr) => {");
-        self.write_line("        #[unstable]");
-        self.write_line("        pub mod $name {");
-        self.write_line("            #[inline]");
-        self.write_line("            pub fn is_loaded() -> bool { unsafe { ::storage::$name.is_loaded } }");
-        self.write_line("            ");
-        self.write_line("            pub fn load_with(loadfn: |symbol: &str| -> *const ::libc::c_void) {");
-        self.write_line("                unsafe { ::storage::$name = ::FnPtr::new(loadfn($sym), ::failing::$name as *const ::libc::c_void) }");
-        self.write_line("            }");
-        self.write_line("        }");
-        self.write_line("    }");
-        self.write_line("}");
-        self.write_line("");
         for c in self.registry.cmd_iter() {
             let ns = self.ns;
             self.write_line(format!(
-                "fn_mod!({name}, \"{symbol}\")",
-                name = c.proto.ident,
-                symbol = common::gen_symbol_name(&ns, c)
-            ).as_slice());
+                "#[unstable]
+                pub mod {0} {{
+                    use super::{{failing, storage}};
+                    use super::FnPtr;
+
+                    #[inline]
+                    pub fn is_loaded() -> bool {{
+                        unsafe {{ storage::{0}.is_loaded }}
+                    }}
+
+                    pub fn load_with(loadfn: |symbol: &str| -> *const super::__gl_imports::libc::c_void) {{
+                        unsafe {{
+                            storage::{0} = FnPtr::new(loadfn(\"{1}\"),
+                                failing::{0} as *const super::__gl_imports::libc::c_void)
+                        }}
+                    }}
+                }}",
+                c.proto.ident, common::gen_symbol_name(&ns, c)).as_slice());
         }
         // for c in self.registry.cmd_iter() {
         //     self.write_line(format!(
@@ -279,7 +270,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("/// gl::load_with(|s| glfw.get_proc_address(s));");
         self.write_line("/// ~~~");
         self.write_line("#[unstable]");
-        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *const libc::c_void) {");
+        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {");
         self.incr_indent();
         for c in self.registry.cmd_iter() {
             self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident).as_slice());
@@ -288,14 +279,12 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("}");
     }
 
-    pub fn write(writer: &mut W, registry: &Registry, ns: Ns, write_header: bool) {
+    pub fn write(writer: &mut W, registry: &Registry, ns: Ns) {
         let mut gen = StaticGenerator::new(writer, registry, ns);
 
-        if write_header {
-            // header with licence, metadata and imports
-            gen.write_header();
-            gen.write_line("");
-        }
+        // header with imports
+        gen.write_header();
+        gen.write_line("");
 
         // type aliases
         gen.write_type_aliases();

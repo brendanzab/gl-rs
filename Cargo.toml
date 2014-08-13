@@ -13,3 +13,6 @@ path = "src/gl/lib.rs"
 
 [dependencies.gl_generator]
 path = "src/gl_generator"
+
+[dev-dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs"

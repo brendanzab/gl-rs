@@ -176,13 +176,13 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         let result = match generator.as_slice() {
             "static" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                StaticGenerator::write(&mut buffer, &reg, ns, false);
+                StaticGenerator::write(&mut buffer, &reg, ns);
                 buffer
             }),
 
             "struct" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                StructGenerator::write(&mut buffer, &reg, ns, false);
+                StructGenerator::write(&mut buffer, &reg, ns);
                 buffer
             }),
 

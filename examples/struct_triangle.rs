@@ -35,7 +35,7 @@ use self::gl::types::*;
 pub mod gl {
     use std::mem;
     use self::types::*;
-    generate_gl_bindings!("gl", "gl", "core", "3.2", "struct")
+    generate_gl_bindings!("gl", "core", "3.2", "struct")
 }
 
 // Vertex data
