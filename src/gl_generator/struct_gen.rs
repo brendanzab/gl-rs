@@ -80,6 +80,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         };
 
         self.write_line("#[stable]");
+        self.write_line("#[allow(dead_code)]");
         self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value).as_slice())
     }
 
@@ -105,26 +106,31 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             Gl => {
                 for alias in ty::GL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Glx => {
                 for alias in ty::X_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::GLX_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Wgl => {
                 for alias in ty::WIN_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::WGL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
@@ -134,6 +140,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
     }
 
     fn write_fnptr_struct_def(&mut self) {
+        self.write_line("#[allow(dead_code)]");
         self.write_line("pub struct FnPtr {");
         self.write_line("    f: *const __gl_imports::libc::c_void,");
         self.write_line("    is_loaded: bool,");
@@ -149,6 +156,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("    }");
         self.write_line("");
         self.write_line("    #[inline]");
+        self.write_line("    #[allow(dead_code)]");
         self.write_line("    pub fn is_loaded(&self) -> bool {");
         self.write_line("        self.is_loaded");
         self.write_line("    }");
@@ -162,7 +170,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("use super::__gl_imports;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
-            self.write_line("#[allow(unused_variable)] #[allow(non_snake_case_functions)]");
+            self.write_line("#[allow(unused_variable)] #[allow(non_snake_case_functions)] #[allow(dead_code)]");
             self.write_line(format!(
                 "pub extern \"system\" fn {name}({params}){return_suffix} {{ \
                     fail!(\"`{name}` was not loaded\") \
@@ -178,7 +186,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
 
     fn write_struct(&mut self) {
         let ns = self.ns;
-        self.write_line("#[allow(uppercase_variables)]");
+        self.write_line("#[allow(uppercase_variables)] #[allow(dead_code)]");
         self.write_line("#[stable]");
         self.write_line(format!("pub struct {:c} {{", ns).as_slice());
         self.incr_indent();
@@ -205,7 +213,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("/// ~~~");
         self.write_line("#[unstable]");
         self.write_line(format!(
-            "pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {:c} {{", ns
+            "#[allow(dead_code)] pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {:c} {{", ns
         ).as_slice());
         self.incr_indent();
         self.write_line(format!("{:c} {{", ns).as_slice());
@@ -226,7 +234,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             self.write_line(
                 if c.is_safe {
                     format!(
-                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)] #[allow(dead_code)]
                         #[inline] #[unstable] pub fn {name}(&self, {params}){return_suffix} {{ \
                             unsafe {{ \
                                 __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
@@ -241,7 +249,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                     )
                 } else {
                     format!(
-                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)] #[allow(dead_code)]
                         #[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}){return_suffix} {{ \
                             __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
                                 (self.{name}.f)({idents}) \
