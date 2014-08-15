@@ -80,6 +80,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         };
 
         self.write_line("#[stable]");
+        self.write_line("#[allow(dead_code)]");
         self.write_line(format!("pub static {}: {} = {};", ident, ty, enm.value).as_slice())
     }
 
@@ -105,26 +106,31 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
             Gl => {
                 for alias in ty::GL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Glx => {
                 for alias in ty::X_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::GLX_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Wgl => {
                 for alias in ty::WIN_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::WGL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
@@ -158,7 +164,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("");
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                "#[allow(non_snake_case_functions)] #[allow(unused_variable)] #[allow(dead_code)]
                 pub extern \"system\" fn {name}({params}){return_suffix} {{ \
                     fail!(\"`{name}` was not loaded\") \
                 }}",
@@ -176,7 +182,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
             self.write_line(
                 if c.is_safe {
                     format!(
-                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)] #[allow(dead_code)]
                         #[inline] #[unstable] pub fn {name}({params}){return_suffix} {{ \
                             unsafe {{ \
                                 __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
@@ -191,7 +197,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
                     )
                 } else {
                     format!(
-                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)]
+                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)] #[allow(dead_code)]
                         #[inline] #[unstable] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
                             __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
                                 (storage::{name}.f)({idents}) \
@@ -236,10 +242,12 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
                     use super::FnPtr;
 
                     #[inline]
+                    #[allow(dead_code)]
                     pub fn is_loaded() -> bool {{
                         unsafe {{ storage::{0}.is_loaded }}
                     }}
 
+                    #[allow(dead_code)]
                     pub fn load_with(loadfn: |symbol: &str| -> *const super::__gl_imports::libc::c_void) {{
                         unsafe {{
                             storage::{0} = FnPtr::new(loadfn(\"{1}\"),
@@ -270,6 +278,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
         self.write_line("/// gl::load_with(|s| glfw.get_proc_address(s));");
         self.write_line("/// ~~~");
         self.write_line("#[unstable]");
+        self.write_line("#[allow(dead_code)]");
         self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {");
         self.incr_indent();
         for c in self.registry.cmd_iter() {
