@@ -7,7 +7,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Arseny Kapoulkine"
 ]
 
-[[lib]]
+[lib]
 
 name = "gl_generator"
 path = "lib.rs"
