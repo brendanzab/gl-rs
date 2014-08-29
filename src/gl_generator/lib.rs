@@ -102,7 +102,7 @@ impl MacResult for MacroResult {
 }
 
 // handler for generate_gl_bindings!
-fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box<MacResult> {
+fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box<MacResult+'static> {
     // getting the arguments from the macro
     let (api, profile, version, generator, extensions) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
         Some(t) => t,
