@@ -22,7 +22,7 @@ use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
 
-pub struct StaticGenerator<'a, W> {
+pub struct StaticGenerator<'a, W: 'a> {
     ns: Ns,
     writer: &'a mut W,
     registry: &'a Registry,
