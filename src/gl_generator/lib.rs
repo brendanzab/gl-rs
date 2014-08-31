@@ -34,11 +34,11 @@
 //!
 //! ## Parameters
 //!
-//! * API: Can be `gl`, `wgl`, `glx`, `egl`. Only `gl` is supported for the moment.
+//! * API: Can be `gl`, `wgl`, `glx`, `egl`. `glx` and `egl` are not supported for the moment.
 //! * Profile: Can be `core` or `compatibility`. `core` will only include all functions supported
 //!    by the requested version it self, while `compatibility` will include all the functions from
 //!    previous versions as well.
-//! * Version: The requested OpenGL version in the format `x.x`.
+//! * Version: The requested version of OpenGL, WGL, GLX or EGL in the format `x.x`.
 //! * Generator: Can be `static` or `struct`.
 //! * Extensions (optional): An array of extensions to include in the bindings.
 //! 
@@ -115,10 +115,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             ecx.span_err(span, "glx generation unimplemented");
             return DummyResult::any(span)
         },
-        "wgl" => {
-            ecx.span_err(span, "wgl generation unimplemented");
-            return DummyResult::any(span)
-        }
+        "wgl" => (Wgl, khronos_api::WGL_XML),
         ns => {
             ecx.span_err(span, format!("Unexpected opengl namespace '{}'", ns).as_slice());
             return DummyResult::any(span)

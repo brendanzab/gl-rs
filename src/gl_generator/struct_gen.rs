@@ -106,30 +106,47 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             Gl => {
                 for alias in ty::GL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Glx => {
+                for alias in ty::GL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
+                    self.write_line("#[allow(dead_code)]");
+                    self.write_line(*alias)
+                }
                 for alias in ty::X_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::GLX_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Wgl => {
+                for alias in ty::GL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
+                    self.write_line("#[allow(dead_code)]");
+                    self.write_line(*alias)
+                }
                 for alias in ty::WIN_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::WGL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
@@ -212,10 +229,14 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("/// let gl = Gl::load_with(|s| glfw.get_proc_address(s));");
         self.write_line("/// ~~~");
         self.write_line("#[unstable]");
+
         self.write_line(format!(
-            "#[allow(dead_code)] pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {:c} {{", ns
+            "#[allow(dead_code)]
+            #[allow(unused_variable)]
+            pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {:c} {{", ns
         ).as_slice());
         self.incr_indent();
+
         self.write_line(format!("{:c} {{", ns).as_slice());
         self.incr_indent();
         for c in self.registry.cmd_iter() {
@@ -227,6 +248,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         }
         self.decr_indent();
         self.write_line("}");
+
         self.decr_indent();
         self.write_line("}");
         self.write_line("");
@@ -262,6 +284,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                 }.as_slice()
             );
         }
+
         self.decr_indent();
         self.write_line("}");
     }

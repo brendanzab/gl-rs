@@ -106,30 +106,47 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
             Gl => {
                 for alias in ty::GL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Glx => {
+                for alias in ty::GL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
+                    self.write_line("#[allow(dead_code)]");
+                    self.write_line(*alias)
+                }
                 for alias in ty::X_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::GLX_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
             }
             Wgl => {
+                for alias in ty::GL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
+                    self.write_line("#[allow(dead_code)]");
+                    self.write_line(*alias)
+                }
                 for alias in ty::WIN_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }
                 for alias in ty::WGL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
                     self.write_line("#[allow(dead_code)]");
                     self.write_line(*alias)
                 }

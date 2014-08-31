@@ -140,10 +140,10 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         // "GLsizei"                   => "types::GLsizei",
         // "GLuint"                    => "types::GLuint",
         "Pixmap"                    => "types::Pixmap",
-        "Status"                    => "types::Status",
-        "VLNode"                    => "types::VLNode",
-        "VLPath"                    => "types::VLPath",
-        "VLServer"                  => "types::VLServer",
+        //"Status"                    => "types::Status",
+        //"VLNode"                    => "types::VLNode",
+        //"VLPath"                    => "types::VLPath",
+        //"VLServer"                  => "types::VLServer",
         "Window"                    => "types::Window",
         "__GLXextFuncPtr"           => "types::__GLXextFuncPtr",
         "const GLXContext"          => "const types::GLXContext",
@@ -247,7 +247,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
 pub type Src = &'static [&'static str];
 
 pub static GL_ALIASES: Src = &[
-    "// Common types from OpenGL 1.1",
+    // Common types from OpenGL 1.1
     "pub type GLenum = super::__gl_imports::libc::c_uint;",
     "pub type GLboolean = super::__gl_imports::libc::c_uchar;",
     "pub type GLbitfield = super::__gl_imports::libc::c_uint;",
@@ -267,18 +267,18 @@ pub static GL_ALIASES: Src = &[
     "pub type GLeglImageOES = *const super::__gl_imports::libc::c_void;",
     "pub type GLchar = super::__gl_imports::libc::c_char;",
     "pub type GLcharARB = super::__gl_imports::libc::c_char;",
-    "",
-    "#[cfg(target_os = \"macos\")]",
-    "pub type GLhandleARB = *const super::__gl_imports::libc::c_void;",
-    "#[cfg(not(target_os = \"macos\"))]",
-    "pub type GLhandleARB = super::__gl_imports::libc::c_uint;",
-    "",
+
+    "#[cfg(target_os = \"macos\")]
+    pub type GLhandleARB = *const super::__gl_imports::libc::c_void;",
+    "#[cfg(not(target_os = \"macos\"))]
+    pub type GLhandleARB = super::__gl_imports::libc::c_uint;",
+
     "pub type GLhalfARB = super::__gl_imports::libc::c_ushort;",
     "pub type GLhalf = super::__gl_imports::libc::c_ushort;",
-    "",
-    "// Must be 32 bits",
+
+    // Must be 32 bits
     "pub type GLfixed = GLint;",
-    "",
+
     "pub type GLintptr = super::__gl_imports::libc::ptrdiff_t;",
     "pub type GLsizeiptr = super::__gl_imports::libc::ptrdiff_t;",
     "pub type GLint64 = i64;",
@@ -287,18 +287,18 @@ pub static GL_ALIASES: Src = &[
     "pub type GLsizeiptrARB = super::__gl_imports::libc::ptrdiff_t;",
     "pub type GLint64EXT = i64;",
     "pub type GLuint64EXT = u64;",
-    "",
+
     "pub struct __GLsync;",
     "pub type GLsync = *const __GLsync;",
-    "",
-    "// compatible with OpenCL cl_context",
+
+    // compatible with OpenCL cl_context
     "pub struct _cl_context;",
     "pub struct _cl_event;",
-    "",
+
     "pub type GLDEBUGPROC = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
     "pub type GLDEBUGPROCARB = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
     "pub type GLDEBUGPROCKHR = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
-    "",
+
     // "// GLES 1 types",
     // "pub type GLclampx = i32;",
     // "",
@@ -328,7 +328,7 @@ pub static GL_ALIASES: Src = &[
     // "",
     // "// GLES 2 types (none currently)",
     // "",
-    "// Vendor extension types",
+    // Vendor extension types
     "pub type GLDEBUGPROCAMD = extern \"system\" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
     "pub type GLhalfNV = super::__gl_imports::libc::c_ushort;",
     "pub type GLvdpauSurfaceNV = GLintptr;",
@@ -341,6 +341,11 @@ pub static X_ALIASES: Src = &[
 ];
 
 pub static GLX_ALIASES: Src = &[
+    "pub type Font = XID;",
+    "pub type Pixmap = XID;",
+    "pub type Visual = ();",   // TODO: not sure
+    "pub type VisualID = super::__gl_imports::libc::c_ulong;",   // TODO: not sure
+    "pub type Window = XID;",
     "pub type GLXFBConfigID = XID;",
     "pub type GLXFBConfig = *const super::__gl_imports::libc::c_void;",
     "pub type GLXContextID = XID;",
@@ -356,99 +361,113 @@ pub static GLX_ALIASES: Src = &[
     "pub type GLXFBConfigIDSGIX = XID;",
     "pub type GLXFBConfigSGIX = *const super::__gl_imports::libc::c_void;",
     "pub type GLXPbufferSGIX = XID;",
-    "",
-    "pub struct GLXPbufferClobberEvent {",
-    "    event_type: super::__gl_imports::libc::c_int,          // GLX_DAMAGED or GLX_SAVED",
-    "    draw_type: super::__gl_imports::libc::c_int,           // GLX_WINDOW or GLX_PBUFFER",
-    "    serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server",
-    "    send_event: Bool,           // true if this came for SendEvent request",
-    "    display: *const Display,          // display the event was read from",
-    "    drawable: GLXDrawable,      // XID of Drawable",
-    "    buffer_mask: super::__gl_imports::libc::c_uint,        // mask indicating which buffers are affected",
-    "    aux_buffer: super::__gl_imports::libc::c_uint,         // which aux buffer was affected",
-    "    x: super::__gl_imports::libc::c_int,",
-    "    y: super::__gl_imports::libc::c_int,",
-    "    width: super::__gl_imports::libc::c_int,",
-    "    height: super::__gl_imports::libc::c_int,",
-    "    count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more",
-    "}",
-    "",
-    "pub struct GLXBufferSwapComplete {",
-    "    type: super::__gl_imports::libc::c_int,",
-    "    serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server",
-    "    send_event: Bool,           // true if this came from a SendEvent request",
-    "    display: *const Display,          // Display the event was read from",
-    "    drawable: GLXDrawable,      // drawable on which event was requested in event mask",
-    "    event_type: super::__gl_imports::libc::c_int,",
-    "    ust: i64,",
-    "    msc: i64,",
-    "    sbc: i64,",
-    "}",
-    "",
-    "// typedef union __GLXEvent {",
-    "//     GLXPbufferClobberEvent glxpbufferclobber;",
-    "//     GLXBufferSwapComplete glxbufferswapcomplete;",
-    "//     long pad[24];",
-    "// } GLXEvent;",
-    "",
-    "pub struct GLXBufferClobberEventSGIX {",
-    "    type: super::__gl_imports::libc::c_int,",
-    "    serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server",
-    "    send_event: Bool,           // true if this came for SendEvent request",
-    "    display: *const Display,          // display the event was read from",
-    "    drawable: GLXDrawable,      // i.d. of Drawable",
-    "    event_type: super::__gl_imports::libc::c_int,          // GLX_DAMAGED_SGIX or GLX_SAVED_SGIX",
-    "    draw_type: super::__gl_imports::libc::c_int,           // GLX_WINDOW_SGIX or GLX_PBUFFER_SGIX",
-    "    mask: super::__gl_imports::libc::c_uint,               // mask indicating which buffers are affected",
-    "    x: super::__gl_imports::libc::c_int,",
-    "    y: super::__gl_imports::libc::c_int,",
-    "    width: super::__gl_imports::libc::c_int,",
-    "    height: super::__gl_imports::libc::c_int,",
-    "    count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more",
-    "}",
-    "",
-    "pub struct GLXHyperpipeNetworkSGIX {",
-    "    pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]",
-    "    networkId: super::__gl_imports::libc::c_int,",
-    "}",
-    "",
-    "pub struct GLXHyperpipeConfigSGIX {",
-    "    pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]",
-    "    channel: super::__gl_imports::libc::c_int,",
-    "    participationType: super::__gl_imports::libc::c_uint,",
-    "    timeSlice: super::__gl_imports::libc::c_int,",
-    "}",
-    "",
-    "pub struct GLXPipeRect {",
-    "    pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]",
-    "    srcXOrigin: super::__gl_imports::libc::c_int,",
-    "    srcYOrigin: super::__gl_imports::libc::c_int,",
-    "    srcWidth: super::__gl_imports::libc::c_int,",
-    "    srcHeight: super::__gl_imports::libc::c_int,",
-    "    destXOrigin: super::__gl_imports::libc::c_int,",
-    "    destYOrigin: super::__gl_imports::libc::c_int,",
-    "    destWidth: super::__gl_imports::libc::c_int,",
-    "    destHeight: super::__gl_imports::libc::c_int,",
-    "}",
-    "",
-    "pub struct GLXPipeRectLimits {",
-    "    pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]",
-    "    XOrigin: super::__gl_imports::libc::c_int,",
-    "    YOrigin: super::__gl_imports::libc::c_int,",
-    "    maxHeight: super::__gl_imports::libc::c_int,",
-    "    maxWidth: super::__gl_imports::libc::c_int,",
-    "}",
+
+    "#[repr(C)]
+    pub struct XVisualInfo {
+        pub visual: *mut Visual,
+        pub visualid: VisualID,
+        pub screen: super::__gl_imports::libc::c_int,
+        pub depth: super::__gl_imports::libc::c_int,
+        pub class: super::__gl_imports::libc::c_int,
+        pub red_mask: super::__gl_imports::libc::c_ulong,
+        pub green_mask: super::__gl_imports::libc::c_ulong,
+        pub blue_mask: super::__gl_imports::libc::c_ulong,
+        pub colormap_size: super::__gl_imports::libc::c_int,
+        pub bits_per_rgb: super::__gl_imports::libc::c_int,
+    }",
+
+    "pub struct GLXPbufferClobberEvent {
+        pub event_type: super::__gl_imports::libc::c_int,          // GLX_DAMAGED or GLX_SAVED
+        pub draw_type: super::__gl_imports::libc::c_int,           // GLX_WINDOW or GLX_PBUFFER
+        pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
+        pub send_event: Bool,           // true if this came for SendEvent request
+        pub display: *const Display,          // display the event was read from
+        pub drawable: GLXDrawable,      // XID of Drawable
+        pub buffer_mask: super::__gl_imports::libc::c_uint,        // mask indicating which buffers are affected
+        pub aux_buffer: super::__gl_imports::libc::c_uint,         // which aux buffer was affected
+        pub x: super::__gl_imports::libc::c_int,
+        pub y: super::__gl_imports::libc::c_int,
+        pub width: super::__gl_imports::libc::c_int,
+        pub height: super::__gl_imports::libc::c_int,
+        pub count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more
+    }",
+
+    "pub struct GLXBufferSwapComplete {
+        pub type_: super::__gl_imports::libc::c_int,
+        pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
+        pub send_event: Bool,           // true if this came from a SendEvent request
+        pub display: *const Display,          // Display the event was read from
+        pub drawable: GLXDrawable,      // drawable on which event was requested in event mask
+        pub event_type: super::__gl_imports::libc::c_int,
+        pub ust: i64,
+        pub msc: i64,
+        pub sbc: i64,
+    }",
+
+    //"// typedef union __GLXEvent {",
+    //"//     GLXPbufferClobberEvent glxpbufferclobber;",
+    //"//     GLXBufferSwapComplete glxbufferswapcomplete;",
+    //"//     long pad[24];",
+    //"// } GLXEvent;",
+
+    "pub struct GLXBufferClobberEventSGIX {
+        pub type_: super::__gl_imports::libc::c_int,
+        pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
+        pub send_event: Bool,           // true if this came for SendEvent request
+        pub display: *const Display,          // display the event was read from
+        pub drawable: GLXDrawable,      // i.d. of Drawable
+        pub event_type: super::__gl_imports::libc::c_int,          // GLX_DAMAGED_SGIX or GLX_SAVED_SGIX
+        pub draw_type: super::__gl_imports::libc::c_int,           // GLX_WINDOW_SGIX or GLX_PBUFFER_SGIX
+        pub mask: super::__gl_imports::libc::c_uint,               // mask indicating which buffers are affected
+        pub x: super::__gl_imports::libc::c_int,
+        pub y: super::__gl_imports::libc::c_int,
+        pub width: super::__gl_imports::libc::c_int,
+        pub height: super::__gl_imports::libc::c_int,
+        pub count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more
+    }",
+
+    "pub struct GLXHyperpipeNetworkSGIX {
+        pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+        pub networkId: super::__gl_imports::libc::c_int,
+    }",
+
+    "pub struct GLXHyperpipeConfigSGIX {
+        pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+        pub channel: super::__gl_imports::libc::c_int,
+        pub participationType: super::__gl_imports::libc::c_uint,
+        pub timeSlice: super::__gl_imports::libc::c_int,
+    }",
+
+    "pub struct GLXPipeRect {
+        pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+        pub srcXOrigin: super::__gl_imports::libc::c_int,
+        pub srcYOrigin: super::__gl_imports::libc::c_int,
+        pub srcWidth: super::__gl_imports::libc::c_int,
+        pub srcHeight: super::__gl_imports::libc::c_int,
+        pub destXOrigin: super::__gl_imports::libc::c_int,
+        pub destYOrigin: super::__gl_imports::libc::c_int,
+        pub destWidth: super::__gl_imports::libc::c_int,
+        pub destHeight: super::__gl_imports::libc::c_int,
+    }",
+
+    "pub struct GLXPipeRectLimits {
+        pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+        pub XOrigin: super::__gl_imports::libc::c_int,
+        pub YOrigin: super::__gl_imports::libc::c_int,
+        pub maxHeight: super::__gl_imports::libc::c_int,
+        pub maxWidth: super::__gl_imports::libc::c_int,
+    }",
 ];
 
 pub static WIN_ALIASES: Src = &[
-    "// From WinNT.h",
+    // From WinNT.h
     "pub type CHAR = super::__gl_imports::libc::c_char;",
     "pub type HANDLE = PVOID;",
     "pub type LONG = super::__gl_imports::libc::c_long;",
     "pub type LPCSTR = *const super::__gl_imports::libc::c_char;",
     "pub type VOID = super::__gl_imports::libc::c_void;",
-    "",
-    "// From Windef.h",
+
+    // From Windef.h
     "pub type BOOL = super::__gl_imports::libc::c_int;",
     "pub type BYTE = super::__gl_imports::libc::c_uchar;",
     "pub type COLORREF = DWORD;",
@@ -457,97 +476,102 @@ pub static WIN_ALIASES: Src = &[
     "pub type HENHMETAFILE = HANDLE;",
     "pub type HGLRC = *const super::__gl_imports::libc::c_void;",
     "pub type INT = super::__gl_imports::libc::c_int;",
+    "pub type PVOID = *const super::__gl_imports::libc::c_void;",
     "pub type LPVOID = *const super::__gl_imports::libc::c_void;",
     "pub type PROC = extern \"system\" fn();     // Not sure about this one :/",
-    "pub struct RECT {",
-    "    left: LONG,",
-    "    top: LONG,",
-    "    right: LONG,",
-    "    bottom: LONG,",
-    "}",
+    "pub struct RECT {
+        left: LONG,
+        top: LONG,
+        right: LONG,
+        bottom: LONG,
+    }",
     "pub type UINT = super::__gl_imports::libc::c_uint;",
     "pub type USHORT = super::__gl_imports::libc::c_ushort;",
     "pub type WORD = super::__gl_imports::libc::c_ushort;",
-    "",
-    "// From BaseTsd.h",
+
+    // From BaseTsd.h",
     "pub type INT32 = i32;",
     "pub type INT64 = i64;",
-    "",
-    "// From IntSafe.h",
+
+    // From IntSafe.h
     "pub type DWORD = super::__gl_imports::libc::c_ulong;",
-    "",
-    "// From Wingdi.h",
-    "pub struct POINTFLOAT {",
-    "    x: FLOAT,",
-    "    y: FLOAT,",
-    "} ",
-    "pub struct GLYPHMETRICSFLOAT {",
-    "    gmfBlackBoxX: FLOAT,",
-    "    gmfBlackBoxY: FLOAT,",
-    "    gmfptGlyphOrigin: POINTFLOAT,",
-    "    gmfCellIncX: FLOAT,",
-    "    gmfCellIncY: FLOAT,",
-    "}",
-    "pub type LPGLYPHMETRICSFLOAT = *const types::GLYPHMETRICSFLOAT;",
-    "pub struct LAYERPLANEDESCRIPTOR {",
-    "    nSize: WORD,",
-    "    nVersion: WORD,",
-    "    dwFlags: DWORD,",
-    "    iPixelType: BYTE,",
-    "    cColorBits: BYTE,",
-    "    cRedBits: BYTE,",
-    "    cRedShift: BYTE,",
-    "    cGreenBits: BYTE,",
-    "    cGreenShift: BYTE,",
-    "    cBlueBits: BYTE,",
-    "    cBlueShift: BYTE,",
-    "    cAlphaBits: BYTE,",
-    "    cAlphaShift: BYTE,",
-    "    cAccumBits: BYTE,",
-    "    cAccumRedBits: BYTE,",
-    "    cAccumGreenBits: BYTE,",
-    "    cAccumBlueBits: BYTE,",
-    "    cAccumAlphaBits: BYTE,",
-    "    cDepthBits: BYTE,",
-    "    cStencilBits: BYTE,",
-    "    cAuxBuffers: BYTE,",
-    "    iLayerType: BYTE,",
-    "    bReserved: BYTE,",
-    "    crTransparent: COLORREF,",
-    "}",
-    "pub struct PIXELFORMATDESCRIPTOR {",
-    "    nSize: WORD,",
-    "    nVersion: WORD,",
-    "    dwFlags: DWORD,",
-    "    iPixelType: BYTE,",
-    "    cColorBits: BYTE,",
-    "    cRedBits: BYTE,",
-    "    cRedShift: BYTE,",
-    "    cGreenBits: BYTE,",
-    "    cGreenShift: BYTE,",
-    "    cBlueBits: BYTE,",
-    "    cBlueShift: BYTE,",
-    "    cAlphaBits: BYTE,",
-    "    cAlphaShift: BYTE,",
-    "    cAccumBits: BYTE,",
-    "    cAccumRedBits: BYTE,",
-    "    cAccumGreenBits: BYTE,",
-    "    cAccumBlueBits: BYTE,",
-    "    cAccumAlphaBits: BYTE,",
-    "    cDepthBits: BYTE,",
-    "    cStencilBits: BYTE,",
-    "    cAuxBuffers: BYTE,",
-    "    iLayerType: BYTE,",
-    "    bReserved: BYTE,",
-    "    dwLayerMask: DWORD,",
-    "    dwVisibleMask: DWORD,",
-    "    dwDamageMask: DWORD,",
-    "}",
+
+    // From Wingdi.h
+    "#[repr(C)]
+    pub struct POINTFLOAT {
+        pub x: FLOAT,
+        pub y: FLOAT,
+    }",
+    "#[repr(C)]
+    pub struct GLYPHMETRICSFLOAT {
+        pub gmfBlackBoxX: FLOAT,
+        pub gmfBlackBoxY: FLOAT,
+        pub gmfptGlyphOrigin: POINTFLOAT,
+        pub gmfCellIncX: FLOAT,
+        pub gmfCellIncY: FLOAT,
+    }",
+    "pub type LPGLYPHMETRICSFLOAT = *const GLYPHMETRICSFLOAT;",
+    "#[repr(C)]
+    pub struct LAYERPLANEDESCRIPTOR {
+        pub nSize: WORD,
+        pub nVersion: WORD,
+        pub dwFlags: DWORD,
+        pub iPixelType: BYTE,
+        pub cColorBits: BYTE,
+        pub cRedBits: BYTE,
+        pub cRedShift: BYTE,
+        pub cGreenBits: BYTE,
+        pub cGreenShift: BYTE,
+        pub cBlueBits: BYTE,
+        pub cBlueShift: BYTE,
+        pub cAlphaBits: BYTE,
+        pub cAlphaShift: BYTE,
+        pub cAccumBits: BYTE,
+        pub cAccumRedBits: BYTE,
+        pub cAccumGreenBits: BYTE,
+        pub cAccumBlueBits: BYTE,
+        pub cAccumAlphaBits: BYTE,
+        pub cDepthBits: BYTE,
+        pub cStencilBits: BYTE,
+        pub cAuxBuffers: BYTE,
+        pub iLayerType: BYTE,
+        pub bReserved: BYTE,
+        pub crTransparent: COLORREF,
+    }",
+    "#[repr(C)]
+    pub struct PIXELFORMATDESCRIPTOR {
+        pub nSize: WORD,
+        pub nVersion: WORD,
+        pub dwFlags: DWORD,
+        pub iPixelType: BYTE,
+        pub cColorBits: BYTE,
+        pub cRedBits: BYTE,
+        pub cRedShift: BYTE,
+        pub cGreenBits: BYTE,
+        pub cGreenShift: BYTE,
+        pub cBlueBits: BYTE,
+        pub cBlueShift: BYTE,
+        pub cAlphaBits: BYTE,
+        pub cAlphaShift: BYTE,
+        pub cAccumBits: BYTE,
+        pub cAccumRedBits: BYTE,
+        pub cAccumGreenBits: BYTE,
+        pub cAccumBlueBits: BYTE,
+        pub cAccumAlphaBits: BYTE,
+        pub cDepthBits: BYTE,
+        pub cStencilBits: BYTE,
+        pub cAuxBuffers: BYTE,
+        pub iLayerType: BYTE,
+        pub bReserved: BYTE,
+        pub dwLayerMask: DWORD,
+        pub dwVisibleMask: DWORD,
+        pub dwDamageMask: DWORD,
+    }",
 ];
 
 pub static WGL_ALIASES: Src = &[
-    "// From WinNT.h",
-    "// #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name",
+    // From WinNT.h,
+    // #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
     "pub type HPBUFFERARB = *const super::__gl_imports::libc::c_void;",
     "pub type HPBUFFEREXT = *const super::__gl_imports::libc::c_void;",
     "pub type HVIDEOOUTPUTDEVICENV = *const super::__gl_imports::libc::c_void;",
@@ -555,14 +579,14 @@ pub static WGL_ALIASES: Src = &[
     "pub type HPGPUNV = *const super::__gl_imports::libc::c_void;",
     "pub type HGPUNV = *const super::__gl_imports::libc::c_void;",
     "pub type HVIDEOINPUTDEVICENV = *const super::__gl_imports::libc::c_void;",
-    "",
-    "pub struct _GPU_DEVICE {",
-    "    cb: DWORD,",
-    "    DeviceName: [CHAR, ..32],",
-    "    DeviceString: [CHAR, ..128],",
-    "    Flags: DWORD,",
-    "    rcVirtualScreen: RECT,",
-    "}",
+
+    "pub struct _GPU_DEVICE {
+        cb: DWORD,
+        DeviceName: [CHAR, ..32],
+        DeviceString: [CHAR, ..128],
+        Flags: DWORD,
+        rcVirtualScreen: RECT,
+    }",
 
     "pub struct GPU_DEVICE(_GPU_DEVICE);",
     "pub struct PGPU_DEVICE(*const _GPU_DEVICE);",
