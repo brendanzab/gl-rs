@@ -75,7 +75,7 @@ fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
 fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
     match ns {
         Gl => trim_str(ident, "gl"),
-        Glx => trim_str(ident, "glx"),
+        Glx => trim_str(ident, "glX"),
         Wgl =>  trim_str(ident, "wgl"),
     }
 }
@@ -447,8 +447,16 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
 
                 Registry {
                     groups: groups,
-                    enums: enums.move_iter().filter(|e| desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice())))).collect::<Vec<Enum>>(),
-                    cmds: cmds.move_iter().filter(|c| desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice())))).collect::<Vec<Cmd>>(),
+                    enums: enums.move_iter().filter(|e| {
+                            desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice()))) ||
+                            desired_enums.contains(&("WGL_".to_string().append(e.ident.as_slice()))) ||
+                            desired_enums.contains(&("GLX_".to_string().append(e.ident.as_slice())))
+                        }).collect::<Vec<Enum>>(),
+                    cmds: cmds.move_iter().filter(|c| {
+                            desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice()))) ||
+                            desired_cmds.contains(&("wgl".to_string().append(c.proto.ident.as_slice()))) ||
+                            desired_cmds.contains(&("glX".to_string().append(c.proto.ident.as_slice())))
+                        }).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),
                     extensions: Vec::new(),
