@@ -170,7 +170,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("use super::__gl_imports;");
         self.write_line("");
         for c in self.registry.cmd_iter() {
-            self.write_line("#[allow(unused_variable)] #[allow(non_snake_case_functions)] #[allow(dead_code)]");
+            self.write_line("#[allow(unused_variable)] #[allow(non_snake_case)] #[allow(dead_code)]");
             self.write_line(format!(
                 "pub extern \"system\" fn {name}({params}){return_suffix} {{ \
                     fail!(\"`{name}` was not loaded\") \
@@ -186,7 +186,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
 
     fn write_struct(&mut self) {
         let ns = self.ns;
-        self.write_line("#[allow(uppercase_variables)] #[allow(dead_code)]");
+        self.write_line("#[allow(non_camel_case_types)] #[allow(non_snake_case)] #[allow(dead_code)]");
         self.write_line("#[stable]");
         self.write_line(format!("pub struct {:c} {{", ns).as_slice());
         self.incr_indent();
@@ -234,7 +234,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             self.write_line(
                 if c.is_safe {
                     format!(
-                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)] #[allow(dead_code)]
+                        "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
                         #[inline] #[unstable] pub fn {name}(&self, {params}){return_suffix} {{ \
                             unsafe {{ \
                                 __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
@@ -249,7 +249,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                     )
                 } else {
                     format!(
-                        "#[allow(non_snake_case_functions)] #[allow(unused_variable)] #[allow(dead_code)]
+                        "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
                         #[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}){return_suffix} {{ \
                             __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
                                 (self.{name}.f)({idents}) \
