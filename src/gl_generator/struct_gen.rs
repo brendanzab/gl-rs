@@ -151,6 +151,20 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                     self.write_line(*alias)
                 }
             }
+            Egl => {
+                for alias in ty::GL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
+                    self.write_line("#[allow(dead_code)]");
+                    self.write_line(*alias)
+                }
+                for alias in ty::EGL_ALIASES.iter() {
+                    self.write_line("#[allow(non_camel_case_types)]");
+                    self.write_line("#[allow(non_snake_case)]");
+                    self.write_line("#[allow(dead_code)]");
+                    self.write_line(*alias)
+                }
+            }
         }
         self.decr_indent();
         self.write_line("}");

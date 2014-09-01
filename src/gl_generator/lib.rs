@@ -42,6 +42,22 @@
 //! * Generator: Can be `static` or `struct`.
 //! * Extensions (optional): An array of extensions to include in the bindings.
 //! 
+//! ## About EGL
+//!
+//! When you generate bindings for EGL, the following platform-specific types must be declared
+//!  *at the same level where you call `generate_gl_bindings`*:
+//!
+//! - khronos_utime_nanoseconds_t
+//! - khronos_uint64_t
+//! - khronos_ssize_t
+//! - EGLNativeDisplayType
+//! - EGLNativePixmapType
+//! - EGLNativeWindowType
+//! - EGLint
+//! - NativeDisplayType
+//! - NativePixmapType
+//! - NativeWindowType
+//!
 
 
 #![crate_name = "gl_generator"]
@@ -116,6 +132,10 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             return DummyResult::any(span)
         },
         "wgl" => (Wgl, khronos_api::WGL_XML),
+        "egl" => {
+            ecx.span_err(span, "egl generation unimplemented");
+            return DummyResult::any(span)
+        },
         ns => {
             ecx.span_err(span, format!("Unexpected opengl namespace '{}'", ns).as_slice());
             return DummyResult::any(span)

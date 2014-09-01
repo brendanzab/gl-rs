@@ -27,7 +27,7 @@ use std::slice::Items;
 
 use self::xml::reader::events;
 
-pub enum Ns { Gl, Glx, Wgl }
+pub enum Ns { Gl, Glx, Wgl, Egl }
 
 impl FromStr for Ns {
     fn from_str(s: &str) -> Option<Ns> {
@@ -35,6 +35,7 @@ impl FromStr for Ns {
             "gl"  => Some(Gl),
             "glx" => Some(Glx),
             "wgl" => Some(Wgl),
+            "egl" => Some(Egl),
             _     => None,
         }
     }
@@ -46,6 +47,7 @@ impl fmt::Show for Ns {
             Gl  => write!(fmt, "gl"),
             Glx => write!(fmt, "glx"),
             Wgl => write!(fmt, "wgl"),
+            Egl => write!(fmt, "egl"),
         }
     }
 }
@@ -56,6 +58,7 @@ impl fmt::Char for Ns {
             Gl  => write!(fmt, "Gl"),
             Glx => write!(fmt, "Glx"),
             Wgl => write!(fmt, "Wgl"),
+            Egl => write!(fmt, "Egl"),
         }
     }
 }
@@ -69,6 +72,7 @@ fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
         Gl => trim_str(ident, "GL_"),
         Glx => trim_str(ident, "GLX_"),
         Wgl =>  trim_str(ident, "WGL_"),
+        Egl =>  trim_str(ident, "EGL_"),
     }
 }
 
@@ -77,6 +81,7 @@ fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
         Gl => trim_str(ident, "gl"),
         Glx => trim_str(ident, "glX"),
         Wgl =>  trim_str(ident, "wgl"),
+        Egl =>  trim_str(ident, "egl"),
     }
 }
 
@@ -450,12 +455,14 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                     enums: enums.move_iter().filter(|e| {
                             desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice()))) ||
                             desired_enums.contains(&("WGL_".to_string().append(e.ident.as_slice()))) ||
-                            desired_enums.contains(&("GLX_".to_string().append(e.ident.as_slice())))
+                            desired_enums.contains(&("GLX_".to_string().append(e.ident.as_slice()))) ||
+                            desired_enums.contains(&("EGL_".to_string().append(e.ident.as_slice())))
                         }).collect::<Vec<Enum>>(),
                     cmds: cmds.move_iter().filter(|c| {
                             desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice()))) ||
                             desired_cmds.contains(&("wgl".to_string().append(c.proto.ident.as_slice()))) ||
-                            desired_cmds.contains(&("glX".to_string().append(c.proto.ident.as_slice())))
+                            desired_cmds.contains(&("glX".to_string().append(c.proto.ident.as_slice()))) ||
+                            desired_cmds.contains(&("egl".to_string().append(c.proto.ident.as_slice())))
                         }).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),

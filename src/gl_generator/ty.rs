@@ -239,6 +239,51 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         // "unsigned long *"           => "*mut __gl_imports::libc::c_ulong",
         // "void *"                    => "*mut __gl_imports::libc::c_void",
 
+        // elx.xml types
+        "khronos_utime_nanoseconds_t"   => "types::khronos_utime_nanoseconds_t",
+        "khronos_uint64_t"          => "types::khronos_uint64_t",
+        "khronos_ssize_t"           => "types::khronos_ssize_t",
+        "EGLNativeDisplayType"      => "types::EGLNativeDisplayType",
+        "EGLNativePixmapType"       => "types::EGLNativePixmapType",
+        "EGLNativeWindowType"       => "types::EGLNativeWindowType",
+        "EGLint"                    => "types::EGLint",
+        "EGLint *"                  => "*mut types::EGLint",
+        "const EGLint *"            => "*const types::EGLint",
+        "NativeDisplayType"         => "types::NativeDisplayType",
+        "NativePixmapType"          => "types::NativePixmapType",
+        "NativeWindowType"          => "types::NativeWindowType",
+        //"Bool"                      => "types::Bool",
+        "EGLBoolean"                => "types::EGLBoolean",
+        "EGLenum"                   => "types::EGLenum",
+        "EGLAttribKHR"              => "types::EGLAttribKHR",
+        "EGLAttrib"                 => "types::EGLAttrib",
+        "EGLAttrib *"               => "*mut types::EGLAttrib",
+        "const EGLAttrib *"         => "*const types::EGLAttrib",
+        "EGLConfig"                 => "types::EGLConfig",
+        "EGLConfig *"               => "*mut types::EGLConfig",
+        "EGLContext"                => "types::EGLContext",
+        "EGLDeviceEXT"              => "types::EGLDeviceEXT",
+        "EGLDisplay"                => "types::EGLDisplay",
+        "EGLSurface"                => "types::EGLSurface",
+        "EGLClientBuffer"               => "types::EGLClientBuffer",
+        "__eglMustCastToProperFunctionPointerType"  => "types::__eglMustCastToProperFunctionPointerType",
+        "EGLImageKHR"               => "types::EGLImageKHR",
+        "EGLImage"                  => "types::EGLImage",
+        "EGLSyncKHR"                => "types::EGLSyncKHR",
+        "EGLSync"                   => "types::EGLSync",
+        "EGLTimeKHR"                => "types::EGLTimeKHR",
+        "EGLTime"                   => "types::EGLTime",
+        "EGLSyncNV"                 => "types::EGLSyncNV",
+        "EGLTimeNV"                 => "types::EGLTimeNV",
+        "EGLuint64NV"               => "types::EGLuint64NV",
+        "EGLStreamKHR"              => "types::EGLStreamKHR",
+        "EGLuint64KHR"              => "types::EGLuint64KHR",
+        "EGLNativeFileDescriptorKHR"    => "types::EGLNativeFileDescriptorKHR",
+        "EGLsizeiANDROID"           => "types::EGLsizeiANDROID",
+        "EGLSetBlobFuncANDROID"     => "types::EGLSetBlobFuncANDROID",
+        "EGLGetBlobFuncANDROID"     => "types::EGLGetBlobFuncANDROID",
+        "EGLClientPixmapHI"         => "types::EGLClientPixmapHI",
+
         // failure
         _ => fail!("Type conversion not implemented for `{}`", ty),
     }
@@ -590,4 +635,57 @@ pub static WGL_ALIASES: Src = &[
 
     "pub struct GPU_DEVICE(_GPU_DEVICE);",
     "pub struct PGPU_DEVICE(*const _GPU_DEVICE);",
+];
+
+pub static EGL_ALIASES: Src = &[
+    // platform-specific aliases are unknown
+    // IMPORTANT: these are alises to the same level of the bindings
+    // the values must be defined by the user
+    "pub type khronos_utime_nanoseconds_t = super::super::khronos_utime_nanoseconds_t;",
+    "pub type khronos_uint64_t = super::super::khronos_uint64_t;",
+    "pub type khronos_ssize_t = super::super::khronos_ssize_t;",
+    "pub type EGLNativeDisplayType = super::super::EGLNativeDisplayType;",
+    "pub type EGLNativePixmapType = super::super::EGLNativePixmapType;",
+    "pub type EGLNativeWindowType = super::super::EGLNativeWindowType;",
+    "pub type EGLint = super::super::EGLint;",
+    "pub type NativeDisplayType = super::super::NativeDisplayType;",
+    "pub type NativePixmapType = super::super::NativePixmapType;",
+    "pub type NativeWindowType = super::super::NativeWindowType;",
+
+    // EGL alises
+    "pub type Bool = EGLBoolean;",  // TODO: not sure
+    "pub type EGLBoolean = super::__gl_imports::libc::c_uint;",
+    "pub type EGLenum = super::__gl_imports::libc::c_uint;",
+    "pub type EGLAttribKHR = super::__gl_imports::libc::intptr_t;",
+    "pub type EGLAttrib = super::__gl_imports::libc::intptr_t;",
+    "pub type EGLConfig = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLContext = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLDeviceEXT = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLDisplay = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLSurface = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLClientBuffer = *const super::__gl_imports::libc::c_void;",
+    "pub type __eglMustCastToProperFunctionPointerType = extern \"system\" fn() -> ();",
+    "pub type EGLImageKHR = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLImage = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLSyncKHR = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLSync = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLTimeKHR = khronos_utime_nanoseconds_t;",
+    "pub type EGLTime = khronos_utime_nanoseconds_t;",
+    "pub type EGLSyncNV = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLTimeNV = khronos_utime_nanoseconds_t;",
+    "pub type EGLuint64NV = khronos_utime_nanoseconds_t;",
+    "pub type EGLStreamKHR = *const super::__gl_imports::libc::c_void;",
+    "pub type EGLuint64KHR = khronos_uint64_t;",
+    "pub type EGLNativeFileDescriptorKHR = super::__gl_imports::libc::c_int;",
+    "pub type EGLsizeiANDROID = khronos_ssize_t;",
+    "pub type __eglMustCastToProperFunctionPointerType = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *const super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> ();",
+    "pub type __eglMustCastToProperFunctionPointerType = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *mut super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> EGLsizeiANDROID;",
+
+    "#[repr(C)]
+    pub struct EGLClientPixmapHI {
+        pData: *const super::__gl_imports::libc::c_void,
+        iWidth: EGLint,
+        iHeight: EGLint,
+        iStride: EGLint,
+    }"
 ];
