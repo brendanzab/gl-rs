@@ -580,7 +580,8 @@ pub static WGL_ALIASES: Src = &[
     "pub type HGPUNV = *const super::__gl_imports::libc::c_void;",
     "pub type HVIDEOINPUTDEVICENV = *const super::__gl_imports::libc::c_void;",
 
-    "pub struct _GPU_DEVICE {
+    "#[allow(uppercase_variables)]
+    pub struct _GPU_DEVICE {
         cb: DWORD,
         DeviceName: [CHAR, ..32],
         DeviceString: [CHAR, ..128],
