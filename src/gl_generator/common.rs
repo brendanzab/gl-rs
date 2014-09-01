@@ -69,5 +69,6 @@ pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
         Gl => "gl",
         Glx => "glx",
         Wgl => "wgl",
+        Egl => "egl",
     }).to_string().append(cmd.proto.ident.as_slice())
 }
