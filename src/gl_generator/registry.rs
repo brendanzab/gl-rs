@@ -27,7 +27,7 @@ use std::slice::Items;
 
 use self::xml::reader::events;
 
-pub enum Ns { Gl, Glx, Wgl, Egl }
+pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
 impl FromStr for Ns {
     fn from_str(s: &str) -> Option<Ns> {
@@ -36,6 +36,8 @@ impl FromStr for Ns {
             "glx" => Some(Glx),
             "wgl" => Some(Wgl),
             "egl" => Some(Egl),
+            "gles1" => Some(Gles1),
+            "gles2" => Some(Gles2),
             _     => None,
         }
     }
@@ -48,6 +50,8 @@ impl fmt::Show for Ns {
             Glx => write!(fmt, "glx"),
             Wgl => write!(fmt, "wgl"),
             Egl => write!(fmt, "egl"),
+            Gles1 => write!(fmt, "gles1"),
+            Gles2 => write!(fmt, "gles2"),
         }
     }
 }
@@ -59,6 +63,8 @@ impl fmt::Char for Ns {
             Glx => write!(fmt, "Glx"),
             Wgl => write!(fmt, "Wgl"),
             Egl => write!(fmt, "Egl"),
+            Gles1 => write!(fmt, "Gles1"),
+            Gles2 => write!(fmt, "Gles2"),
         }
     }
 }
@@ -69,7 +75,7 @@ fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
 
 fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
     match ns {
-        Gl => trim_str(ident, "GL_"),
+        Gl | Gles1 | Gles2 => trim_str(ident, "GL_"),
         Glx => trim_str(ident, "GLX_"),
         Wgl =>  trim_str(ident, "WGL_"),
         Egl =>  trim_str(ident, "EGL_"),
@@ -78,7 +84,7 @@ fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
 
 fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
     match ns {
-        Gl => trim_str(ident, "gl"),
+        Gl | Gles1 | Gles2 => trim_str(ident, "gl"),
         Glx => trim_str(ident, "glX"),
         Wgl =>  trim_str(ident, "wgl"),
         Egl =>  trim_str(ident, "egl"),

@@ -130,7 +130,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.incr_indent();
         self.write_line("");
         match self.ns {
-            Gl => {
+            Gl | Gles1 | Gles2 => {
                 for alias in ty::GL_ALIASES.iter() {
                     self.write_line("#[allow(non_camel_case_types)]");
                     self.write_line("#[allow(non_snake_case)]");
