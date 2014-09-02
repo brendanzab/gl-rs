@@ -73,3 +73,19 @@ mod egl_struct {
 
     generate_gl_bindings!("egl", "core", "1.5", "struct")
 }
+
+mod gles1_static {
+    generate_gl_bindings!("gles1", "core", "1.1", "static")
+}
+
+mod gles1_struct {
+    generate_gl_bindings!("gles1", "core", "1.1", "struct")
+}
+
+mod gles2_static {
+    generate_gl_bindings!("gles2", "core", "3.1", "static")
+}
+
+mod gles2_struct {
+    generate_gl_bindings!("gles2", "core", "3.1", "struct")
+}

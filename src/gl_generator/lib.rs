@@ -34,7 +34,7 @@
 //!
 //! ## Parameters
 //!
-//! * API: Can be `gl`, `wgl`, `glx`, `egl`.
+//! * API: Can be `gl`, `gles1`, `gles2`, `wgl`, `glx`, `egl`.
 //! * Profile: Can be `core` or `compatibility`. `core` will only include all functions supported
 //!    by the requested version it self, while `compatibility` will include all the functions from
 //!    previous versions as well.
@@ -134,6 +134,8 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         "glx" => (Glx, khronos_api::GLX_XML),
         "wgl" => (Wgl, khronos_api::WGL_XML),
         "egl" => (Egl, khronos_api::EGL_XML),
+        "gles1"  => (Gles1, khronos_api::GL_XML),
+        "gles2"  => (Gles2, khronos_api::GL_XML),
         ns => {
             ecx.span_err(span, format!("Unexpected opengl namespace '{}'", ns).as_slice());
             return DummyResult::any(span)
