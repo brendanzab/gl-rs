@@ -641,16 +641,16 @@ pub static EGL_ALIASES: Src = &[
     // platform-specific aliases are unknown
     // IMPORTANT: these are alises to the same level of the bindings
     // the values must be defined by the user
-    "pub type khronos_utime_nanoseconds_t = super::super::khronos_utime_nanoseconds_t;",
-    "pub type khronos_uint64_t = super::super::khronos_uint64_t;",
-    "pub type khronos_ssize_t = super::super::khronos_ssize_t;",
-    "pub type EGLNativeDisplayType = super::super::EGLNativeDisplayType;",
-    "pub type EGLNativePixmapType = super::super::EGLNativePixmapType;",
-    "pub type EGLNativeWindowType = super::super::EGLNativeWindowType;",
-    "pub type EGLint = super::super::EGLint;",
-    "pub type NativeDisplayType = super::super::NativeDisplayType;",
-    "pub type NativePixmapType = super::super::NativePixmapType;",
-    "pub type NativeWindowType = super::super::NativeWindowType;",
+    "pub type khronos_utime_nanoseconds_t = super::khronos_utime_nanoseconds_t;",
+    "pub type khronos_uint64_t = super::khronos_uint64_t;",
+    "pub type khronos_ssize_t = super::khronos_ssize_t;",
+    "pub type EGLNativeDisplayType = super::EGLNativeDisplayType;",
+    "pub type EGLNativePixmapType = super::EGLNativePixmapType;",
+    "pub type EGLNativeWindowType = super::EGLNativeWindowType;",
+    "pub type EGLint = super::EGLint;",
+    "pub type NativeDisplayType = super::NativeDisplayType;",
+    "pub type NativePixmapType = super::NativePixmapType;",
+    "pub type NativeWindowType = super::NativeWindowType;",
 
     // EGL alises
     "pub type Bool = EGLBoolean;",  // TODO: not sure
@@ -678,8 +678,8 @@ pub static EGL_ALIASES: Src = &[
     "pub type EGLuint64KHR = khronos_uint64_t;",
     "pub type EGLNativeFileDescriptorKHR = super::__gl_imports::libc::c_int;",
     "pub type EGLsizeiANDROID = khronos_ssize_t;",
-    "pub type __eglMustCastToProperFunctionPointerType = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *const super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> ();",
-    "pub type __eglMustCastToProperFunctionPointerType = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *mut super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> EGLsizeiANDROID;",
+    "pub type EGLSetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *const super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> ();",
+    "pub type EGLGetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *mut super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> EGLsizeiANDROID;",
 
     "#[repr(C)]
     pub struct EGLClientPixmapHI {

@@ -34,7 +34,7 @@
 //!
 //! ## Parameters
 //!
-//! * API: Can be `gl`, `wgl`, `glx`, `egl`. `glx` and `egl` are not supported for the moment.
+//! * API: Can be `gl`, `wgl`, `glx`, `egl`.
 //! * Profile: Can be `core` or `compatibility`. `core` will only include all functions supported
 //!    by the requested version it self, while `compatibility` will include all the functions from
 //!    previous versions as well.
@@ -74,7 +74,11 @@
 #[phase(plugin, link)]
 extern crate log;
 
+#[phase(plugin)]
+extern crate regex_macros;
+
 extern crate khronos_api;
+extern crate regex;
 extern crate rustc;
 extern crate syntax;
 
@@ -127,15 +131,9 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
 
     let (ns, source) = match api.as_slice() {
         "gl"  => (Gl, khronos_api::GL_XML),
-        "glx" => {
-            ecx.span_err(span, "glx generation unimplemented");
-            return DummyResult::any(span)
-        },
+        "glx" => (Glx, khronos_api::GLX_XML),
         "wgl" => (Wgl, khronos_api::WGL_XML),
-        "egl" => {
-            ecx.span_err(span, "egl generation unimplemented");
-            return DummyResult::any(span)
-        },
+        "egl" => (Egl, khronos_api::EGL_XML),
         ns => {
             ecx.span_err(span, format!("Unexpected opengl namespace '{}'", ns).as_slice());
             return DummyResult::any(span)

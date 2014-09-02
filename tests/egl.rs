@@ -1,13 +1,14 @@
 #![feature(phase)]
+#![allow(non_camel_case_types)]
 
 #[phase(plugin)]
 extern crate gl_generator;
 
 extern crate libc;
 
-// TODO: egl not yet implemented
+mod egl_static {
+    use libc;
 
-/*mod egl_static {
     pub type khronos_utime_nanoseconds_t = libc::c_int;
     pub type khronos_uint64_t = libc::uint64_t;
     pub type khronos_ssize_t = libc::ssize_t;
@@ -23,6 +24,8 @@ extern crate libc;
 }
 
 mod egl_struct {
+    use libc;
+
     pub type khronos_utime_nanoseconds_t = libc::c_int;
     pub type khronos_uint64_t = libc::uint64_t;
     pub type khronos_ssize_t = libc::ssize_t;
@@ -35,4 +38,4 @@ mod egl_struct {
     pub type NativeWindowType = *const libc::c_void;
 
     generate_gl_bindings!("egl", "core", "1.5", "struct")
-}*/
+}
