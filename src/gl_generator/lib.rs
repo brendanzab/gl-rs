@@ -163,7 +163,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             Ok(reg) => reg,
             Err(err) => {
                 use std::any::{Any, AnyRefExt};
-                let err: &Any = err;
+                let err: &Any = &*err;
 
                 match err {
                     err if err.is::<String>() => {
@@ -214,7 +214,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
             Ok(buffer) => buffer.unwrap(),
             Err(err) => {
                 use std::any::{Any, AnyRefExt};
-                let err: &Any = err;
+                let err: &Any = &*err;
 
                 match err {
                     err if err.is::<String>() => {
