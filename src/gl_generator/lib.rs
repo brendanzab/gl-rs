@@ -82,9 +82,6 @@ extern crate regex;
 extern crate rustc;
 extern crate syntax;
 
-use std::path::Path;
-use std::io::{File, Reader};
-
 use syntax::parse::token;
 use syntax::ast::{ Item, TokenTree };
 use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
