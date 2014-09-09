@@ -2,16 +2,16 @@
 
 An OpenGL function pointer loader for the Rust Programming Language.
 
-## Installation
+## Basic usage
 
-To use the library, add this to your `Cargo.toml`:
+The easiest way to use OpenGL is to simply include the `gl` crate.
+
+To do so, add this to your `Cargo.toml`:
 
 ```toml
 [dependencies.gl]
 git = "https://github.com/bjz/gl-rs"
 ```
-
-## Usage
 
 You can import the pointer style loader and type aliases like so:
 
@@ -21,7 +21,7 @@ extern crate gl;
 use gl::types::*;
 ~~~
 
-You can load the function pointers into their respective function pointers
+You must load the function pointers into their respective function pointers
 using the `load_with` function. You must supply a loader function from your
 context library, This is how it would look using [glfw-rs]
 (https://github.com/bjz/glfw-rs):
@@ -61,3 +61,62 @@ if gl::Viewport::is_loaded() {
     // do something...
 }
 ~~~
+
+## Using gl_generator
+
+If you need a specific version of OpenGL, if you need a different API
+(OpenGL ES, EGL, WGL, GLX), or if you need certain extensions, you should use
+the `gl_generator` plugin instead.
+
+See [gfx_gl](https://github.com/gfx-rs/gfx_gl) for an example of using a
+custom gfx-rs loader for a project.
+
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies.gl_generator]
+git = "https://github.com/bjz/gl-rs"
+```
+
+Then use it like this:
+
+```rust
+#![feature(phase)]
+
+#[phase(plugin)]
+extern crate gl_generator;
+
+mod gl {
+    generate_gl_bindings!("gl", "core", "4.5", "static")
+}
+```
+
+The `generate_gl_bindings` macro will generate all the OpenGL functions,
+plus all enumerations, plus all types in the `types` submodule.
+
+The parameters are the following:
+
+ * API: Can be `gl`, `gles1`, `gles2`, `wgl`, `glx`, `egl`.
+ * Profile: Can be `core` or `compatibility`.
+ * Version: The requested version of OpenGL, WGL, GLX or EGL in the format
+    `x.x`.
+ * Generator: Can be `static` or `struct` (more informations below).
+ * Extensions (optional): An array of extensions to include in the bindings.
+    For example: `generate_gl_bindings!("gl", "core", "4.5", "static",
+    [ "GL_EXT_texture_filter_anisotropic" ])`
+
+### Static generator
+
+The static generator is the one used by default by the `gl` crate. See above
+for more details.
+
+### Struct generator
+
+The struct generator is a cleaner alternative to the static generator.
+
+The main difference is that you must call `gl::Gl::load_with` instead of
+`gl::load_with`, and this functions returns a struct of type `Gl`. The OpenGL
+functions are not global functions but member functions in this `Gl` struct.
+
+The enumerations and types are still static and available in a similar way as
+in the static generator.
