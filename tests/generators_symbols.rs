@@ -6,19 +6,19 @@ extern crate gl_generator;
 extern crate libc;
 
 mod gl {
-    generate_gl_bindings!("gl", "core", "4.5", "static")
+    generate_gl_bindings!("gl", "core", "4.5", "global")
 }
 
 mod gles {
-    generate_gl_bindings!("gles2", "core", "3.1", "static")
+    generate_gl_bindings!("gles2", "core", "3.1", "global")
 }
 
 mod glx {
-    generate_gl_bindings!("glx", "core", "1.4", "static")
+    generate_gl_bindings!("glx", "core", "1.4", "global")
 }
 
 mod wgl {
-    generate_gl_bindings!("wgl", "core", "1.0", "static")
+    generate_gl_bindings!("wgl", "core", "1.0", "global")
 }
 
 mod egl {
@@ -37,7 +37,7 @@ mod egl {
     pub type NativePixmapType = *const libc::c_void;
     pub type NativeWindowType = *const libc::c_void;
 
-    generate_gl_bindings!("egl", "core", "1.5", "static")
+    generate_gl_bindings!("egl", "core", "1.5", "global")
 }
 
 #[test]

@@ -87,7 +87,7 @@ Then use it like this:
 extern crate gl_generator;
 
 mod gl {
-    generate_gl_bindings!("gl", "core", "4.5", "static")
+    generate_gl_bindings!("gl", "core", "4.5", "global")
 }
 ```
 
@@ -100,23 +100,23 @@ The parameters are the following:
  * Profile: Can be `core` or `compatibility`.
  * Version: The requested version of OpenGL, WGL, GLX or EGL in the format
     `x.x`.
- * Generator: Can be `static` or `struct` (more informations below).
+ * Generator: Can be `global` or `struct` (more informations below).
  * Extensions (optional): An array of extensions to include in the bindings.
-    For example: `generate_gl_bindings!("gl", "core", "4.5", "static",
+    For example: `generate_gl_bindings!("gl", "core", "4.5", "global",
     [ "GL_EXT_texture_filter_anisotropic" ])`
 
-### Static generator
+### Global generator
 
-The static generator is the one used by default by the `gl` crate. See above
+The global generator is the one used by default by the `gl` crate. See above
 for more details.
 
 ### Struct generator
 
-The struct generator is a cleaner alternative to the static generator.
+The struct generator is a cleaner alternative to the global generator.
 
 The main difference is that you must call `gl::Gl::load_with` instead of
 `gl::load_with`, and this functions returns a struct of type `Gl`. The OpenGL
-functions are not global functions but member functions in this `Gl` struct.
+functions are not static functions but member functions in this `Gl` struct.
 
 The enumerations and types are still static and available in a similar way as
-in the static generator.
+in the global generator.

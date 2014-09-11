@@ -22,16 +22,16 @@ use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
 
-pub struct StaticGenerator<'a, W: 'a> {
+pub struct GlobalGenerator<'a, W: 'a> {
     ns: Ns,
     writer: &'a mut W,
     registry: &'a Registry,
     indent: uint,
 }
 
-impl<'a, W: Writer> StaticGenerator<'a, W> {
-    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> StaticGenerator<'a, W> {
-        StaticGenerator {
+impl<'a, W: Writer> GlobalGenerator<'a, W> {
+    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> GlobalGenerator<'a, W> {
+        GlobalGenerator {
             ns: ns,
             writer: writer,
             registry: registry,
@@ -349,7 +349,7 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
     }
 
     pub fn write(writer: &mut W, registry: &Registry, ns: Ns) {
-        let mut gen = StaticGenerator::new(writer, registry, ns);
+        let mut gen = GlobalGenerator::new(writer, registry, ns);
 
         // header with imports
         gen.write_header();
