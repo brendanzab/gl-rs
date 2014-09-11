@@ -39,7 +39,7 @@
 //!    by the requested version it self, while `compatibility` will include all the functions from
 //!    previous versions as well.
 //! * Version: The requested version of OpenGL, WGL, GLX or EGL in the format `x.x`.
-//! * Generator: Can be `global` or `struct`.
+//! * Generator: Can be `static`, `global` or `struct`.
 //! * Extensions (optional): An array of extensions to include in the bindings.
 //! 
 //! ## About EGL
@@ -89,10 +89,12 @@ use syntax::codemap::Span;
 
 use registry::*;
 use global_gen::GlobalGenerator;
+use static_gen::StaticGenerator;
 use struct_gen::StructGenerator;
 
 mod common;
 pub mod global_gen;
+pub mod static_gen;
 pub mod struct_gen;
 pub mod registry;
 pub mod ty;
@@ -200,10 +202,11 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
                 buffer
             }),
 
-            "static" => {
-                ecx.span_err(span, "the 'static' generator has been renamed to 'global'");
-                return DummyResult::any(span);
-            },
+            "static" => task::try(proc() {
+                let mut buffer = MemWriter::new();
+                StaticGenerator::write(&mut buffer, &reg, ns);
+                buffer
+            }),
 
             generator => {
                 ecx.span_err(span, format!("unknown generator type: {}", generator).as_slice());

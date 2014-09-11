@@ -10,28 +10,60 @@ extern crate gl_generator;
 
 extern crate libc;
 
-mod gl_static {
+mod gl_global {
     generate_gl_bindings!("gl", "core", "4.5", "global")
+}
+
+mod gl_static {
+    generate_gl_bindings!("gl", "core", "4.5", "static")
 }
 
 mod gl_struct {
     generate_gl_bindings!("gl", "core", "4.5", "struct")
 }
 
-mod glx_static {
+mod glx_global {
     generate_gl_bindings!("glx", "core", "1.4", "global")
+}
+
+mod glx_static {
+    generate_gl_bindings!("glx", "core", "1.4", "static")
 }
 
 mod glx_struct {
     generate_gl_bindings!("glx", "core", "1.4", "struct")
 }
 
-mod wgl_static {
+mod wgl_global {
     generate_gl_bindings!("wgl", "core", "1.0", "global")
+}
+
+mod wgl_static {
+    generate_gl_bindings!("wgl", "core", "1.0", "static")
 }
 
 mod wgl_struct {
     generate_gl_bindings!("wgl", "core", "1.0", "struct")
+}
+
+mod egl_global {
+    use libc;
+
+    #[allow(non_camel_case_types)]
+    pub type khronos_utime_nanoseconds_t = libc::c_int;
+    #[allow(non_camel_case_types)]
+    pub type khronos_uint64_t = libc::uint64_t;
+    #[allow(non_camel_case_types)]
+    pub type khronos_ssize_t = libc::ssize_t;
+    pub type EGLNativeDisplayType = *const libc::c_void;
+    pub type EGLNativePixmapType = *const libc::c_void;
+    pub type EGLNativeWindowType = *const libc::c_void;
+    pub type EGLint = libc::c_int;
+    pub type NativeDisplayType = *const libc::c_void;
+    pub type NativePixmapType = *const libc::c_void;
+    pub type NativeWindowType = *const libc::c_void;
+
+    generate_gl_bindings!("egl", "core", "1.5", "global")
 }
 
 mod egl_static {
@@ -51,7 +83,7 @@ mod egl_static {
     pub type NativePixmapType = *const libc::c_void;
     pub type NativeWindowType = *const libc::c_void;
 
-    generate_gl_bindings!("egl", "core", "1.5", "global")
+    generate_gl_bindings!("egl", "core", "1.5", "static")
 }
 
 mod egl_struct {
@@ -74,16 +106,24 @@ mod egl_struct {
     generate_gl_bindings!("egl", "core", "1.5", "struct")
 }
 
-mod gles1_static {
+mod gles1_global {
     generate_gl_bindings!("gles1", "core", "1.1", "global")
+}
+
+mod gles1_static {
+    generate_gl_bindings!("gles1", "core", "1.1", "static")
 }
 
 mod gles1_struct {
     generate_gl_bindings!("gles1", "core", "1.1", "struct")
 }
 
-mod gles2_static {
+mod gles2_global {
     generate_gl_bindings!("gles2", "core", "3.1", "global")
+}
+
+mod gles2_static {
+    generate_gl_bindings!("gles2", "core", "3.1", "static")
 }
 
 mod gles2_struct {
