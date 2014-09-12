@@ -250,7 +250,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.incr_indent();
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
-                "{name}: FnPtr,",
+                "pub {name}: FnPtr,",
                 name = c.proto.ident,
             ).as_slice());
         }
