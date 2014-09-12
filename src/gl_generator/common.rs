@@ -67,7 +67,7 @@ pub fn gen_return_suffix(cmd: &Cmd) -> String {
 pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
     (match *ns {
         Gl | Gles1 | Gles2 => "gl",
-        Glx => "glx",
+        Glx => "glX",
         Wgl => "wgl",
         Egl => "egl",
     }).to_string().append(cmd.proto.ident.as_slice())

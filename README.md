@@ -100,7 +100,7 @@ The parameters are the following:
  * Profile: Can be `core` or `compatibility`.
  * Version: The requested version of OpenGL, WGL, GLX or EGL in the format
     `x.x`.
- * Generator: Can be `global` or `struct` (more informations below).
+ * Generator: Can be `static`, `global` or `struct` (more informations below).
  * Extensions (optional): An array of extensions to include in the bindings.
     For example: `generate_gl_bindings!("gl", "core", "4.5", "global",
     [ "GL_EXT_texture_filter_anisotropic" ])`
@@ -120,3 +120,19 @@ functions are not static functions but member functions in this `Gl` struct.
 
 The enumerations and types are still static and available in a similar way as
 in the global generator.
+
+### Static generator
+
+The static generator generates plain old bindings. You don't need to load the
+functions.
+
+This generator should only be used only if the platform you are compiling for
+is guaranteed to support the requested API. Otherwise you will get a
+compilation error.
+For example, you can use it for WGL and OpenGL 1.1 on Windows or GLX and
+OpenGL 1.3 on Linux, because Windows and Linux are guanteed to provide
+implementations for these APIs.
+
+You will need to manually provide the linkage. For example to use WGL or
+OpenGL 1.1 on Windows, you will need to add
+`#[link="OpenGL32.lib"] extern {}` somewhere in your code.
