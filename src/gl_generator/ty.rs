@@ -333,12 +333,15 @@ pub static GL_ALIASES: Src = &[
     "pub type GLint64EXT = i64;",
     "pub type GLuint64EXT = u64;",
 
-    "pub struct __GLsync;",
+    "#[repr(C)]
+    pub struct __GLsync;",
     "pub type GLsync = *const __GLsync;",
 
     // compatible with OpenCL cl_context
-    "pub struct _cl_context;",
-    "pub struct _cl_event;",
+    "#[repr(C)]
+    pub struct _cl_context;",
+    "#[repr(C)]
+    pub struct _cl_event;",
 
     "pub type GLDEBUGPROC = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
     "pub type GLDEBUGPROCARB = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
@@ -382,7 +385,8 @@ pub static GL_ALIASES: Src = &[
 pub static X_ALIASES: Src = &[
     "pub type XID = super::__gl_imports::libc::c_ulong;",
     "pub type Bool = super::__gl_imports::libc::c_int;         // Not sure if this is correct...",
-    "pub struct Display;",
+    "#[repr(C)]
+    pub struct Display;",
 ];
 
 pub static GLX_ALIASES: Src = &[
@@ -421,7 +425,8 @@ pub static GLX_ALIASES: Src = &[
         pub bits_per_rgb: super::__gl_imports::libc::c_int,
     }",
 
-    "pub struct GLXPbufferClobberEvent {
+    "#[repr(C)]
+    pub struct GLXPbufferClobberEvent {
         pub event_type: super::__gl_imports::libc::c_int,          // GLX_DAMAGED or GLX_SAVED
         pub draw_type: super::__gl_imports::libc::c_int,           // GLX_WINDOW or GLX_PBUFFER
         pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
@@ -437,7 +442,8 @@ pub static GLX_ALIASES: Src = &[
         pub count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more
     }",
 
-    "pub struct GLXBufferSwapComplete {
+    "#[repr(C)]
+    pub struct GLXBufferSwapComplete {
         pub type_: super::__gl_imports::libc::c_int,
         pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
         pub send_event: Bool,           // true if this came from a SendEvent request
@@ -455,7 +461,8 @@ pub static GLX_ALIASES: Src = &[
     //"//     long pad[24];",
     //"// } GLXEvent;",
 
-    "pub struct GLXBufferClobberEventSGIX {
+    "#[repr(C)]
+    pub struct GLXBufferClobberEventSGIX {
         pub type_: super::__gl_imports::libc::c_int,
         pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
         pub send_event: Bool,           // true if this came for SendEvent request
@@ -471,19 +478,22 @@ pub static GLX_ALIASES: Src = &[
         pub count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more
     }",
 
-    "pub struct GLXHyperpipeNetworkSGIX {
+    "#[repr(C)]
+    pub struct GLXHyperpipeNetworkSGIX {
         pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
         pub networkId: super::__gl_imports::libc::c_int,
     }",
 
-    "pub struct GLXHyperpipeConfigSGIX {
+    "#[repr(C)]
+    pub struct GLXHyperpipeConfigSGIX {
         pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
         pub channel: super::__gl_imports::libc::c_int,
         pub participationType: super::__gl_imports::libc::c_uint,
         pub timeSlice: super::__gl_imports::libc::c_int,
     }",
 
-    "pub struct GLXPipeRect {
+    "#[repr(C)]
+    pub struct GLXPipeRect {
         pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
         pub srcXOrigin: super::__gl_imports::libc::c_int,
         pub srcYOrigin: super::__gl_imports::libc::c_int,
@@ -495,7 +505,8 @@ pub static GLX_ALIASES: Src = &[
         pub destHeight: super::__gl_imports::libc::c_int,
     }",
 
-    "pub struct GLXPipeRectLimits {
+    "#[repr(C)]
+    pub struct GLXPipeRectLimits {
         pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
         pub XOrigin: super::__gl_imports::libc::c_int,
         pub YOrigin: super::__gl_imports::libc::c_int,
@@ -524,7 +535,8 @@ pub static WIN_ALIASES: Src = &[
     "pub type PVOID = *const super::__gl_imports::libc::c_void;",
     "pub type LPVOID = *const super::__gl_imports::libc::c_void;",
     "pub type PROC = extern \"system\" fn();     // Not sure about this one :/",
-    "pub struct RECT {
+    "#[repr(C)]
+    pub struct RECT {
         left: LONG,
         top: LONG,
         right: LONG,
@@ -625,7 +637,8 @@ pub static WGL_ALIASES: Src = &[
     "pub type HGPUNV = *const super::__gl_imports::libc::c_void;",
     "pub type HVIDEOINPUTDEVICENV = *const super::__gl_imports::libc::c_void;",
 
-    "pub struct _GPU_DEVICE {
+    "#[repr(C)]
+    pub struct _GPU_DEVICE {
         cb: DWORD,
         DeviceName: [CHAR, ..32],
         DeviceString: [CHAR, ..128],
