@@ -86,6 +86,7 @@ use syntax::parse::token;
 use syntax::ast::{ Item, TokenTree };
 use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
 use syntax::codemap::Span;
+use syntax::ptr::P;
 
 use registry::*;
 use global_gen::GlobalGenerator;
@@ -107,15 +108,15 @@ pub fn plugin_registrar(reg: &mut ::rustc::plugin::Registry) {
 
 // this is the object that we will return from the "generate_gl_bindings" macro expansion
 struct MacroResult {
-    content: Vec<::std::gc::Gc<Item>>
+    content: Vec<P<Item>>
 }
 impl MacResult for MacroResult {
-    fn make_def(&self) -> Option<::syntax::ext::base::MacroDef> { None }
-    fn make_expr(&self) -> Option<::std::gc::Gc<::syntax::ast::Expr>> { None }
-    fn make_pat(&self) -> Option<::std::gc::Gc<::syntax::ast::Pat>> { None }
-    fn make_stmt(&self) -> Option<::std::gc::Gc<::syntax::ast::Stmt>> { None }
+    fn make_def(&mut self) -> Option<::syntax::ext::base::MacroDef> { None }
+    fn make_expr(self: Box<MacroResult>) -> Option<P<::syntax::ast::Expr>> { None }
+    fn make_pat(self: Box<MacroResult>) -> Option<P<::syntax::ast::Pat>> { None }
+    fn make_stmt(self: Box<MacroResult>) -> Option<P<::syntax::ast::Stmt>> { None }
 
-    fn make_items(&self) -> Option<::syntax::util::small_vector::SmallVector<::std::gc::Gc<Item>>> {
+    fn make_items(self: Box<MacroResult>) -> Option<::syntax::util::small_vector::SmallVector<P<Item>>> {
         Some(::syntax::util::small_vector::SmallVector::many(self.content.clone()))
     }
 }
@@ -310,13 +311,13 @@ fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::Toke
 
     // computing other parameters
     match (
-        expr_to_string(ecx, values[0].clone(), "expected string literal")
+        expr_to_string(ecx, values.as_slice().get(0).unwrap().clone(), "expected string literal")
             .map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values[1].clone(), "expected string literal")
+        expr_to_string(ecx, values.as_slice().get(1).unwrap().clone(), "expected string literal")
             .map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values[2].clone(), "expected string literal")
+        expr_to_string(ecx, values.as_slice().get(2).unwrap().clone(), "expected string literal")
             .map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values[3].clone(), "expected string literal")
+        expr_to_string(ecx, values.as_slice().get(3).unwrap().clone(), "expected string literal")
             .map(|e| match e { (s, _) => s.get().to_string() })
     ) {
         (Some(a), Some(b), Some(c), Some(d)) => Some((a, b, c, d, extensions)),
