@@ -45,50 +45,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
     }
 
     fn write_enum(&mut self, enm: &Enum) {
-        let ident = if (enm.ident.as_slice().char_at(0)).is_digit() {
-            format!("_{}", enm.ident)
-        } else {
-            enm.ident.clone()
-        };
-
-        let ty = {
-            let regex = regex!(r"\(\((\w+)\).+\)");
-
-            if (regex).is_match(enm.value.as_slice()) {
-                // if the value is ((Type)value), then the type is types::Type
-                regex.replace(enm.value.as_slice(), "types::$1")
-
-            } else if enm.value.as_slice().starts_with("\"") {
-                "&'static str".to_string()
-
-            } else {
-                match ident.as_slice() {
-                    "TRUE" | "FALSE" => "types::GLboolean",
-                    _ => match enm.ty {
-                        Some(ref s) if s.as_slice() == "ull" => "types::GLuint64",
-                        _ => "types::GLenum"
-                    }
-                }.to_string()
-            }
-        };
-
-        let value = {
-            let ref value = enm.value;
-
-            // replacing "((EGLType)0)" by "0 as types::EGLType"
-            let regex = regex!(r"\(\((EGL\w+)\)0\)");
-            let value = regex.replace(value.as_slice(), "0 as types::$1");
-
-            // replacing "((Type)value)" by "value"
-            let regex = regex!(r"\(\(\w+\)(.+)\)");
-            let value = regex.replace(value.as_slice(), "$1");
-
-            value
-        };
-
-        self.write_line("#[stable]");
-        self.write_line("#[allow(dead_code)]");
-        self.write_line(format!("pub static {}: {} = {};", ident, ty, value).as_slice())
+        self.write_line(super::gen_enum_item(enm, "types::").as_slice());
     }
 
     fn write_enums(&mut self) {
@@ -240,7 +197,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
     fn write_impl(&mut self) {
         let ns = self.ns;
         self.write_line(format!("impl {:c} {{", ns).as_slice());
-        
+
         let ns = self.ns;
         self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
         self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");

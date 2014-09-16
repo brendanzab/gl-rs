@@ -5,6 +5,61 @@ pub mod global_gen;
 pub mod static_gen;
 pub mod struct_gen;
 
+/// This function generates a `static name: type = value;` item.
+fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
+    // computing the name of the enum
+    // if the original starts with a digit, adding an underscore prefix.
+    let ident = if (enm.ident.as_slice().char_at(0)).is_digit() {
+        format!("_{}", enm.ident)
+    } else {
+        enm.ident.clone()
+    };
+
+    // computing the type of the enum
+    let ty = {
+        // some enums have a value of the form `((Type)Value)` ; if this is the case, we need to
+        //  replace the type of the enum (which is GLenum by default) by the type in the expression
+
+        // matches `((a)b)`
+        let regex = regex!(r"\(\((\w+)\).+\)");
+
+        if (regex).is_match(enm.value.as_slice()) {
+            // if the value is like `((Type)Value)`, then the type is `types::Type`
+            regex.replace(enm.value.as_slice(), format!("{}$1", types_prefix).as_slice())
+
+        } else if enm.value.as_slice().starts_with("\"") {
+            // some values are of the form "Value" ; if this is the case, we use `&'static str`
+            //  instead of `GLenum`
+            "&'static str".to_string()
+
+        } else {
+            // some values are `TRUE` or `FALSE`, in which case we use `GLboolean` instead of
+            //  `GLenum`
+            match ident.as_slice() {
+                "TRUE" | "FALSE" => format!("{}GLboolean", types_prefix),
+                _ => match enm.ty {
+                    Some(ref s) if s.as_slice() == "ull" => format!("{}GLuint64", types_prefix),
+                    _ => format!("{}GLenum", types_prefix)
+                }
+            }
+        }
+    };
+
+    // computing the value of the enum
+    let value = {
+        // similar to the type, some values are `((Type)Value)`
+        // replacing "((Type)Value)" by "Value as types::Type"
+        let regex = regex!(r"\(\((\w+)\)(.+)\)");
+        regex.replace(enm.value.as_slice(), format!("$1 as {}$0", types_prefix).as_slice())
+    };
+
+    format!("
+        #[stable]
+        #[allow(dead_code)]
+        pub static {}: {} = {};"
+    , ident, ty, value)
+}
+
 pub fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
     // fixed
