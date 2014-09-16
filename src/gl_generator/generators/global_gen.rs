@@ -17,7 +17,6 @@
 
 use registry::*;
 use super::ty;
-use super::common;
 use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
@@ -227,8 +226,8 @@ impl<'a, W: Writer> GlobalGenerator<'a, W> {
                     fail!(\"`{name}` was not loaded\") \
                 }}",
                 name = c.proto.ident,
-                params = common::gen_param_list(c, true),
-                return_suffix = common::gen_return_suffix(c)
+                params = super::gen_param_list(c, true),
+                return_suffix = super::gen_return_suffix(c)
             ).as_slice());
         }
         self.decr_indent();
@@ -248,10 +247,10 @@ impl<'a, W: Writer> GlobalGenerator<'a, W> {
                             }} \
                         }}",
                         name = c.proto.ident,
-                        params = common::gen_param_list(c, true),
-                        types = common::gen_param_ty_list(c),
-                        return_suffix = common::gen_return_suffix(c),
-                        idents = common::gen_param_ident_list(c),
+                        params = super::gen_param_list(c, true),
+                        types = super::gen_param_ty_list(c),
+                        return_suffix = super::gen_return_suffix(c),
+                        idents = super::gen_param_ident_list(c),
                     )
                 } else {
                     format!(
@@ -261,9 +260,9 @@ impl<'a, W: Writer> GlobalGenerator<'a, W> {
                                 (storage::{name}.f)({idents}) \
                         }}",
                         name = c.proto.ident,
-                        typed_params = common::gen_param_list(c, true),
-                        return_suffix = common::gen_return_suffix(c),
-                        idents = common::gen_param_ident_list(c),
+                        typed_params = super::gen_param_list(c, true),
+                        return_suffix = super::gen_return_suffix(c),
+                        idents = super::gen_param_ident_list(c),
                     )
                 }.as_slice()
             );
@@ -315,7 +314,7 @@ impl<'a, W: Writer> GlobalGenerator<'a, W> {
                         }}
                     }}
                 }}",
-                c.proto.ident, common::gen_symbol_name(&ns, c)).as_slice());
+                c.proto.ident, super::gen_symbol_name(&ns, c)).as_slice());
         }
         // for c in self.registry.cmd_iter() {
         //     self.write_line(format!(

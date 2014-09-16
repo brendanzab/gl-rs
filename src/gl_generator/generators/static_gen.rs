@@ -17,7 +17,6 @@
 
 use registry::*;
 use super::ty;
-use super::common;
 use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;
@@ -207,10 +206,10 @@ impl<'a, W: Writer> StaticGenerator<'a, W> {
             self.write_line(format!(
                 "#[link_name=\"{symbol}\"]
                 pub fn {name}({params}){return_suffix};",
-                symbol = common::gen_symbol_name(&ns, c),
+                symbol = super::gen_symbol_name(&ns, c),
                 name = c.proto.ident,
-                params = common::gen_param_list(c, true),
-                return_suffix = common::gen_return_suffix(c)
+                params = super::gen_param_list(c, true),
+                return_suffix = super::gen_return_suffix(c)
             ).as_slice());
         }
         self.decr_indent();
