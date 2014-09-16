@@ -60,6 +60,77 @@ fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
     , ident, ty, value)
 }
 
+fn gen_type_aliases(namespace: &Ns) -> String {
+    let mut result = String::new();
+
+    match *namespace {
+        Gl | Gles1 | Gles2 => {
+            for alias in ty::GL_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+        }
+        Glx => {
+            for alias in ty::GL_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+            for alias in ty::X_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+            for alias in ty::GLX_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+        }
+        Wgl => {
+            for alias in ty::GL_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+            for alias in ty::WIN_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+            for alias in ty::WGL_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+        }
+        Egl => {
+            for alias in ty::GL_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+            for alias in ty::EGL_ALIASES.iter() {
+                result.push_str("#[allow(non_camel_case_types)]");
+                result.push_str("#[allow(non_snake_case)]");
+                result.push_str("#[allow(dead_code)]");
+                result.push_str(*alias);
+            }
+        }
+    }
+
+    result
+}
+
 pub fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
     // fixed
