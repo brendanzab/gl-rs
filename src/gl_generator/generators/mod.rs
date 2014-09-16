@@ -50,7 +50,7 @@ fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
         // similar to the type, some values are `((Type)Value)`
         // replacing "((Type)Value)" by "Value as types::Type"
         let regex = regex!(r"\(\((\w+)\)(.+)\)");
-        regex.replace(enm.value.as_slice(), format!("$1 as {}$0", types_prefix).as_slice())
+        regex.replace(enm.value.as_slice(), format!("$2 as {}$1", types_prefix).as_slice())
     };
 
     format!("
@@ -66,63 +66,63 @@ fn gen_type_aliases(namespace: &Ns) -> String {
     match *namespace {
         Gl | Gles1 | Gles2 => {
             for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
         }
         Glx => {
             for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
             for alias in ty::X_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
             for alias in ty::GLX_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
         }
         Wgl => {
             for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
             for alias in ty::WIN_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
             for alias in ty::WGL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
         }
         Egl => {
             for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
             for alias in ty::EGL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]");
-                result.push_str("#[allow(non_snake_case)]");
-                result.push_str("#[allow(dead_code)]");
+                result.push_str("#[allow(non_camel_case_types)]\n");
+                result.push_str("#[allow(non_snake_case)]\n");
+                result.push_str("#[allow(dead_code)]\n");
                 result.push_str(*alias);
             }
         }
