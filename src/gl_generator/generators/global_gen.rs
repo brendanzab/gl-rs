@@ -16,8 +16,8 @@
 #![experimental]
 
 use registry::*;
-use ty;
-use common;
+use super::ty;
+use super::common;
 use std::io::Writer;
 
 static TAB_WIDTH: uint = 4;

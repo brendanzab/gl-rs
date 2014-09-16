@@ -16,7 +16,7 @@
 //! Common generator functions
 
 use registry::*;
-use ty;
+use super::ty;
 
 pub fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
