@@ -19,13 +19,10 @@ use registry::*;
 use super::ty;
 use std::io::Writer;
 
-static TAB_WIDTH: uint = 4;
-
 pub struct StructGenerator<'a, W: 'a> {
     ns: Ns,
     writer: &'a mut W,
     registry: &'a Registry,
-    indent: uint,
 }
 
 impl<'a, W: Writer> StructGenerator<'a, W> {
@@ -34,16 +31,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             ns: ns,
             writer: writer,
             registry: registry,
-            indent: 0,
         }
-    }
-
-    fn incr_indent(&mut self) {
-        self.indent += 1;
-    }
-
-    fn decr_indent(&mut self) {
-        if self.indent > 0 { self.indent -= 1 }
     }
 
     #[allow(unused_must_use)]
@@ -51,14 +39,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.writer.write(s.as_bytes());
     }
 
-    fn write_indent(&mut self) {
-        for _ in range(0, TAB_WIDTH * self.indent) {
-            self.write_str(" ");
-        }
-    }
-
     fn write_line(&mut self, s: &str) {
-        self.write_indent();
         self.write_str(s);
         self.write_str("\n");
     }
@@ -126,8 +107,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
     fn write_type_aliases(&mut self) {
         self.write_line("#[stable]");
         self.write_line("pub mod types {");
-        self.incr_indent();
-        self.write_line("");
+
         match self.ns {
             Gl | Gles1 | Gles2 => {
                 for alias in ty::GL_ALIASES.iter() {
@@ -192,7 +172,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                 }
             }
         }
-        self.decr_indent();
+
         self.write_line("}");
     }
 
@@ -222,10 +202,10 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
 
     fn write_failing_fns(&mut self) {
         self.write_line("mod failing {");
-        self.incr_indent();
+
         self.write_line("use super::types;");
         self.write_line("use super::__gl_imports;");
-        self.write_line("");
+
         for c in self.registry.cmd_iter() {
             self.write_line("#[allow(unused_variable)] #[allow(non_snake_case)] #[allow(dead_code)]");
             self.write_line(format!(
@@ -237,7 +217,7 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                 return_suffix = super::gen_return_suffix(c)
             ).as_slice());
         }
-        self.decr_indent();
+
         self.write_line("}");
     }
 
@@ -246,21 +226,21 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
         self.write_line("#[allow(non_camel_case_types)] #[allow(non_snake_case)] #[allow(dead_code)]");
         self.write_line("#[stable]");
         self.write_line(format!("pub struct {:c} {{", ns).as_slice());
-        self.incr_indent();
+
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
                 "pub {name}: FnPtr,",
                 name = c.proto.ident,
             ).as_slice());
         }
-        self.decr_indent();
+
         self.write_line("}");
     }
 
     fn write_impl(&mut self) {
         let ns = self.ns;
         self.write_line(format!("impl {:c} {{", ns).as_slice());
-        self.incr_indent();
+        
         let ns = self.ns;
         self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
         self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
@@ -275,10 +255,8 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             #[allow(unused_variable)]
             pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {:c} {{", ns
         ).as_slice());
-        self.incr_indent();
 
         self.write_line(format!("{:c} {{", ns).as_slice());
-        self.incr_indent();
         for c in self.registry.cmd_iter() {
             self.write_line(format!(
                 "{name}: FnPtr::new(loadfn(\"{symbol}\"), failing::{name} as *const __gl_imports::libc::c_void),",
@@ -286,12 +264,10 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
                 symbol = super::gen_symbol_name(&ns, c)
             ).as_slice());
         }
-        self.decr_indent();
         self.write_line("}");
 
-        self.decr_indent();
         self.write_line("}");
-        self.write_line("");
+
         for c in self.registry.cmd_iter() {
             self.write_line(
                 if c.is_safe {
@@ -325,7 +301,6 @@ impl<'a, W: Writer> StructGenerator<'a, W> {
             );
         }
 
-        self.decr_indent();
         self.write_line("}");
     }
 
