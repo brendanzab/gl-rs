@@ -5,6 +5,11 @@ pub mod global_gen;
 pub mod static_gen;
 pub mod struct_gen;
 
+/// Trait for a bindings generator.
+pub trait Generator {
+    fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns);
+}
+
 /// This function generates a `static name: type = value;` item.
 fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
     // computing the name of the enum

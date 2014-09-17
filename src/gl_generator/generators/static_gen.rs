@@ -21,8 +21,8 @@ use std::io::Writer;
 
 pub struct StaticGenerator;
 
-impl StaticGenerator {
-    pub fn write<W: Writer>(writer: &mut W, registry: &Registry, ns: Ns) {
+impl super::Generator for StaticGenerator {
+    fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns) {
         writeln!(writer, "{}", write_header());
         writeln!(writer, "{}", write_type_aliases(&ns));
         writeln!(writer, "{}", write_enums(registry));
