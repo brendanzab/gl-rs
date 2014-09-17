@@ -16,65 +16,68 @@
 #![experimental]
 
 use registry::{Registry, Ns};
+use syntax::ast;
+use syntax::ext::base::ExtCtxt;
+use syntax::ext::quote::rt::ExtParseUtils;
+use syntax::ptr::P;
 
 pub struct StaticGenerator;
 
 impl super::Generator for StaticGenerator {
-    #[allow(unused_must_use)]
-    fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns) {
-        writeln!(writer, "{}", write_header());
-        writeln!(writer, "{}", write_type_aliases(&ns));
-        writeln!(writer, "{}", write_enums(registry));
-        writeln!(writer, "{}", write_fns(registry, &ns));
+    fn write(&self, ecx: &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>> {
+        let mut result = Vec::new();
+        result.push(write_header(ecx));
+        result.push(write_type_aliases(ecx, &ns));
+        result.push_all_move(write_enums(ecx, registry));
+        result.push(write_fns(ecx, registry, &ns));
+        result
     }
 }
 
-fn write_header() -> String {
-    format!(
-        "mod __gl_imports {{
+fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
+    (quote_item!(ecx,
+        mod __gl_imports {
             extern crate libc;
             pub use std::mem;
-        }}"
-    )
+        }
+    )).unwrap()
 }
 
-fn write_type_aliases(ns: &Ns) -> String {
-    format!(
-        "#[stable]
+fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
+    let aliases = super::gen_type_aliases(ns);
+
+    ecx.parse_item(format!("
+        #[stable]
         pub mod types {{
             {}
         }}
-        ",
-
-        super::gen_type_aliases(ns)
-    )
+    ", aliases))
 }
 
-fn write_enums(registry: &Registry) -> String {
+fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     registry.enum_iter().map(|e| {
-        super::gen_enum_item(e, "types::")
-    }).collect::<Vec<String>>().connect("\n")
+        ecx.parse_item(super::gen_enum_item(e, "types::"))
+    }).collect()
 }
 
-fn write_fns(registry: &Registry, ns: &Ns) -> String {
-    format!(
-        "#[allow(non_snake_case)]
+fn write_fns(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
+    let symbols = registry.cmd_iter().map(|c| {
+        format!(
+            "#[link_name=\"{symbol}\"]
+            pub fn {name}({params}){return_suffix};",
+            symbol = super::gen_symbol_name(ns, c),
+            name = c.proto.ident,
+            params = super::gen_param_list(c, true),
+            return_suffix = super::gen_return_suffix(c)
+        )
+    }).collect::<Vec<String>>().connect("\n");
+
+    ecx.parse_item(format!("
+        #[allow(non_snake_case)]
         #[allow(unused_variable)]
         #[allow(dead_code)]
-
         extern \"system\" {{
-            {symbols}
-        }}",
-
-        symbols = registry.cmd_iter().map(|c| {
-            format!(
-                "#[link_name=\"{symbol}\"]
-                pub fn {name}({params}){return_suffix};",
-                symbol = super::gen_symbol_name(ns, c),
-                name = c.proto.ident,
-                params = super::gen_param_list(c, true),
-                return_suffix = super::gen_return_suffix(c)
-            )
-        }).collect::<Vec<String>>().connect("\n")
-    )
+            {}
+        }}
+    ", symbols))
 }

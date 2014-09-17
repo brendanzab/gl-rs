@@ -1,5 +1,8 @@
 use registry::{Enum, Registry, Cmd, Binding, Ns};
 use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
+use syntax::ast;
+use syntax::ext::base::ExtCtxt;
+use syntax::ptr::P;
 
 mod ty;
 pub mod global_gen;
@@ -8,7 +11,7 @@ pub mod struct_gen;
 
 /// Trait for a bindings generator.
 pub trait Generator {
-    fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns);
+    fn write(&self, &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>>;
 }
 
 /// This function generates a `static name: type = value;` item.
