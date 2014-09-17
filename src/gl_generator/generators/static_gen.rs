@@ -71,8 +71,8 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
             pub fn {name}({params}){return_suffix};",
             symbol = super::gen_symbol_name(ns, c),
             name = c.proto.ident,
-            params = super::gen_param_list(c, true),
-            return_suffix = super::gen_return_suffix(c)
+            params = super::gen_param_list(ecx, c, true),
+            return_suffix = super::gen_return_suffix(ecx, c)
         )
     }).collect::<Vec<String>>().connect("\n");
 

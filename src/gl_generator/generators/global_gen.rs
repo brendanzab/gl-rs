@@ -81,9 +81,9 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
                     }} \
                 }}",
                 name = c.proto.ident,
-                params = super::gen_param_list(c, true),
-                types = super::gen_param_ty_list(c),
-                return_suffix = super::gen_return_suffix(c),
+                params = super::gen_param_list(ecx, c, true),
+                types = super::gen_param_ty_list(ecx, c),
+                return_suffix = super::gen_return_suffix(ecx, c),
                 idents = super::gen_param_ident_list(c),
             )
         } else {
@@ -94,8 +94,8 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
                         (storage::{name}.f)({idents}) \
                 }}",
                 name = c.proto.ident,
-                typed_params = super::gen_param_list(c, true),
-                return_suffix = super::gen_return_suffix(c),
+                typed_params = super::gen_param_list(ecx, c, true),
+                return_suffix = super::gen_return_suffix(ecx, c),
                 idents = super::gen_param_ident_list(c),
             )
         })
@@ -206,8 +206,8 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
                     fail!(\"`{name}` was not loaded\") \
                 }}",
                 name = c.proto.ident,
-                params = super::gen_param_list(c, true),
-                return_suffix = super::gen_return_suffix(c)
+                params = super::gen_param_list(ecx, c, true),
+                return_suffix = super::gen_return_suffix(ecx, c)
             )
         }).collect::<Vec<String>>().connect("\n")
     ))

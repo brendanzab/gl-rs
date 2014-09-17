@@ -115,15 +115,17 @@ pub fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
     }
 }
 
-pub fn gen_binding(binding: &Binding, use_idents: bool) -> String {
+pub fn gen_binding(ecx: &ExtCtxt, binding: &Binding, use_idents: bool) -> String {
+    use syntax::ext::quote::rt::ToSource;
+
     format!("{}: {}",
         gen_binding_ident(binding, use_idents),
-        ty::to_rust_ty(binding.ty.as_slice()))
+        ty::to_rust_ty(ecx, binding.ty.as_slice()).to_source().as_slice())
 }
 
-pub fn gen_param_list(cmd: &Cmd, use_idents: bool) -> String {
+pub fn gen_param_list(ecx: &ExtCtxt, cmd: &Cmd, use_idents: bool) -> String {
     cmd.params.iter()
-        .map(|b| gen_binding(b, use_idents))
+        .map(|b| gen_binding(ecx, b, use_idents))
         .collect::<Vec<String>>()
         .connect(", ")
 }
@@ -135,15 +137,18 @@ pub fn gen_param_ident_list(cmd: &Cmd) -> String {
         .connect(", ")
 }
 
-pub fn gen_param_ty_list(cmd: &Cmd) -> String {
+pub fn gen_param_ty_list(ecx: &ExtCtxt, cmd: &Cmd) -> String {
+    use syntax::ext::quote::rt::ToSource;
+
     cmd.params.iter()
-        .map(|b| ty::to_rust_ty(b.ty.as_slice()))
-        .collect::<Vec<&str>>()
+        .map(|b| ty::to_rust_ty(ecx, b.ty.as_slice()).to_source())
+        .collect::<Vec<String>>()
         .connect(", ")
 }
 
-pub fn gen_return_suffix(cmd: &Cmd) -> String {
-    ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty.as_slice()))
+pub fn gen_return_suffix(ecx: &ExtCtxt, cmd: &Cmd) -> String {
+    use syntax::ext::quote::rt::ToSource;
+    ty::to_return_suffix(ty::to_rust_ty(ecx, cmd.proto.ty.as_slice()).to_source().as_slice())
 }
 
 pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
