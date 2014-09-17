@@ -34,14 +34,6 @@ impl super::Generator for GlobalGenerator {
     }
 }
 
-fn write_enum(enm: &Enum) -> String {
-    super::gen_enum_item(enm, "types::")
-}
-
-fn write_enums(registry: &Registry) -> String {
-    registry.enum_iter().map(|e| write_enum(e)).collect::<Vec<String>>().connect("\n")
-}
-
 fn write_header() -> String {
     format!(
         "mod __gl_imports {{
@@ -63,46 +55,10 @@ fn write_type_aliases(ns: &Ns) -> String {
     )
 }
 
-fn write_fnptr_struct_def() -> String {
-    format!(
-        "pub struct FnPtr {{
-            f: *const __gl_imports::libc::c_void,
-            is_loaded: bool,
-        }}
-
-        impl FnPtr {{
-            pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {{
-                if ptr.is_null() {{
-                    FnPtr {{ f: failing_fn, is_loaded: false }}
-                }} else {{
-                    FnPtr {{ f: ptr, is_loaded: true }}
-                }}
-            }}
-        }}"
-    )
-}
-
-fn write_failing_fns(registry: &Registry) -> String {
-    format!(
-        "mod failing {{
-            use super::types;
-            use super::__gl_imports;
-
-            {functions}
-        }}",
-
-        functions = registry.cmd_iter().map(|c| {
-            format!(
-                "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                pub extern \"system\" fn {name}({params}){return_suffix} {{ \
-                    fail!(\"`{name}` was not loaded\") \
-                }}",
-                name = c.proto.ident,
-                params = super::gen_param_list(c, true),
-                return_suffix = super::gen_return_suffix(c)
-            )
-        }).collect::<Vec<String>>().connect("\n")
-    )
+fn write_enums(registry: &Registry) -> String {
+    registry.enum_iter().map(|e| {
+        super::gen_enum_item(e, "types::")
+    }).collect::<Vec<String>>().connect("\n")
 }
 
 fn write_fns(registry: &Registry) -> String {
@@ -136,6 +92,25 @@ fn write_fns(registry: &Registry) -> String {
             )
         }
     }).collect::<Vec<String>>().connect("\n")
+}
+
+fn write_fnptr_struct_def() -> String {
+    format!(
+        "pub struct FnPtr {{
+            f: *const __gl_imports::libc::c_void,
+            is_loaded: bool,
+        }}
+
+        impl FnPtr {{
+            pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {{
+                if ptr.is_null() {{
+                    FnPtr {{ f: failing_fn, is_loaded: false }}
+                }} else {{
+                    FnPtr {{ f: ptr, is_loaded: true }}
+                }}
+            }}
+        }}"
+    )
 }
 
 fn write_ptrs(registry: &Registry) -> String {
@@ -201,6 +176,29 @@ fn write_fn_mods(registry: &Registry, ns: &Ns) -> String {
     //         name = c.proto.ident,
     //     ).as_slice());
     // }
+}
+
+fn write_failing_fns(registry: &Registry) -> String {
+    format!(
+        "mod failing {{
+            use super::types;
+            use super::__gl_imports;
+
+            {functions}
+        }}",
+
+        functions = registry.cmd_iter().map(|c| {
+            format!(
+                "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+                pub extern \"system\" fn {name}({params}){return_suffix} {{ \
+                    fail!(\"`{name}` was not loaded\") \
+                }}",
+                name = c.proto.ident,
+                params = super::gen_param_list(c, true),
+                return_suffix = super::gen_return_suffix(c)
+            )
+        }).collect::<Vec<String>>().connect("\n")
+    )
 }
 
 fn write_load_fn(registry: &Registry) -> String {

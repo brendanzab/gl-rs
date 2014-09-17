@@ -32,14 +32,6 @@ impl super::Generator for StructGenerator {
     }
 }
 
-fn write_enum(enm: &Enum) -> String {
-    super::gen_enum_item(enm, "types::")
-}
-
-fn write_enums(registry: &Registry) -> String {
-    registry.enum_iter().map(|e| write_enum(e)).collect::<Vec<String>>().connect("\n")
-}
-
 fn write_header() -> String {
     format!(
         "mod __gl_imports {{
@@ -58,6 +50,12 @@ fn write_type_aliases(ns: &Ns) -> String {
 
         aliases = super::gen_type_aliases(ns)
     )
+}
+
+fn write_enums(registry: &Registry) -> String {
+    registry.enum_iter().map(|e| {
+        super::gen_enum_item(e, "types::")
+    }).collect::<Vec<String>>().connect("\n")
 }
 
 fn write_fnptr_struct_def() -> String {
