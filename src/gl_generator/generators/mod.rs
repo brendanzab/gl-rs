@@ -15,7 +15,9 @@ pub trait Generator {
 }
 
 /// This function generates a `static name: type = value;` item.
-fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
+fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> {
+    use syntax::ext::quote::rt::ExtParseUtils;
+
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
     let ident = if (enm.ident.as_slice().char_at(0)).is_digit() {
@@ -62,11 +64,11 @@ fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
         regex.replace(enm.value.as_slice(), format!("$2 as {}$1", types_prefix).as_slice())
     };
 
-    format!("
+    ecx.parse_item(format!("
         #[stable]
         #[allow(dead_code)]
         pub static {}: {} = {};"
-    , ident, ty, value)
+    , ident, ty, value))
 }
 
 fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {

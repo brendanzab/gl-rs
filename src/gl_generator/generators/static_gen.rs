@@ -60,7 +60,7 @@ fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
 
 fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     registry.enum_iter().map(|e| {
-        ecx.parse_item(super::gen_enum_item(e, "types::"))
+        super::gen_enum_item(ecx, e, "types::")
     }).collect()
 }
 
