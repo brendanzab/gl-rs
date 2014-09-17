@@ -66,7 +66,6 @@
 #![crate_type = "dylib"]
 
 #![feature(phase)]
-#![feature(globs)]
 #![feature(macro_rules)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
@@ -82,7 +81,8 @@ extern crate regex;
 extern crate rustc;
 extern crate syntax;
 
-use registry::*;
+use registry::{Registry, Filter};
+use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
 use syntax::parse::token;
 use syntax::ast::{ Item, TokenTree };
 use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};

@@ -1,4 +1,5 @@
-use registry::*;
+use registry::{Enum, Registry, Cmd, Binding, Ns};
+use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
 
 mod ty;
 pub mod global_gen;

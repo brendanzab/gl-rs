@@ -15,7 +15,7 @@
 
 #![experimental]
 
-use registry::*;
+use registry::{Registry, Ns};
 use super::ty;
 use std::io::Writer;
 
