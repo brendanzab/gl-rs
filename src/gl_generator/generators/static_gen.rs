@@ -16,12 +16,11 @@
 #![experimental]
 
 use registry::{Registry, Ns};
-use super::ty;
-use std::io::Writer;
 
 pub struct StaticGenerator;
 
 impl super::Generator for StaticGenerator {
+    #[allow(unused_must_use)]
     fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns) {
         writeln!(writer, "{}", write_header());
         writeln!(writer, "{}", write_type_aliases(&ns));

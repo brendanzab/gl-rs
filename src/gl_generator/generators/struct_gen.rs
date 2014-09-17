@@ -16,11 +16,11 @@
 #![experimental]
 
 use registry::{Registry, Ns};
-use super::ty;
 
 pub struct StructGenerator;
 
 impl super::Generator for StructGenerator {
+    #[allow(unused_must_use)]
     fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns) {
         writeln!(writer, "{}", write_header());
         writeln!(writer, "{}", write_type_aliases(&ns));

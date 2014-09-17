@@ -90,6 +90,8 @@ use syntax::codemap::Span;
 use syntax::ptr::P;
 
 mod generators;
+
+#[allow(dead_code)]
 mod registry;
 
 #[plugin_registrar]
