@@ -44,14 +44,18 @@ fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
 }
 
 fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
-    let aliases = super::gen_type_aliases(ns);
+    let aliases = super::gen_type_aliases(ecx, ns);
 
-    ecx.parse_item(format!("
+    (quote_item!(ecx,
         #[stable]
-        pub mod types {{
-            {}
-        }}
-    ", aliases))
+        pub mod types {
+            #![allow(non_camel_case_types)]
+            #![allow(non_snake_case)]
+            #![allow(dead_code)]
+            
+            $aliases
+        }
+    )).unwrap()
 }
 
 fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
