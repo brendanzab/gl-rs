@@ -126,54 +126,57 @@ fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
 }
 
 fn write_ptrs(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
-    ecx.parse_item(format!(
-        "mod storage {{
+    let storages = registry.cmd_iter().map(|c| {
+        let name = ecx.ident_of(c.proto.ident.as_slice());
+
+        (quote_item!(ecx,
+            pub static mut $name: FnPtr = FnPtr {
+                f: failing::$name as *const libc::c_void,
+                is_loaded: false
+            };
+        )).unwrap()
+    }).collect::<Vec<P<ast::Item>>>();
+
+    (quote_item!(ecx,
+        mod storage {
             #![allow(non_snake_case)]
             use super::__gl_imports::libc;
             use super::failing;
             use super::FnPtr;
 
-            {storages}
-        }}",
-
-        storages = registry.cmd_iter().map(|c| {
-            format!(
-                "pub static mut {name}: FnPtr = FnPtr {{ \
-                    f: failing::{name} as *const libc::c_void, \
-                    is_loaded: false \
-                }};",
-                name = c.proto.ident,
-            )
-        }).collect::<Vec<String>>().connect("\n")
-    ))
+            $storages
+        }
+    )).unwrap()
 }
 
 fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item>> {
     registry.cmd_iter().map(|c| {
-        ecx.parse_item(format!(
-            "#[unstable]
+        let fnname = ecx.ident_of(c.proto.ident.as_slice());
+        let symbol = super::gen_symbol_name(ns, c);
+        let symbol = symbol.as_slice();
+
+        (quote_item!(ecx,
+            #[unstable]
             #[allow(non_snake_case)]
-            pub mod {0} {{
-                use super::{{failing, storage}};
+            pub mod $fnname {
+                use super::{failing, storage};
                 use super::FnPtr;
 
                 #[inline]
                 #[allow(dead_code)]
-                pub fn is_loaded() -> bool {{
-                    unsafe {{ storage::{0}.is_loaded }}
-                }}
+                pub fn is_loaded() -> bool {
+                    unsafe { storage::$fnname.is_loaded }
+                }
 
                 #[allow(dead_code)]
-                pub fn load_with(loadfn: |symbol: &str| -> *const super::__gl_imports::libc::c_void) {{
-                    unsafe {{
-                        storage::{0} = FnPtr::new(loadfn(\"{1}\"),
-                            failing::{0} as *const super::__gl_imports::libc::c_void)
-                    }}
-                }}
-            }}",
-            c.proto.ident,
-            super::gen_symbol_name(ns, c)
-        ))
+                pub fn load_with(loadfn: |symbol: &str| -> *const super::__gl_imports::libc::c_void) {
+                    unsafe {
+                        storage::$fnname = FnPtr::new(loadfn($symbol),
+                            failing::$fnname as *const super::__gl_imports::libc::c_void)
+                    }
+                }
+            }
+        )).unwrap()
     }).collect()
 
     // TODO: this is a reliquate from an old code, I have no idea what it does
@@ -214,20 +217,21 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
 }
 
 fn write_load_fn(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
-    ecx.parse_item(format!(
-        "/// Load each OpenGL symbol using a custom load function. This allows for the
+    let loadings = registry.cmd_iter().map(|c| {
+        let cmd_name = ecx.ident_of(c.proto.ident.as_slice());
+        quote_stmt!(ecx, $cmd_name::load_with(|s| loadfn(s));)
+    }).collect::<Vec<P<ast::Stmt>>>();
+
+    (quote_item!(ecx,
+        /// Load each OpenGL symbol using a custom load function. This allows for the
         /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
         /// ~~~ignore
         /// gl::load_with(|s| glfw.get_proc_address(s));
         /// ~~~
         #[unstable]
         #[allow(dead_code)]
-        pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {{
-            {exprs}
-        }}",
-
-        exprs = registry.cmd_iter().map(|c| {
-            format!("{}::load_with(|s| loadfn(s));", c.proto.ident)
-        }).collect::<Vec<String>>().connect("\n")
-    ))
+        pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {
+            $loadings
+        }
+    )).unwrap()
 }
