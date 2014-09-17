@@ -19,93 +19,65 @@ use registry::*;
 use super::ty;
 use std::io::Writer;
 
-pub struct StaticGenerator<'a, W: 'a> {
-    ns: Ns,
-    writer: &'a mut W,
-    registry: &'a Registry,
+pub struct StaticGenerator;
+
+impl StaticGenerator {
+    pub fn write<W: Writer>(writer: &mut W, registry: &Registry, ns: Ns) {
+        writeln!(writer, "{}", write_header());
+        writeln!(writer, "{}", write_type_aliases(&ns));
+        writeln!(writer, "{}", write_enums(registry));
+        writeln!(writer, "{}", write_fns(registry, &ns));
+    }
 }
 
-impl<'a, W: Writer> StaticGenerator<'a, W> {
-    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> StaticGenerator<'a, W> {
-        StaticGenerator {
-            ns: ns,
-            writer: writer,
-            registry: registry,
-        }
-    }
+fn write_enum(enm: &Enum) -> String {
+    super::gen_enum_item(enm, "types::")
+}
 
-    #[allow(unused_must_use)]
-    fn write_str(&mut self, s: &str) {
-        self.writer.write(s.as_bytes());
-    }
+fn write_enums(registry: &Registry) -> String {
+    registry.enum_iter().map(|e| write_enum(e)).collect::<Vec<String>>().connect("\n")
+}
 
-    fn write_line(&mut self, s: &str) {
-        self.write_str(s);
-        self.write_str("\n");
-    }
+fn write_header() -> String {
+    format!(
+        "mod __gl_imports {{
+            extern crate libc;
+            pub use std::mem;
+        }}"
+    )
+}
 
-    fn write_enum(&mut self, enm: &Enum) {
-        self.write_line(super::gen_enum_item(enm, "types::").as_slice());
-    }
+fn write_type_aliases(ns: &Ns) -> String {
+    format!(
+        "#[stable]
+        pub mod types {{
+            {}
+        }}
+        ",
 
-    fn write_enums(&mut self) {
-        for e in self.registry.enum_iter() {
-            self.write_enum(e);
-        }
-    }
+        super::gen_type_aliases(ns)
+    )
+}
 
-    fn write_header(&mut self) {
-        self.write_line("mod __gl_imports {");
-        self.write_line("    extern crate libc;");
-        self.write_line("    pub use std::mem;");
-        self.write_line("}");
-    }
+fn write_fns(registry: &Registry, ns: &Ns) -> String {
+    format!(
+        "#[allow(non_snake_case)]
+        #[allow(unused_variable)]
+        #[allow(dead_code)]
 
-    fn write_type_aliases(&mut self) {
-        self.write_line("#[stable]");
-        self.write_line("pub mod types {");
-        let aliases = super::gen_type_aliases(&self.ns);
-        self.write_line(aliases.as_slice());
-        self.write_line("}");
-    }
+        extern \"system\" {{
+            {symbols}
+        }}",
 
-    fn write_fns(&mut self) {
-        let ns = self.ns;
-
-        self.write_line("#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]");
-        self.write_line("extern \"system\" {");
-
-        for c in self.registry.cmd_iter() {
-            self.write_line(format!(
+        symbols = registry.cmd_iter().map(|c| {
+            format!(
                 "#[link_name=\"{symbol}\"]
                 pub fn {name}({params}){return_suffix};",
-                symbol = super::gen_symbol_name(&ns, c),
+                symbol = super::gen_symbol_name(ns, c),
                 name = c.proto.ident,
                 params = super::gen_param_list(c, true),
                 return_suffix = super::gen_return_suffix(c)
-            ).as_slice());
-        }
-        
-        self.write_line("}");
-    }
-
-    pub fn write(writer: &mut W, registry: &Registry, ns: Ns) {
-        let mut gen = StaticGenerator::new(writer, registry, ns);
-
-        // header with imports
-        gen.write_header();
-        gen.write_line("");
-
-        // type aliases
-        gen.write_type_aliases();
-        gen.write_line("");
-
-        // enums definitions
-        gen.write_enums();
-        gen.write_line("");
-
-        // safe and unsafe OpenGl functions
-        gen.write_fns();
-        gen.write_line("");
-    }
+            )
+        }).collect::<Vec<String>>().connect("\n")
+    )
 }
