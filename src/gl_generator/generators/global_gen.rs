@@ -15,85 +15,180 @@
 
 #![experimental]
 
-use registry::*;
-use super::ty;
-use std::io::Writer;
+use registry::{Registry, Ns};
 
-pub struct GlobalGenerator<'a, W: 'a> {
-    ns: Ns,
-    writer: &'a mut W,
-    registry: &'a Registry,
+pub struct GlobalGenerator;
+
+impl super::Generator for GlobalGenerator {
+    #[allow(unused_must_use)]
+    fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns) {
+        writeln!(writer, "{}", write_header());
+        writeln!(writer, "{}", write_type_aliases(&ns));
+        writeln!(writer, "{}", write_enums(registry));
+        writeln!(writer, "{}", write_fns(registry));
+        writeln!(writer, "{}", write_fnptr_struct_def());
+        writeln!(writer, "{}", write_ptrs(registry));
+        writeln!(writer, "{}", write_fn_mods(registry, &ns));
+        writeln!(writer, "{}", write_failing_fns(registry));
+        writeln!(writer, "{}", write_load_fn(registry));
+    }
 }
 
-impl<'a, W: Writer> GlobalGenerator<'a, W> {
-    fn new<'a>(writer: &'a mut W, registry: &'a Registry, ns: Ns) -> GlobalGenerator<'a, W> {
-        GlobalGenerator {
-            ns: ns,
-            writer: writer,
-            registry: registry,
+fn write_header() -> String {
+    format!(
+        "mod __gl_imports {{
+            extern crate libc;
+            pub use std::mem;
+        }}"
+    )
+}
+
+fn write_type_aliases(ns: &Ns) -> String {
+    format!(
+        "#[stable]
+        pub mod types {{
+            {}
+        }}
+        ",
+
+        super::gen_type_aliases(ns)
+    )
+}
+
+fn write_enums(registry: &Registry) -> String {
+    registry.enum_iter().map(|e| {
+        super::gen_enum_item(e, "types::")
+    }).collect::<Vec<String>>().connect("\n")
+}
+
+fn write_fns(registry: &Registry) -> String {
+    registry.cmd_iter().map(|c| {
+        if c.is_safe {
+            format!(
+                "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+                #[inline] #[unstable] pub fn {name}({params}){return_suffix} {{ \
+                    unsafe {{ \
+                        __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
+                            (storage::{name}.f)({idents}) \
+                    }} \
+                }}",
+                name = c.proto.ident,
+                params = super::gen_param_list(c, true),
+                types = super::gen_param_ty_list(c),
+                return_suffix = super::gen_return_suffix(c),
+                idents = super::gen_param_ident_list(c),
+            )
+        } else {
+            format!(
+                "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+                #[inline] #[unstable] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
+                    __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
+                        (storage::{name}.f)({idents}) \
+                }}",
+                name = c.proto.ident,
+                typed_params = super::gen_param_list(c, true),
+                return_suffix = super::gen_return_suffix(c),
+                idents = super::gen_param_ident_list(c),
+            )
         }
-    }
+    }).collect::<Vec<String>>().connect("\n")
+}
 
-    #[allow(unused_must_use)]
-    fn write_str(&mut self, s: &str) {
-        self.writer.write(s.as_bytes());
-    }
+fn write_fnptr_struct_def() -> String {
+    format!(
+        "pub struct FnPtr {{
+            f: *const __gl_imports::libc::c_void,
+            is_loaded: bool,
+        }}
 
-    fn write_line(&mut self, s: &str) {
-        self.write_str(s);
-        self.write_str("\n");
-    }
+        impl FnPtr {{
+            pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {{
+                if ptr.is_null() {{
+                    FnPtr {{ f: failing_fn, is_loaded: false }}
+                }} else {{
+                    FnPtr {{ f: ptr, is_loaded: true }}
+                }}
+            }}
+        }}"
+    )
+}
 
-    fn write_enum(&mut self, enm: &Enum) {
-        self.write_line(super::gen_enum_item(enm, "types::").as_slice());
-    }
+fn write_ptrs(registry: &Registry) -> String {
+    format!(
+        "mod storage {{
+            #![allow(non_snake_case)]
+            use super::__gl_imports::libc;
+            use super::failing;
+            use super::FnPtr;
 
-    fn write_enums(&mut self) {
-        for e in self.registry.enum_iter() {
-            self.write_enum(e);
-        }
-    }
+            {storages}
+        }}",
 
-    fn write_header(&mut self) {
-        self.write_line("mod __gl_imports {");
-        self.write_line("    extern crate libc;");
-        self.write_line("    pub use std::mem;");
-        self.write_line("}");
-    }
+        storages = registry.cmd_iter().map(|c| {
+            format!(
+                "pub static mut {name}: FnPtr = FnPtr {{ \
+                    f: failing::{name} as *const libc::c_void, \
+                    is_loaded: false \
+                }};",
+                name = c.proto.ident,
+            )
+        }).collect::<Vec<String>>().connect("\n")
+    )
+}
 
-    fn write_type_aliases(&mut self) {
-        self.write_line("#[stable]");
-        self.write_line("pub mod types {");
-        let aliases = super::gen_type_aliases(&self.ns);
-        self.write_line(aliases.as_slice());
-        self.write_line("}");
-    }
+fn write_fn_mods(registry: &Registry, ns: &Ns) -> String {
+    registry.cmd_iter().map(|c| {
+        format!(
+            "#[unstable]
+            #[allow(non_snake_case)]
+            pub mod {0} {{
+                use super::{{failing, storage}};
+                use super::FnPtr;
 
-    fn write_fnptr_struct_def(&mut self) {
-        self.write_line("pub struct FnPtr {");
-        self.write_line("    f: *const __gl_imports::libc::c_void,");
-        self.write_line("    is_loaded: bool,");
-        self.write_line("}");
-        self.write_line("");
-        self.write_line("impl FnPtr {");
-        self.write_line("    pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {");
-        self.write_line("        if ptr.is_null() {");
-        self.write_line("            FnPtr { f: failing_fn, is_loaded: false }");
-        self.write_line("        } else {");
-        self.write_line("            FnPtr { f: ptr, is_loaded: true }");
-        self.write_line("        }");
-        self.write_line("    }");
-        self.write_line("}");
-    }
+                #[inline]
+                #[allow(dead_code)]
+                pub fn is_loaded() -> bool {{
+                    unsafe {{ storage::{0}.is_loaded }}
+                }}
 
-    fn write_failing_fns(&mut self) {
-        self.write_line("mod failing {");
+                #[allow(dead_code)]
+                pub fn load_with(loadfn: |symbol: &str| -> *const super::__gl_imports::libc::c_void) {{
+                    unsafe {{
+                        storage::{0} = FnPtr::new(loadfn(\"{1}\"),
+                            failing::{0} as *const super::__gl_imports::libc::c_void)
+                    }}
+                }}
+            }}",
+            c.proto.ident,
+            super::gen_symbol_name(ns, c)
+        )
+    }).collect::<Vec<String>>().connect("\n")
 
-        self.write_line("use super::types;");
-        self.write_line("use super::__gl_imports;");
+    // TODO: this is a reliquate from an old code, I have no idea what it does
+    // for c in self.registry.cmd_iter() {
+    //     self.write_line(format!(
+    //         "pub mod {name} {{ \
+    //             #[inline] \
+    //             pub fn is_loaded() -> bool {{ \
+    //                 unsafe {{ ::storage::{name}.is_loaded }} \
+    //             }} \
+    //         }}",
+    //         name = c.proto.ident,
+    //     ).as_slice());
+    // }
+}
 
-        for c in self.registry.cmd_iter() {
-            self.write_line(format!(
+fn write_failing_fns(registry: &Registry) -> String {
+    format!(
+        "mod failing {{
+            use super::types;
+            use super::__gl_imports;
+
+            {functions}
+        }}",
+
+        functions = registry.cmd_iter().map(|c| {
+            format!(
                 "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
                 pub extern \"system\" fn {name}({params}){return_suffix} {{ \
                     fail!(\"`{name}` was not loaded\") \
@@ -101,161 +196,26 @@ impl<'a, W: Writer> GlobalGenerator<'a, W> {
                 name = c.proto.ident,
                 params = super::gen_param_list(c, true),
                 return_suffix = super::gen_return_suffix(c)
-            ).as_slice());
-        }
+            )
+        }).collect::<Vec<String>>().connect("\n")
+    )
+}
 
-        self.write_line("}");
-    }
+fn write_load_fn(registry: &Registry) -> String {
+    format!(
+        "/// Load each OpenGL symbol using a custom load function. This allows for the
+        /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
+        /// ~~~ignore
+        /// gl::load_with(|s| glfw.get_proc_address(s));
+        /// ~~~
+        #[unstable]
+        #[allow(dead_code)]
+        pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {{
+            {exprs}
+        }}",
 
-    fn write_fns(&mut self) {
-        for c in self.registry.cmd_iter() {
-            self.write_line(
-                if c.is_safe {
-                    format!(
-                        "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                        #[inline] #[unstable] pub fn {name}({params}){return_suffix} {{ \
-                            unsafe {{ \
-                                __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
-                                    (storage::{name}.f)({idents}) \
-                            }} \
-                        }}",
-                        name = c.proto.ident,
-                        params = super::gen_param_list(c, true),
-                        types = super::gen_param_ty_list(c),
-                        return_suffix = super::gen_return_suffix(c),
-                        idents = super::gen_param_ident_list(c),
-                    )
-                } else {
-                    format!(
-                        "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                        #[inline] #[unstable] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
-                            __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
-                                (storage::{name}.f)({idents}) \
-                        }}",
-                        name = c.proto.ident,
-                        typed_params = super::gen_param_list(c, true),
-                        return_suffix = super::gen_return_suffix(c),
-                        idents = super::gen_param_ident_list(c),
-                    )
-                }.as_slice()
-            );
-        }
-    }
-
-    fn write_ptrs(&mut self) {
-        self.write_line("mod storage {");
-        self.write_line("#![allow(non_snake_case)]");
-        self.write_line("use super::__gl_imports::libc;");
-        self.write_line("use super::failing;");
-        self.write_line("use super::FnPtr;");
-
-        for c in self.registry.cmd_iter() {
-            self.write_line(format!(
-                "pub static mut {name}: FnPtr = FnPtr {{ \
-                    f: failing::{name} as *const libc::c_void, \
-                    is_loaded: false \
-                }};",
-                name = c.proto.ident,
-            ).as_slice());
-        };
-
-        self.write_line("}");
-    }
-
-    fn write_fn_mods(&mut self) {
-        for c in self.registry.cmd_iter() {
-            let ns = self.ns;
-            self.write_line(format!(
-                "#[unstable]
-                #[allow(non_snake_case)]
-                pub mod {0} {{
-                    use super::{{failing, storage}};
-                    use super::FnPtr;
-
-                    #[inline]
-                    #[allow(dead_code)]
-                    pub fn is_loaded() -> bool {{
-                        unsafe {{ storage::{0}.is_loaded }}
-                    }}
-
-                    #[allow(dead_code)]
-                    pub fn load_with(loadfn: |symbol: &str| -> *const super::__gl_imports::libc::c_void) {{
-                        unsafe {{
-                            storage::{0} = FnPtr::new(loadfn(\"{1}\"),
-                                failing::{0} as *const super::__gl_imports::libc::c_void)
-                        }}
-                    }}
-                }}",
-                c.proto.ident, super::gen_symbol_name(&ns, c)).as_slice());
-        }
-        // for c in self.registry.cmd_iter() {
-        //     self.write_line(format!(
-        //         "pub mod {name} {{ \
-        //             #[inline] \
-        //             pub fn is_loaded() -> bool {{ \
-        //                 unsafe {{ ::storage::{name}.is_loaded }} \
-        //             }} \
-        //         }}",
-        //         name = c.proto.ident,
-        //     ).as_slice());
-        // }
-    }
-
-    fn write_load_fn(&mut self) {
-        self.write_line("/// Load each OpenGL symbol using a custom load function. This allows for the");
-        self.write_line("/// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.");
-        self.write_line("///");
-        self.write_line("/// ~~~ignore");
-        self.write_line("/// gl::load_with(|s| glfw.get_proc_address(s));");
-        self.write_line("/// ~~~");
-        self.write_line("#[unstable]");
-        self.write_line("#[allow(dead_code)]");
-        self.write_line("pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {");
-
-        for c in self.registry.cmd_iter() {
-            self.write_line(format!("{}::load_with(|s| loadfn(s));", c.proto.ident).as_slice());
-        }
-
-        self.write_line("}");
-    }
-
-    pub fn write(writer: &mut W, registry: &Registry, ns: Ns) {
-        let mut gen = GlobalGenerator::new(writer, registry, ns);
-
-        // header with imports
-        gen.write_header();
-        gen.write_line("");
-
-        // type aliases
-        gen.write_type_aliases();
-        gen.write_line("");
-
-        // enums definitions
-        gen.write_enums();
-        gen.write_line("");
-
-        // safe and unsafe OpenGl functions
-        gen.write_fns();
-        gen.write_line("");
-
-        // FnPtr struct def
-        gen.write_fnptr_struct_def();
-        gen.write_line("");
-
-        // static muts for storing function pointers
-        gen.write_ptrs();
-        gen.write_line("");
-
-        // functions for querying the status of individual function pointers
-        gen.write_fn_mods();
-        gen.write_line("");
-
-        // failing functions to assign to the function pointers
-        gen.write_failing_fns();
-        gen.write_line("");
-
-        // loader function
-        gen.write_load_fn();
-        gen.write_line("");
-    }
+        exprs = registry.cmd_iter().map(|c| {
+            format!("{}::load_with(|s| loadfn(s));", c.proto.ident)
+        }).collect::<Vec<String>>().connect("\n")
+    )
 }

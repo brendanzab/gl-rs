@@ -66,7 +66,6 @@
 #![crate_type = "dylib"]
 
 #![feature(phase)]
-#![feature(globs)]
 #![feature(macro_rules)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
@@ -82,7 +81,8 @@ extern crate regex;
 extern crate rustc;
 extern crate syntax;
 
-use registry::*;
+use registry::{Registry, Filter};
+use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
 use syntax::parse::token;
 use syntax::ast::{ Item, TokenTree };
 use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
@@ -90,6 +90,8 @@ use syntax::codemap::Span;
 use syntax::ptr::P;
 
 mod generators;
+
+#[allow(dead_code)]
 mod registry;
 
 #[plugin_registrar]
@@ -178,6 +180,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
 
     // generating the Rust bindings as a source code into "buffer"
     let buffer = {
+        use generators::Generator;
         use std::io::MemWriter;
         use std::task;
 
@@ -185,19 +188,19 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         let result = match generator.as_slice() {
             "global" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                generators::global_gen::GlobalGenerator::write(&mut buffer, &reg, ns);
+                (generators::global_gen::GlobalGenerator).write(&mut buffer, &reg, ns);
                 buffer
             }),
 
             "struct" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                generators::struct_gen::StructGenerator::write(&mut buffer, &reg, ns);
+                (generators::struct_gen::StructGenerator).write(&mut buffer, &reg, ns);
                 buffer
             }),
 
             "static" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                generators::static_gen::StaticGenerator::write(&mut buffer, &reg, ns);
+                (generators::static_gen::StaticGenerator).write(&mut buffer, &reg, ns);
                 buffer
             }),
 
