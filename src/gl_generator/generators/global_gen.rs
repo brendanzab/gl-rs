@@ -198,26 +198,26 @@ fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item
 fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     use syntax::ext::quote::rt::ToSource;
 
-    ecx.parse_item(format!(
-        "mod failing {{
+    let functions = registry.cmd_iter().map(|c| {
+        ecx.parse_item(format!(
+            "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+            pub extern \"system\" fn {name}({params}) -> {return_suffix} {{ \
+                fail!(\"`{name}` was not loaded\") \
+            }}",
+            name = c.proto.ident,
+            params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+            return_suffix = super::gen_return_type(ecx, c).to_source()
+        ))
+    }).collect::<Vec<P<ast::Item>>>();
+
+    (quote_item!(ecx,
+        mod failing {
             use super::types;
             use super::__gl_imports;
 
-            {functions}
-        }}",
-
-        functions = registry.cmd_iter().map(|c| {
-            format!(
-                "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                pub extern \"system\" fn {name}({params}) -> {return_suffix} {{ \
-                    fail!(\"`{name}` was not loaded\") \
-                }}",
-                name = c.proto.ident,
-                params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
-                return_suffix = super::gen_return_type(ecx, c).to_source()
-            )
-        }).collect::<Vec<String>>().connect("\n")
-    ))
+            $functions
+        }
+    )).unwrap()
 }
 
 fn write_load_fn(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
