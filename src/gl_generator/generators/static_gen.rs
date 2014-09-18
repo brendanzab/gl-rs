@@ -34,6 +34,8 @@ impl super::Generator for StaticGenerator {
     }
 }
 
+/// Creates a `__gl_imports` module which contains all the external symbols that we need for the
+///  bindings.
 fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
     (quote_item!(ecx,
         mod __gl_imports {
@@ -43,6 +45,9 @@ fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
     )).unwrap()
 }
 
+/// Creates a `types` module which contains all the type aliases.
+/// 
+/// See also `generators::gen_type_aliases`.
 fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
     let aliases = super::gen_type_aliases(ecx, ns);
 
@@ -58,12 +63,16 @@ fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
     )).unwrap()
 }
 
+/// Writes all the `<enum>` elements at the root of the bindings.
 fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     registry.enum_iter().map(|e| {
         super::gen_enum_item(ecx, e, "types::")
     }).collect()
 }
 
+/// Writes all functions corresponding to the GL bindings.
+///
+/// These are foreign functions, they don't have any content.
 fn write_fns(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
     let symbols = registry.cmd_iter().map(|c| {
         use syntax::ext::quote::rt::ToSource;

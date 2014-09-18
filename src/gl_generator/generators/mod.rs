@@ -11,6 +11,7 @@ pub mod struct_gen;
 
 /// Trait for a bindings generator.
 pub trait Generator {
+    /// Builds the GL bindings.
     fn write(&self, &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>>;
 }
 
@@ -71,6 +72,10 @@ fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> 
     , ident, ty, value))
 }
 
+/// Generates all the type aliases for a namespace.
+///
+/// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
+///  things that we can't obtain from the XML files.
 fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
     let mut result = Vec::new();
 
@@ -100,10 +105,10 @@ fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
     result
 }
 
-/// Generates the list of `Arg`s that a `Cmd` requires.
+/// Generates the list of Rust `Arg`s that a `Cmd` requires.
 pub fn gen_parameters(ecx: &ExtCtxt, cmd: &Cmd) -> Vec<ast::Arg> {
     use syntax::ext::build::AstBuilder;
-    
+
     cmd.params.iter()
         .map(|binding| {
             // variable name of the binding
@@ -129,7 +134,7 @@ pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
     // turn the return type into a Rust type
     let ty = ty::to_rust_ty(ecx, cmd.proto.ty.as_slice());
 
-    // but there is one more step: if the Rust type end with `c_void`, we replace it with `()`
+    // ... but there is one more step: if the Rust type ends with `c_void`, we replace it with `()`
     match ty.node {
         ast::TyPath(ref path, _ ,_)
             if path.segments.last().unwrap().identifier.as_str() == "c_void"
@@ -140,6 +145,9 @@ pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
     ty
 }
 
+/// Generates the native symbol name of a `Cmd`.
+///
+/// Example results: `"glClear"`, `"wglCreateContext"`, etc.
 pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
     (match *ns {
         Gl | Gles1 | Gles2 => "gl",

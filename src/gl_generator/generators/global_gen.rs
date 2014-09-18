@@ -39,6 +39,8 @@ impl super::Generator for GlobalGenerator {
     }
 }
 
+/// Creates a `__gl_imports` module which contains all the external symbols that we need for the
+///  bindings.
 fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
     (quote_item!(ecx,
         mod __gl_imports {
@@ -48,6 +50,9 @@ fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
     )).unwrap()
 }
 
+/// Creates a `types` module which contains all the type aliases.
+/// 
+/// See also `generators::gen_type_aliases`.
 fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
     let aliases = super::gen_type_aliases(ecx, ns);
 
@@ -63,12 +68,17 @@ fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
     )).unwrap()
 }
 
+/// Creates all the `<enum>` elements at the root of the bindings.
 fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     registry.enum_iter().map(|e| {
         super::gen_enum_item(ecx, e, "types::")
     }).collect()
 }
 
+/// Creates the functions corresponding to the GL commands.
+///
+/// The function calls the corresponding function pointer stored in the `storage` module created
+///  by `write_ptrs`.
 fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     registry.cmd_iter().map(|c| {
         use syntax::ext::quote::rt::ToSource;
@@ -104,17 +114,21 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     }).collect()
 }
 
+/// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
     vec![
         (quote_item!(ecx,
             pub struct FnPtr {
+                /// The function pointer that will be used when calling the function.
                 f: *const __gl_imports::libc::c_void,
+                /// True if the pointer points to a real function, false if points to a `fail!` fn.
                 is_loaded: bool,
             }
         )).unwrap(),
 
         (quote_item!(ecx,
             impl FnPtr {
+                /// Creates a `FnPtr` from a load attempt.
                 pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {
                     if ptr.is_null() {
                         FnPtr { f: failing_fn, is_loaded: false }
@@ -127,6 +141,7 @@ fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
     ]
 }
 
+/// Creates a `storage` module which contains a static `FnPtr` per GL command in the registry.
 fn write_ptrs(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     let storages = registry.cmd_iter().map(|c| {
         let name = ecx.ident_of(c.proto.ident.as_slice());
@@ -151,6 +166,10 @@ fn write_ptrs(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     )).unwrap()
 }
 
+/// Creates one module for each GL command.
+///
+/// Each module contains `is_loaded` and `load_with` which interact with the `storage` module
+///  created by `write_ptrs`.
 fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item>> {
     registry.cmd_iter().map(|c| {
         let fnname = ecx.ident_of(c.proto.ident.as_slice());
@@ -195,6 +214,9 @@ fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item
     // }
 }
 
+/// Creates a `failing` module which contains one function per GL command.
+///
+/// These functions are the mocks that are called if the real function could not be loaded.
 fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     use syntax::ext::quote::rt::ToSource;
 
@@ -220,6 +242,9 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     )).unwrap()
 }
 
+/// Creates the `load_with` function.
+///
+/// The function calls `load_with` in each module created by `write_fn_mods`.
 fn write_load_fn(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     let loadings = registry.cmd_iter().map(|c| {
         let cmd_name = ecx.ident_of(c.proto.ident.as_slice());
