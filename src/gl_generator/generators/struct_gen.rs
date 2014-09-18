@@ -100,17 +100,19 @@ fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
 
 fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     let fns = registry.cmd_iter().map(|c| {
+        use syntax::ext::quote::rt::ToSource;
+
         ecx.parse_item(format!(r#"
             #[allow(unused_variable)]
             #[allow(non_snake_case)]
             #[allow(dead_code)]
-            pub extern "system" fn {name}({params}){return_suffix} {{
+            pub extern "system" fn {name}({params}) -> {return_suffix} {{
                 fail!("`{name}` was not loaded")
             }}
             "#,
             name = c.proto.ident,
-            params = super::gen_param_list(ecx, c, true),
-            return_suffix = super::gen_return_suffix(ecx, c)
+            params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+            return_suffix = super::gen_return_type(ecx, c).to_source()
         ))
     }).collect::<Vec<P<ast::Item>>>();
 
@@ -176,32 +178,34 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         }).collect::<Vec<String>>().connect("\n"),
 
         modules = registry.cmd_iter().map(|c| {
+            use syntax::ext::quote::rt::ToSource;
+
             if c.is_safe {
                 format!(
                     "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                    #[inline] #[unstable] pub fn {name}(&self, {params}){return_suffix} {{ \
+                    #[inline] #[unstable] pub fn {name}(&self, {params}) -> {return_suffix} {{ \
                         unsafe {{ \
-                            __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
+                            __gl_imports::mem::transmute::<_, extern \"system\" fn({types}) -> {return_suffix}>\
                                 (self.{name}.f)({idents}) \
                         }} \
                     }}",
                     name = c.proto.ident,
-                    params = super::gen_param_list(ecx, c, true),
-                    types = super::gen_param_ty_list(ecx, c),
-                    return_suffix = super::gen_return_suffix(ecx, c),
-                    idents = super::gen_param_ident_list(c),
+                    params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                    types = super::gen_parameters(ecx, c).move_iter().map(|p| p.ty.to_source()).collect::<Vec<String>>().connect(", "),
+                    return_suffix = super::gen_return_type(ecx, c).to_source(),
+                    idents = super::gen_parameters(ecx, c).move_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
                 )
             } else {
                 format!(
                     "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                    #[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}){return_suffix} {{ \
-                        __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
+                    #[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}) -> {return_suffix} {{ \
+                        __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                             (self.{name}.f)({idents}) \
                     }}",
                     name = c.proto.ident,
-                    typed_params = super::gen_param_list(ecx, c, true),
-                    return_suffix = super::gen_return_suffix(ecx, c),
-                    idents = super::gen_param_ident_list(c),
+                    typed_params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                    return_suffix = super::gen_return_type(ecx, c).to_source(),
+                    idents = super::gen_parameters(ecx, c).move_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
                 )
             }
         }).collect::<Vec<String>>().connect("\n")

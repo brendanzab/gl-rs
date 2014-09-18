@@ -100,55 +100,44 @@ fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
     result
 }
 
-pub fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
-    // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
-    // fixed
-    if use_idents {
-        match binding.ident.as_slice() {
-            "in" => "in_".to_string(),
-            "ref" => "ref_".to_string(),
-            "type" => "type_".to_string(),
-            ident => ident.to_string(),
-        }
-    } else {
-        "_".to_string()
-    }
-}
-
-pub fn gen_binding(ecx: &ExtCtxt, binding: &Binding, use_idents: bool) -> String {
-    use syntax::ext::quote::rt::ToSource;
-
-    format!("{}: {}",
-        gen_binding_ident(binding, use_idents),
-        ty::to_rust_ty(ecx, binding.ty.as_slice()).to_source().as_slice())
-}
-
-pub fn gen_param_list(ecx: &ExtCtxt, cmd: &Cmd, use_idents: bool) -> String {
+/// Generates the list of `Arg`s that a `Cmd` requires.
+pub fn gen_parameters(ecx: &ExtCtxt, cmd: &Cmd) -> Vec<ast::Arg> {
+    use syntax::ext::build::AstBuilder;
+    
     cmd.params.iter()
-        .map(|b| gen_binding(ecx, b, use_idents))
-        .collect::<Vec<String>>()
-        .connect(", ")
+        .map(|binding| {
+            // variable name of the binding
+            let ident = match binding.ident.as_slice() {
+                "in" => ecx.ident_of("in_"),
+                "ref" => ecx.ident_of("ref_"),
+                "type" => ecx.ident_of("type_"),
+                ident => ecx.ident_of(ident),
+            };
+
+            // rust type of the binding
+            let ty = ty::to_rust_ty(ecx, binding.ty.as_slice());
+
+            // returning
+            // TODO: don't use call_site()?
+            ecx.arg(ecx.call_site(), ident, ty)
+        })
+        .collect()
 }
 
-pub fn gen_param_ident_list(cmd: &Cmd) -> String {
-    cmd.params.iter()
-        .map(|b| gen_binding_ident(b, true))
-        .collect::<Vec<String>>()
-        .connect(", ")
-}
+/// Generates the Rust return type of a `Cmd`.
+pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
+    // turn the return type into a Rust type
+    let ty = ty::to_rust_ty(ecx, cmd.proto.ty.as_slice());
 
-pub fn gen_param_ty_list(ecx: &ExtCtxt, cmd: &Cmd) -> String {
-    use syntax::ext::quote::rt::ToSource;
+    // but there is one more step: if the Rust type end with `c_void`, we replace it with `()`
+    match ty.node {
+        ast::TyPath(ref path, _ ,_)
+            if path.segments.last().unwrap().identifier.as_str() == "c_void"
+                => return quote_ty!(ecx, ()),
+        _ => ()
+    };
 
-    cmd.params.iter()
-        .map(|b| ty::to_rust_ty(ecx, b.ty.as_slice()).to_source())
-        .collect::<Vec<String>>()
-        .connect(", ")
-}
-
-pub fn gen_return_suffix(ecx: &ExtCtxt, cmd: &Cmd) -> String {
-    use syntax::ext::quote::rt::ToSource;
-    ty::to_return_suffix(ty::to_rust_ty(ecx, cmd.proto.ty.as_slice()).to_source().as_slice())
+    ty
 }
 
 pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {

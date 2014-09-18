@@ -66,13 +66,15 @@ fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
 
 fn write_fns(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
     let symbols = registry.cmd_iter().map(|c| {
+        use syntax::ext::quote::rt::ToSource;
+
         format!(
             "#[link_name=\"{symbol}\"]
-            pub fn {name}({params}){return_suffix};",
+            pub fn {name}({params}) -> {return_suffix};",
             symbol = super::gen_symbol_name(ns, c),
             name = c.proto.ident,
-            params = super::gen_param_list(ecx, c, true),
-            return_suffix = super::gen_return_suffix(ecx, c)
+            params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+            return_suffix = super::gen_return_type(ecx, c).to_source()
         )
     }).collect::<Vec<String>>().connect("\n");
 

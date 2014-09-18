@@ -71,32 +71,34 @@ fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
 
 fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     registry.cmd_iter().map(|c| {
+        use syntax::ext::quote::rt::ToSource;
+
         ecx.parse_item(if c.is_safe {
             format!(
                 "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                #[inline] #[unstable] pub fn {name}({params}){return_suffix} {{ \
+                #[inline] #[unstable] pub fn {name}({params}) -> {return_suffix} {{ \
                     unsafe {{ \
-                        __gl_imports::mem::transmute::<_, extern \"system\" fn({types}){return_suffix}>\
+                        __gl_imports::mem::transmute::<_, extern \"system\" fn({types}) -> {return_suffix}>\
                             (storage::{name}.f)({idents}) \
                     }} \
                 }}",
                 name = c.proto.ident,
-                params = super::gen_param_list(ecx, c, true),
-                types = super::gen_param_ty_list(ecx, c),
-                return_suffix = super::gen_return_suffix(ecx, c),
-                idents = super::gen_param_ident_list(c),
+                params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                types = super::gen_parameters(ecx, c).move_iter().map(|p| p.ty.to_source()).collect::<Vec<String>>().connect(", "),
+                return_suffix = super::gen_return_type(ecx, c).to_source(),
+                idents = super::gen_parameters(ecx, c).move_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
             )
         } else {
             format!(
                 "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                #[inline] #[unstable] pub unsafe fn {name}({typed_params}){return_suffix} {{ \
-                    __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) {return_suffix}>\
+                #[inline] #[unstable] pub unsafe fn {name}({typed_params}) -> {return_suffix} {{ \
+                    __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                         (storage::{name}.f)({idents}) \
                 }}",
                 name = c.proto.ident,
-                typed_params = super::gen_param_list(ecx, c, true),
-                return_suffix = super::gen_return_suffix(ecx, c),
-                idents = super::gen_param_ident_list(c),
+                typed_params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                return_suffix = super::gen_return_type(ecx, c).to_source(),
+                idents = super::gen_parameters(ecx, c).move_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
             )
         })
     }).collect()
@@ -194,6 +196,8 @@ fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item
 }
 
 fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
+    use syntax::ext::quote::rt::ToSource;
+
     ecx.parse_item(format!(
         "mod failing {{
             use super::types;
@@ -205,12 +209,12 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
         functions = registry.cmd_iter().map(|c| {
             format!(
                 "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
-                pub extern \"system\" fn {name}({params}){return_suffix} {{ \
+                pub extern \"system\" fn {name}({params}) -> {return_suffix} {{ \
                     fail!(\"`{name}` was not loaded\") \
                 }}",
                 name = c.proto.ident,
-                params = super::gen_param_list(ecx, c, true),
-                return_suffix = super::gen_return_suffix(ecx, c)
+                params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                return_suffix = super::gen_return_type(ecx, c).to_source()
             )
         }).collect::<Vec<String>>().connect("\n")
     ))

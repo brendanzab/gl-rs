@@ -19,13 +19,6 @@ use syntax::ast;
 use syntax::ext::base::ExtCtxt;
 use syntax::ptr::P;
 
-pub fn to_return_suffix(ty: &str) -> String {
-    match ty {
-        "__gl_imports::libc::c_void" | "c_void" | "VOID" | "GLvoid" => "".to_string(),
-        ty_str => format!(" -> {}", ty_str.replace("*mut ", "*const ")),
-    }
-}
-
 /// Converts a C style type definition to the Rust equivalent
 pub fn to_rust_ty(ecx: &ExtCtxt, ty: &str) -> P<ast::Ty> {
     match ty {
