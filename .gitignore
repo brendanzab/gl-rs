@@ -2,3 +2,4 @@
 /target
 /examples/*/target
 Cargo.lock
+/src/gl_generator/target/

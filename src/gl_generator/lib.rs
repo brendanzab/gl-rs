@@ -82,23 +82,15 @@ extern crate regex;
 extern crate rustc;
 extern crate syntax;
 
+use registry::*;
 use syntax::parse::token;
 use syntax::ast::{ Item, TokenTree };
 use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
 use syntax::codemap::Span;
 use syntax::ptr::P;
 
-use registry::*;
-use global_gen::GlobalGenerator;
-use static_gen::StaticGenerator;
-use struct_gen::StructGenerator;
-
-mod common;
-pub mod global_gen;
-pub mod static_gen;
-pub mod struct_gen;
-pub mod registry;
-pub mod ty;
+mod generators;
+mod registry;
 
 #[plugin_registrar]
 #[doc(hidden)]
@@ -193,19 +185,19 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         let result = match generator.as_slice() {
             "global" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                GlobalGenerator::write(&mut buffer, &reg, ns);
+                generators::global_gen::GlobalGenerator::write(&mut buffer, &reg, ns);
                 buffer
             }),
 
             "struct" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                StructGenerator::write(&mut buffer, &reg, ns);
+                generators::struct_gen::StructGenerator::write(&mut buffer, &reg, ns);
                 buffer
             }),
 
             "static" => task::try(proc() {
                 let mut buffer = MemWriter::new();
-                StaticGenerator::write(&mut buffer, &reg, ns);
+                generators::static_gen::StaticGenerator::write(&mut buffer, &reg, ns);
                 buffer
             }),
 
