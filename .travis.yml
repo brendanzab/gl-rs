@@ -3,21 +3,12 @@ language: rust
 env:
   global:
     - secure: SH7xrrH8ONXcrpHzKVJsBuLX1AikKBTBBI0SsEfCWfDZsAur0rQW5ZlPPorhQ0iZUbvw5xwY26T+0EYdBAWOwp7AOBM2iwoGZ15ERTd8o2JX3ZlMQ9AvDHNaXAc6YToj69DaiaimX+oX9DtZeRfQ309Lkp4D1YMrf4X/jhNpQdI=
+
 install:
-  # glfw
   - sudo apt-get install libXxf86vm-dev
-  - git clone https://github.com/glfw/glfw.git
-  - cd glfw
-  - git checkout 3.0.3
-  - cmake -DBUILD_SHARED_LIBS=ON .
-  - make
-  - sudo make install
-  - cd ..
-script:
-  - cargo build
-  - cargo test
+
+after_script:
   # the doc directory needs to be in the root for rust-ci
   - cargo doc
   - ln -s target/doc doc
-after_script:
   - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
