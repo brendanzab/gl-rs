@@ -1,5 +1,8 @@
 use registry::{Enum, Registry, Cmd, Binding, Ns};
 use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
+use syntax::ast;
+use syntax::ext::base::ExtCtxt;
+use syntax::ptr::P;
 
 mod ty;
 pub mod global_gen;
@@ -8,11 +11,14 @@ pub mod struct_gen;
 
 /// Trait for a bindings generator.
 pub trait Generator {
-    fn write<W: Writer>(&self, writer: &mut W, registry: &Registry, ns: Ns);
+    /// Builds the GL bindings.
+    fn write(&self, &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>>;
 }
 
 /// This function generates a `static name: type = value;` item.
-fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
+fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> {
+    use syntax::ext::quote::rt::ExtParseUtils;
+
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
     let ident = if (enm.ident.as_slice().char_at(0)).is_digit() {
@@ -59,130 +65,89 @@ fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
         regex.replace(enm.value.as_slice(), format!("$2 as {}$1", types_prefix).as_slice())
     };
 
-    format!("
+    ecx.parse_item(format!("
         #[stable]
         #[allow(dead_code)]
         pub static {}: {} = {};"
-    , ident, ty, value)
+    , ident, ty, value))
 }
 
-fn gen_type_aliases(namespace: &Ns) -> String {
-    let mut result = String::new();
+/// Generates all the type aliases for a namespace.
+///
+/// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
+///  things that we can't obtain from the XML files.
+fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
+    let mut result = Vec::new();
 
     match *namespace {
         Gl | Gles1 | Gles2 => {
-            for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
+            result.push_all_move(ty::build_gl_aliases(ecx));
         }
+        
         Glx => {
-            for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
-            for alias in ty::X_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
-            for alias in ty::GLX_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
+            result.push_all_move(ty::build_gl_aliases(ecx));
+            result.push_all_move(ty::build_x_aliases(ecx));
+            result.push_all_move(ty::build_glx_aliases(ecx));
         }
+
         Wgl => {
-            for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
-            for alias in ty::WIN_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
-            for alias in ty::WGL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
+            result.push_all_move(ty::build_gl_aliases(ecx));
+            result.push_all_move(ty::build_win_aliases(ecx));
+            result.push_all_move(ty::build_wgl_aliases(ecx));
         }
+
         Egl => {
-            for alias in ty::GL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
-            for alias in ty::EGL_ALIASES.iter() {
-                result.push_str("#[allow(non_camel_case_types)]\n");
-                result.push_str("#[allow(non_snake_case)]\n");
-                result.push_str("#[allow(dead_code)]\n");
-                result.push_str(*alias);
-            }
+            result.push_all_move(ty::build_gl_aliases(ecx));
+            result.push_all_move(ty::build_egl_aliases(ecx));
         }
     }
 
     result
 }
 
-pub fn gen_binding_ident(binding: &Binding, use_idents: bool) -> String {
-    // FIXME: use &'a str when https://github.com/mozilla/rust/issues/11869 is
-    // fixed
-    if use_idents {
-        match binding.ident.as_slice() {
-            "in" => "in_".to_string(),
-            "ref" => "ref_".to_string(),
-            "type" => "type_".to_string(),
-            ident => ident.to_string(),
-        }
-    } else {
-        "_".to_string()
-    }
-}
+/// Generates the list of Rust `Arg`s that a `Cmd` requires.
+pub fn gen_parameters(ecx: &ExtCtxt, cmd: &Cmd) -> Vec<ast::Arg> {
+    use syntax::ext::build::AstBuilder;
 
-pub fn gen_binding(binding: &Binding, use_idents: bool) -> String {
-    format!("{}: {}",
-        gen_binding_ident(binding, use_idents),
-        ty::to_rust_ty(binding.ty.as_slice()))
-}
-
-pub fn gen_param_list(cmd: &Cmd, use_idents: bool) -> String {
     cmd.params.iter()
-        .map(|b| gen_binding(b, use_idents))
-        .collect::<Vec<String>>()
-        .connect(", ")
+        .map(|binding| {
+            // variable name of the binding
+            let ident = match binding.ident.as_slice() {
+                "in" => ecx.ident_of("in_"),
+                "ref" => ecx.ident_of("ref_"),
+                "type" => ecx.ident_of("type_"),
+                ident => ecx.ident_of(ident),
+            };
+
+            // rust type of the binding
+            let ty = ty::to_rust_ty(ecx, binding.ty.as_slice());
+
+            // returning
+            // TODO: don't use call_site()?
+            ecx.arg(ecx.call_site(), ident, ty)
+        })
+        .collect()
 }
 
-pub fn gen_param_ident_list(cmd: &Cmd) -> String {
-    cmd.params.iter()
-        .map(|b| gen_binding_ident(b, true))
-        .collect::<Vec<String>>()
-        .connect(", ")
+/// Generates the Rust return type of a `Cmd`.
+pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
+    // turn the return type into a Rust type
+    let ty = ty::to_rust_ty(ecx, cmd.proto.ty.as_slice());
+
+    // ... but there is one more step: if the Rust type ends with `c_void`, we replace it with `()`
+    match ty.node {
+        ast::TyPath(ref path, _ ,_)
+            if path.segments.last().unwrap().identifier.as_str() == "c_void"
+                => return quote_ty!(ecx, ()),
+        _ => ()
+    };
+
+    ty
 }
 
-pub fn gen_param_ty_list(cmd: &Cmd) -> String {
-    cmd.params.iter()
-        .map(|b| ty::to_rust_ty(b.ty.as_slice()))
-        .collect::<Vec<&str>>()
-        .connect(", ")
-}
-
-pub fn gen_return_suffix(cmd: &Cmd) -> String {
-    ty::to_return_suffix(ty::to_rust_ty(cmd.proto.ty.as_slice()))
-}
-
+/// Generates the native symbol name of a `Cmd`.
+///
+/// Example results: `"glClear"`, `"wglCreateContext"`, etc.
 pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
     (match *ns {
         Gl | Gles1 | Gles2 => "gl",

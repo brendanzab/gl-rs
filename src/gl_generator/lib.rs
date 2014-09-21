@@ -83,7 +83,6 @@ extern crate syntax;
 
 use registry::{Registry, Filter};
 use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
-use syntax::parse::token;
 use syntax::ast::{ Item, TokenTree };
 use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
 use syntax::codemap::Span;
@@ -179,86 +178,22 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
     };
 
     // generating the Rust bindings as a source code into "buffer"
-    let buffer = {
+    let items = {
         use generators::Generator;
-        use std::io::MemWriter;
-        use std::task;
 
         // calling the generator
-        let result = match generator.as_slice() {
-            "global" => task::try(proc() {
-                let mut buffer = MemWriter::new();
-                (generators::global_gen::GlobalGenerator).write(&mut buffer, &reg, ns);
-                buffer
-            }),
-
-            "struct" => task::try(proc() {
-                let mut buffer = MemWriter::new();
-                (generators::struct_gen::StructGenerator).write(&mut buffer, &reg, ns);
-                buffer
-            }),
-
-            "static" => task::try(proc() {
-                let mut buffer = MemWriter::new();
-                (generators::static_gen::StaticGenerator).write(&mut buffer, &reg, ns);
-                buffer
-            }),
+        match generator.as_slice() {
+            "global" => (generators::global_gen::GlobalGenerator).write(ecx, &reg, ns),
+            "struct" => (generators::struct_gen::StructGenerator).write(ecx, &reg, ns),
+            "static" => (generators::static_gen::StaticGenerator).write(ecx, &reg, ns),
 
             generator => {
                 ecx.span_err(span, format!("unknown generator type: {}", generator).as_slice());
                 return DummyResult::any(span);
             },
-        };
-
-        // processing the result
-        match result {
-            Ok(buffer) => buffer.unwrap(),
-            Err(err) => {
-                use std::any::{Any, AnyRefExt};
-                let err: &Any = &*err;
-
-                match err {
-                    err if err.is::<String>() => {
-                        ecx.span_err(span, "error while generating the bindings");
-                        ecx.span_err(span, err.downcast_ref::<String>().unwrap().as_slice());
-                    },
-                    err if err.is::<&'static str>() => {
-                        ecx.span_err(span, "error while generating the bindings");
-                        ecx.span_err(span, err.downcast_ref::<&'static str>().unwrap().as_slice());
-                    },
-                    _ => {
-                        ecx.span_err(span, "unknown error while generating the bindings");
-                    }
-                }
-
-                return DummyResult::any(span);
-            }
         }
     };
 
-    // creating a new Rust parser from these bindings
-    let content = match String::from_utf8(buffer) {
-        Ok(s) => s,
-        Err(err) => {
-            ecx.span_err(span, format!("{}", err).as_slice());
-            return DummyResult::any(span)
-        }
-    };
-    let mut parser = ::syntax::parse::new_parser_from_source_str(ecx.parse_sess(), ecx.cfg(),
-        Path::new(ecx.codemap().span_to_filename(span)).display().to_string(), content);
-
-    // getting all the items defined by the bindings
-    let mut items = Vec::new();
-    loop {
-        match parser.parse_item_with_outer_attributes() {
-            None => break,
-            Some(i) => items.push(i)
-        }
-    }
-    if !parser.eat(&token::EOF) {
-        ecx.span_err(span, "the rust parser failed to compile all the generated bindings (meaning there is a bug in this library!)");
-        return DummyResult::any(span)
-    }
     box MacroResult { content: items } as Box<MacResult>
 }
 
