@@ -39,7 +39,7 @@ fn main() {
     window.make_current();
 
     // Load the OpenGL function pointers
-    gl::load_with(|s| glfw.get_proc_address(s));
+    gl::load_with(|s| window.get_proc_address(s));
 
     while !window.should_close() {
         // Poll events

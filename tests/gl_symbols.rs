@@ -14,7 +14,7 @@ fn test() {
 
     unsafe {
         gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
-            std::ptr::mut_null());
+            std::ptr::null_mut());
     }
 }
 
