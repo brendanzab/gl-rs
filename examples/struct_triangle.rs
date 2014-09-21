@@ -80,7 +80,7 @@ fn compile_shader(gl: &Gl, src: &str, ty: GLenum) -> GLuint {
             let mut len = 0;
             gl.GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
             let mut buf = Vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
-            gl.GetShaderInfoLog(shader, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
+            gl.GetShaderInfoLog(shader, len, ptr::null_mut(), buf.as_mut_ptr() as *mut GLchar);
             fail!("{}", str::from_utf8(buf.as_slice()).expect("ShaderInfoLog not valid utf8"));
         }
     }
@@ -102,7 +102,7 @@ fn link_program(gl: &Gl, vs: GLuint, fs: GLuint) -> GLuint {
             let mut len: GLint = 0;
             gl.GetProgramiv(program, gl::INFO_LOG_LENGTH, &mut len);
             let mut buf = Vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
-            gl.GetProgramInfoLog(program, len, ptr::mut_null(), buf.as_mut_ptr() as *mut GLchar);
+            gl.GetProgramInfoLog(program, len, ptr::null_mut(), buf.as_mut_ptr() as *mut GLchar);
             fail!("{}", str::from_utf8(buf.as_slice()).expect("ProgramInfoLog not valid utf8"));
         }
     }
@@ -124,7 +124,7 @@ fn main() {
     window.make_current();
 
     // Load the OpenGL function pointers
-    let gl = Gl::load_with(|s| glfw.get_proc_address(s));
+    let gl = Gl::load_with(|s| window.get_proc_address(s));
 
     // Create GLSL shaders
     let vs = compile_shader(&gl, VS_SRC, gl::VERTEX_SHADER);

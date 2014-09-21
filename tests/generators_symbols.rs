@@ -23,7 +23,7 @@ mod wgl {
 
 mod egl {
     #![allow(non_camel_case_types)]
-    
+
     use libc;
 
     pub type khronos_utime_nanoseconds_t = libc::c_int;
@@ -49,7 +49,7 @@ fn test_gl() {
 
     unsafe {
         gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
-            std::ptr::mut_null());
+            std::ptr::null_mut());
     }
 }
 
