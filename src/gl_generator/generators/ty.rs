@@ -371,7 +371,7 @@ pub fn build_gl_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
         quote_item!(ecx, pub type GLDEBUGPROCAMD = extern "system" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);),
         quote_item!(ecx, pub type GLhalfNV = super::__gl_imports::libc::c_ushort;),
         quote_item!(ecx, pub type GLvdpauSurfaceNV = GLintptr;)
-    ]).move_iter().map(|i| i.unwrap()).collect()
+    ]).into_iter().map(|i| i.unwrap()).collect()
 }
 
 pub fn build_x_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
@@ -379,7 +379,7 @@ pub fn build_x_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
         quote_item!(ecx, pub type XID = super::__gl_imports::libc::c_ulong;),
         quote_item!(ecx, pub type Bool = super::__gl_imports::libc::c_int;),       // Not sure if this is correct...
         quote_item!(ecx, #[repr(C)] pub struct Display;)
-    ]).move_iter().map(|i| i.unwrap()).collect()
+    ]).into_iter().map(|i| i.unwrap()).collect()
 }
 
 pub fn build_glx_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
@@ -525,7 +525,7 @@ pub fn build_glx_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
                 pub maxWidth: super::__gl_imports::libc::c_int,
             }
         )
-    ]).move_iter().map(|i| i.unwrap()).collect()
+    ]).into_iter().map(|i| i.unwrap()).collect()
 }
 
 pub fn build_win_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
@@ -648,7 +648,7 @@ pub fn build_win_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
                 pub dwDamageMask: DWORD,
             }
         )
-    ]).move_iter().map(|i| i.unwrap()).collect()
+    ]).into_iter().map(|i| i.unwrap()).collect()
 }
 
 pub fn build_wgl_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
@@ -676,7 +676,7 @@ pub fn build_wgl_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
 
         quote_item!(ecx, pub struct GPU_DEVICE(_GPU_DEVICE);),
         quote_item!(ecx, pub struct PGPU_DEVICE(*const _GPU_DEVICE);),
-    ]).move_iter().map(|i| i.unwrap()).collect()
+    ]).into_iter().map(|i| i.unwrap()).collect()
 }
 
 pub fn build_egl_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
@@ -733,5 +733,5 @@ pub fn build_egl_aliases(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
                 iStride: EGLint,
             }
         )
-    ]).move_iter().map(|i| i.unwrap()).collect()
+    ]).into_iter().map(|i| i.unwrap()).collect()
 }
