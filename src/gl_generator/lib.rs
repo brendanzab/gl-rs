@@ -83,10 +83,9 @@ extern crate syntax;
 
 use registry::{Registry, Filter};
 use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
-use syntax::ast::{ Item, TokenTree };
-use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult};
+use syntax::ast::TokenTree;
+use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult, MacItems};
 use syntax::codemap::Span;
-use syntax::ptr::P;
 
 mod generators;
 
@@ -97,21 +96,6 @@ mod registry;
 #[doc(hidden)]
 pub fn plugin_registrar(reg: &mut ::rustc::plugin::Registry) {
     reg.register_macro("generate_gl_bindings", macro_handler);
-}
-
-// this is the object that we will return from the "generate_gl_bindings" macro expansion
-struct MacroResult {
-    content: Vec<P<Item>>
-}
-impl MacResult for MacroResult {
-    fn make_def(&mut self) -> Option<::syntax::ext::base::MacroDef> { None }
-    fn make_expr(self: Box<MacroResult>) -> Option<P<::syntax::ast::Expr>> { None }
-    fn make_pat(self: Box<MacroResult>) -> Option<P<::syntax::ast::Pat>> { None }
-    fn make_stmt(self: Box<MacroResult>) -> Option<P<::syntax::ast::Stmt>> { None }
-
-    fn make_items(self: Box<MacroResult>) -> Option<::syntax::util::small_vector::SmallVector<P<Item>>> {
-        Some(::syntax::util::small_vector::SmallVector::many(self.content.clone()))
-    }
 }
 
 // handler for generate_gl_bindings!
@@ -194,7 +178,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         }
     };
 
-    box MacroResult { content: items } as Box<MacResult>
+    MacItems::new(items.into_iter())
 }
 
 fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::TokenTree])
