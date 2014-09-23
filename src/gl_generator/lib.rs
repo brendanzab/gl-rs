@@ -132,7 +132,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
         use std::task;
 
         let result = task::try(proc() {
-            let reader = BufReader::new(source.as_bytes());
+            let reader = BufReader::new(source);
             Registry::from_xml(reader, ns, filter)
         });
 
