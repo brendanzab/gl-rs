@@ -364,12 +364,12 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
 
                 // add enum namespace
                 events::StartElement{ref name, ..} if name.local_name.as_slice() == "enums" => {
-                    registry.enums.extend(self.consume_enums().move_iter());
+                    registry.enums.extend(self.consume_enums().into_iter());
                 }
 
                 // add command namespace
                 events::StartElement{ref name, ..} if name.local_name.as_slice() == "commands" => {
-                    registry.cmds.extend(self.consume_cmds().move_iter());
+                    registry.cmds.extend(self.consume_cmds().into_iter());
                 }
 
                 events::StartElement{ref name, ref attributes, ..} if name.local_name.as_slice() == "feature" => {
@@ -458,13 +458,13 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
 
                 Registry {
                     groups: groups,
-                    enums: enums.move_iter().filter(|e| {
+                    enums: enums.into_iter().filter(|e| {
                             desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice()))) ||
                             desired_enums.contains(&("WGL_".to_string().append(e.ident.as_slice()))) ||
                             desired_enums.contains(&("GLX_".to_string().append(e.ident.as_slice()))) ||
                             desired_enums.contains(&("EGL_".to_string().append(e.ident.as_slice())))
                         }).collect::<Vec<Enum>>(),
-                    cmds: cmds.move_iter().filter(|c| {
+                    cmds: cmds.into_iter().filter(|c| {
                             desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice()))) ||
                             desired_cmds.contains(&("wgl".to_string().append(c.proto.ident.as_slice()))) ||
                             desired_cmds.contains(&("glX".to_string().append(c.proto.ident.as_slice()))) ||
