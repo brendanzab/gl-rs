@@ -28,11 +28,11 @@ impl super::Generator for GlobalGenerator {
         let mut result = Vec::new();
         result.push(write_header(ecx));
         result.push(write_type_aliases(ecx, &ns));
-        result.push_all_move(write_enums(ecx, registry));
-        result.push_all_move(write_fns(ecx, registry));
-        result.push_all_move(write_fnptr_struct_def(ecx));
+        result.extend(write_enums(ecx, registry).into_iter());
+        result.extend(write_fns(ecx, registry).into_iter());
+        result.extend(write_fnptr_struct_def(ecx).into_iter());
         result.push(write_ptrs(ecx, registry));
-        result.push_all_move(write_fn_mods(ecx, registry, &ns));
+        result.extend(write_fn_mods(ecx, registry, &ns).into_iter());
         result.push(write_failing_fns(ecx, registry));
         result.push(write_load_fn(ecx, registry));
         result

@@ -28,7 +28,7 @@ impl super::Generator for StaticGenerator {
         let mut result = Vec::new();
         result.push(write_header(ecx));
         result.push(write_type_aliases(ecx, &ns));
-        result.push_all_move(write_enums(ecx, registry));
+        result.extend(write_enums(ecx, registry).into_iter());
         result.push(write_fns(ecx, registry, &ns));
         result
     }
