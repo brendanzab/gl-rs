@@ -81,24 +81,24 @@ fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
 
     match *namespace {
         Gl | Gles1 | Gles2 => {
-            result.push_all_move(ty::build_gl_aliases(ecx));
+            result.extend(ty::build_gl_aliases(ecx).into_iter());
         }
         
         Glx => {
-            result.push_all_move(ty::build_gl_aliases(ecx));
-            result.push_all_move(ty::build_x_aliases(ecx));
-            result.push_all_move(ty::build_glx_aliases(ecx));
+            result.extend(ty::build_gl_aliases(ecx).into_iter());
+            result.extend(ty::build_x_aliases(ecx).into_iter());
+            result.extend(ty::build_glx_aliases(ecx).into_iter());
         }
 
         Wgl => {
-            result.push_all_move(ty::build_gl_aliases(ecx));
-            result.push_all_move(ty::build_win_aliases(ecx));
-            result.push_all_move(ty::build_wgl_aliases(ecx));
+            result.extend(ty::build_gl_aliases(ecx).into_iter());
+            result.extend(ty::build_win_aliases(ecx).into_iter());
+            result.extend(ty::build_wgl_aliases(ecx).into_iter());
         }
 
         Egl => {
-            result.push_all_move(ty::build_gl_aliases(ecx));
-            result.push_all_move(ty::build_egl_aliases(ecx));
+            result.extend(ty::build_gl_aliases(ecx).into_iter());
+            result.extend(ty::build_egl_aliases(ecx).into_iter());
         }
     }
 
@@ -154,5 +154,5 @@ pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
         Glx => "glX",
         Wgl => "wgl",
         Egl => "egl",
-    }).to_string().append(cmd.proto.ident.as_slice())
+    }).to_string() + cmd.proto.ident.as_slice()
 }

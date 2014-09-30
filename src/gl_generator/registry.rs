@@ -459,16 +459,16 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 Registry {
                     groups: groups,
                     enums: enums.into_iter().filter(|e| {
-                            desired_enums.contains(&("GL_".to_string().append(e.ident.as_slice()))) ||
-                            desired_enums.contains(&("WGL_".to_string().append(e.ident.as_slice()))) ||
-                            desired_enums.contains(&("GLX_".to_string().append(e.ident.as_slice()))) ||
-                            desired_enums.contains(&("EGL_".to_string().append(e.ident.as_slice())))
+                            desired_enums.contains(&("GL_".to_string() + e.ident.as_slice())) ||
+                            desired_enums.contains(&("WGL_".to_string() + e.ident.as_slice())) ||
+                            desired_enums.contains(&("GLX_".to_string() + e.ident.as_slice())) ||
+                            desired_enums.contains(&("EGL_".to_string() + e.ident.as_slice()))
                         }).collect::<Vec<Enum>>(),
                     cmds: cmds.into_iter().filter(|c| {
-                            desired_cmds.contains(&("gl".to_string().append(c.proto.ident.as_slice()))) ||
-                            desired_cmds.contains(&("wgl".to_string().append(c.proto.ident.as_slice()))) ||
-                            desired_cmds.contains(&("glX".to_string().append(c.proto.ident.as_slice()))) ||
-                            desired_cmds.contains(&("egl".to_string().append(c.proto.ident.as_slice())))
+                            desired_cmds.contains(&("gl".to_string() + c.proto.ident.as_slice())) ||
+                            desired_cmds.contains(&("wgl".to_string() + c.proto.ident.as_slice())) ||
+                            desired_cmds.contains(&("glX".to_string() + c.proto.ident.as_slice())) ||
+                            desired_cmds.contains(&("egl".to_string() + c.proto.ident.as_slice()))
                         }).collect::<Vec<Cmd>>(),
                     // these aren't important after this step
                     features: Vec::new(),
