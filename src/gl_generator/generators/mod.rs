@@ -68,6 +68,7 @@ fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> 
     ecx.parse_item(format!("
         #[stable]
         #[allow(dead_code)]
+        #[allow(non_uppercase_statics)]
         pub static {}: {} = {};"
     , ident, ty, value))
 }
