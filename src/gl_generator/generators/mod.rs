@@ -15,7 +15,7 @@ pub trait Generator {
     fn write(&self, &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>>;
 }
 
-/// This function generates a `static name: type = value;` item.
+/// This function generates a `const name: type = value;` item.
 fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> {
     use syntax::ext::quote::rt::ExtParseUtils;
 
@@ -69,7 +69,7 @@ fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> 
         #[stable]
         #[allow(dead_code)]
         #[allow(non_uppercase_statics)]
-        pub static {}: {} = {};"
+        pub const {}: {} = {};"
     , ident, ty, value))
 }
 
