@@ -34,7 +34,7 @@ impl super::Generator for GlobalGenerator {
         result.push(write_ptrs(ecx, registry));
         result.extend(write_fn_mods(ecx, registry, &ns).into_iter());
         result.push(write_failing_fns(ecx, registry));
-        result.push(write_load_fn(ecx, registry));
+        result.extend(write_load_fn(ecx, registry).into_iter());
         result
     }
 }
@@ -44,6 +44,7 @@ impl super::Generator for GlobalGenerator {
 fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
     (quote_item!(ecx,
         mod __gl_imports {
+            extern crate gl_common;
             extern crate libc;
             pub use std::mem;
         }
@@ -245,13 +246,13 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
 /// Creates the `load_with` function.
 ///
 /// The function calls `load_with` in each module created by `write_fn_mods`.
-fn write_load_fn(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
+fn write_load_fn(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     let loadings = registry.cmd_iter().map(|c| {
         let cmd_name = ecx.ident_of(c.proto.ident.as_slice());
         quote_stmt!(ecx, $cmd_name::load_with(|s| loadfn(s));)
     }).collect::<Vec<P<ast::Stmt>>>();
 
-    (quote_item!(ecx,
+    let a = (quote_item!(ecx,
         /// Load each OpenGL symbol using a custom load function. This allows for the
         /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
         /// ~~~ignore
@@ -262,5 +263,20 @@ fn write_load_fn(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
         pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {
             $loadings
         }
-    )).unwrap()
+    )).unwrap();
+
+    let b = (quote_item!(ecx,
+        /// Load each OpenGL symbol using a custom load function.
+        ///
+        /// ~~~ignore
+        /// gl::load(&glfw);
+        /// ~~~
+        #[unstable]
+        #[allow(dead_code)]
+        pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) {
+            load_with(|name| loader.get_proc_addr(name));
+        }
+    )).unwrap();
+
+    vec![a, b]
 }
