@@ -64,7 +64,7 @@ if gl::Viewport::is_loaded() {
 
 ## Using gl_generator
 
-If you need a specific version of OpenGL, if you need a different API
+If you need a specific version of OpenGL, or you need a different API
 (OpenGL ES, EGL, WGL, GLX), or if you need certain extensions, you should use
 the `gl_generator` plugin instead.
 
@@ -73,37 +73,58 @@ custom gfx-rs loader for a project.
 
 Add this to your `Cargo.toml`:
 
-```toml
+~~~toml
 [dependencies.gl_generator]
 git = "https://github.com/bjz/gl-rs"
-```
+~~~
 
 Then use it like this:
 
-```rust
-#![feature(phase)]
-
+~~~rust
 #[phase(plugin)]
 extern crate gl_generator;
+extern crate libc;
 
-mod gl {
-    generate_gl_bindings!("gl", "core", "4.5", "global")
+use std::mem;
+use self::types::*;
+
+generate_gl_bindings! {
+    api: gl,
+    profile: core,
+    version: 4.5,
+    generator: global,
+    extensions: [
+        GL_EXT_texture_filter_anisotropic,
+    ],
 }
-```
+~~~
 
 The `generate_gl_bindings` macro will generate all the OpenGL functions,
 plus all enumerations, plus all types in the `types` submodule.
 
-The parameters are the following:
+### Field Syntax
 
- * API: Can be `gl`, `gles1`, `gles2`, `wgl`, `glx`, `egl`.
- * Profile: Can be `core` or `compatibility`.
- * Version: The requested version of OpenGL, WGL, GLX or EGL in the format
-    `x.x`.
- * Generator: Can be `static`, `global` or `struct` (more informations below).
- * Extensions (optional): An array of extensions to include in the bindings.
-    For example: `generate_gl_bindings!("gl", "core", "4.5", "global",
-    [ "GL_EXT_texture_filter_anisotropic" ])`
+Each field can be specified at most once, or not at all. If the field is not
+specified, then a default value will be used. The syntax for each field is
+as follows (in [EBNF](http://en.wikipedia.org/wiki/Extended_Backus-Naur_Form)):
+
+~~~ebnf
+api        = "api:",        ("gl" | "gles1" | "gles2" | "wgl" | "glx" | "egl")
+profile    = "profile:",    ("core" | "compatibility")
+version    = "version:",    digit, ".", digit
+generator  = "generator:",  ("static" | "global" | "struct")
+extensions = "extensions:", "[", [ [ ident ], { ",", ident } ], [ "," ], "]"
+~~~
+
+#### Notes
+
+- `api`: The API to generate. Defaults to `gl`.
+- `profile`: Defaults to `core`. `core` will only include all functions
+   supported by the requested version it self, while `compatibility` will
+   include all the functions from previous versions as well.
+- `version`: The requested API version. Defaults to `1.0`.
+- `generator`: The type of loader to generate. Defaults to `static`.
+- `extensions`: Extra extensions to include in the bindings. Defaults to `[]`.
 
 ### Global generator
 

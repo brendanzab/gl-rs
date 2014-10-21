@@ -34,7 +34,12 @@ use self::gl::types::*;
 #[allow(non_snake_case)]
 pub mod gl {
     use self::types::*;
-    generate_gl_bindings!("gl", "core", "3.2", "struct")
+    generate_gl_bindings! {
+        api: gl,
+        profile: core,
+        version: 3.2,
+        generator: struct,
+    }
 }
 
 // Vertex data
