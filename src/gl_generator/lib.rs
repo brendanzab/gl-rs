@@ -106,7 +106,7 @@ extern crate syntax;
 
 use generators::Generator;
 use registry::{Registry, Filter, Ns};
-use syntax::ast::{TokenTree, TTDelim, TTTok};
+use syntax::ast::{TokenTree, TTDelim, TTNonterminal, TTSeq, TTTok};
 use syntax::codemap::Span;
 use syntax::ext::base::{DummyResult, ExtCtxt, MacResult, MacItems};
 use syntax::parse::token;
@@ -138,6 +138,19 @@ fn drop_trailing_comma(tts: &[TokenTree]) -> &[TokenTree] {
     }
 }
 
+fn get_span_from_tt(tt: &TokenTree) -> Span {
+    match *tt {
+        TTTok(span, _) => span,
+        TTSeq(span, _, _, _) => span,
+        TTNonterminal(span, _) => span,
+        TTDelim(ref tts) => get_span_from_tt(
+            tts.as_slice().head()
+               .expect("Delimetered token trees should contain at least \
+                        two elements.")
+        ),
+    }
+}
+
 /// handler for generate_gl_bindings!
 fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacResult+'static> {
     // Generator options
@@ -152,28 +165,29 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
     // Iterate through the comma separated
     for tts in tts.split(is_comma) {
         let mut it = tts.iter();
-        let (field, field_span) = match it.next() {
-            Some(&TTTok(span, token::IDENT(ref field, _))) => {
-                (field.as_str(), span)
-            },
-            _ => {
-                ecx.span_err(span, "Expected a generator attribute, either: \
-                                    `api`, `profile`, `version`, `generator`, \
-                                    or `extensions`.");
+        let field = match it.next() {
+            Some(&TTTok(_, token::IDENT(ref field, _))) => field.as_str(),
+            tt => {
+                let span = tt.map(get_span_from_tt).unwrap_or(span);
+                ecx.span_err(span, "Expected a generator argument name, \
+                                    either: `api`, `profile`, `version`, \
+                                    `generator`, or `extensions`.");
                 return DummyResult::any(span);
             },
         };
         match it.next() {
             Some(&TTTok(_, token::COLON)) => {},
-            _ => {
-                ecx.span_err(span, "Expected a `:`");
+            tt => {
+                let span = tt.map(get_span_from_tt).unwrap_or(span);
+                ecx.span_err(span, "Expected `:`");
                 return DummyResult::any(span);
             },
         }
         match (field, it.collect::<Vec<_>>().as_slice()) {
             ("api", tts) => {
                 if api.is_some() {
-                    ecx.span_err(field_span, "An API was already specified.");
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "An API was already specified.");
                     return DummyResult::any(span);
                 }
                 api = Some(match tts {
@@ -194,15 +208,17 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                         return DummyResult::any(span);
                     },
                     _ => {
-                        ecx.span_err(field_span, "Invalid API format, \
-                                                  expected identifier");
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid API format, expected \
+                                            identifier");
                         return DummyResult::any(span);
                     }
                 })
             }
             ("profile", tts) => {
                 if profile.is_some() {
-                    ecx.span_err(field_span, "A profile was already specified.");
+                    ecx.span_err(get_span_from_tt(tts[0]),
+                                 "A profile was already specified.");
                     return DummyResult::any(span);
                 }
                 profile = Some(match tts {
@@ -211,20 +227,23 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     [&TTTok(_, token::IDENT(ref profile, _))] if profile.as_str() == "compatibility"
                         => "compatibility".to_string(),
                     [&TTTok(_, token::IDENT(ref profile, _))] => {
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, format!("Unknown profile `{}`",
                                                    profile.as_str()).as_slice());
                         return DummyResult::any(span);
                     },
                     _ => {
-                        ecx.span_err(field_span, "Invalid profile format, \
-                                                  expected identifier");
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid profile format, expected \
+                                            identifier");
                         return DummyResult::any(span);
                     },
                 })
             }
             ("version", tts) => {
                 if version.is_some() {
-                    ecx.span_err(field_span, "A version was already specified.");
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "A version was already specified.");
                     return DummyResult::any(span);
                 }
                 version = Some(match tts {
@@ -232,15 +251,17 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                         version.as_str().to_string()
                     },
                     _ => {
-                        ecx.span_err(field_span, "Invalid version format, \
-                                                  expected `major.minor`");
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid version format, expected \
+                                            `major.minor`");
                         return DummyResult::any(span);
                     },
                 });
             }
             ("generator", tts) => {
                 if generator.is_some() {
-                    ecx.span_err(field_span, "A generator was already specified.");
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "A generator was already specified.");
                     return DummyResult::any(span);
                 }
                 generator = Some(match tts {
@@ -256,16 +277,18 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                         return DummyResult::any(span);
                     },
                     _ => {
-                        ecx.span_err(field_span, "Invalid generator format, \
-                                                  expected identifier");
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid generator format, expected \
+                                            identifier");
                         return DummyResult::any(span);
                     },
                 });
             }
             ("extensions", tts) => {
                 if extensions.is_some() {
-                    ecx.span_err(field_span, "The list of extensions were \
-                                              already specified.");
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "The list of extensions were already \
+                                        specified.");
                     return DummyResult::any(span);
                 }
                 extensions = Some(match tts {
@@ -293,27 +316,27 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                             // Cause an error if there is still some leftover
                             // tokens.
                             if failed {
-                                ecx.span_err(field_span, "Invalid extension \
-                                                          format, expected \
-                                                          identifier");
+                                let span = tts.head().map_or(span, get_span_from_tt);
+                                ecx.span_err(span, "Invalid extension format, \
+                                                    expected identifier");
                                 return DummyResult::any(span);
                             } else {
                                 exts
                             }
                         },
                         _ => {
-                            ecx.span_err(field_span, "Expected a comma \
-                                                      separated list of \
-                                                      extension identifiers \
-                                                      delimited by square \
-                                                      brackets: `[]`");
+                            let span = tts.as_slice().head().map_or(span, get_span_from_tt);
+                            ecx.span_err(span, "Expected a comma separated \
+                                                list of extension identifiers \
+                                                delimited by square brackets: \
+                                                `[]`");
                             return DummyResult::any(span);
                         }
                     },
                     _ => {
-                        ecx.span_err(field_span, "Expected a comma separated \
-                                                  list of extension \
-                                                  identifiers.");
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Expected a comma separated list of \
+                                            extension identifiers.");
                         return DummyResult::any(span);
                     },
                 });
