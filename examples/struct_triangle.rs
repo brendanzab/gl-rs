@@ -35,10 +35,10 @@ use self::gl::types::*;
 pub mod gl {
     use self::types::*;
     generate_gl_bindings! {
-        api: gl,
-        profile: core,
-        version: 3.2,
-        generator: struct,
+        api: "gl",
+        profile: "core",
+        version: "3.2",
+        generator: "struct",
     }
 }
 

@@ -7,37 +7,37 @@ extern crate libc;
 
 mod gl {
     generate_gl_bindings! {
-        api: gl,
-        profile: core,
-        version: 4.5,
-        generator: global,
+        api: "gl",
+        profile: "core",
+        version: "4.5",
+        generator: "global",
     }
 }
 
 mod gles {
     generate_gl_bindings! {
-        api: gles2,
-        profile: core,
-        version: 3.1,
-        generator: global,
+        api: "gles2",
+        profile: "core",
+        version: "3.1",
+        generator: "global",
     }
 }
 
 mod glx {
     generate_gl_bindings! {
-        api: glx,
-        profile: core,
-        version: 1.4,
-        generator: global,
+        api: "glx",
+        profile: "core",
+        version: "1.4",
+        generator: "global",
     }
 }
 
 mod wgl {
     generate_gl_bindings! {
-        api: wgl,
-        profile: core,
-        version: 1.0,
-        generator: global,
+        api: "wgl",
+        profile: "core",
+        version: "1.0",
+        generator: "global",
     }
 }
 
@@ -58,10 +58,10 @@ mod egl {
     pub type NativeWindowType = *const libc::c_void;
 
     generate_gl_bindings! {
-        api: egl,
-        profile: core,
-        version: 1.5,
-        generator: global,
+        api: "egl",
+        profile: "core",
+        version: "1.5",
+        generator: "global",
     }
 }
 

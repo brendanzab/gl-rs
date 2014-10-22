@@ -40,29 +40,23 @@
 //! }
 //! ~~~
 //!
-//! ## Field Syntax
+//! ## Arguments
 //!
 //! Each field can be specified at most once, or not at all. If the field is not
-//! specified, then a default value will be used. The syntax for each field is
-//! as follows (in [EBNF](http://en.wikipedia.org/wiki/Extended_Backus-Naur_Form)):
+//! specified, then a default value will be used.
 //!
-//! ~~~ebnf
-//! api        = "api:",        ("gl" | "gles1" | "gles2" | "wgl" | "glx" | "egl")
-//! profile    = "profile:",    ("core" | "compatibility")
-//! version    = "version:",    digit, ".", digit
-//! generator  = "generator:",  ("static" | "global" | "struct")
-//! extensions = "extensions:", "[", [ [ ident ], { ",", ident } ], [ "," ], "]"
-//! ~~~
-//!
-//! ### Notes
-//!
-//! - `api`: The API to generate. Defaults to `gl`.
-//! - `profile`: Defaults to `core`. `core` will only include all functions
-//!    supported by the requested version it self, while `compatibility` will
-//!    include all the functions from previous versions as well.
-//! - `version`: The requested API version. Defaults to `1.0`.
-//! - `generator`: The type of loader to generate. Defaults to `static`.
-//! - `extensions`: Extra extensions to include in the bindings. Defaults to `[]`.
+//! - `api`: The API to generate. Can be either `"gl"`, `"gles1"`, `"gles2"`,
+//!   `"wgl"`, `"glx"`, `"egl"`. Defaults to `"gl"`.
+//! - `profile`: Can be either `"core"` or `"compatibility"`. Defaults to
+//!   `"core"`. `"core"` will only include all functions supported by the
+//!   requested version it self, while `"compatibility"` will include all the
+//!   functions from previous versions as well.
+//! - `version`: The requested API version. This is usually in the form
+//!   `"major.minor"`. Defaults to `"1.0"`
+//! - `generator`: The type of loader to generate. Can be either `"static"`,
+//!   `"global"`, or `"struct"`. Defaults to `"static"`.
+//! - `extensions`: Extra extensions to include in the bindings. These are
+//!   specified as a list of strings. Defaults to `[]`.
 //!
 //! ## About EGL
 //!
@@ -191,26 +185,26 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 api = Some(match tts {
-                    [&TTTok(_, token::IDENT(ref api, _))] if api.as_str() == "gl"
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gl"
                         => (registry::Gl, khronos_api::GL_XML),
-                    [&TTTok(_, token::IDENT(ref api, _))] if api.as_str() == "glx"
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "glx"
                         => (registry::Glx, khronos_api::GLX_XML),
-                    [&TTTok(_, token::IDENT(ref api, _))] if api.as_str() == "wgl"
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "wgl"
                         => (registry::Wgl, khronos_api::WGL_XML),
-                    [&TTTok(_, token::IDENT(ref api, _))] if api.as_str() == "egl"
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "egl"
                         => (registry::Egl, khronos_api::EGL_XML),
-                    [&TTTok(_, token::IDENT(ref api, _))] if api.as_str() == "gles1"
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gles1"
                         => (registry::Gles1, khronos_api::GL_XML),
-                    [&TTTok(_, token::IDENT(ref api, _))] if api.as_str() == "gles2"
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gles2"
                         => (registry::Gles2, khronos_api::GL_XML),
-                    [&TTTok(span, token::IDENT(ref api, _))] => {
-                        ecx.span_err(span, format!("Unknown API `{}`", api.as_str()).as_slice());
+                    [&TTTok(span, token::LIT_STR(api))] => {
+                        ecx.span_err(span, format!("Unknown API \"{}\"", api.as_str()).as_slice());
                         return DummyResult::any(span);
                     },
                     _ => {
                         let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, "Invalid API format, expected \
-                                            identifier");
+                                            string.");
                         return DummyResult::any(span);
                     }
                 })
@@ -222,20 +216,20 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 profile = Some(match tts {
-                    [&TTTok(_, token::IDENT(ref profile, _))] if profile.as_str() == "core"
+                    [&TTTok(_, token::LIT_STR(profile))] if profile.as_str() == "core"
                         => "core".to_string(),
-                    [&TTTok(_, token::IDENT(ref profile, _))] if profile.as_str() == "compatibility"
+                    [&TTTok(_, token::LIT_STR(profile))] if profile.as_str() == "compatibility"
                         => "compatibility".to_string(),
-                    [&TTTok(_, token::IDENT(ref profile, _))] => {
+                    [&TTTok(_, token::LIT_STR(profile))] => {
                         let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
-                        ecx.span_err(span, format!("Unknown profile `{}`",
+                        ecx.span_err(span, format!("Unknown profile \"{}\"",
                                                    profile.as_str()).as_slice());
                         return DummyResult::any(span);
                     },
                     _ => {
                         let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, "Invalid profile format, expected \
-                                            identifier");
+                                            string.");
                         return DummyResult::any(span);
                     },
                 })
@@ -247,13 +241,13 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 version = Some(match tts {
-                    [&TTTok(_, token::LIT_FLOAT(ref version))] => {
+                    [&TTTok(_, token::LIT_STR(version))] => {
                         version.as_str().to_string()
                     },
                     _ => {
                         let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, "Invalid version format, expected \
-                                            `major.minor`");
+                                            string.");
                         return DummyResult::any(span);
                     },
                 });
@@ -265,21 +259,21 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 generator = Some(match tts {
-                    [&TTTok(_, token::IDENT(ref gen, _))] if gen.as_str() == "global"
+                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "global"
                         => box generators::global_gen::GlobalGenerator as Box<Generator>,
-                    [&TTTok(_, token::IDENT(ref gen, _))] if gen.as_str() == "struct"
+                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "struct"
                         => box generators::struct_gen::StructGenerator as Box<Generator>,
-                    [&TTTok(_, token::IDENT(ref gen, _))] if gen.as_str() == "static"
+                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "static"
                         => box generators::static_gen::StaticGenerator as Box<Generator>,
-                    [&TTTok(span, token::IDENT(ref gen, _))] => {
-                        ecx.span_err(span, format!("Unknown generator `{}`",
+                    [&TTTok(span, token::LIT_STR(gen))] => {
+                        ecx.span_err(span, format!("Unknown generator \"{}\"",
                                                    gen.as_str()).as_slice());
                         return DummyResult::any(span);
                     },
                     _ => {
                         let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, "Invalid generator format, expected \
-                                            identifier");
+                                            string.");
                         return DummyResult::any(span);
                     },
                 });
@@ -304,7 +298,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                             let mut failed = false;
                             let exts = tts.split(is_comma)
                                           .scan((), |_, tts| match tts {
-                                [TTTok(_, token::IDENT(ref ext, _))] => {
+                                [TTTok(_, token::LIT_STR(ext))] => {
                                     Some(ext.as_str().to_string())
                                 },
                                 _ => {
@@ -318,7 +312,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                             if failed {
                                 let span = tts.head().map_or(span, get_span_from_tt);
                                 ecx.span_err(span, "Invalid extension format, \
-                                                    expected identifier");
+                                                    expected string.");
                                 return DummyResult::any(span);
                             } else {
                                 exts
@@ -327,7 +321,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                         _ => {
                             let span = tts.as_slice().head().map_or(span, get_span_from_tt);
                             ecx.span_err(span, "Expected a comma separated \
-                                                list of extension identifiers \
+                                                list of extension strings \
                                                 delimited by square brackets: \
                                                 `[]`");
                             return DummyResult::any(span);
@@ -336,7 +330,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     _ => {
                         let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, "Expected a comma separated list of \
-                                            extension identifiers.");
+                                            extension strings.");
                         return DummyResult::any(span);
                     },
                 });

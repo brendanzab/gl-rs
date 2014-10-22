@@ -86,11 +86,11 @@
 extern crate gl_generator;
 
 generate_gl_bindings! {
-    api: gl,
-    profile: core,
-    version: 4.5,
-    generator: global,
+    api: "gl",
+    profile: "core",
+    version: "4.5",
+    generator: "global",
     extensions: [
-        GL_EXT_texture_filter_anisotropic,
+        "GL_EXT_texture_filter_anisotropic",
     ],
 }

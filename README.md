@@ -102,29 +102,25 @@ generate_gl_bindings! {
 The `generate_gl_bindings` macro will generate all the OpenGL functions,
 plus all enumerations, plus all types in the `types` submodule.
 
-### Field Syntax
+### Arguments
 
 Each field can be specified at most once, or not at all. If the field is not
-specified, then a default value will be used. The syntax for each field is
-as follows (in [EBNF](http://en.wikipedia.org/wiki/Extended_Backus-Naur_Form)):
+specified, then a default value will be used.
 
-~~~ebnf
-api        = "api:",        ("gl" | "gles1" | "gles2" | "wgl" | "glx" | "egl")
-profile    = "profile:",    ("core" | "compatibility")
-version    = "version:",    digit, ".", digit
-generator  = "generator:",  ("static" | "global" | "struct")
-extensions = "extensions:", "[", [ [ ident ], { ",", ident } ], [ "," ], "]"
-~~~
+- `api`: The API to generate. Can be either `"gl"`, `"gles1"`, `"gles2"`,
+  `"wgl"`, `"glx"`, `"egl"`. Defaults to `"gl"`.
+- `profile`: Can be either `"core"` or `"compatibility"`. Defaults to
+  `"core"`. `"core"` will only include all functions supported by the
+  requested version it self, while `"compatibility"` will include all the
+  functions from previous versions as well.
+- `version`: The requested API version. This is usually in the form
+  `"major.minor"`. Defaults to `"1.0"`
+- `generator`: The type of loader to generate. Can be either `"static"`,
+  `"global"`, or `"struct"`. Defaults to `"static"`.
+- `extensions`: Extra extensions to include in the bindings. These are
+  specified as a list of strings. Defaults to `[]`.
 
-#### Notes
-
-- `api`: The API to generate. Defaults to `gl`.
-- `profile`: Defaults to `core`. `core` will only include all functions
-   supported by the requested version it self, while `compatibility` will
-   include all the functions from previous versions as well.
-- `version`: The requested API version. Defaults to `1.0`.
-- `generator`: The type of loader to generate. Defaults to `static`.
-- `extensions`: Extra extensions to include in the bindings. Defaults to `[]`.
+## Generator types
 
 ### Global generator
 
