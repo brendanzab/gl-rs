@@ -49,7 +49,7 @@ fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
 }
 
 /// Creates a `types` module which contains all the type aliases.
-/// 
+///
 /// See also `generators::gen_type_aliases`.
 fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
     let aliases = super::gen_type_aliases(ecx, ns);
@@ -60,7 +60,7 @@ fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
             #![allow(dead_code)]
-            
+
             $aliases
         }
     )).unwrap()
@@ -127,7 +127,7 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
             }}
             "#,
             name = c.proto.ident,
-            params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+            params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
             return_suffix = super::gen_return_type(ecx, c).to_source()
         ))
     }).collect::<Vec<P<ast::Item>>>();
@@ -210,10 +210,10 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
                         }} \
                     }}",
                     name = c.proto.ident,
-                    params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
-                    types = super::gen_parameters(ecx, c).move_iter().map(|p| p.ty.to_source()).collect::<Vec<String>>().connect(", "),
+                    params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                    types = super::gen_parameters(ecx, c).into_iter().map(|p| p.ty.to_source()).collect::<Vec<String>>().connect(", "),
                     return_suffix = super::gen_return_type(ecx, c).to_source(),
-                    idents = super::gen_parameters(ecx, c).move_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
+                    idents = super::gen_parameters(ecx, c).into_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
                 )
             } else {
                 format!(
@@ -223,9 +223,9 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
                             (self.{name}.f)({idents}) \
                     }}",
                     name = c.proto.ident,
-                    typed_params = super::gen_parameters(ecx, c).move_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                    typed_params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
                     return_suffix = super::gen_return_type(ecx, c).to_source(),
-                    idents = super::gen_parameters(ecx, c).move_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
+                    idents = super::gen_parameters(ecx, c).into_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
                 )
             }
         }).collect::<Vec<String>>().connect("\n")
