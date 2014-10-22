@@ -6,19 +6,39 @@ extern crate gl_generator;
 extern crate libc;
 
 mod gl {
-    generate_gl_bindings!("gl", "core", "4.5", "global")
+    generate_gl_bindings! {
+        api: "gl",
+        profile: "core",
+        version: "4.5",
+        generator: "global",
+    }
 }
 
 mod gles {
-    generate_gl_bindings!("gles2", "core", "3.1", "global")
+    generate_gl_bindings! {
+        api: "gles2",
+        profile: "core",
+        version: "3.1",
+        generator: "global",
+    }
 }
 
 mod glx {
-    generate_gl_bindings!("glx", "core", "1.4", "global")
+    generate_gl_bindings! {
+        api: "glx",
+        profile: "core",
+        version: "1.4",
+        generator: "global",
+    }
 }
 
 mod wgl {
-    generate_gl_bindings!("wgl", "core", "1.0", "global")
+    generate_gl_bindings! {
+        api: "wgl",
+        profile: "core",
+        version: "1.0",
+        generator: "global",
+    }
 }
 
 mod egl {
@@ -37,7 +57,12 @@ mod egl {
     pub type NativePixmapType = *const libc::c_void;
     pub type NativeWindowType = *const libc::c_void;
 
-    generate_gl_bindings!("egl", "core", "1.5", "global")
+    generate_gl_bindings! {
+        api: "egl",
+        profile: "core",
+        version: "1.5",
+        generator: "global",
+    }
 }
 
 #[test]

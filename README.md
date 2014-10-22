@@ -64,7 +64,7 @@ if gl::Viewport::is_loaded() {
 
 ## Using gl_generator
 
-If you need a specific version of OpenGL, if you need a different API
+If you need a specific version of OpenGL, or you need a different API
 (OpenGL ES, EGL, WGL, GLX), or if you need certain extensions, you should use
 the `gl_generator` plugin instead.
 
@@ -73,37 +73,54 @@ custom gfx-rs loader for a project.
 
 Add this to your `Cargo.toml`:
 
-```toml
+~~~toml
 [dependencies.gl_generator]
 git = "https://github.com/bjz/gl-rs"
-```
+~~~
 
 Then use it like this:
 
-```rust
-#![feature(phase)]
-
+~~~rust
 #[phase(plugin)]
 extern crate gl_generator;
+extern crate libc;
 
-mod gl {
-    generate_gl_bindings!("gl", "core", "4.5", "global")
+use std::mem;
+use self::types::*;
+
+generate_gl_bindings! {
+    api: gl,
+    profile: core,
+    version: 4.5,
+    generator: global,
+    extensions: [
+        GL_EXT_texture_filter_anisotropic,
+    ],
 }
-```
+~~~
 
 The `generate_gl_bindings` macro will generate all the OpenGL functions,
 plus all enumerations, plus all types in the `types` submodule.
 
-The parameters are the following:
+### Arguments
 
- * API: Can be `gl`, `gles1`, `gles2`, `wgl`, `glx`, `egl`.
- * Profile: Can be `core` or `compatibility`.
- * Version: The requested version of OpenGL, WGL, GLX or EGL in the format
-    `x.x`.
- * Generator: Can be `static`, `global` or `struct` (more informations below).
- * Extensions (optional): An array of extensions to include in the bindings.
-    For example: `generate_gl_bindings!("gl", "core", "4.5", "global",
-    [ "GL_EXT_texture_filter_anisotropic" ])`
+Each field can be specified at most once, or not at all. If the field is not
+specified, then a default value will be used.
+
+- `api`: The API to generate. Can be either `"gl"`, `"gles1"`, `"gles2"`,
+  `"wgl"`, `"glx"`, `"egl"`. Defaults to `"gl"`.
+- `profile`: Can be either `"core"` or `"compatibility"`. Defaults to
+  `"core"`. `"core"` will only include all functions supported by the
+  requested version it self, while `"compatibility"` will include all the
+  functions from previous versions as well.
+- `version`: The requested API version. This is usually in the form
+  `"major.minor"`. Defaults to `"1.0"`
+- `generator`: The type of loader to generate. Can be either `"static"`,
+  `"global"`, or `"struct"`. Defaults to `"static"`.
+- `extensions`: Extra extensions to include in the bindings. These are
+  specified as a list of strings. Defaults to `[]`.
+
+## Generator types
 
 ### Global generator
 

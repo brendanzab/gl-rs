@@ -9,39 +9,84 @@ extern crate gl_generator;
 extern crate libc;
 
 mod gl_global {
-    generate_gl_bindings!("gl", "core", "4.5", "global")
+    generate_gl_bindings! {
+        api: "gl",
+        profile: "core",
+        version: "4.5",
+        generator: "global",
+    }
 }
 
 mod gl_static {
-    generate_gl_bindings!("gl", "core", "4.5", "static")
+    generate_gl_bindings! {
+        api: "gl",
+        profile: "core",
+        version: "4.5",
+        generator: "static",
+    }
 }
 
 mod gl_struct {
-    generate_gl_bindings!("gl", "core", "4.5", "struct")
+    generate_gl_bindings! {
+        api: "gl",
+        profile: "core",
+        version: "4.5",
+        generator: "struct",
+    }
 }
 
 mod glx_global {
-    generate_gl_bindings!("glx", "core", "1.4", "global")
+    generate_gl_bindings! {
+        api: "glx",
+        profile: "core",
+        version: "1.4",
+        generator: "global",
+    }
 }
 
 mod glx_static {
-    generate_gl_bindings!("glx", "core", "1.4", "static")
+    generate_gl_bindings! {
+        api: "glx",
+        profile: "core",
+        version: "1.4",
+        generator: "static",
+    }
 }
 
 mod glx_struct {
-    generate_gl_bindings!("glx", "core", "1.4", "struct")
+    generate_gl_bindings! {
+        api: "glx",
+        profile: "core",
+        version: "1.4",
+        generator: "struct",
+    }
 }
 
 mod wgl_global {
-    generate_gl_bindings!("wgl", "core", "1.0", "global")
+    generate_gl_bindings! {
+        api: "wgl",
+        profile: "core",
+        version: "1.0",
+        generator: "global",
+    }
 }
 
 mod wgl_static {
-    generate_gl_bindings!("wgl", "core", "1.0", "static")
+    generate_gl_bindings! {
+        api: "wgl",
+        profile: "core",
+        version: "1.0",
+        generator: "static",
+    }
 }
 
 mod wgl_struct {
-    generate_gl_bindings!("wgl", "core", "1.0", "struct")
+    generate_gl_bindings! {
+        api: "wgl",
+        profile: "core",
+        version: "1.0",
+        generator: "struct",
+    }
 }
 
 mod egl_global {
@@ -61,7 +106,12 @@ mod egl_global {
     pub type NativePixmapType = *const libc::c_void;
     pub type NativeWindowType = *const libc::c_void;
 
-    generate_gl_bindings!("egl", "core", "1.5", "global")
+    generate_gl_bindings! {
+        api: "egl",
+        profile: "core",
+        version: "1.5",
+        generator: "global",
+    }
 }
 
 mod egl_static {
@@ -81,7 +131,12 @@ mod egl_static {
     pub type NativePixmapType = *const libc::c_void;
     pub type NativeWindowType = *const libc::c_void;
 
-    generate_gl_bindings!("egl", "core", "1.5", "static")
+    generate_gl_bindings! {
+        api: "egl",
+        profile: "core",
+        version: "1.5",
+        generator: "static",
+    }
 }
 
 mod egl_struct {
@@ -101,29 +156,64 @@ mod egl_struct {
     pub type NativePixmapType = *const libc::c_void;
     pub type NativeWindowType = *const libc::c_void;
 
-    generate_gl_bindings!("egl", "core", "1.5", "struct")
+    generate_gl_bindings! {
+        api: "egl",
+        profile: "core",
+        version: "1.5",
+        generator: "struct",
+    }
 }
 
 mod gles1_global {
-    generate_gl_bindings!("gles1", "core", "1.1", "global")
+    generate_gl_bindings! {
+        api: "gles1",
+        profile: "core",
+        version: "1.1",
+        generator: "global",
+    }
 }
 
 mod gles1_static {
-    generate_gl_bindings!("gles1", "core", "1.1", "static")
+    generate_gl_bindings! {
+        api: "gles1",
+        profile: "core",
+        version: "1.1",
+        generator: "static",
+    }
 }
 
 mod gles1_struct {
-    generate_gl_bindings!("gles1", "core", "1.1", "struct")
+    generate_gl_bindings! {
+        api: "gles1",
+        profile: "core",
+        version: "1.1",
+        generator: "struct",
+    }
 }
 
 mod gles2_global {
-    generate_gl_bindings!("gles2", "core", "3.1", "global")
+    generate_gl_bindings! {
+        api: "gles2",
+        profile: "core",
+        version: "3.1",
+        generator: "global",
+    }
 }
 
 mod gles2_static {
-    generate_gl_bindings!("gles2", "core", "3.1", "static")
+    generate_gl_bindings! {
+        api: "gles2",
+        profile: "core",
+        version: "3.1",
+        generator: "static",
+    }
 }
 
 mod gles2_struct {
-    generate_gl_bindings!("gles2", "core", "3.1", "struct")
+    generate_gl_bindings! {
+        api: "gles2",
+        profile: "core",
+        version: "3.1",
+        generator: "struct",
+    }
 }

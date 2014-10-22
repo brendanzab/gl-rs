@@ -84,7 +84,7 @@ fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
         Gl | Gles1 | Gles2 => {
             result.extend(ty::build_gl_aliases(ecx).into_iter());
         }
-        
+
         Glx => {
             result.extend(ty::build_gl_aliases(ecx).into_iter());
             result.extend(ty::build_x_aliases(ecx).into_iter());

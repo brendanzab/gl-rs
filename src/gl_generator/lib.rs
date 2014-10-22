@@ -15,48 +15,64 @@
 
 //! # gl_generator
 //!
-//! `gl_generator` is an OpenGL bindings generator plugin. It defines a macro named
-//!  `generate_gl_bindings!` which can be used to generate all constants and functions of a
-//!  given OpenGL version.
+//! `gl_generator` is an OpenGL bindings generator plugin. It defines a macro
+//!  named `generate_gl_bindings!` which can be used to generate all constants
+//!  and functions of a given OpenGL version.
 //!
 //! ## Example
 //!
-//! ```rust
+//! ~~~rust
 //! #[phase(plugin)]
 //! extern crate gl_generator;
 //! extern crate libc;
-//! 
+//!
 //! use std::mem;
 //! use self::types::*;
 //!
-//! generate_gl_bindings!("gl", "core", "4.5", "global", [ "GL_EXT_texture_filter_anisotropic" ])
-//! ```
+//! generate_gl_bindings! {
+//!     api: gl,
+//!     profile: core,
+//!     version: 4.5,
+//!     generator: global,
+//!     extensions: [
+//!         GL_EXT_texture_filter_anisotropic,
+//!     ],
+//! }
+//! ~~~
 //!
-//! ## Parameters
+//! ## Arguments
 //!
-//! * API: Can be `gl`, `gles1`, `gles2`, `wgl`, `glx`, `egl`.
-//! * Profile: Can be `core` or `compatibility`. `core` will only include all functions supported
-//!    by the requested version it self, while `compatibility` will include all the functions from
-//!    previous versions as well.
-//! * Version: The requested version of OpenGL, WGL, GLX or EGL in the format `x.x`.
-//! * Generator: Can be `static`, `global` or `struct`.
-//! * Extensions (optional): An array of extensions to include in the bindings.
-//! 
+//! Each field can be specified at most once, or not at all. If the field is not
+//! specified, then a default value will be used.
+//!
+//! - `api`: The API to generate. Can be either `"gl"`, `"gles1"`, `"gles2"`,
+//!   `"wgl"`, `"glx"`, `"egl"`. Defaults to `"gl"`.
+//! - `profile`: Can be either `"core"` or `"compatibility"`. Defaults to
+//!   `"core"`. `"core"` will only include all functions supported by the
+//!   requested version it self, while `"compatibility"` will include all the
+//!   functions from previous versions as well.
+//! - `version`: The requested API version. This is usually in the form
+//!   `"major.minor"`. Defaults to `"1.0"`
+//! - `generator`: The type of loader to generate. Can be either `"static"`,
+//!   `"global"`, or `"struct"`. Defaults to `"static"`.
+//! - `extensions`: Extra extensions to include in the bindings. These are
+//!   specified as a list of strings. Defaults to `[]`.
+//!
 //! ## About EGL
 //!
 //! When you generate bindings for EGL, the following platform-specific types must be declared
 //!  *at the same level where you call `generate_gl_bindings`*:
 //!
-//! - khronos_utime_nanoseconds_t
-//! - khronos_uint64_t
-//! - khronos_ssize_t
-//! - EGLNativeDisplayType
-//! - EGLNativePixmapType
-//! - EGLNativeWindowType
-//! - EGLint
-//! - NativeDisplayType
-//! - NativePixmapType
-//! - NativeWindowType
+//! - `khronos_utime_nanoseconds_t`
+//! - `khronos_uint64_t`
+//! - `khronos_ssize_t`
+//! - `EGLNativeDisplayType`
+//! - `EGLNativePixmapType`
+//! - `EGLNativeWindowType`
+//! - `EGLint`
+//! - `NativeDisplayType`
+//! - `NativePixmapType`
+//! - `NativeWindowType`
 //!
 
 
@@ -65,8 +81,9 @@
 #![license = "ASL2"]
 #![crate_type = "dylib"]
 
-#![feature(phase)]
+#![feature(advanced_slice_patterns)]
 #![feature(macro_rules)]
+#![feature(phase)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
 
@@ -81,11 +98,12 @@ extern crate regex;
 extern crate rustc;
 extern crate syntax;
 
-use registry::{Registry, Filter};
-use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
-use syntax::ast::TokenTree;
-use syntax::ext::base::{expr_to_string, get_exprs_from_tts, DummyResult, ExtCtxt, MacResult, MacItems};
+use generators::Generator;
+use registry::{Registry, Filter, Ns};
+use syntax::ast::{TokenTree, TTDelim, TTNonterminal, TTSeq, TTTok};
 use syntax::codemap::Span;
+use syntax::ext::base::{DummyResult, ExtCtxt, MacResult, MacItems};
+use syntax::parse::token;
 
 mod generators;
 
@@ -98,36 +116,250 @@ pub fn plugin_registrar(reg: &mut ::rustc::plugin::Registry) {
     reg.register_macro("generate_gl_bindings", macro_handler);
 }
 
-// handler for generate_gl_bindings!
-fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box<MacResult+'static> {
-    // getting the arguments from the macro
-    let (api, profile, version, generator, extensions) = match parse_macro_arguments(ecx, span.clone(), token_tree) {
-        Some(t) => t,
-        None => return DummyResult::any(span)
-    };
+/// A predicate that is useful for splitting a comma separated list of tokens
+fn is_comma(tt: &TokenTree) -> bool {
+    match *tt {
+        TTTok(_, token::COMMA) => true,
+        _ => false,
+    }
+}
 
-    let (ns, source) = match api.as_slice() {
-        "gl"  => (Gl, khronos_api::GL_XML),
-        "glx" => (Glx, khronos_api::GLX_XML),
-        "wgl" => (Wgl, khronos_api::WGL_XML),
-        "egl" => (Egl, khronos_api::EGL_XML),
-        "gles1"  => (Gles1, khronos_api::GL_XML),
-        "gles2"  => (Gles2, khronos_api::GL_XML),
-        ns => {
-            ecx.span_err(span, format!("Unexpected opengl namespace '{}'", ns).as_slice());
-            return DummyResult::any(span)
+/// Drops a trailing comma if it exists
+fn drop_trailing_comma(tts: &[TokenTree]) -> &[TokenTree] {
+    match tts {
+        [tts.., TTTok(_, token::COMMA)] => tts,
+        tts => tts,
+    }
+}
+
+fn get_span_from_tt(tt: &TokenTree) -> Span {
+    match *tt {
+        TTTok(span, _) => span,
+        TTSeq(span, _, _, _) => span,
+        TTNonterminal(span, _) => span,
+        TTDelim(ref tts) => get_span_from_tt(
+            tts.as_slice().head()
+               .expect("Delimetered token trees should contain at least \
+                        two elements.")
+        ),
+    }
+}
+
+/// handler for generate_gl_bindings!
+fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacResult+'static> {
+    // Generator options
+    let mut api = None::<(Ns, &'static [u8])>;
+    let mut profile = None::<String>;
+    let mut version = None::<String>;
+    let mut generator = None::<Box<Generator>>;
+    let mut extensions = None::<Vec<String>>;
+
+    let tts = drop_trailing_comma(tts);
+
+    // Iterate through the comma separated
+    for tts in tts.split(is_comma) {
+        let mut it = tts.iter();
+        let field = match it.next() {
+            Some(&TTTok(_, token::IDENT(ref field, _))) => field.as_str(),
+            tt => {
+                let span = tt.map(get_span_from_tt).unwrap_or(span);
+                ecx.span_err(span, "Expected a generator argument name, \
+                                    either: `api`, `profile`, `version`, \
+                                    `generator`, or `extensions`.");
+                return DummyResult::any(span);
+            },
+        };
+        match it.next() {
+            Some(&TTTok(_, token::COLON)) => {},
+            tt => {
+                let span = tt.map(get_span_from_tt).unwrap_or(span);
+                ecx.span_err(span, "Expected `:`");
+                return DummyResult::any(span);
+            },
         }
-    };
+        match (field, it.collect::<Vec<_>>().as_slice()) {
+            ("api", tts) => {
+                if api.is_some() {
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "An API was already specified.");
+                    return DummyResult::any(span);
+                }
+                api = Some(match tts {
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gl"
+                        => (registry::Gl, khronos_api::GL_XML),
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "glx"
+                        => (registry::Glx, khronos_api::GLX_XML),
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "wgl"
+                        => (registry::Wgl, khronos_api::WGL_XML),
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "egl"
+                        => (registry::Egl, khronos_api::EGL_XML),
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gles1"
+                        => (registry::Gles1, khronos_api::GL_XML),
+                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gles2"
+                        => (registry::Gles2, khronos_api::GL_XML),
+                    [&TTTok(span, token::LIT_STR(api))] => {
+                        ecx.span_err(span, format!("Unknown API \"{}\"", api.as_str()).as_slice());
+                        return DummyResult::any(span);
+                    },
+                    _ => {
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid API format, expected \
+                                            string.");
+                        return DummyResult::any(span);
+                    }
+                })
+            }
+            ("profile", tts) => {
+                if profile.is_some() {
+                    ecx.span_err(get_span_from_tt(tts[0]),
+                                 "A profile was already specified.");
+                    return DummyResult::any(span);
+                }
+                profile = Some(match tts {
+                    [&TTTok(_, token::LIT_STR(profile))] if profile.as_str() == "core"
+                        => "core".to_string(),
+                    [&TTTok(_, token::LIT_STR(profile))] if profile.as_str() == "compatibility"
+                        => "compatibility".to_string(),
+                    [&TTTok(_, token::LIT_STR(profile))] => {
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, format!("Unknown profile \"{}\"",
+                                                   profile.as_str()).as_slice());
+                        return DummyResult::any(span);
+                    },
+                    _ => {
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid profile format, expected \
+                                            string.");
+                        return DummyResult::any(span);
+                    },
+                })
+            }
+            ("version", tts) => {
+                if version.is_some() {
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "A version was already specified.");
+                    return DummyResult::any(span);
+                }
+                version = Some(match tts {
+                    [&TTTok(_, token::LIT_STR(version))] => {
+                        version.as_str().to_string()
+                    },
+                    _ => {
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid version format, expected \
+                                            string.");
+                        return DummyResult::any(span);
+                    },
+                });
+            }
+            ("generator", tts) => {
+                if generator.is_some() {
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "A generator was already specified.");
+                    return DummyResult::any(span);
+                }
+                generator = Some(match tts {
+                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "global"
+                        => box generators::global_gen::GlobalGenerator as Box<Generator>,
+                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "struct"
+                        => box generators::struct_gen::StructGenerator as Box<Generator>,
+                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "static"
+                        => box generators::static_gen::StaticGenerator as Box<Generator>,
+                    [&TTTok(span, token::LIT_STR(gen))] => {
+                        ecx.span_err(span, format!("Unknown generator \"{}\"",
+                                                   gen.as_str()).as_slice());
+                        return DummyResult::any(span);
+                    },
+                    _ => {
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Invalid generator format, expected \
+                                            string.");
+                        return DummyResult::any(span);
+                    },
+                });
+            }
+            ("extensions", tts) => {
+                if extensions.is_some() {
+                    let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                    ecx.span_err(span, "The list of extensions were already \
+                                        specified.");
+                    return DummyResult::any(span);
+                }
+                extensions = Some(match tts {
+                    [&TTDelim(ref tts)] => match tts.as_slice() {
+                        [TTTok(_, token::LBRACKET),
+                         tts..,
+                         TTTok(_, token::RBRACKET)] => {
+                            // Drop the trailing comma if it exists
+                            let tts = drop_trailing_comma(tts);
 
+                            // Collect the extensions, breaking early if a parse
+                            // error occurs.
+                            let mut failed = false;
+                            let exts = tts.split(is_comma)
+                                          .scan((), |_, tts| match tts {
+                                [TTTok(_, token::LIT_STR(ext))] => {
+                                    Some(ext.as_str().to_string())
+                                },
+                                _ => {
+                                    failed = true;
+                                    None
+                                },
+                            }).collect();
+
+                            // Cause an error if there is still some leftover
+                            // tokens.
+                            if failed {
+                                let span = tts.head().map_or(span, get_span_from_tt);
+                                ecx.span_err(span, "Invalid extension format, \
+                                                    expected string.");
+                                return DummyResult::any(span);
+                            } else {
+                                exts
+                            }
+                        },
+                        _ => {
+                            let span = tts.as_slice().head().map_or(span, get_span_from_tt);
+                            ecx.span_err(span, "Expected a comma separated \
+                                                list of extension strings \
+                                                delimited by square brackets: \
+                                                `[]`");
+                            return DummyResult::any(span);
+                        }
+                    },
+                    _ => {
+                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
+                        ecx.span_err(span, "Expected a comma separated list of \
+                                            extension strings.");
+                        return DummyResult::any(span);
+                    },
+                });
+            }
+            (field, _) => {
+                ecx.span_err(span, format!("Unknown field `{}`", field).as_slice());
+                return DummyResult::any(span);
+            }
+        }
+    }
+
+    // Use default values if the parameters have not been set
+    let (ns, source) = api.unwrap_or((registry::Gl, khronos_api::GL_XML));
+    let extensions = extensions.unwrap_or(vec![]);
+    let version = version.unwrap_or("1.0".to_string());
+    let generator = generator.unwrap_or(box generators::static_gen::StaticGenerator);
+    let profile = profile.unwrap_or("core".to_string());
+
+    // Get generator field values, using default values if they have not been
+    // specified
     let filter = Some(Filter {
+        api: ns.to_string(),
         extensions: extensions,
-        profile: profile,
         version: version,
-        api: api,
+        profile: profile,
     });
 
-    // generating the registry of all bindings
-    let reg = {
+    // Generate the registry of all bindings
+    let registry = {
         use std::io::BufReader;
         use std::task;
 
@@ -162,79 +394,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, token_tree: &[TokenTree]) -> Box
     };
 
     // generating the Rust bindings as a source code into "buffer"
-    let items = {
-        use generators::Generator;
-
-        // calling the generator
-        match generator.as_slice() {
-            "global" => (generators::global_gen::GlobalGenerator).write(ecx, &reg, ns),
-            "struct" => (generators::struct_gen::StructGenerator).write(ecx, &reg, ns),
-            "static" => (generators::static_gen::StaticGenerator).write(ecx, &reg, ns),
-
-            generator => {
-                ecx.span_err(span, format!("unknown generator type: {}", generator).as_slice());
-                return DummyResult::any(span);
-            },
-        }
-    };
+    let items = generator.write(ecx, &registry, ns);
 
     MacItems::new(items.into_iter())
-}
-
-fn parse_macro_arguments(ecx: &mut ExtCtxt, span: Span, tts: &[syntax::ast::TokenTree])
-                        -> Option<(String, String, String, String, Vec<String>)>
-{
-    // getting parameters list
-    let values = match get_exprs_from_tts(ecx, span, tts) {
-        Some(v) => v,
-        None => return None
-    };
-
-    if values.len() != 4 && values.len() != 5 {
-        ecx.span_err(span, format!("expected 4 or 5 arguments but got {}", values.len())
-            .as_slice());
-        return None;
-    }
-
-    // computing the extensions (last parameter)
-    let extensions: Vec<String> = match values.as_slice().get(4) {
-        None => Vec::new(),
-        Some(vector) => {
-            use syntax::ast::ExprVec;
-
-            match vector.node {
-                // only [ ... ] is accepted
-                ExprVec(ref list) => {
-                    // turning each element into a string
-                    let mut result = Vec::new();
-                    for element in list.iter() {
-                        match expr_to_string(ecx, element.clone(), "expected string literal") {
-                            Some((s, _)) => result.push(s.get().to_string()),
-                            None => return None
-                        }
-                    }
-                    result
-                },
-                _ => {
-                    ecx.span_err(span, format!("last argument must be a vector").as_slice());
-                    return None;
-                }
-            }
-        }
-    };
-
-    // computing other parameters
-    match (
-        expr_to_string(ecx, values.as_slice().get(0).unwrap().clone(), "expected string literal")
-            .map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values.as_slice().get(1).unwrap().clone(), "expected string literal")
-            .map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values.as_slice().get(2).unwrap().clone(), "expected string literal")
-            .map(|e| match e { (s, _) => s.get().to_string() }),
-        expr_to_string(ecx, values.as_slice().get(3).unwrap().clone(), "expected string literal")
-            .map(|e| match e { (s, _) => s.get().to_string() })
-    ) {
-        (Some(a), Some(b), Some(c), Some(d)) => Some((a, b, c, d, extensions)),
-        _ => None
-    }
 }
