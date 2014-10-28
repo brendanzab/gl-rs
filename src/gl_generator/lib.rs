@@ -274,25 +274,26 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                 extensions = Some(match tts {
                     [&TtDelimited(span, ref delimited)] => {
                         let (ref begin, ref tts, ref close) = **delimited;
-                        if begin.token == token::LBRACKET && close.token ==
-                            token::RBRACKET {
+                        match (&begin.token, &close.token) {
+                            (&token::LBRACKET, &token::RBRACKET) => {
                                 // Drop the trailing comma if it exists
                                 let tts = drop_trailing_comma(tts.as_slice());
 
                                 // Collect the extensions, breaking early if a parse
                                 // error occurs.
                                 let mut failed = false;
-                                let exts = tts.split(is_comma)
-                                            .scan((), |_, tts| match tts {
-                                    [TtToken(_, token::LIT_STR(ext))] => {
-                                        Some(ext.as_str().to_string())
-                                    },
-                                    _ => {
-                                        failed = true;
-                                        None
-                                    },
+                                let exts = tts.split(is_comma).scan((), |_, tts| {
+                                    match tts {
+                                        [TtToken(_, token::LIT_STR(ext))] => {
+                                            Some(ext.as_str().to_string())
+                                        },
+                                        _ => {
+                                            failed = true;
+                                            None
+                                        },
+                                    }
                                 }).collect();
-    
+
                                 // Cause an error if there is still some leftover
                                 // tokens.
                                 if failed {
@@ -302,12 +303,14 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                                 } else {
                                     exts
                                 }
-                        } else {
+                            },
+                            (_, _) => {
                                 ecx.span_err(span, "Expected a comma separated \
                                                     list of extension strings \
                                                     delimited by square brackets: \
                                                     `[]`");
                                 return DummyResult::any(span);
+                            },
                         }
                     },
                     _ => {
