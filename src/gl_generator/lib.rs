@@ -100,7 +100,7 @@ extern crate syntax;
 
 use generators::Generator;
 use registry::{Registry, Filter, Ns};
-use syntax::ast::{TokenTree, TTDelim, TTNonterminal, TTSeq, TTTok};
+use syntax::ast::{TokenTree, TtDelimited, TtNonterminal, TtSequence, TtToken};
 use syntax::codemap::Span;
 use syntax::ext::base::{DummyResult, ExtCtxt, MacResult, MacItems};
 use syntax::parse::token;
@@ -119,7 +119,7 @@ pub fn plugin_registrar(reg: &mut ::rustc::plugin::Registry) {
 /// A predicate that is useful for splitting a comma separated list of tokens
 fn is_comma(tt: &TokenTree) -> bool {
     match *tt {
-        TTTok(_, token::COMMA) => true,
+        TtToken(_, token::COMMA) => true,
         _ => false,
     }
 }
@@ -127,21 +127,17 @@ fn is_comma(tt: &TokenTree) -> bool {
 /// Drops a trailing comma if it exists
 fn drop_trailing_comma(tts: &[TokenTree]) -> &[TokenTree] {
     match tts {
-        [tts.., TTTok(_, token::COMMA)] => tts,
+        [tts.., TtToken(_, token::COMMA)] => tts,
         tts => tts,
     }
 }
 
 fn get_span_from_tt(tt: &TokenTree) -> Span {
     match *tt {
-        TTTok(span, _) => span,
-        TTSeq(span, _, _, _) => span,
-        TTNonterminal(span, _) => span,
-        TTDelim(ref tts) => get_span_from_tt(
-            tts.as_slice().head()
-               .expect("Delimetered token trees should contain at least \
-                        two elements.")
-        ),
+        TtToken(span, _) => span,
+        TtSequence(span, _, _, _) => span,
+        TtNonterminal(span, _) => span,
+        TtDelimited(span, _) => span,
     }
 }
 
@@ -160,7 +156,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
     for tts in tts.split(is_comma) {
         let mut it = tts.iter();
         let field = match it.next() {
-            Some(&TTTok(_, token::IDENT(ref field, _))) => field.as_str(),
+            Some(&TtToken(_, token::IDENT(ref field, _))) => field.as_str(),
             tt => {
                 let span = tt.map(get_span_from_tt).unwrap_or(span);
                 ecx.span_err(span, "Expected a generator argument name, \
@@ -170,7 +166,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
             },
         };
         match it.next() {
-            Some(&TTTok(_, token::COLON)) => {},
+            Some(&TtToken(_, token::COLON)) => {},
             tt => {
                 let span = tt.map(get_span_from_tt).unwrap_or(span);
                 ecx.span_err(span, "Expected `:`");
@@ -185,19 +181,19 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 api = Some(match tts {
-                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gl"
+                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "gl"
                         => (registry::Gl, khronos_api::GL_XML),
-                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "glx"
+                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "glx"
                         => (registry::Glx, khronos_api::GLX_XML),
-                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "wgl"
+                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "wgl"
                         => (registry::Wgl, khronos_api::WGL_XML),
-                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "egl"
+                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "egl"
                         => (registry::Egl, khronos_api::EGL_XML),
-                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gles1"
+                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "gles1"
                         => (registry::Gles1, khronos_api::GL_XML),
-                    [&TTTok(_, token::LIT_STR(api))] if api.as_str() == "gles2"
+                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "gles2"
                         => (registry::Gles2, khronos_api::GL_XML),
-                    [&TTTok(span, token::LIT_STR(api))] => {
+                    [&TtToken(span, token::LIT_STR(api))] => {
                         ecx.span_err(span, format!("Unknown API \"{}\"", api.as_str()).as_slice());
                         return DummyResult::any(span);
                     },
@@ -216,11 +212,11 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 profile = Some(match tts {
-                    [&TTTok(_, token::LIT_STR(profile))] if profile.as_str() == "core"
+                    [&TtToken(_, token::LIT_STR(profile))] if profile.as_str() == "core"
                         => "core".to_string(),
-                    [&TTTok(_, token::LIT_STR(profile))] if profile.as_str() == "compatibility"
+                    [&TtToken(_, token::LIT_STR(profile))] if profile.as_str() == "compatibility"
                         => "compatibility".to_string(),
-                    [&TTTok(_, token::LIT_STR(profile))] => {
+                    [&TtToken(_, token::LIT_STR(profile))] => {
                         let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, format!("Unknown profile \"{}\"",
                                                    profile.as_str()).as_slice());
@@ -241,7 +237,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 version = Some(match tts {
-                    [&TTTok(_, token::LIT_STR(version))] => {
+                    [&TtToken(_, token::LIT_STR(version))] => {
                         version.as_str().to_string()
                     },
                     _ => {
@@ -259,13 +255,13 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 generator = Some(match tts {
-                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "global"
+                    [&TtToken(_, token::LIT_STR(gen))] if gen.as_str() == "global"
                         => box generators::global_gen::GlobalGenerator as Box<Generator>,
-                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "struct"
+                    [&TtToken(_, token::LIT_STR(gen))] if gen.as_str() == "struct"
                         => box generators::struct_gen::StructGenerator as Box<Generator>,
-                    [&TTTok(_, token::LIT_STR(gen))] if gen.as_str() == "static"
+                    [&TtToken(_, token::LIT_STR(gen))] if gen.as_str() == "static"
                         => box generators::static_gen::StaticGenerator as Box<Generator>,
-                    [&TTTok(span, token::LIT_STR(gen))] => {
+                    [&TtToken(span, token::LIT_STR(gen))] => {
                         ecx.span_err(span, format!("Unknown generator \"{}\"",
                                                    gen.as_str()).as_slice());
                         return DummyResult::any(span);
@@ -286,49 +282,45 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 extensions = Some(match tts {
-                    [&TTDelim(ref tts)] => match tts.as_slice() {
-                        [TTTok(_, token::LBRACKET),
-                         tts..,
-                         TTTok(_, token::RBRACKET)] => {
-                            // Drop the trailing comma if it exists
-                            let tts = drop_trailing_comma(tts);
+                    [&TtDelimited(span, ref delimited)] => {
+                        let (ref begin, ref tts, ref close) = **delimited;
+                        if begin.token == token::LBRACKET && close.token ==
+                            token::RBRACKET {
+                                // Drop the trailing comma if it exists
+                                let tts = drop_trailing_comma(tts.as_slice());
 
-                            // Collect the extensions, breaking early if a parse
-                            // error occurs.
-                            let mut failed = false;
-                            let exts = tts.split(is_comma)
-                                          .scan((), |_, tts| match tts {
-                                [TTTok(_, token::LIT_STR(ext))] => {
-                                    Some(ext.as_str().to_string())
-                                },
-                                _ => {
-                                    failed = true;
-                                    None
-                                },
-                            }).collect();
-
-                            // Cause an error if there is still some leftover
-                            // tokens.
-                            if failed {
-                                let span = tts.head().map_or(span, get_span_from_tt);
-                                ecx.span_err(span, "Invalid extension format, \
-                                                    expected string.");
+                                // Collect the extensions, breaking early if a parse
+                                // error occurs.
+                                let mut failed = false;
+                                let exts = tts.split(is_comma)
+                                            .scan((), |_, tts| match tts {
+                                    [TtToken(_, token::LIT_STR(ext))] => {
+                                        Some(ext.as_str().to_string())
+                                    },
+                                    _ => {
+                                        failed = true;
+                                        None
+                                    },
+                                }).collect();
+    
+                                // Cause an error if there is still some leftover
+                                // tokens.
+                                if failed {
+                                    ecx.span_err(span, "Invalid extension format, \
+                                                        expected string.");
+                                    return DummyResult::any(span);
+                                } else {
+                                    exts
+                                }
+                        } else {
+                                ecx.span_err(span, "Expected a comma separated \
+                                                    list of extension strings \
+                                                    delimited by square brackets: \
+                                                    `[]`");
                                 return DummyResult::any(span);
-                            } else {
-                                exts
-                            }
-                        },
-                        _ => {
-                            let span = tts.as_slice().head().map_or(span, get_span_from_tt);
-                            ecx.span_err(span, "Expected a comma separated \
-                                                list of extension strings \
-                                                delimited by square brackets: \
-                                                `[]`");
-                            return DummyResult::any(span);
                         }
                     },
                     _ => {
-                        let span = tts.head().map_or(span, |tt| get_span_from_tt(*tt));
                         ecx.span_err(span, "Expected a comma separated list of \
                                             extension strings.");
                         return DummyResult::any(span);
