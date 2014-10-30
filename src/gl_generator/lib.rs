@@ -119,7 +119,7 @@ pub fn plugin_registrar(reg: &mut ::rustc::plugin::Registry) {
 /// A predicate that is useful for splitting a comma separated list of tokens
 fn is_comma(tt: &TokenTree) -> bool {
     match *tt {
-        TtToken(_, token::COMMA) => true,
+        TtToken(_, token::Comma) => true,
         _ => false,
     }
 }
@@ -127,7 +127,7 @@ fn is_comma(tt: &TokenTree) -> bool {
 /// Drops a trailing comma if it exists
 fn drop_trailing_comma(tts: &[TokenTree]) -> &[TokenTree] {
     match tts {
-        [tts.., TtToken(_, token::COMMA)] => tts,
+        [tts.., TtToken(_, token::Comma)] => tts,
         tts => tts,
     }
 }
@@ -147,7 +147,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
     for tts in tts.split(is_comma) {
         let mut it = tts.iter();
         let field = match it.next() {
-            Some(&TtToken(_, token::IDENT(ref field, _))) => field.as_str(),
+            Some(&TtToken(_, token::Ident(ref field, _))) => field.as_str(),
             tt => {
                 let span = tt.map(|tt| tt.get_span()).unwrap_or(span);
                 ecx.span_err(span, "Expected a generator argument name, \
@@ -157,7 +157,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
             },
         };
         match it.next() {
-            Some(&TtToken(_, token::COLON)) => {},
+            Some(&TtToken(_, token::Colon)) => {},
             tt => {
                 let span = tt.map(|tt| tt.get_span()).unwrap_or(span);
                 ecx.span_err(span, "Expected `:`");
@@ -172,19 +172,19 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 api = Some(match tts {
-                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "gl"
+                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "gl"
                         => (registry::Gl, khronos_api::GL_XML),
-                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "glx"
+                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "glx"
                         => (registry::Glx, khronos_api::GLX_XML),
-                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "wgl"
+                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "wgl"
                         => (registry::Wgl, khronos_api::WGL_XML),
-                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "egl"
+                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "egl"
                         => (registry::Egl, khronos_api::EGL_XML),
-                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "gles1"
+                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "gles1"
                         => (registry::Gles1, khronos_api::GL_XML),
-                    [&TtToken(_, token::LIT_STR(api))] if api.as_str() == "gles2"
+                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "gles2"
                         => (registry::Gles2, khronos_api::GL_XML),
-                    [&TtToken(span, token::LIT_STR(api))] => {
+                    [&TtToken(span, token::LitStr(api))] => {
                         ecx.span_err(span, format!("Unknown API \"{}\"", api.as_str()).as_slice());
                         return DummyResult::any(span);
                     },
@@ -202,11 +202,11 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 profile = Some(match tts {
-                    [&TtToken(_, token::LIT_STR(profile))] if profile.as_str() == "core"
+                    [&TtToken(_, token::LitStr(profile))] if profile.as_str() == "core"
                         => "core".to_string(),
-                    [&TtToken(_, token::LIT_STR(profile))] if profile.as_str() == "compatibility"
+                    [&TtToken(_, token::LitStr(profile))] if profile.as_str() == "compatibility"
                         => "compatibility".to_string(),
-                    [&TtToken(_, token::LIT_STR(profile))] => {
+                    [&TtToken(_, token::LitStr(profile))] => {
                         let span = tts.head().map_or(span, |tt| tt.get_span());
                         ecx.span_err(span, format!("Unknown profile \"{}\"",
                                                    profile.as_str()).as_slice());
@@ -227,7 +227,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 version = Some(match tts {
-                    [&TtToken(_, token::LIT_STR(version))] => {
+                    [&TtToken(_, token::LitStr(version))] => {
                         version.as_str().to_string()
                     },
                     _ => {
@@ -245,13 +245,13 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 generator = Some(match tts {
-                    [&TtToken(_, token::LIT_STR(gen))] if gen.as_str() == "global"
+                    [&TtToken(_, token::LitStr(gen))] if gen.as_str() == "global"
                         => box generators::global_gen::GlobalGenerator as Box<Generator>,
-                    [&TtToken(_, token::LIT_STR(gen))] if gen.as_str() == "struct"
+                    [&TtToken(_, token::LitStr(gen))] if gen.as_str() == "struct"
                         => box generators::struct_gen::StructGenerator as Box<Generator>,
-                    [&TtToken(_, token::LIT_STR(gen))] if gen.as_str() == "static"
+                    [&TtToken(_, token::LitStr(gen))] if gen.as_str() == "static"
                         => box generators::static_gen::StaticGenerator as Box<Generator>,
-                    [&TtToken(span, token::LIT_STR(gen))] => {
+                    [&TtToken(span, token::LitStr(gen))] => {
                         ecx.span_err(span, format!("Unknown generator \"{}\"",
                                                    gen.as_str()).as_slice());
                         return DummyResult::any(span);
@@ -275,7 +275,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     [&TtDelimited(span, ref delimited)] => {
                         let (ref begin, ref tts, ref close) = **delimited;
                         match (&begin.token, &close.token) {
-                            (&token::LBRACKET, &token::RBRACKET) => {
+                            (&token::LBracket, &token::RBracket) => {
                                 // Drop the trailing comma if it exists
                                 let tts = drop_trailing_comma(tts.as_slice());
 
@@ -284,7 +284,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                                 let mut failed = false;
                                 let exts = tts.split(is_comma).scan((), |_, tts| {
                                     match tts {
-                                        [TtToken(_, token::LIT_STR(ext))] => {
+                                        [TtToken(_, token::LitStr(ext))] => {
                                             Some(ext.as_str().to_string())
                                         },
                                         _ => {
