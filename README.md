@@ -83,18 +83,16 @@ Then use it like this:
 ~~~rust
 #[phase(plugin)]
 extern crate gl_generator;
-extern crate libc;
 
-use std::mem;
 use self::types::*;
 
 generate_gl_bindings! {
-    api: gl,
-    profile: core,
-    version: 4.5,
-    generator: global,
+    api: "gl",
+    profile: "core",
+    version: "4.5",
+    generator: "global",
     extensions: [
-        GL_EXT_texture_filter_anisotropic,
+        "GL_EXT_texture_filter_anisotropic",
     ],
 }
 ~~~
