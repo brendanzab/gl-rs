@@ -42,7 +42,7 @@
 //! ~~~
 //!
 //! Calling a function that has not been loaded will result in a failure like:
-//! `fail!("gl::Viewport was not loaded")`, which aviods a segfault. This feature
+//! `panic!("gl::Viewport was not loaded")`, which aviods a segfault. This feature
 //! does not cause any run time overhead because the failing functions are
 //! assigned only when `load_with` is called.
 //!

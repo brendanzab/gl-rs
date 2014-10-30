@@ -81,7 +81,7 @@ fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
             pub struct FnPtr {
                 /// The function pointer that will be used when calling the function.
                 f: *const __gl_imports::libc::c_void,
-                /// True if the pointer points to a real function, false if points to a `fail!` fn.
+                /// True if the pointer points to a real function, false if points to a `panic!` fn.
                 is_loaded: bool,
             }
         )).unwrap(),
@@ -123,7 +123,7 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
             #[allow(non_snake_case)]
             #[allow(dead_code)]
             pub extern "system" fn {name}({params}) -> {return_suffix} {{
-                fail!("`{name}` was not loaded")
+                panic!("`{name}` was not loaded")
             }}
             "#,
             name = c.proto.ident,

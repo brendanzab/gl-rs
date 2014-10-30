@@ -284,8 +284,8 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 events::StartDocument{..} => (),
                 events::Comment(_) => (),
                 events::Whitespace(_) => (),
-                events::EndDocument => fail!("The end of the document has been reached"),
-                events::Error(err) => fail!("XML error: {}", err),
+                events::EndDocument => panic!("The end of the document has been reached"),
+                events::Error(err) => panic!("XML error: {}", err),
                 event => return event,
             }
         }
@@ -296,7 +296,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
     fn expect_characters(&self) -> String {
         match self.recv() {
             events::Characters(ref ch) => ch.clone(),
-            msg => fail!("Expected characters, found: {}", msg.to_string()),
+            msg => panic!("Expected characters, found: {}", msg.to_string()),
         }
     }
 
@@ -304,21 +304,21 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
         match self.recv() {
             events::StartElement{ref name, ref attributes, ..}
                 if n == name.local_name.as_slice() => attributes.clone(),
-            msg => fail!("Expected <{}>, found: {}", n, msg.to_string()),
+            msg => panic!("Expected <{}>, found: {}", n, msg.to_string()),
         }
     }
 
     fn expect_end_element(&self, n: &str) {
         match self.recv() {
             events::EndElement{ref name} if n == name.local_name.as_slice() => (),
-            msg => fail!("Expected </{}>, found: {}", n, msg.to_string()),
+            msg => panic!("Expected </{}>, found: {}", n, msg.to_string()),
         }
     }
 
     fn skip_until(&self, event: events::XmlEvent) {
         loop {
             match self.recv() {
-                events::EndDocument => fail!("Expected {}, but reached the end of the document.",
+                events::EndDocument => panic!("Expected {}, but reached the end of the document.",
                                      event.to_string()),
                 ref msg if *msg == event => break,
                 _ => (),
@@ -357,7 +357,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                                 );
                             }
                             events::EndElement{ref name} if name.local_name.as_slice() == "groups" => break,
-                            msg => fail!("Expected </groups>, found: {}", msg.to_string()),
+                            msg => panic!("Expected </groups>, found: {}", msg.to_string()),
                         }
                     }
                 }
@@ -384,7 +384,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                                 registry.extensions.push(FromXML::convert(self, attributes.as_slice()));
                             }
                             events::EndElement{ref name} if name.local_name.as_slice() == "extensions" => break,
-                            msg => fail!("Unexpected message {}", msg.to_string()),
+                            msg => panic!("Unexpected message {}", msg.to_string()),
                         }
                     }
                 }
@@ -393,7 +393,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 events::EndElement{ref name} if name.local_name.as_slice() == "registry" => break,
 
                 // error handling
-                msg => fail!("Expected </registry>, found: {}", msg.to_string()),
+                msg => panic!("Expected </registry>, found: {}", msg.to_string()),
             }
         }
 
@@ -441,13 +441,13 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 }
 
                 if !found_feat {
-                    fail!("Did not find version {} in the registry", filter.version);
+                    panic!("Did not find version {} in the registry", filter.version);
                 }
 
                 for ext in exts.iter() {
                     if filter.extensions.iter().any(|x| x == &ext.name) {
                         if !ext.supported.iter().any(|x| x == &filter.api) {
-                            fail!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
+                            panic!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
                         }
                         for req in ext.requires.iter() {
                             desired_enums.extend(req.enums.iter().map(|x| x.clone()));
@@ -504,7 +504,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                     } else if two == n.local_name.as_slice() {
                         twos.push(FromXML::convert(self, attributes.as_slice()));
                     } else {
-                        fail!("Unexpected element: <{} {}>", n, attributes.as_slice());
+                        panic!("Unexpected element: <{} {}>", n, attributes.as_slice());
                     }
                 },
                 events::EndElement{ref name} => {
@@ -521,10 +521,10 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                     } else if end == name.local_name.as_slice() {
                         return (ones, twos);
                     } else {
-                        fail!("Unexpected end element {}", name.local_name);
+                        panic!("Unexpected end element {}", name.local_name);
                     }
                 },
-                msg => fail!("Unexpected message {}", msg.to_string()) }
+                msg => panic!("Unexpected message {}", msg.to_string()) }
         }
     }
 
@@ -537,7 +537,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                     self.expect_end_element("enum");
                 }
                 events::EndElement{ref name} if name.local_name.as_slice() == "group" => break,
-                msg => fail!("Expected </group>, found: {}", msg.to_string()),
+                msg => panic!("Expected </group>, found: {}", msg.to_string()),
             }
         }
         Group {
@@ -571,7 +571,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 // finished building the namespace
                 events::EndElement{ref name} if name.local_name.as_slice() == "enums" => break,
                 // error handling
-                msg => fail!("Expected </enums>, found: {}", msg.to_string()),
+                msg => panic!("Expected </enums>, found: {}", msg.to_string()),
             }
         }
         enums
@@ -588,7 +588,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 // finished building the namespace
                 events::EndElement{ref name} if name.local_name.as_slice() == "commands" => break,
                 // error handling
-                msg => fail!("Expected </commands>, found: {}", msg.to_string()),
+                msg => panic!("Expected </commands>, found: {}", msg.to_string()),
             }
         }
         cmds
@@ -629,7 +629,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                     self.expect_end_element("glx");
                 }
                 events::EndElement{ref name} if name.local_name.as_slice() == "command" => break,
-                msg => fail!("Expected </command>, found: {}", msg.to_string()),
+                msg => panic!("Expected </command>, found: {}", msg.to_string()),
             }
         }
         let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.as_slice().contains_char('*'));
@@ -653,7 +653,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 events::StartElement{ref name, ..} if name.local_name.as_slice() == "ptype" => (),
                 events::EndElement{ref name} if name.local_name.as_slice() == "ptype" => (),
                 events::StartElement{ref name, ..} if name.local_name.as_slice() == "name" => break,
-                msg => fail!("Expected binding, found: {}", msg.to_string()),
+                msg => panic!("Expected binding, found: {}", msg.to_string()),
             }
         }
 
@@ -666,7 +666,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
             match self.recv() {
                 events::Characters(ch) => ty.push_str(ch.as_slice()),
                 events::EndElement{ref name} if name.local_name.as_slice() == outside_tag => break,
-                msg => fail!("Expected binding, found: {}", msg.to_string()),
+                msg => panic!("Expected binding, found: {}", msg.to_string()),
             }
         }
 
@@ -748,7 +748,7 @@ impl FromXML for Extension {
                     require.push(FromXML::convert(r, attributes.as_slice()));
                 }
                 events::EndElement{ref name} if name.local_name.as_slice() == "extension" => break,
-                msg => fail!("Unexpected message {}", msg.to_string())
+                msg => panic!("Unexpected message {}", msg.to_string())
             }
         }
 

@@ -282,7 +282,7 @@ pub fn to_rust_ty(ecx: &ExtCtxt, ty: &str) -> P<ast::Ty> {
         "EGLClientPixmapHI"         => quote_ty!(ecx, types::EGLClientPixmapHI),
 
         // failure
-        _ => fail!("Type conversion not implemented for `{}`", ty),
+        _ => panic!("Type conversion not implemented for `{}`", ty),
     }
 }
 
