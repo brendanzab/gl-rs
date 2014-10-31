@@ -89,7 +89,7 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
 
     ecx.parse_item(format!("
         #[allow(non_snake_case)]
-        #[allow(unused_variable)]
+        #[allow(unused_variables)]
         #[allow(dead_code)]
         extern \"system\" {{
             {}

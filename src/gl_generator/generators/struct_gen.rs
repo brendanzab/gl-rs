@@ -119,7 +119,7 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
         use syntax::ext::quote::rt::ToSource;
 
         ecx.parse_item(format!(r#"
-            #[allow(unused_variable)]
+            #[allow(unused_variables)]
             #[allow(non_snake_case)]
             #[allow(dead_code)]
             pub extern "system" fn {name}({params}) -> {return_suffix} {{
@@ -177,7 +177,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
             /// ~~~
             #[unstable]
             #[allow(dead_code)]
-            #[allow(unused_variable)]
+            #[allow(unused_variables)]
             pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {ns:c} {{
                 {ns:c} {{
                     {loadings}
@@ -202,7 +202,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
 
             if c.is_safe {
                 format!(
-                    "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+                    "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
                     #[inline] #[unstable] pub fn {name}(&self, {params}) -> {return_suffix} {{ \
                         unsafe {{ \
                             __gl_imports::mem::transmute::<_, extern \"system\" fn({types}) -> {return_suffix}>\
@@ -217,7 +217,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
                 )
             } else {
                 format!(
-                    "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+                    "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
                     #[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}) -> {return_suffix} {{ \
                         __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                             (self.{name}.f)({idents}) \
