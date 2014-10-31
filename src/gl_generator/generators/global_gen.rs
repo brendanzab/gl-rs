@@ -85,7 +85,7 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
 
         ecx.parse_item(if c.is_safe {
             format!(
-                "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+                "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
                 #[inline] #[unstable] pub fn {name}({params}) -> {return_suffix} {{ \
                     unsafe {{ \
                         __gl_imports::mem::transmute::<_, extern \"system\" fn({types}) -> {return_suffix}>\
@@ -100,7 +100,7 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
             )
         } else {
             format!(
-                "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+                "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
                 #[inline] #[unstable] pub unsafe fn {name}({typed_params}) -> {return_suffix} {{ \
                     __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                         (storage::{name}.f)({idents}) \
@@ -222,7 +222,7 @@ fn write_failing_fns(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
 
     let functions = registry.cmd_iter().map(|c| {
         ecx.parse_item(format!(
-            "#[allow(non_snake_case)] #[allow(unused_variable)] #[allow(dead_code)]
+            "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
             pub extern \"system\" fn {name}({params}) -> {return_suffix} {{ \
                 panic!(\"`{name}` was not loaded\") \
             }}",

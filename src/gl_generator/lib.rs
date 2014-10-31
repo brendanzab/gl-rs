@@ -270,52 +270,40 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     return DummyResult::any(span);
                 }
                 extensions = Some(match tts {
-                    [&TtDelimited(span, ref delimited)] => {
-                        let (ref begin, ref tts, ref close) = **delimited;
-                        match (&begin.token, &close.token) {
-                            (&token::LBracket, &token::RBracket) => {
-                                // Drop the trailing comma if it exists
-                                let tts = drop_trailing_comma(tts.as_slice());
+                    [&TtDelimited(span, ref delimited)]
+                    if delimited.delim == token::Bracket => {
+                        // Drop the trailing comma if it exists
+                        let tts = drop_trailing_comma(delimited.tts.as_slice());
 
-                                // Collect the extensions, breaking early if a parse
-                                // error occurs.
-                                let mut failed = false;
-                                let exts = tts.split(is_comma).scan((), |_, tts| {
-                                    match tts {
-                                        [TtToken(_, token::LitStr(ext))] => {
-                                            Some(ext.as_str().to_string())
-                                        },
-                                        _ => {
-                                            failed = true;
-                                            None
-                                        },
-                                    }
-                                }).collect();
+                        // Collect the extensions, breaking early if a parse
+                        // error occurs.
+                        let mut failed = false;
+                        let exts = tts.split(is_comma).scan((), |_, tts| {
+                            match tts {
+                                [TtToken(_, token::LitStr(ext))] => {
+                                    Some(ext.as_str().to_string())
+                                },
+                                _ => {
+                                    failed = true;
+                                    None
+                                },
+                            }
+                        }).collect();
 
-                                // Cause an error if there is still some leftover
-                                // tokens.
-                                if failed {
-                                    ecx.span_err(span, "Invalid extension format, \
-                                                        expected string.");
-                                    return DummyResult::any(span);
-                                } else {
-                                    exts
-                                }
-                            },
-                            (_, _) => {
-                                ecx.span_err(span, "Expected a comma separated \
-                                                    list of extension strings \
-                                                    delimited by square brackets: \
-                                                    `[]`");
-                                return DummyResult::any(span);
-                            },
+                        // Cause an error if there is still some leftover
+                        // tokens.
+                        if failed {
+                            ecx.span_err(span, "Invalid extension format, \
+                                                expected string.");
+                            return DummyResult::any(span);
+                        } else {
+                            exts
                         }
                     },
                     _ => {
-                        ecx.span_err(span, "Expected a comma separated list of \
-                                            extension strings.");
+                        ecx.span_err(span, "Expected a list of extension strings.");
                         return DummyResult::any(span);
-                    },
+                    }
                 });
             }
             (field, _) => {
