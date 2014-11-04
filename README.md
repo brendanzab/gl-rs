@@ -29,10 +29,11 @@ context library, This is how it would look using [glfw-rs]
 ~~~rust
 // the supplied function must be of the type:
 // `&fn(symbol: &str) -> Option<extern "C" fn()>`
-gl::load_with(|s| glfw.get_proc_address(s));
+// `window` is a glfw::Window
+gl::load_with(|s| window.get_proc_address(s));
 
 // loading a specific function pointer
-gl::Viewport::load_with(|s| glfw.get_proc_address(s));
+gl::Viewport::load_with(|s| window.get_proc_address(s));
 ~~~
 
 Calling a function that has not been loaded will result in a failure like:
