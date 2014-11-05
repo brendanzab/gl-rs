@@ -141,14 +141,14 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
 
 /// Entry point for generating bindings based on a syntax extension invocation.
 pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
-                     custom_generators: Vec<(&str, Box<Generator>)>) -> Box<MacResult+'static> {
+                     generators: Vec<(&str, Box<Generator>)>) -> Box<MacResult+'static> {
     // Generator options
     let mut api = None::<(Ns, &'static [u8])>;
     let mut profile = None::<String>;
     let mut version = None::<String>;
     let mut generator = None::<Box<Generator>>;
     let mut extensions = None::<Vec<String>>;
-    let mut custom_generators = Some(custom_generators);
+    let mut generators = Some(generators);
 
     let tts = drop_trailing_comma(tts);
 
@@ -255,8 +255,8 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
                 }
                 match tts {
                     [&TtToken(span, token::LitStr(gen))] => {
-                        if custom_generators.is_none() { continue; }
-                        for (name, generator_) in custom_generators.take().unwrap().into_iter() {
+                        if generators.is_none() { continue; }
+                        for (name, generator_) in generators.take().unwrap().into_iter() {
                             if name == gen.as_str() {
                                 generator = Some(generator_);
                                 break;
