@@ -80,7 +80,7 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         format!(
             "#[link_name=\"{symbol}\"]
             pub fn {name}({params}) -> {return_suffix};",
-            symbol = super::gen_symbol_name(ns, c),
+            symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
             name = c.proto.ident,
             params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
             return_suffix = super::gen_return_type(ecx, c).to_source()

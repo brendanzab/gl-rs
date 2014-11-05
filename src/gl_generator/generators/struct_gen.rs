@@ -157,8 +157,13 @@ fn write_struct(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
 
         ns = *ns,
         ptrs = registry.cmd_iter().map(|c| {
+            let fallbacks = match registry.aliases.find(&c.proto.ident) {
+                Some(v) => v.clone(),
+                None => Vec::new(),
+            };
             format!(
-                "pub {name}: FnPtr,",
+                "{doc} pub {name}: FnPtr,",
+                doc = if fallbacks.len() == 0 { "".to_string() } else { format!("/** Fallbacks: {} */", fallbacks.connect(", ")) },
                 name = c.proto.ident,
             )
         }).collect::<Vec<String>>().connect("\n")
@@ -179,6 +184,16 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
             #[allow(dead_code)]
             #[allow(unused_variables)]
             pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {ns:c} {{
+                let metaloadfn: |&str, &[&str]| -> *const __gl_imports::libc::c_void = |symbol, symbols| {{
+                    let mut ptr = loadfn(symbol);
+                    if ptr.is_null() {{
+                        for &sym in symbols.iter() {{
+                            ptr = loadfn(sym);
+                            if !ptr.is_null() {{ break; }}
+                        }}
+                    }}
+                    ptr
+                }};
                 {ns:c} {{
                     {loadings}
                 }}
@@ -190,10 +205,15 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         ns = *ns,
 
         loadings = registry.cmd_iter().map(|c| {
+            let fallbacks = registry.aliases.find(&c.proto.ident);
             format!(
-                "{name}: FnPtr::new(loadfn(\"{symbol}\"), failing::{name} as *const __gl_imports::libc::c_void),",
+                "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb}), failing::{name} as *const __gl_imports::libc::c_void),",
                 name = c.proto.ident,
-                symbol = super::gen_symbol_name(ns, c)
+                symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
+                fb = match fallbacks {
+                    Some(fallbacks) => format!("[{}]", fallbacks.iter().map(|name| format!("\"{}\"", name)).collect::<Vec<_>>().connect(", ")),
+                    None => format!("[]")
+                },
             )
         }).collect::<Vec<String>>().connect("\n"),
 

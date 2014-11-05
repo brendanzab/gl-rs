@@ -149,11 +149,11 @@ pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
 /// Generates the native symbol name of a `Cmd`.
 ///
 /// Example results: `"glClear"`, `"wglCreateContext"`, etc.
-pub fn gen_symbol_name(ns: &Ns, cmd: &Cmd) -> String {
+pub fn gen_symbol_name(ns: &Ns, cmd: &str) -> String {
     (match *ns {
         Gl | Gles1 | Gles2 => "gl",
         Glx => "glX",
         Wgl => "wgl",
         Egl => "egl",
-    }).to_string() + cmd.proto.ident.as_slice()
+    }).to_string() + cmd
 }
