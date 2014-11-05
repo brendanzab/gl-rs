@@ -103,10 +103,10 @@ use syntax::codemap::Span;
 use syntax::ext::base::{DummyResult, ExtCtxt, MacResult, MacItems};
 use syntax::parse::token;
 
-mod generators;
+pub mod generators;
 
 #[allow(dead_code)]
-mod registry;
+pub mod registry;
 
 #[plugin_registrar]
 #[doc(hidden)]
@@ -132,12 +132,23 @@ fn drop_trailing_comma(tts: &[TokenTree]) -> &[TokenTree] {
 
 /// handler for generate_gl_bindings!
 fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacResult+'static> {
+    return generate_bindings(ecx, span, tts, vec![
+        ("static", box generators::static_gen::StaticGenerator as Box<Generator>),
+        ("global", box generators::global_gen::GlobalGenerator as Box<Generator>),
+        ("struct", box generators::struct_gen::StructGenerator as Box<Generator>),
+    ]);
+}
+
+/// Entry point for generating bindings based on a syntax extension invocation.
+pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
+                     custom_generators: Vec<(&str, Box<Generator>)>) -> Box<MacResult+'static> {
     // Generator options
     let mut api = None::<(Ns, &'static [u8])>;
     let mut profile = None::<String>;
     let mut version = None::<String>;
     let mut generator = None::<Box<Generator>>;
     let mut extensions = None::<Vec<String>>;
+    let mut custom_generators = Some(custom_generators);
 
     let tts = drop_trailing_comma(tts);
 
@@ -242,17 +253,20 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                     ecx.span_err(span, "A generator was already specified.");
                     return DummyResult::any(span);
                 }
-                generator = Some(match tts {
-                    [&TtToken(_, token::LitStr(gen))] if gen.as_str() == "global"
-                        => box generators::global_gen::GlobalGenerator as Box<Generator>,
-                    [&TtToken(_, token::LitStr(gen))] if gen.as_str() == "struct"
-                        => box generators::struct_gen::StructGenerator as Box<Generator>,
-                    [&TtToken(_, token::LitStr(gen))] if gen.as_str() == "static"
-                        => box generators::static_gen::StaticGenerator as Box<Generator>,
+                match tts {
                     [&TtToken(span, token::LitStr(gen))] => {
-                        ecx.span_err(span, format!("Unknown generator \"{}\"",
-                                                   gen.as_str()).as_slice());
-                        return DummyResult::any(span);
+                        if custom_generators.is_none() { continue; }
+                        for (name, generator_) in custom_generators.take().unwrap().into_iter() {
+                            if name == gen.as_str() {
+                                generator = Some(generator_);
+                                break;
+                            }
+                        }
+                        if generator.is_none() {
+                            ecx.span_err(span, format!("Unknown generator \"{}\"",
+                                                       gen.as_str()).as_slice());
+                            return DummyResult::any(span);
+                        }
                     },
                     _ => {
                         let span = tts.head().map_or(span, |tt| tt.get_span());
@@ -260,7 +274,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
                                             string.");
                         return DummyResult::any(span);
                     },
-                });
+                };
             }
             ("extensions", tts) => {
                 if extensions.is_some() {
