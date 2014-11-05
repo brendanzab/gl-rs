@@ -220,34 +220,17 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         modules = registry.cmd_iter().map(|c| {
             use syntax::ext::quote::rt::ToSource;
 
-            if c.is_safe {
-                format!(
-                    "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
-                    #[inline] #[unstable] pub fn {name}(&self, {params}) -> {return_suffix} {{ \
-                        unsafe {{ \
-                            __gl_imports::mem::transmute::<_, extern \"system\" fn({types}) -> {return_suffix}>\
-                                (self.{name}.f)({idents}) \
-                        }} \
-                    }}",
-                    name = c.proto.ident,
-                    params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
-                    types = super::gen_parameters(ecx, c).into_iter().map(|p| p.ty.to_source()).collect::<Vec<String>>().connect(", "),
-                    return_suffix = super::gen_return_type(ecx, c).to_source(),
-                    idents = super::gen_parameters(ecx, c).into_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
-                )
-            } else {
-                format!(
-                    "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
-                    #[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}) -> {return_suffix} {{ \
-                        __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
-                            (self.{name}.f)({idents}) \
-                    }}",
-                    name = c.proto.ident,
-                    typed_params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
-                    return_suffix = super::gen_return_type(ecx, c).to_source(),
-                    idents = super::gen_parameters(ecx, c).into_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
-                )
-            }
+            format!(
+                "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
+                #[inline] #[unstable] pub unsafe fn {name}(&self, {typed_params}) -> {return_suffix} {{ \
+                    __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
+                        (self.{name}.f)({idents}) \
+                }}",
+                name = c.proto.ident,
+                typed_params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
+                return_suffix = super::gen_return_type(ecx, c).to_source(),
+                idents = super::gen_parameters(ecx, c).into_iter().map(|p| p.pat.to_source()).collect::<Vec<String>>().connect(", "),
+            )
         }).collect::<Vec<String>>().connect("\n")
     ))
 }
