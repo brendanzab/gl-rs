@@ -63,6 +63,12 @@ if gl::Viewport::is_loaded() {
 }
 ~~~
 
+## Extra features
+
+The global and struct generators will attempt to use fallbacks functions when
+they are available. For example, if `glGenFramebuffers` cannot be loaded it will
+also attempt to load `glGenFramebuffersEXT` as a fallback.
+
 ## Using gl_generator
 
 If you need a specific version of OpenGL, or you need a different API
@@ -133,6 +139,8 @@ The struct generator is a cleaner alternative to the global generator.
 The main difference is that you must call `gl::Gl::load_with` instead of
 `gl::load_with`, and this functions returns a struct of type `Gl`. The OpenGL
 functions are not static functions but member functions in this `Gl` struct.
+This is important when the GL functions are associated with the current
+context, as is true on Windows.
 
 The enumerations and types are still static and available in a similar way as
 in the global generator.
