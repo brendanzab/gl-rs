@@ -157,8 +157,13 @@ fn write_struct(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
 
         ns = *ns,
         ptrs = registry.cmd_iter().map(|c| {
+            let fallbacks = match registry.aliases.find(&c.proto.ident) {
+                Some(v) => v.clone(),
+                None => Vec::new(),
+            };
             format!(
-                "pub {name}: FnPtr,",
+                "{doc} pub {name}: FnPtr,",
+                doc = if fallbacks.len() == 0 { "".to_string() } else { format!("/** Fallbacks: {} */", fallbacks.connect(", ")) },
                 name = c.proto.ident,
             )
         }).collect::<Vec<String>>().connect("\n")
@@ -200,17 +205,15 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         ns = *ns,
 
         loadings = registry.cmd_iter().map(|c| {
-            let fallbacks = match registry.aliases.find(&c.proto.ident) {
-                Some(v) => {
-                    let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, name.as_slice()))).collect::<Vec<_>>();
-                    format!("[{}]", names.connect(", "))
-                }, None => "[]".to_string(),
-            };
+            let fallbacks = registry.aliases.find(&c.proto.ident);
             format!(
                 "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb}), failing::{name} as *const __gl_imports::libc::c_void),",
                 name = c.proto.ident,
                 symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
-                fb = fallbacks,
+                fb = match fallbacks {
+                    Some(fallbacks) => format!("[{}]", fallbacks.iter().map(|name| format!("\"{}\"", name)).collect::<Vec<_>>().connect(", ")),
+                    None => format!("[]")
+                },
             )
         }).collect::<Vec<String>>().connect("\n"),
 
