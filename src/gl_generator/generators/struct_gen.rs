@@ -42,6 +42,7 @@ impl super::Generator for StructGenerator {
 fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
     (quote_item!(ecx,
         mod __gl_imports {
+            extern crate gl_common;
             extern crate libc;
             pub use std::mem;
         }
@@ -197,6 +198,18 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
                 {ns:c} {{
                     {loadings}
                 }}
+            }}
+
+            /// Load each OpenGL symbol using a custom load function.
+            ///
+            /// ~~~ignore
+            /// let gl = Gl::load(&glfw);
+            /// ~~~
+            #[unstable]
+            #[allow(dead_code)]
+            #[allow(unused_variable)]
+            pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) -> {ns:c} {{
+                {ns:c}::load_with(|name| loader.get_proc_addr(name))
             }}
 
             {modules}

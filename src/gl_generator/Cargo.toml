@@ -13,6 +13,9 @@ name = "gl_generator"
 path = "lib.rs"
 plugin = true
 
+[dependencies.gl_common]
+path = "../gl_common"
+
 [dependencies.rust-xml]
 git = "https://github.com/netvl/rust-xml"
 
