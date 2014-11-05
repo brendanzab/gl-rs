@@ -103,10 +103,10 @@ use syntax::codemap::Span;
 use syntax::ext::base::{DummyResult, ExtCtxt, MacResult, MacItems};
 use syntax::parse::token;
 
-mod generators;
+pub mod generators;
 
 #[allow(dead_code)]
-mod registry;
+pub mod registry;
 
 #[plugin_registrar]
 #[doc(hidden)]
