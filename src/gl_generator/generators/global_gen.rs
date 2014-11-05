@@ -27,6 +27,7 @@ impl super::Generator for GlobalGenerator {
     fn write(&self, ecx: &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>> {
         let mut result = Vec::new();
         result.push(write_header(ecx));
+        result.push(write_metaloadfn(ecx));
         result.push(write_type_aliases(ecx, &ns));
         result.extend(write_enums(ecx, registry).into_iter());
         result.extend(write_fns(ecx, registry).into_iter());
@@ -46,6 +47,24 @@ fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
         mod __gl_imports {
             extern crate libc;
             pub use std::mem;
+        }
+    )).unwrap()
+}
+
+/// Creates the metaloadfn function for fallbacks
+fn write_metaloadfn(ecx: &ExtCtxt) -> P<ast::Item> {
+    (quote_item!(ecx,
+        fn metaloadfn(loadfn: |&str| -> *const __gl_imports::libc::c_void,
+                      symbol: &str,
+                      fallbacks: &[&str]) -> *const __gl_imports::libc::c_void {
+            let mut ptr = loadfn(symbol);
+            if ptr.is_null() {
+                for &sym in fallbacks.iter() {
+                    ptr = loadfn(sym);
+                    if !ptr.is_null() { break; }
+                }
+            }
+            ptr
         }
     )).unwrap()
 }
@@ -172,15 +191,22 @@ fn write_ptrs(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
 ///  created by `write_ptrs`.
 fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item>> {
     registry.cmd_iter().map(|c| {
+        let fallbacks = match registry.aliases.find(&c.proto.ident) {
+            Some(v) => {
+                let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, name.as_slice()))).collect::<Vec<_>>();
+                format!("[{}]", names.connect(", "))
+            }, None => "[]".to_string(),
+        };
+        let fallbacks = ecx.parse_expr(fallbacks);
         let fnname = ecx.ident_of(c.proto.ident.as_slice());
-        let symbol = super::gen_symbol_name(ns, c);
+        let symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice());
         let symbol = symbol.as_slice();
 
         (quote_item!(ecx,
             #[unstable]
             #[allow(non_snake_case)]
             pub mod $fnname {
-                use super::{failing, storage};
+                use super::{failing, storage, metaloadfn};
                 use super::FnPtr;
 
                 #[inline]
@@ -192,7 +218,7 @@ fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item
                 #[allow(dead_code)]
                 pub fn load_with(loadfn: |symbol: &str| -> *const super::__gl_imports::libc::c_void) {
                     unsafe {
-                        storage::$fnname = FnPtr::new(loadfn($symbol),
+                        storage::$fnname = FnPtr::new(metaloadfn(loadfn, $symbol, $fallbacks),
                             failing::$fnname as *const super::__gl_imports::libc::c_void)
                     }
                 }

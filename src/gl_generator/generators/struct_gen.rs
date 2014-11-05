@@ -179,6 +179,16 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
             #[allow(dead_code)]
             #[allow(unused_variables)]
             pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {ns:c} {{
+                let metaloadfn: |&str, &[&str]| -> *const __gl_imports::libc::c_void = |symbol, symbols| {{
+                    let mut ptr = loadfn(symbol);
+                    if ptr.is_null() {{
+                        for &sym in symbols.iter() {{
+                            ptr = loadfn(sym);
+                            if !ptr.is_null() {{ break; }}
+                        }}
+                    }}
+                    ptr
+                }};
                 {ns:c} {{
                     {loadings}
                 }}
@@ -190,10 +200,17 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         ns = *ns,
 
         loadings = registry.cmd_iter().map(|c| {
+            let fallbacks = match registry.aliases.find(&c.proto.ident) {
+                Some(v) => {
+                    let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, name.as_slice()))).collect::<Vec<_>>();
+                    format!("[{}]", names.connect(", "))
+                }, None => "[]".to_string(),
+            };
             format!(
-                "{name}: FnPtr::new(loadfn(\"{symbol}\"), failing::{name} as *const __gl_imports::libc::c_void),",
+                "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb}), failing::{name} as *const __gl_imports::libc::c_void),",
                 name = c.proto.ident,
-                symbol = super::gen_symbol_name(ns, c)
+                symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
+                fb = fallbacks,
             )
         }).collect::<Vec<String>>().connect("\n"),
 

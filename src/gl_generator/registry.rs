@@ -18,9 +18,11 @@
 extern crate collections;
 extern crate xml;
 
+use std::collections::hash_map::{Vacant, Occupied};
 use self::collections::TreeSet;
 use std::cell::RefCell;
 use std::collections::HashSet;
+use std::collections::HashMap;
 use std::fmt;
 use std::from_str::FromStr;
 use std::slice::Items;
@@ -91,12 +93,22 @@ fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
     }
 }
 
+fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String>>) {
+    for (k, v) in b.into_iter() {
+        match a.entry(k) {
+            Occupied(mut ent) => { ent.get_mut().extend(v.into_iter()); },
+            Vacant(ent) => { ent.set(v); }
+        }
+    }
+}
+
 pub struct Registry {
     pub groups: Vec<Group>,
     pub enums: Vec<Enum>,
     pub cmds: Vec<Cmd>,
     pub features: Vec<Feature>,
     pub extensions: Vec<Extension>,
+    pub aliases: HashMap<String, Vec<String>>,
 }
 
 impl Registry {
@@ -334,6 +346,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
             cmds: Vec::new(),
             features: Vec::new(),
             extensions: Vec::new(),
+            aliases: HashMap::new(),
         };
 
         loop {
@@ -369,7 +382,9 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
 
                 // add command namespace
                 events::StartElement{ref name, ..} if name.local_name.as_slice() == "commands" => {
-                    registry.cmds.extend(self.consume_cmds().into_iter());
+                    let (cmds, aliases) = self.consume_cmds();
+                    registry.cmds.extend(cmds.into_iter());
+                    merge_map(&mut registry.aliases, aliases);
                 }
 
                 events::StartElement{ref name, ref attributes, ..} if name.local_name.as_slice() == "feature" => {
@@ -400,7 +415,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
         match self.filter {
             Some(ref filter) => {
                 let Registry {
-                    groups, enums, cmds, features: feats, extensions: exts
+                    groups, enums, cmds, aliases, features: feats, extensions: exts,
                 } = registry;
 
                 let mut desired_enums = HashSet::new();
@@ -473,6 +488,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                     // these aren't important after this step
                     features: Vec::new(),
                     extensions: Vec::new(),
+                    aliases: aliases,
                 }
             },
             None => registry
@@ -577,13 +593,24 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
         enums
     }
 
-    fn consume_cmds(&self) -> Vec<Cmd> {
+    fn consume_cmds(&self) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
         let mut cmds = Vec::new();
+        let mut aliases: HashMap<String, Vec<String>> = HashMap::new();
         loop {
             match self.recv() {
                 // add command definition
                 events::StartElement{ref name, ..} if name.local_name.as_slice() == "command" => {
-                    cmds.push(self.consume_cmd());
+                    let new = self.consume_cmd();
+                    match new.alias {
+                        Some(ref v) => {
+                            match aliases.entry(v.clone()) {
+                                Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
+                                Vacant(ent) => { ent.set(vec![new.proto.ident.clone()]); }
+                            }
+                        },
+                        None => { }
+                    }
+                    cmds.push(new);
                 }
                 // finished building the namespace
                 events::EndElement{ref name} if name.local_name.as_slice() == "commands" => break,
@@ -591,7 +618,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                 msg => panic!("Expected </commands>, found: {}", msg.to_string()),
             }
         }
-        cmds
+        (cmds, aliases)
     }
 
     fn consume_cmd(&self) -> Cmd {
@@ -612,7 +639,8 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
                     );
                 }
                 events::StartElement{ref name, ref attributes, ..} if name.local_name.as_slice() == "alias" => {
-                    alias = get_attribute(attributes.as_slice(), "alias");
+                    alias = get_attribute(attributes.as_slice(), "name");
+                    alias = alias.map(|t| trim_cmd_prefix(t.as_slice(), self.ns).to_string());
                     self.expect_end_element("alias");
                 }
                 events::StartElement{ref name, ref attributes, ..} if name.local_name.as_slice() == "vecequiv" => {
