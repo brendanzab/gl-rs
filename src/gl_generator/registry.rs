@@ -225,6 +225,9 @@ pub struct Binding {
 pub struct Cmd {
     pub proto: Binding,
     pub params: Vec<Binding>,
+    /// True if this command doesn't take any pointers.
+    ///
+    /// Unused by the built-in generators.
     pub is_safe: bool,
     pub alias: Option<String>,
     pub vecequiv: Option<String>,

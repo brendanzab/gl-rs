@@ -70,8 +70,9 @@ fn start(argc: int, argv: *const *const u8) -> int {
 }
 
 fn compile_shader(gl: &Gl, src: &str, ty: GLenum) -> GLuint {
-    let shader = gl.CreateShader(ty);
+    let shader;
     unsafe {
+        shader = gl.CreateShader(ty);
         // Attempt to compile the shader
         src.with_c_str(|ptr| gl.ShaderSource(shader, 1, &ptr, ptr::null()));
         gl.CompileShader(shader);
@@ -92,7 +93,7 @@ fn compile_shader(gl: &Gl, src: &str, ty: GLenum) -> GLuint {
     shader
 }
 
-fn link_program(gl: &Gl, vs: GLuint, fs: GLuint) -> GLuint {
+fn link_program(gl: &Gl, vs: GLuint, fs: GLuint) -> GLuint { unsafe {
     let program = gl.CreateProgram();
     gl.AttachShader(program, vs);
     gl.AttachShader(program, fs);
@@ -112,7 +113,7 @@ fn link_program(gl: &Gl, vs: GLuint, fs: GLuint) -> GLuint {
         }
     }
     program
-}
+}}
 
 fn main() {
     let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
@@ -167,22 +168,24 @@ fn main() {
         // Poll events
         glfw.poll_events();
 
-        // Clear the screen to black
-        gl.ClearColor(0.3, 0.3, 0.3, 1.0);
-        gl.Clear(gl::COLOR_BUFFER_BIT);
+        unsafe {
+            // Clear the screen to black
+            gl.ClearColor(0.3, 0.3, 0.3, 1.0);
+            gl.Clear(gl::COLOR_BUFFER_BIT);
 
-        // Draw a triangle from the 3 vertices
-        gl.DrawArrays(gl::TRIANGLES, 0, 3);
+            // Draw a triangle from the 3 vertices
+            gl.DrawArrays(gl::TRIANGLES, 0, 3);
+        }
 
         // Swap buffers
         window.swap_buffers();
     }
 
-    // Cleanup
-    gl.DeleteProgram(program);
-    gl.DeleteShader(fs);
-    gl.DeleteShader(vs);
     unsafe {
+        // Cleanup
+        gl.DeleteProgram(program);
+        gl.DeleteShader(fs);
+        gl.DeleteShader(vs);
         gl.DeleteBuffers(1, &vbo);
         gl.DeleteVertexArrays(1, &vao);
     }

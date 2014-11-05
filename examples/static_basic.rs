@@ -46,8 +46,10 @@ fn main() {
         glfw.poll_events();
 
         // Clear the screen to black
-        gl::ClearColor(0.3, 0.3, 0.3, 1.0);
-        gl::Clear(gl::COLOR_BUFFER_BIT);
+        unsafe {
+            gl::ClearColor(0.3, 0.3, 0.3, 1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
 
         // Swap buffers
         window.swap_buffers();

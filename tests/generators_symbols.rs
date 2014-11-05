@@ -67,7 +67,7 @@ mod egl {
 
 #[test]
 #[ignore]
-fn test_gl() {
+fn test_gl() { unsafe {
     gl::Clear(gl::COLOR_BUFFER_BIT);
     let _: libc::c_uint = gl::CreateProgram();
     gl::CompileShader(5);
@@ -76,32 +76,32 @@ fn test_gl() {
         gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
             std::ptr::null_mut());
     }
-}
+}}
 
 #[test]
 #[ignore]
-fn test_gles() {
+fn test_gles() { unsafe {
     gles::Clear(gles::COLOR_BUFFER_BIT);
     let _: libc::c_uint = gles::CreateProgram();
     gles::CompileShader(5);
-}
+}}
 
 #[test]
 #[ignore]
-fn test_glx() {
+fn test_glx() { unsafe {
     let _ = unsafe { glx::GetProcAddress(std::mem::uninitialized()) };
     unsafe { glx::SwapBuffers(std::mem::uninitialized(), std::mem::uninitialized()) };
-}
+}}
 
 #[test]
 #[ignore]
-fn test_wgl() {
+fn test_wgl() { unsafe {
     let _: wgl::types::HGLRC = unsafe { wgl::CreateContext(std::mem::uninitialized()) };
-}
+}}
 
 #[test]
 #[ignore]
-fn test_egl() {
+fn test_egl() { unsafe {
     let _ = [
         egl::SURFACE_TYPE, egl::WINDOW_BIT,
         egl::BLUE_SIZE, 8,
@@ -112,4 +112,4 @@ fn test_egl() {
 
     let _ = egl::GetDisplay(egl::DEFAULT_DISPLAY);
     egl::Terminate(unsafe { std::mem::uninitialized() });
-}
+}}
