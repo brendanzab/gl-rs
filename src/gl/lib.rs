@@ -54,7 +54,7 @@
 //! gl::TEXTURE_2D;
 //!
 //! // calling a function
-//! gl::DrawArrays(gl::TRIANGLES, 0, 3);
+//! unsafe { gl::DrawArrays(gl::TRIANGLES, 0, 3) };
 //!
 //! // functions that take pointers are unsafe
 //! # let shader = 0;

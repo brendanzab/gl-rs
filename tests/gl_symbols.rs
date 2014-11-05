@@ -5,7 +5,7 @@ extern crate libc;
 
 #[test]
 #[ignore]
-fn symbols_exist() {
+fn symbols_exist() { unsafe {
 	gl::Clear(gl::COLOR_BUFFER_BIT);
 	let _: libc::c_uint = gl::CreateProgram();
 	gl::CompileShader(5);
@@ -14,7 +14,7 @@ fn symbols_exist() {
         gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
             std::ptr::null_mut());
     }
-}
+} }
 
 #[test]
 fn fallback_works() {
