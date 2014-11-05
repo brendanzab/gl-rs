@@ -160,3 +160,12 @@ implementations for these APIs.
 You will need to manually provide the linkage. For example to use WGL or
 OpenGL 1.1 on Windows, you will need to add
 `#[link="OpenGL32.lib"] extern {}` somewhere in your code.
+
+### Custom Generators
+
+The `gl_generator` crate is extensible. This is a niche feature useful only in
+very rare cases. To create a custom generator, [create a new plugin
+crate](http://doc.rust-lang.org/guide-plugin.html#syntax-extensions) which
+depends on `gl_generator`. Then, implement the `gl_generator::Generator` trait
+and in your plugin registrar, register a function which calls
+`gl_generator::generate_bindings` with your custom generator and its name.
