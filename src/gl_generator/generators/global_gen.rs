@@ -127,42 +127,43 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
-    vec![
-        (quote_item!(ecx,
-            pub struct FnPtr {
-                /// The function pointer that will be used when calling the function.
-                f: *const __gl_imports::libc::c_void,
-                /// True if the pointer points to a real function, false if points to a `panic!` fn.
-                is_loaded: bool,
-            }
-        )).unwrap(),
+    let mut result = Vec::new();
+    
+    result.push((quote_item!(ecx,
+        pub struct FnPtr {
+            /// The function pointer that will be used when calling the function.
+            f: *const __gl_imports::libc::c_void,
+            /// True if the pointer points to a real function, false if points to a `panic!` fn.
+            is_loaded: bool,
+        }
+    )).unwrap());
 
-        (quote_item!(ecx,
-            impl FnPtr {
-                /// Creates a `FnPtr` from a load attempt.
-                pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {
-                    if ptr.is_null() {
-                        FnPtr { f: failing_fn, is_loaded: false }
-                    } else {
-                        FnPtr { f: ptr, is_loaded: true }
-                    }
+    result.push((quote_item!(ecx,
+        impl FnPtr {
+            /// Creates a `FnPtr` from a load attempt.
+            pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {
+                if ptr.is_null() {
+                    FnPtr { f: failing_fn, is_loaded: false }
+                } else {
+                    FnPtr { f: ptr, is_loaded: true }
                 }
             }
-        )).unwrap()
-    ]
+        }
+    )).unwrap());
+
+    result
 }
 
 /// Creates a `storage` module which contains a static `FnPtr` per GL command in the registry.
 fn write_ptrs(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     let storages = registry.cmd_iter().map(|c| {
-        let name = ecx.ident_of(c.proto.ident.as_slice());
-
-        (quote_item!(ecx,
-            pub static mut $name: FnPtr = FnPtr {
-                f: failing::$name as *const libc::c_void,
+        ecx.parse_item(format!(
+            "pub static mut {name}: FnPtr = FnPtr {{
+                f: failing::{name} as *const libc::c_void,
                 is_loaded: false
-            };
-        )).unwrap()
+            }};",
+            name = c.proto.ident
+        ))
     }).collect::<Vec<P<ast::Item>>>();
 
     (quote_item!(ecx,

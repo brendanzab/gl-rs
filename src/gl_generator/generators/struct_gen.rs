@@ -76,40 +76,42 @@ fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
-    vec![
-        (quote_item!(ecx,
+    let mut result = Vec::new();
+
+    result.push((quote_item!(ecx,
+        #[allow(dead_code)]
+        pub struct FnPtr {
+            /// The function pointer that will be used when calling the function.
+            f: *const __gl_imports::libc::c_void,
+            /// True if the pointer points to a real function, false if points to a `panic!` fn.
+            is_loaded: bool,
+        }
+    )).unwrap());
+
+    result.push((quote_item!(ecx,
+        impl FnPtr {
+            /// Creates a `FnPtr` from a load attempt.
+            fn new(ptr: *const __gl_imports::libc::c_void,
+                failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {
+                if ptr.is_null() {
+                    FnPtr { f: failing_fn, is_loaded: false }
+                } else {
+                    FnPtr { f: ptr, is_loaded: true }
+                }
+            }
+
+            /// Returns `true` if the function has been successfully loaded.
+            ///
+            /// If it returns `false`, calling the corresponding function will fail.
+            #[inline]
             #[allow(dead_code)]
-            pub struct FnPtr {
-                /// The function pointer that will be used when calling the function.
-                f: *const __gl_imports::libc::c_void,
-                /// True if the pointer points to a real function, false if points to a `panic!` fn.
-                is_loaded: bool,
+            pub fn is_loaded(&self) -> bool {
+                self.is_loaded
             }
-        )).unwrap(),
+        }
+    )).unwrap());
 
-        (quote_item!(ecx,
-            impl FnPtr {
-                /// Creates a `FnPtr` from a load attempt.
-                fn new(ptr: *const __gl_imports::libc::c_void,
-                    failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {
-                    if ptr.is_null() {
-                        FnPtr { f: failing_fn, is_loaded: false }
-                    } else {
-                        FnPtr { f: ptr, is_loaded: true }
-                    }
-                }
-
-                /// Returns `true` if the function has been successfully loaded.
-                ///
-                /// If it returns `false`, calling the corresponding function will fail.
-                #[inline]
-                #[allow(dead_code)]
-                pub fn is_loaded(&self) -> bool {
-                    self.is_loaded
-                }
-            }
-        )).unwrap()
-    ]
+    result
 }
 
 /// Creates a `failing` module which contains one function per GL command.
