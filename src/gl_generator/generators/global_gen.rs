@@ -157,14 +157,13 @@ fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
 /// Creates a `storage` module which contains a static `FnPtr` per GL command in the registry.
 fn write_ptrs(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
     let storages = registry.cmd_iter().map(|c| {
-        let name = ecx.ident_of(c.proto.ident.as_slice());
-
-        (quote_item!(ecx,
-            pub static mut $name: FnPtr = FnPtr {
-                f: failing::$name as *const libc::c_void,
+        ecx.parse_item(format!(
+            "pub static mut {name}: FnPtr = FnPtr {{
+                f: failing::{name} as *const libc::c_void,
                 is_loaded: false
-            };
-        )).unwrap()
+            }};",
+            name = c.proto.ident
+        ))
     }).collect::<Vec<P<ast::Item>>>();
 
     (quote_item!(ecx,
