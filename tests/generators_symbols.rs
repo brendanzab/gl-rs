@@ -72,10 +72,8 @@ fn test_gl() { unsafe {
     let _: libc::c_uint = gl::CreateProgram();
     gl::CompileShader(5);
 
-    unsafe {
-        gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
-            std::ptr::null_mut());
-    }
+    gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
+        std::ptr::null_mut());
 }}
 
 #[test]
@@ -89,14 +87,14 @@ fn test_gles() { unsafe {
 #[test]
 #[ignore]
 fn test_glx() { unsafe {
-    let _ = unsafe { glx::GetProcAddress(std::mem::uninitialized()) };
-    unsafe { glx::SwapBuffers(std::mem::uninitialized(), std::mem::uninitialized()) };
+    let _ = glx::GetProcAddress(std::mem::uninitialized());
+    glx::SwapBuffers(std::mem::uninitialized(), std::mem::uninitialized());
 }}
 
 #[test]
 #[ignore]
 fn test_wgl() { unsafe {
-    let _: wgl::types::HGLRC = unsafe { wgl::CreateContext(std::mem::uninitialized()) };
+    let _: wgl::types::HGLRC = wgl::CreateContext(std::mem::uninitialized());
 }}
 
 #[test]
@@ -111,5 +109,5 @@ fn test_egl() { unsafe {
     ];
 
     let _ = egl::GetDisplay(egl::DEFAULT_DISPLAY);
-    egl::Terminate(unsafe { std::mem::uninitialized() });
+    egl::Terminate(std::mem::uninitialized());
 }}
