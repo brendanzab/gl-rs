@@ -10,10 +10,8 @@ fn symbols_exist() { unsafe {
 	let _: libc::c_uint = gl::CreateProgram();
 	gl::CompileShader(5);
 
-    unsafe {
-        gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
-            std::ptr::null_mut());
-    }
+    gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
+        std::ptr::null_mut());
 } }
 
 #[test]

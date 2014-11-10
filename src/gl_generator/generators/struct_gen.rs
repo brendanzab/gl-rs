@@ -160,7 +160,7 @@ fn write_struct(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
 
         ns = *ns,
         ptrs = registry.cmd_iter().map(|c| {
-            let fallbacks = match registry.aliases.find(&c.proto.ident) {
+            let fallbacks = match registry.aliases.get(&c.proto.ident) {
                 Some(v) => v.clone(),
                 None => Vec::new(),
             };
@@ -209,7 +209,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
             /// ~~~
             #[unstable]
             #[allow(dead_code)]
-            #[allow(unused_variable)]
+            #[allow(unused_variables)]
             pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) -> {ns:c} {{
                 {ns:c}::load_with(|name| loader.get_proc_addr(name))
             }}
@@ -220,7 +220,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         ns = *ns,
 
         loadings = registry.cmd_iter().map(|c| {
-            let fallbacks = registry.aliases.find(&c.proto.ident);
+            let fallbacks = registry.aliases.get(&c.proto.ident);
             format!(
                 "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb}), failing::{name} as *const __gl_imports::libc::c_void),",
                 name = c.proto.ident,

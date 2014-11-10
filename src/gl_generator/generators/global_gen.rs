@@ -103,7 +103,7 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
     registry.cmd_iter().map(|c| {
         use syntax::ext::quote::rt::ToSource;
 
-        let doc = match registry.aliases.find(&c.proto.ident) {
+        let doc = match registry.aliases.get(&c.proto.ident) {
             Some(v) => format!("/** Fallbacks: {} */", v.connect(", ")),
             None => "".to_string()
         };
@@ -184,7 +184,7 @@ fn write_ptrs(ecx: &ExtCtxt, registry: &Registry) -> P<ast::Item> {
 ///  created by `write_ptrs`.
 fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item>> {
     registry.cmd_iter().map(|c| {
-        let fallbacks = match registry.aliases.find(&c.proto.ident) {
+        let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
                 let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, name.as_slice()))).collect::<Vec<_>>();
                 format!("[{}]", names.connect(", "))
