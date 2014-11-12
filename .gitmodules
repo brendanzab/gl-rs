@@ -1,3 +1,3 @@
-[submodule "deps/khronos-api"]
-	path = deps/khronos-api
+[submodule "src/khronos_api/api"]
+	path = src/khronos_api/api
 	url = https://github.com/capnm/Khronos_XML_API
