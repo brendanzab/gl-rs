@@ -24,7 +24,7 @@ use std::cell::RefCell;
 use std::collections::HashSet;
 use std::collections::HashMap;
 use std::fmt;
-use std::from_str::FromStr;
+use std::str::FromStr;
 use std::slice::Items;
 
 use self::xml::reader::events;
