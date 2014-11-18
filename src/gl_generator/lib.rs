@@ -182,17 +182,17 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
                 }
                 api = Some(match tts {
                     [&TtToken(_, token::LitStr(api))] if api.as_str() == "gl"
-                        => (registry::Gl, khronos_api::GL_XML),
+                        => (registry::Ns::Gl, khronos_api::GL_XML),
                     [&TtToken(_, token::LitStr(api))] if api.as_str() == "glx"
-                        => (registry::Glx, khronos_api::GLX_XML),
+                        => (registry::Ns::Glx, khronos_api::GLX_XML),
                     [&TtToken(_, token::LitStr(api))] if api.as_str() == "wgl"
-                        => (registry::Wgl, khronos_api::WGL_XML),
+                        => (registry::Ns::Wgl, khronos_api::WGL_XML),
                     [&TtToken(_, token::LitStr(api))] if api.as_str() == "egl"
-                        => (registry::Egl, khronos_api::EGL_XML),
+                        => (registry::Ns::Egl, khronos_api::EGL_XML),
                     [&TtToken(_, token::LitStr(api))] if api.as_str() == "gles1"
-                        => (registry::Gles1, khronos_api::GL_XML),
+                        => (registry::Ns::Gles1, khronos_api::GL_XML),
                     [&TtToken(_, token::LitStr(api))] if api.as_str() == "gles2"
-                        => (registry::Gles2, khronos_api::GL_XML),
+                        => (registry::Ns::Gles2, khronos_api::GL_XML),
                     [&TtToken(span, token::LitStr(api))] => {
                         ecx.span_err(span, format!("Unknown API \"{}\"", api.as_str()).as_slice());
                         return DummyResult::any(span);
@@ -328,7 +328,7 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
     }
 
     // Use default values if the parameters have not been set
-    let (ns, source) = api.unwrap_or((registry::Gl, khronos_api::GL_XML));
+    let (ns, source) = api.unwrap_or((registry::Ns::Gl, khronos_api::GL_XML));
     let extensions = extensions.unwrap_or(vec![]);
     let version = version.unwrap_or("1.0".to_string());
     let generator = generator.unwrap_or(box generators::static_gen::StaticGenerator);
