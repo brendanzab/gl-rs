@@ -29,6 +29,8 @@ use std::slice::Items;
 
 use self::xml::reader::events;
 
+use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
+
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
 impl FromStr for Ns {

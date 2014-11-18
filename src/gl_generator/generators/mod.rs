@@ -1,5 +1,4 @@
 use registry::{Enum, Registry, Cmd, Ns};
-use registry::{Gl, Gles1, Gles2, Wgl, Glx, Egl};
 use syntax::ast;
 use syntax::ext::base::ExtCtxt;
 use syntax::ptr::P;
@@ -81,23 +80,23 @@ pub fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
     let mut result = Vec::new();
 
     match *namespace {
-        Gl | Gles1 | Gles2 => {
+        Ns::Gl | Ns::Gles1 | Ns::Gles2 => {
             result.extend(ty::build_gl_aliases(ecx).into_iter());
         }
 
-        Glx => {
+        Ns::Glx => {
             result.extend(ty::build_gl_aliases(ecx).into_iter());
             result.extend(ty::build_x_aliases(ecx).into_iter());
             result.extend(ty::build_glx_aliases(ecx).into_iter());
         }
 
-        Wgl => {
+        Ns::Wgl => {
             result.extend(ty::build_gl_aliases(ecx).into_iter());
             result.extend(ty::build_win_aliases(ecx).into_iter());
             result.extend(ty::build_wgl_aliases(ecx).into_iter());
         }
 
-        Egl => {
+        Ns::Egl => {
             result.extend(ty::build_gl_aliases(ecx).into_iter());
             result.extend(ty::build_egl_aliases(ecx).into_iter());
         }
@@ -151,9 +150,9 @@ pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
 /// Example results: `"glClear"`, `"wglCreateContext"`, etc.
 pub fn gen_symbol_name(ns: &Ns, cmd: &str) -> String {
     (match *ns {
-        Gl | Gles1 | Gles2 => "gl",
-        Glx => "glX",
-        Wgl => "wgl",
-        Egl => "egl",
+        Ns::Gl | Ns::Gles1 | Ns::Gles2 => "gl",
+        Ns::Glx => "glX",
+        Ns::Wgl => "wgl",
+        Ns::Egl => "egl",
     }).to_string() + cmd
 }
