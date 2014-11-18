@@ -128,7 +128,7 @@ fn write_fns(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
 /// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
     let mut result = Vec::new();
-    
+
     result.push((quote_item!(ecx,
         pub struct FnPtr {
             /// The function pointer that will be used when calling the function.
@@ -187,8 +187,8 @@ fn write_fn_mods(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> Vec<P<ast::Item
         let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
                 let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, name.as_slice()))).collect::<Vec<_>>();
-                format!("[{}]", names.connect(", "))
-            }, None => "[]".to_string(),
+                format!("&[{}]", names.connect(", "))
+            }, None => "&[]".to_string(),
         };
         let fallbacks = ecx.parse_expr(fallbacks);
         let fnname = ecx.ident_of(c.proto.ident.as_slice());
