@@ -181,19 +181,19 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
                     return DummyResult::any(span);
                 }
                 api = Some(match tts {
-                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "gl"
+                    [&TtToken(_, token::Literal(token::Str_(api), None))] if api.as_str() == "gl"
                         => (registry::Ns::Gl, khronos_api::GL_XML),
-                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "glx"
+                    [&TtToken(_, token::Literal(token::Str_(api), None))] if api.as_str() == "glx"
                         => (registry::Ns::Glx, khronos_api::GLX_XML),
-                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "wgl"
+                    [&TtToken(_, token::Literal(token::Str_(api), None))] if api.as_str() == "wgl"
                         => (registry::Ns::Wgl, khronos_api::WGL_XML),
-                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "egl"
+                    [&TtToken(_, token::Literal(token::Str_(api), None))] if api.as_str() == "egl"
                         => (registry::Ns::Egl, khronos_api::EGL_XML),
-                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "gles1"
+                    [&TtToken(_, token::Literal(token::Str_(api), None))] if api.as_str() == "gles1"
                         => (registry::Ns::Gles1, khronos_api::GL_XML),
-                    [&TtToken(_, token::LitStr(api))] if api.as_str() == "gles2"
+                    [&TtToken(_, token::Literal(token::Str_(api), None))] if api.as_str() == "gles2"
                         => (registry::Ns::Gles2, khronos_api::GL_XML),
-                    [&TtToken(span, token::LitStr(api))] => {
+                    [&TtToken(span, token::Literal(token::Str_(api), None))] => {
                         ecx.span_err(span, format!("Unknown API \"{}\"", api.as_str()).as_slice());
                         return DummyResult::any(span);
                     },
@@ -211,11 +211,11 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
                     return DummyResult::any(span);
                 }
                 profile = Some(match tts {
-                    [&TtToken(_, token::LitStr(profile))] if profile.as_str() == "core"
+                    [&TtToken(_, token::Literal(token::Str_(profile), None))] if profile.as_str() == "core"
                         => "core".to_string(),
-                    [&TtToken(_, token::LitStr(profile))] if profile.as_str() == "compatibility"
+                    [&TtToken(_, token::Literal(token::Str_(profile), None))] if profile.as_str() == "compatibility"
                         => "compatibility".to_string(),
-                    [&TtToken(_, token::LitStr(profile))] => {
+                    [&TtToken(_, token::Literal(token::Str_(profile), None))] => {
                         let span = tts.head().map_or(span, |tt| tt.get_span());
                         ecx.span_err(span, format!("Unknown profile \"{}\"",
                                                    profile.as_str()).as_slice());
@@ -236,7 +236,7 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
                     return DummyResult::any(span);
                 }
                 version = Some(match tts {
-                    [&TtToken(_, token::LitStr(version))] => {
+                    [&TtToken(_, token::Literal(token::Str_(version), None))] => {
                         version.as_str().to_string()
                     },
                     _ => {
@@ -254,7 +254,7 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
                     return DummyResult::any(span);
                 }
                 match tts {
-                    [&TtToken(span, token::LitStr(gen))] => {
+                    [&TtToken(span, token::Literal(token::Str_(gen), None))] => {
                         if generators.is_none() { continue; }
                         for (name, generator_) in generators.take().unwrap().into_iter() {
                             if name == gen.as_str() {
@@ -294,7 +294,7 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
                         let mut failed = false;
                         let exts = tts.split(is_comma).scan((), |_, tts| {
                             match tts {
-                                [TtToken(_, token::LitStr(ext))] => {
+                                [TtToken(_, token::Literal(token::Str_(ext), None))] => {
                                     Some(ext.as_str().to_string())
                                 },
                                 _ => {

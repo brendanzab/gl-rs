@@ -154,11 +154,11 @@ fn write_struct(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
         #[allow(non_snake_case)]
         #[allow(dead_code)]
         #[stable]
-        pub struct {ns:c} {{
+        pub struct {ns} {{
             {ptrs}
         }}",
 
-        ns = *ns,
+        ns = ns.fmt_struct_name(),
         ptrs = registry.cmd_iter().map(|c| {
             let fallbacks = match registry.aliases.get(&c.proto.ident) {
                 Some(v) => v.clone(),
@@ -176,7 +176,7 @@ fn write_struct(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
 /// Creates the `impl` of the structure created by `write_struct`.
 fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
     ecx.parse_item(format!("
-        impl {ns:c} {{
+        impl {ns} {{
             /// Load each OpenGL symbol using a custom load function. This allows for the
             /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
             ///
@@ -186,7 +186,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
             #[unstable]
             #[allow(dead_code)]
             #[allow(unused_variables)]
-            pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {ns:c} {{
+            pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) -> {ns} {{
                 let metaloadfn: |&str, &[&str]| -> *const __gl_imports::libc::c_void = |symbol, symbols| {{
                     let mut ptr = loadfn(symbol);
                     if ptr.is_null() {{
@@ -197,7 +197,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
                     }}
                     ptr
                 }};
-                {ns:c} {{
+                {ns} {{
                     {loadings}
                 }}
             }}
@@ -210,14 +210,14 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
             #[unstable]
             #[allow(dead_code)]
             #[allow(unused_variables)]
-            pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) -> {ns:c} {{
-                {ns:c}::load_with(|name| loader.get_proc_addr(name))
+            pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) -> {ns} {{
+                {ns}::load_with(|name| loader.get_proc_addr(name))
             }}
 
             {modules}
         }}",
 
-        ns = *ns,
+        ns = ns.fmt_struct_name(),
 
         loadings = registry.cmd_iter().map(|c| {
             let fallbacks = registry.aliases.get(&c.proto.ident);
