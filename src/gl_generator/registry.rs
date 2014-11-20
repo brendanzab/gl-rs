@@ -33,6 +33,19 @@ use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
 
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
+impl Ns {
+    pub fn fmt_struct_name(&self) -> &str {
+        match *self {
+            Gl  => "Gl",
+            Glx => "Glx",
+            Wgl => "Wgl",
+            Egl => "Egl",
+            Gles1 => "Gles1",
+            Gles2 => "Gles2",
+        }
+    }
+}
+
 impl FromStr for Ns {
     fn from_str(s: &str) -> Option<Ns> {
         match s {
@@ -56,19 +69,6 @@ impl fmt::Show for Ns {
             Egl => write!(fmt, "egl"),
             Gles1 => write!(fmt, "gles1"),
             Gles2 => write!(fmt, "gles2"),
-        }
-    }
-}
-
-impl fmt::Char for Ns {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Gl  => write!(fmt, "Gl"),
-            Glx => write!(fmt, "Glx"),
-            Wgl => write!(fmt, "Wgl"),
-            Egl => write!(fmt, "Egl"),
-            Gles1 => write!(fmt, "Gles1"),
-            Gles2 => write!(fmt, "Gles2"),
         }
     }
 }
@@ -501,7 +501,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
     }
 
     fn consume_two<'a, T: FromXML, U: FromXML>(&self, one: &'a str, two: &'a str, end: &'a str) -> (Vec<T>, Vec<U>) {
-        debug!("consume_two: looking for {:s} and {:s} until {:s}", one, two, end);
+        debug!("consume_two: looking for {} and {} until {}", one, two, end);
 
         let mut ones = Vec::new();
         let mut twos = Vec::new();
@@ -755,7 +755,7 @@ impl FromXML for Feature {
         let name     = get_attribute(a, "name").unwrap();
         let number   = get_attribute(a, "number").unwrap();
 
-        debug!("Found api = {:s}, name = {:s}, number = {:s}", api, name, number);
+        debug!("Found api = {}, name = {}, number = {}", api, name, number);
 
         let (require, remove) = r.consume_two("require", "remove", "feature");
 
