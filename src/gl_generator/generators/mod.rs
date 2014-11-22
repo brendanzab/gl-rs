@@ -20,7 +20,7 @@ fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> 
 
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
-    let ident = if (enm.ident.as_slice().char_at(0)).is_digit() {
+    let ident = if (enm.ident.as_slice().char_at(0)).is_numeric() {
         format!("_{}", enm.ident)
     } else {
         enm.ident.clone()
