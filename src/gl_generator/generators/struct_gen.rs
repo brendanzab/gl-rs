@@ -226,7 +226,7 @@ fn write_impl(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
                 name = c.proto.ident,
                 symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
                 fb = match fallbacks {
-                    Some(fallbacks) => format!("&[{}]", fallbacks.iter().map(|name| format!("\"{}\"", name)).collect::<Vec<_>>().connect(", ")),
+                    Some(fallbacks) => format!("&[{}]", fallbacks.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, name.as_slice()))).collect::<Vec<_>>().connect(", ")),
                     None => format!("&[]")
                 },
             )
