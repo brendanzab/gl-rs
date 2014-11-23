@@ -17,7 +17,6 @@
 
 extern crate gl;
 extern crate glfw;
-extern crate native;
 
 use gl::types::*;
 use glfw::{Context, OpenGlProfileHint, WindowHint};
@@ -46,11 +45,6 @@ static FS_SRC: &'static str =
     void main() {\n\
        out_color = vec4(1.0, 1.0, 1.0, 1.0);\n\
     }";
-
-#[start]
-fn start(argc: int, argv: *const *const u8) -> int {
-    native::start(argc, argv, main)
-}
 
 fn compile_shader(src: &str, ty: GLenum) -> GLuint {
     let shader;
