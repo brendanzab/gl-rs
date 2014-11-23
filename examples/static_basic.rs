@@ -15,14 +15,8 @@
 
 extern crate gl;
 extern crate glfw;
-extern crate native;
 
 use glfw::{Context, OpenGlProfileHint, WindowHint};
-
-#[start]
-fn start(argc: int, argv: *const *const u8) -> int {
-    native::start(argc, argv, main)
-}
 
 fn main() {
     let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
