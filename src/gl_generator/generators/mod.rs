@@ -7,6 +7,7 @@ mod ty;
 pub mod global_gen;
 pub mod static_gen;
 pub mod struct_gen;
+pub mod static_struct_gen;
 
 /// Trait for a bindings generator.
 pub trait Generator {
