@@ -35,6 +35,15 @@ mod gl_struct {
     }
 }
 
+mod gl_static_struct {
+    generate_gl_bindings! {
+        api: "gl",
+        profile: "core",
+        version: "4.5",
+        generator: "static_struct",
+    }
+}
+
 mod glx_global {
     generate_gl_bindings! {
         api: "glx",

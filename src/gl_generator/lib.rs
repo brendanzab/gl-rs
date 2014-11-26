@@ -136,6 +136,7 @@ fn macro_handler(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree]) -> Box<MacRes
         ("static", box generators::static_gen::StaticGenerator as Box<Generator>),
         ("global", box generators::global_gen::GlobalGenerator as Box<Generator>),
         ("struct", box generators::struct_gen::StructGenerator as Box<Generator>),
+        ("static_struct", box generators::static_struct_gen::StaticStructGenerator as Box<Generator>),
     ]);
 }
 
