@@ -16,7 +16,7 @@
 extern crate gl;
 extern crate glfw;
 
-use glfw::{Context, OpenGlProfileHint, WindowHint};
+use glfw::{Context, OpenGlProfileHint, WindowHint, WindowMode};
 
 fn main() {
     let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
@@ -26,7 +26,7 @@ fn main() {
     glfw.window_hint(WindowHint::OpenglForwardCompat(true));
     glfw.window_hint(WindowHint::OpenglProfile(OpenGlProfileHint::Core));
 
-    let (window, _) = glfw.create_window(800, 600, "OpenGL", glfw::Windowed)
+    let (window, _) = glfw.create_window(800, 600, "OpenGL", WindowMode::Windowed)
         .expect("Failed to create GLFW window.");
 
     // It is essential to make the context current before calling `gl::load_with`.
