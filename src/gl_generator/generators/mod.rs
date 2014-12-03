@@ -137,7 +137,7 @@ pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
 
     // ... but there is one more step: if the Rust type ends with `c_void`, we replace it with `()`
     match ty.node {
-        ast::TyPath(ref path, _ ,_)
+        ast::TyPath(ref path, _ )
             if path.segments.last().unwrap().identifier.as_str() == "c_void"
                 => return quote_ty!(ecx, ()),
         _ => ()
