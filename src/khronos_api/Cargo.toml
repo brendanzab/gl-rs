@@ -1,5 +1,9 @@
 [package]
 
 name = "khronos_api"
-version = "0.0.2"
+version = "0.0.4-pre"
 authors = []
+description = "Contains the XML files that describe the official Khronos APIs."
+repository = "https://github.com/bjz/gl-rs"
+keywords = ["opengl"]
+license = "Apache-2.0"

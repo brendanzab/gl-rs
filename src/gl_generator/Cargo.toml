@@ -1,11 +1,15 @@
 [package]
 
 name = "gl_generator"
-version = "0.0.1"
+version = "0.0.4-pre"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
 ]
+description = "Bindings generator for all versions and extensions of OpenGL, OpenGL ES, WGL, GLX or EGL."
+repository = "https://github.com/bjz/gl-rs"
+keywords = ["opengl"]
+license = "Apache-2.0"
 
 [lib]
 
@@ -13,11 +17,13 @@ name = "gl_generator"
 path = "lib.rs"
 plugin = true
 
+[dependencies]
+rust-xml = "*"
+
 [dependencies.gl_common]
 path = "../gl_common"
-
-[dependencies.rust-xml]
-git = "https://github.com/netvl/rust-xml"
+version = "*"
 
 [dependencies.khronos_api]
 path = "../khronos_api"
+version = "*"
