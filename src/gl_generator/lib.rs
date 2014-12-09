@@ -75,8 +75,6 @@
 
 
 #![crate_name = "gl_generator"]
-#![comment = "OpenGL function loader generator."]
-#![license = "ASL2"]
 #![crate_type = "dylib"]
 
 #![feature(advanced_slice_patterns)]

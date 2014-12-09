@@ -76,8 +76,6 @@
 //!
 
 #![crate_name = "gl"]
-#![comment = "An OpenGL function loader."]
-#![license = "ASL2"]
 #![crate_type = "lib"]
 
 #![feature(phase)]

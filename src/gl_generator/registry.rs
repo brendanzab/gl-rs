@@ -31,6 +31,7 @@ use self::xml::reader::events::XmlEvent;
 
 use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
 
+#[deriving(Copy)]
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
 impl Ns {
