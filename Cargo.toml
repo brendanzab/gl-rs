@@ -1,5 +1,6 @@
-[package]
+example = []
 
+[package]
 name = "gl"
 version = "0.0.1"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
@@ -14,5 +15,5 @@ path = "src/gl/lib.rs"
 [dependencies.gl_generator]
 path = "src/gl_generator"
 
-[dev-dependencies.glfw]
-git = "https://github.com/bjz/glfw-rs"
+#[dev-dependencies.glfw]
+#git = "https://github.com/bjz/glfw-rs"
