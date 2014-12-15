@@ -1,11 +1,13 @@
 [package]
 
 name = "gl_generator"
-version = "0.0.1"
+version = "0.0.4"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
 ]
+description = "Syntax extension for creating bindings to the Khronos OpenGL and related APIs"
+license = "Apache-2.0"
 
 [lib]
 
@@ -15,9 +17,10 @@ plugin = true
 
 [dependencies.gl_common]
 path = "../gl_common"
-
-[dependencies.xml-rs]
-git = "https://github.com/netvl/xml-rs"
-
+version = "0.0.3"
 [dependencies.khronos_api]
 path = "../khronos_api"
+version = "0.0.3"
+
+[dependencies]
+xml-rs = "*"

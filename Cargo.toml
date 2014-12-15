@@ -2,11 +2,13 @@ example = []
 
 [package]
 name = "gl"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
 ]
+description = "OpenGL bindings"
+license = "Apache-2.0"
 
 [lib]
 name = "gl"
@@ -14,6 +16,7 @@ path = "src/gl/lib.rs"
 
 [dependencies.gl_generator]
 path = "src/gl_generator"
+version = "0.0.4"
 
 #[dev-dependencies.glfw]
 #git = "https://github.com/bjz/glfw-rs"
