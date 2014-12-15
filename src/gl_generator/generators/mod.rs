@@ -1,7 +1,4 @@
 use registry::{Enum, Registry, Cmd, Ns};
-use syntax::ast;
-use syntax::ext::base::ExtCtxt;
-use syntax::ptr::P;
 
 mod ty;
 pub mod global_gen;
@@ -12,13 +9,11 @@ pub mod static_struct_gen;
 /// Trait for a bindings generator.
 pub trait Generator {
     /// Builds the GL bindings.
-    fn write(&self, &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>>;
+    fn write(&self, registry: &Registry, ns: Ns) -> String;
 }
 
 /// This function generates a `const name: type = value;` item.
-fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> {
-    use syntax::ext::quote::rt::ExtParseUtils;
-
+fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
     let ident = if (enm.ident.as_slice().char_at(0)).is_numeric() {
@@ -74,85 +69,87 @@ fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> 
         }
     };
 
-    ecx.parse_item(format!("
+    format!("
         #[stable]
         #[allow(dead_code)]
         #[allow(non_upper_case_globals)]
-        pub const {}: {} = {};"
-    , ident, ty, value))
+        pub const {}: {} = {};
+    ", ident, ty, value)
 }
 
 /// Generates all the type aliases for a namespace.
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
 ///  things that we can't obtain from the XML files.
-pub fn gen_type_aliases(ecx: &ExtCtxt, namespace: &Ns) -> Vec<P<ast::Item>> {
+pub fn gen_type_aliases(namespace: &Ns) -> String {
     let mut result = Vec::new();
 
     match *namespace {
         Ns::Gl | Ns::Gles1 | Ns::Gles2 => {
-            result.extend(ty::build_gl_aliases(ecx).into_iter());
+            result.push(ty::build_gl_aliases());
         }
 
         Ns::Glx => {
-            result.extend(ty::build_gl_aliases(ecx).into_iter());
-            result.extend(ty::build_x_aliases(ecx).into_iter());
-            result.extend(ty::build_glx_aliases(ecx).into_iter());
+            result.push(ty::build_gl_aliases());
+            result.push(ty::build_x_aliases());
+            result.push(ty::build_glx_aliases());
         }
 
         Ns::Wgl => {
-            result.extend(ty::build_gl_aliases(ecx).into_iter());
-            result.extend(ty::build_win_aliases(ecx).into_iter());
-            result.extend(ty::build_wgl_aliases(ecx).into_iter());
+            result.push(ty::build_gl_aliases());
+            result.push(ty::build_win_aliases());
+            result.push(ty::build_wgl_aliases());
         }
 
         Ns::Egl => {
-            result.extend(ty::build_gl_aliases(ecx).into_iter());
-            result.extend(ty::build_egl_aliases(ecx).into_iter());
+            result.push(ty::build_gl_aliases());
+            result.push(ty::build_egl_aliases());
         }
     }
 
-    result
+    result.connect("\n")
 }
 
 /// Generates the list of Rust `Arg`s that a `Cmd` requires.
-pub fn gen_parameters(ecx: &ExtCtxt, cmd: &Cmd) -> Vec<ast::Arg> {
-    use syntax::ext::build::AstBuilder;
-
+pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<String> {
     cmd.params.iter()
         .map(|binding| {
             // variable name of the binding
             let ident = match binding.ident.as_slice() {
-                "in" => ecx.ident_of("in_"),
-                "ref" => ecx.ident_of("ref_"),
-                "type" => ecx.ident_of("type_"),
-                ident => ecx.ident_of(ident),
+                "in" => "in_",
+                "ref" => "ref_",
+                "type" => "type_",
+                ident => ident,
             };
 
             // rust type of the binding
-            let ty = ty::to_rust_ty(ecx, binding.ty.as_slice());
+            let ty = ty::to_rust_ty(binding.ty.as_slice());
 
             // returning
-            // TODO: don't use call_site()?
-            ecx.arg(ecx.call_site(), ident, ty)
+            if with_idents && with_types {
+                format!("{}: {}", ident, ty)
+            } else if with_types {
+                format!("{}", ty)
+            } else if with_idents {
+                format!("{}", ident)
+            } else {
+                panic!()
+            }
         })
         .collect()
 }
 
 /// Generates the Rust return type of a `Cmd`.
-pub fn gen_return_type(ecx: &ExtCtxt, cmd: &Cmd) -> P<ast::Ty> {
+pub fn gen_return_type(cmd: &Cmd) -> String {
     // turn the return type into a Rust type
-    let ty = ty::to_rust_ty(ecx, cmd.proto.ty.as_slice());
+    let ty = ty::to_rust_ty(cmd.proto.ty.as_slice());
 
     // ... but there is one more step: if the Rust type ends with `c_void`, we replace it with `()`
-    match ty.node {
-        ast::TyPath(ref path, _ )
-            if path.segments.last().unwrap().identifier.as_str() == "c_void"
-                => return quote_ty!(ecx, ()),
-        _ => ()
-    };
+    if ty.ends_with("c_void") {
+        return "()".to_string();
+    }
 
-    ty
+    ty.to_string()
 }
 
 /// Generates the native symbol name of a `Cmd`.

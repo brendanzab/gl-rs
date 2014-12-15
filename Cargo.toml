@@ -9,14 +9,19 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 ]
 description = "OpenGL bindings"
 license = "Apache-2.0"
+build = "src/gl/build.rs"
 
 [lib]
 name = "gl"
 path = "src/gl/lib.rs"
 
-[dependencies.gl_generator]
+[build-dependencies.gl_generator]
 path = "src/gl_generator"
 version = "0.0.4"
+
+[dependencies.gl_common]
+path = "src/gl_common"
+version = "0.0.3"
 
 #[dev-dependencies.glfw]
 #git = "https://github.com/bjz/glfw-rs"
