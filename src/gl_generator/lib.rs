@@ -347,7 +347,7 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
         use std::io::BufReader;
         use std::task;
 
-        let result = task::try(proc() {
+        let result = task::try(move || {
             let reader = BufReader::new(source);
             Registry::from_xml(reader, ns, filter)
         });
