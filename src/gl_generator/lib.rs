@@ -86,11 +86,7 @@
 #[phase(plugin, link)]
 extern crate log;
 
-#[phase(plugin)]
-extern crate regex_macros;
-
 extern crate khronos_api;
-extern crate regex;
 extern crate rustc;
 extern crate syntax;
 
