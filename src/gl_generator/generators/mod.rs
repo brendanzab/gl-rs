@@ -27,17 +27,23 @@ fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> 
         enm.ident.clone()
     };
 
+    // if the enum has the value of the form `((Type)Value)`, then `val_regexed` contains `(Type, Value)`
+    let val_regexed = {
+        if enm.value.starts_with("((") && enm.value.ends_with(")") {
+            let separator = enm.value.as_slice().chars().skip(2).position(|c| c == ')').unwrap();
+            Some((enm.value.slice(2, separator + 2), enm.value.slice_from(separator + 3).as_slice().trim_chars(')')))
+        } else {
+            None
+        }
+    };
+
     // computing the type of the enum
     let ty = {
         // some enums have a value of the form `((Type)Value)` ; if this is the case, we need to
         //  replace the type of the enum (which is GLenum by default) by the type in the expression
-
-        // matches `((a)b)`
-        let regex = regex!(r"\(\((\w+)\).+\)");
-
-        if (regex).is_match(enm.value.as_slice()) {
+        if let Some((ty, _)) = val_regexed {
             // if the value is like `((Type)Value)`, then the type is `types::Type`
-            regex.replace(enm.value.as_slice(), format!("{}$1", types_prefix).as_slice())
+            format!("{}{}", types_prefix, ty)
 
         } else if enm.value.as_slice().starts_with("\"") {
             // some values are of the form "Value" ; if this is the case, we use `&'static str`
@@ -61,8 +67,11 @@ fn gen_enum_item(ecx: &ExtCtxt, enm: &Enum, types_prefix: &str) -> P<ast::Item> 
     let value = {
         // similar to the type, some values are `((Type)Value)`
         // replacing "((Type)Value)" by "Value as types::Type"
-        let regex = regex!(r"\(\((\w+)\)(.+)\)");
-        regex.replace(enm.value.as_slice(), format!("$2 as {}$1", types_prefix).as_slice())
+        if let Some((ty, val)) = val_regexed {
+            format!("{} as {}{}", val, types_prefix, ty)
+        } else {
+            enm.value.clone()
+        }
     };
 
     ecx.parse_item(format!("
