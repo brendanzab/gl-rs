@@ -15,6 +15,8 @@
 
 #![experimental]
 
+use std::io::IoResult;
+
 /// Converts a C style type definition to the Rust equivalent
 pub fn to_rust_ty(ty: &str) -> &'static str {
     match ty {
@@ -282,8 +284,8 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
     }
 }
 
-pub fn build_gl_aliases() -> String {
-    [
+pub fn build_gl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    for l in [
         // Common types from OpenGL 1.1
         "pub type GLenum = super::__gl_imports::libc::c_uint;",
         "pub type GLboolean = super::__gl_imports::libc::c_uchar;",
@@ -367,19 +369,27 @@ pub fn build_gl_aliases() -> String {
         "pub type GLDEBUGPROCAMD = extern \"system\" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
         "pub type GLhalfNV = super::__gl_imports::libc::c_ushort;",
         "pub type GLvdpauSurfaceNV = GLintptr;",
-    ].connect("\n")
+    ].iter() {
+        try!(writeln!(dest, "{}", l));
+    }
+
+    Ok(())
 }
 
-pub fn build_x_aliases() -> String {
-    [
+pub fn build_x_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    for l in [
         "pub type XID = super::__gl_imports::libc::c_ulong;",
         "pub type Bool = super::__gl_imports::libc::c_int;",       // Not sure if this is correct...
         "#[repr(C)] pub struct Display;",
-    ].connect("\n")
+    ].iter() {
+        try!(writeln!(dest, "{}", l));
+    }
+
+    Ok(())
 }
 
-pub fn build_glx_aliases() -> String {
-    [
+pub fn build_glx_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    for l in [
         "pub type Font = XID;",
         "pub type Pixmap = XID;",
         "pub type Visual = ();",   // TODO: not sure
@@ -521,11 +531,15 @@ pub fn build_glx_aliases() -> String {
                 pub maxWidth: super::__gl_imports::libc::c_int,
             }
         "
-    ].connect("\n")
+    ].iter() {
+        try!(writeln!(dest, "{}", l));
+    }
+
+    Ok(())
 }
 
-pub fn build_win_aliases() -> String {
-    [
+pub fn build_win_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    for l in [
         // From WinNT.h
         "pub type CHAR = super::__gl_imports::libc::c_char;",
         "pub type HANDLE = PVOID;",
@@ -644,11 +658,15 @@ pub fn build_win_aliases() -> String {
                 pub dwDamageMask: DWORD,
             }
         "
-    ].connect("\n")
+    ].iter() {
+        try!(writeln!(dest, "{}", l));
+    }
+
+    Ok(())
 }
 
-pub fn build_wgl_aliases() -> String {
-    [
+pub fn build_wgl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    for l in [
         // From WinNT.h,
         // #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
         "pub type HPBUFFERARB = *const super::__gl_imports::libc::c_void;",
@@ -672,11 +690,15 @@ pub fn build_wgl_aliases() -> String {
 
         "pub struct GPU_DEVICE(_GPU_DEVICE);",
         "pub struct PGPU_DEVICE(*const _GPU_DEVICE);",
-    ].connect("\n")
+    ].iter() {
+        try!(writeln!(dest, "{}", l));
+    }
+
+    Ok(())
 }
 
-pub fn build_egl_aliases() -> String {
-    [
+pub fn build_egl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    for l in [
         // platform-specific aliases are unknown
         // IMPORTANT: these are alises to the same level of the bindings
         // the values must be defined by the user
@@ -729,5 +751,9 @@ pub fn build_egl_aliases() -> String {
                 iStride: EGLint,
             }
         "
-    ].connect("\n")
+    ].iter() {
+        try!(writeln!(dest, "{}", l));
+    }
+
+    Ok(())
 }

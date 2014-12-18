@@ -16,28 +16,28 @@
 #![experimental]
 
 use registry::{Registry, Ns};
+use std::io::IoResult;
 
 #[allow(missing_copy_implementations)]
 pub struct StructGenerator;
 
 impl super::Generator for StructGenerator {
-    fn write(&self, registry: &Registry, ns: Ns) -> String {
-        let mut result = Vec::new();
-        result.push(write_header());
-        result.push(write_type_aliases(&ns));
-        result.push(write_enums(registry));
-        result.push(write_fnptr_struct_def());
-        result.push(write_failing_fns(registry));
-        result.push(write_struct(registry, &ns));
-        result.push(write_impl(registry, &ns));
-        result.connect("\n")
+    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+        try!(write_header(dest));
+        try!(write_type_aliases(&ns, dest));
+        try!(write_enums(registry, dest));
+        try!(write_fnptr_struct_def(dest));
+        try!(write_failing_fns(registry, dest));
+        try!(write_struct(registry, &ns, dest));
+        try!(write_impl(registry, &ns, dest));
+        Ok(())
     }
 }
 
 /// Creates a `__gl_imports` module which contains all the external symbols that we need for the
 ///  bindings.
-fn write_header() -> String {
-    format!(r#"
+fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest, r#"
         mod __gl_imports {{
             extern crate gl_common;
             extern crate libc;
@@ -49,36 +49,37 @@ fn write_header() -> String {
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_type_aliases`.
-fn write_type_aliases(ns: &Ns) -> String {
-    let aliases = super::gen_type_aliases(ns);
-
-    format!(r#"
+fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    try!(writeln!(dest, r#"
         #[stable]
         pub mod types {{
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
             #![allow(dead_code)]
+    "#));
 
-            {aliases}
+    try!(super::gen_type_aliases(ns, dest));
+
+    writeln!(dest, "
         }}
-    "#, aliases = aliases)
+    ")
 }
 
-/// Writes all the `<enum>` elements at the root of the bindings.
-fn write_enums(registry: &Registry) -> String {
-    registry.enum_iter().map(|e| {
-        super::gen_enum_item(e, "types::")
-    }).collect::<Vec<String>>().connect("\n")
+/// Creates all the `<enum>` elements at the root of the bindings.
+fn write_enums<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
+    for e in registry.enum_iter() {
+        try!(super::gen_enum_item(e, "types::", dest));
+    }
+
+    Ok(())
 }
 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
-fn write_fnptr_struct_def() -> String {
-    let mut result = Vec::new();
-
-    result.push(format!(r#"
+fn write_fnptr_struct_def<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    try!(writeln!(dest, r#"
         #[allow(dead_code)]
         #[allow(missing_copy_implementations)]
-        pub struct FnPtr {
+        pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
             f: *const __gl_imports::libc::c_void,
             /// True if the pointer points to a real function, false if points to a `panic!` fn.
@@ -86,7 +87,7 @@ fn write_fnptr_struct_def() -> String {
         }}
     "#));
 
-    result.push(format!(r#"
+    writeln!(dest, r#"
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
             fn new(ptr: *const __gl_imports::libc::c_void,
@@ -107,15 +108,13 @@ fn write_fnptr_struct_def() -> String {
                 self.is_loaded
             }}
         }}
-    "#));
-
-    result.connect("\n")
+    "#)
 }
 
 /// Creates a `failing` module which contains one function per GL command.
 ///
 /// These functions are the mocks that are called if the real function could not be loaded.
-fn write_failing_fns(registry: &Registry) -> String {
+fn write_failing_fns<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
     let fns = registry.cmd_iter().map(|c| {
         format!(r#"
             #[allow(unused_variables)]
@@ -131,7 +130,7 @@ fn write_failing_fns(registry: &Registry) -> String {
         )
     }).collect::<Vec<String>>().connect("\n");
 
-    format!(r#"
+    writeln!(dest, r#"
         mod failing {{
             use super::types;
             use super::__gl_imports;
@@ -144,8 +143,8 @@ fn write_failing_fns(registry: &Registry) -> String {
 /// Creates a structure which stores all the `FnPtr` of the bindings.
 ///
 /// The name of the struct corresponds to the namespace.
-fn write_struct(registry: &Registry, ns: &Ns) -> String {
-    format!("
+fn write_struct<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest, "
         #[allow(non_camel_case_types)]
         #[allow(non_snake_case)]
         #[allow(dead_code)]
@@ -170,8 +169,8 @@ fn write_struct(registry: &Registry, ns: &Ns) -> String {
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
-fn write_impl(registry: &Registry, ns: &Ns) -> String {
-    format!("
+fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest, "
         impl {ns} {{
             /// Load each OpenGL symbol using a custom load function. This allows for the
             /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.

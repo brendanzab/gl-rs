@@ -1,4 +1,5 @@
 use registry::{Enum, Registry, Cmd, Ns};
+use std::io::IoResult;
 
 mod ty;
 pub mod global_gen;
@@ -9,11 +10,11 @@ pub mod static_struct_gen;
 /// Trait for a bindings generator.
 pub trait Generator {
     /// Builds the GL bindings.
-    fn write(&self, registry: &Registry, ns: Ns) -> String;
+    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> IoResult<()> where W: Writer;
 }
 
 /// This function generates a `const name: type = value;` item.
-fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
+fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> IoResult<()> where W: Writer {
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
     let ident = if (enm.ident.as_slice().char_at(0)).is_numeric() {
@@ -69,7 +70,7 @@ fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
         }
     };
 
-    format!("
+    writeln!(dest, "
         #[stable]
         #[allow(dead_code)]
         #[allow(non_upper_case_globals)]
@@ -81,33 +82,31 @@ fn gen_enum_item(enm: &Enum, types_prefix: &str) -> String {
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
 ///  things that we can't obtain from the XML files.
-pub fn gen_type_aliases(namespace: &Ns) -> String {
-    let mut result = Vec::new();
-
+pub fn gen_type_aliases<W>(namespace: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
     match *namespace {
         Ns::Gl | Ns::Gles1 | Ns::Gles2 => {
-            result.push(ty::build_gl_aliases());
+            try!(ty::build_gl_aliases(dest));
         }
 
         Ns::Glx => {
-            result.push(ty::build_gl_aliases());
-            result.push(ty::build_x_aliases());
-            result.push(ty::build_glx_aliases());
+            try!(ty::build_gl_aliases(dest));
+            try!(ty::build_x_aliases(dest));
+            try!(ty::build_glx_aliases(dest));
         }
 
         Ns::Wgl => {
-            result.push(ty::build_gl_aliases());
-            result.push(ty::build_win_aliases());
-            result.push(ty::build_wgl_aliases());
+            try!(ty::build_gl_aliases(dest));
+            try!(ty::build_win_aliases(dest));
+            try!(ty::build_wgl_aliases(dest));
         }
 
         Ns::Egl => {
-            result.push(ty::build_gl_aliases());
-            result.push(ty::build_egl_aliases());
+            try!(ty::build_gl_aliases(dest));
+            try!(ty::build_egl_aliases(dest));
         }
     }
 
-    result.connect("\n")
+    Ok(())
 }
 
 /// Generates the list of Rust `Arg`s that a `Cmd` requires.

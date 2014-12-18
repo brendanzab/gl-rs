@@ -16,31 +16,31 @@
 #![experimental]
 
 use registry::{Registry, Ns};
+use std::io::IoResult;
 
 #[allow(missing_copy_implementations)]
 pub struct GlobalGenerator;
 
 impl super::Generator for GlobalGenerator {
-    fn write(&self, registry: &Registry, ns: Ns) -> String {
-        let mut result = Vec::new();
-        result.push(write_header());
-        result.push(write_metaloadfn());
-        result.push(write_type_aliases(&ns));
-        result.push(write_enums(registry));
-        result.push(write_fns(registry));
-        result.push(write_fnptr_struct_def());
-        result.push(write_ptrs(registry));
-        result.push(write_fn_mods(registry, &ns));
-        result.push(write_failing_fns(registry));
-        result.push(write_load_fn(registry));
-        result.connect("\n")
+    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+        try!(write_header(dest));
+        try!(write_metaloadfn(dest));
+        try!(write_type_aliases(&ns, dest));
+        try!(write_enums(registry, dest));
+        try!(write_fns(registry, dest));
+        try!(write_fnptr_struct_def(dest));
+        try!(write_ptrs(registry, dest));
+        try!(write_fn_mods(registry, &ns, dest));
+        try!(write_failing_fns(registry, dest));
+        try!(write_load_fn(registry, dest));
+        Ok(())
     }
 }
 
 /// Creates a `__gl_imports` module which contains all the external symbols that we need for the
 ///  bindings.
-fn write_header() -> String {
-    format!(r#"
+fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest, r#"
         mod __gl_imports {{
             extern crate gl_common;
             extern crate libc;
@@ -50,8 +50,8 @@ fn write_header() -> String {
 }
 
 /// Creates the metaloadfn function for fallbacks
-fn write_metaloadfn() -> String {
-    format!(r#"
+fn write_metaloadfn<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest, r#"
         fn metaloadfn(loadfn: |&str| -> *const __gl_imports::libc::c_void,
                       symbol: &str,
                       fallbacks: &[&str]) -> *const __gl_imports::libc::c_void {{
@@ -70,41 +70,44 @@ fn write_metaloadfn() -> String {
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_type_aliases`.
-fn write_type_aliases(ns: &Ns) -> String {
-    let aliases = super::gen_type_aliases(ns);
-
-    format!(r#"
+fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    try!(writeln!(dest, r#"
         #[stable]
         pub mod types {{
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
             #![allow(dead_code)]
             #![allow(missing_copy_implementations)]
+    "#));
 
-            {aliases}
+    try!(super::gen_type_aliases(ns, dest));
+
+    writeln!(dest, "
         }}
-    "#, aliases = aliases)
+    ")
 }
 
 /// Creates all the `<enum>` elements at the root of the bindings.
-fn write_enums(registry: &Registry) -> String {
-    registry.enum_iter().map(|e| {
-        super::gen_enum_item(e, "types::")
-    }).collect::<Vec<String>>().connect("\n")
+fn write_enums<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
+    for e in registry.enum_iter() {
+        try!(super::gen_enum_item(e, "types::", dest));
+    }
+
+    Ok(())
 }
 
 /// Creates the functions corresponding to the GL commands.
 ///
 /// The function calls the corresponding function pointer stored in the `storage` module created
 ///  by `write_ptrs`.
-fn write_fns(registry: &Registry) -> String {
-    registry.cmd_iter().map(|c| {
+fn write_fns<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
+    for c in registry.cmd_iter() {
         let doc = match registry.aliases.get(&c.proto.ident) {
             Some(v) => format!("/** Fallbacks: {} */", v.connect(", ")),
             None => "".to_string()
         };
 
-        format!(
+        try!(writeln!(dest,
             "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
             #[inline] #[unstable] {doc} pub unsafe fn {name}({params}) -> {return_suffix} {{ \
                 __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
@@ -116,15 +119,15 @@ fn write_fns(registry: &Registry) -> String {
             typed_params = super::gen_parameters(c, false, true).connect(", "),
             return_suffix = super::gen_return_type(c),
             idents = super::gen_parameters(c, true, false).connect(", "),
-        )
-    }).collect::<Vec<String>>().connect("\n")
+        ));
+    }
+
+    Ok(())
 }
 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
-fn write_fnptr_struct_def() -> String {
-    let mut result = Vec::new();
-
-    result.push(format!(r#"
+fn write_fnptr_struct_def<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    try!(writeln!(dest, r#"
         #[allow(missing_copy_implementations)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
@@ -134,7 +137,7 @@ fn write_fnptr_struct_def() -> String {
         }}
     "#));
 
-    result.push(format!(r#"
+    writeln!(dest, r#"
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
             pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {{
@@ -145,13 +148,11 @@ fn write_fnptr_struct_def() -> String {
                 }}
             }}
         }}
-    "#));
-
-    result.connect("\n")
+    "#)
 }
 
 /// Creates a `storage` module which contains a static `FnPtr` per GL command in the registry.
-fn write_ptrs(registry: &Registry) -> String {
+fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
     let storages = registry.cmd_iter().map(|c| {
         format!(
             "pub static mut {name}: FnPtr = FnPtr {{
@@ -162,7 +163,7 @@ fn write_ptrs(registry: &Registry) -> String {
         )
     }).collect::<Vec<String>>().connect("\n");
 
-    format!(r##"
+    writeln!(dest, r##"
         mod storage {{
             #![allow(non_snake_case)]
             use super::__gl_imports::libc;
@@ -178,8 +179,8 @@ fn write_ptrs(registry: &Registry) -> String {
 ///
 /// Each module contains `is_loaded` and `load_with` which interact with the `storage` module
 ///  created by `write_ptrs`.
-fn write_fn_mods(registry: &Registry, ns: &Ns) -> String {
-    registry.cmd_iter().map(|c| {
+fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    for c in registry.cmd_iter() {
         let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
                 let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, name.as_slice()))).collect::<Vec<_>>();
@@ -190,7 +191,7 @@ fn write_fn_mods(registry: &Registry, ns: &Ns) -> String {
         let symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice());
         let symbol = symbol.as_slice();
 
-        format!(r##"
+        try!(writeln!(dest, r##"
             #[unstable]
             #[allow(non_snake_case)]
             pub mod {fnname} {{
@@ -211,14 +212,16 @@ fn write_fn_mods(registry: &Registry, ns: &Ns) -> String {
                     }}
                 }}
             }}
-        "##, fnname = fnname, fallbacks = fallbacks, symbol = symbol)
-    }).collect::<Vec<String>>().connect("\n")
+        "##, fnname = fnname, fallbacks = fallbacks, symbol = symbol));
+    }
+
+    Ok(())
 }
 
 /// Creates a `failing` module which contains one function per GL command.
 ///
 /// These functions are the mocks that are called if the real function could not be loaded.
-fn write_failing_fns(registry: &Registry) -> String {
+fn write_failing_fns<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
     let functions = registry.cmd_iter().map(|c| {
         (format!(
             "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
@@ -231,7 +234,7 @@ fn write_failing_fns(registry: &Registry) -> String {
         ))
     }).collect::<Vec<String>>().connect("\n");
 
-    format!(r#"
+    writeln!(dest, r#"
         mod failing {{
             use super::types;
             use super::__gl_imports;
@@ -244,13 +247,13 @@ fn write_failing_fns(registry: &Registry) -> String {
 /// Creates the `load_with` function.
 ///
 /// The function calls `load_with` in each module created by `write_fn_mods`.
-fn write_load_fn(registry: &Registry) -> String {
+fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
     let loadings = registry.cmd_iter().map(|c| {
         let cmd_name = c.proto.ident.as_slice();
         format!("{cmd_name}::load_with(|s| loadfn(s));", cmd_name = cmd_name)
     }).collect::<Vec<String>>().connect("\n");
 
-    let a = format!(r#"
+    try!(writeln!(dest, r#"
         /// Load each OpenGL symbol using a custom load function. This allows for the
         /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
         /// ~~~ignore
@@ -261,9 +264,9 @@ fn write_load_fn(registry: &Registry) -> String {
         pub fn load_with(loadfn: |symbol: &str| -> *const __gl_imports::libc::c_void) {{
             {loadings}
         }}
-    "#, loadings = loadings);
+    "#, loadings = loadings));
 
-    let b = format!(r#"
+    writeln!(dest, r#"
         /// Load each OpenGL symbol using a custom load function.
         ///
         /// ~~~ignore
@@ -274,7 +277,5 @@ fn write_load_fn(registry: &Registry) -> String {
         pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) {{
             load_with(|name| loader.get_proc_addr(name));
         }}
-    "#);
-
-    a + b.as_slice()
+    "#)
 }

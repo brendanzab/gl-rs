@@ -16,25 +16,25 @@
 #![experimental]
 
 use registry::{Registry, Ns};
+use std::io::IoResult;
 
 #[allow(missing_copy_implementations)]
 pub struct StaticGenerator;
 
 impl super::Generator for StaticGenerator {
-    fn write(&self, registry: &Registry, ns: Ns) -> String {
-        let mut result = Vec::new();
-        result.push(write_header());
-        result.push(write_type_aliases(&ns));
-        result.push(write_enums(registry));
-        result.push(write_fns(registry, &ns));
-        result.connect("\n")
+    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+        try!(write_header(dest));
+        try!(write_type_aliases(&ns, dest));
+        try!(write_enums(registry, dest));
+        try!(write_fns(registry, &ns, dest));
+        Ok(())
     }
 }
 
 /// Creates a `__gl_imports` module which contains all the external symbols that we need for the
 ///  bindings.
-fn write_header() -> String {
-    format!(r#"
+fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest, r#"
         mod __gl_imports {{
             extern crate libc;
             pub use std::mem;
@@ -45,32 +45,35 @@ fn write_header() -> String {
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_type_aliases`.
-fn write_type_aliases(ns: &Ns) -> String {
-    let aliases = super::gen_type_aliases(ns);
-
-    format!(r#"
+fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    try!(writeln!(dest, r#"
         #[stable]
         pub mod types {{
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
             #![allow(dead_code)]
+    "#));
 
-            {aliases}
+    try!(super::gen_type_aliases(ns, dest));
+
+    writeln!(dest, "
         }}
-    "#, aliases = aliases)
+    ")
 }
 
-/// Writes all the `<enum>` elements at the root of the bindings.
-fn write_enums(registry: &Registry) -> String {
-    registry.enum_iter().map(|e| {
-        super::gen_enum_item(e, "types::")
-    }).collect::<Vec<String>>().connect("\n")
+/// Creates all the `<enum>` elements at the root of the bindings.
+fn write_enums<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
+    for e in registry.enum_iter() {
+        try!(super::gen_enum_item(e, "types::", dest));
+    }
+
+    Ok(())
 }
 
 /// Writes all functions corresponding to the GL bindings.
 ///
 /// These are foreign functions, they don't have any content.
-fn write_fns(registry: &Registry, ns: &Ns) -> String {
+fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
     let symbols = registry.cmd_iter().map(|c| {
         format!(
             "#[link_name=\"{symbol}\"]
@@ -82,7 +85,7 @@ fn write_fns(registry: &Registry, ns: &Ns) -> String {
         )
     }).collect::<Vec<String>>().connect("\n");
 
-    format!("
+    writeln!(dest, "
         #[allow(non_snake_case)]
         #[allow(unused_variables)]
         #[allow(dead_code)]

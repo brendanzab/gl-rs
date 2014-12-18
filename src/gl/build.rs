@@ -3,16 +3,16 @@ extern crate khronos_api;
 
 use std::os;
 use std::io::File;
+use std::io::BufferedWriter;
 
 fn main() {
     let dest = Path::new(os::getenv("OUT_DIR").unwrap());
 
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Gl,
-                                                   khronos_api::GL_XML, vec![], "4.5", "core");
-
-    let mut file = File::create(&dest.join("bindings.rs")).unwrap();
-    (write!(&mut file, "{}", bindings)).unwrap();
+    let mut file = BufferedWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Gl,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
 
 
     // writing tests files
@@ -25,168 +25,226 @@ fn main() {
 }
 
 fn write_test_gen_symbols(dest: &Path) {
-    let mut file = File::create(&dest.join("test_gen_symbols.rs")).unwrap();
+    let mut file = BufferedWriter::new(File::create(&dest.join("test_gen_symbols.rs")).unwrap());
 
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Gl,
-                                                   khronos_api::GL_XML, vec![], "4.5", "core");
-    (write!(&mut file, "mod gl {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod gl {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Gl,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Gles2,
-                                                   khronos_api::GL_XML, vec![], "3.1", "core");
-    (write!(&mut file, "mod gles {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod gles {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Gles2,
+                                    khronos_api::GL_XML, vec![], "3.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Glx,
-                                                   khronos_api::GLX_XML, vec![], "1.4", "core");
-    (write!(&mut file, "mod glx {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod glx {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Glx,
+                                    khronos_api::GLX_XML, vec![], "1.4", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Wgl,
-                                                   khronos_api::WGL_XML, vec![], "1.0", "core");
-    (write!(&mut file, "mod wgl {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod wgl {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Wgl,
+                                    khronos_api::WGL_XML, vec![], "1.0", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Egl,
-                                                   khronos_api::EGL_XML, vec![], "1.5", "core");
-    (write!(&mut file, "mod egl {{ {} {} }}", build_egl_symbols(), bindings)).unwrap();
+    (writeln!(&mut file, "mod egl {{ {}", build_egl_symbols())).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Egl,
+                                    khronos_api::EGL_XML, vec![], "1.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
 }
 
 fn write_test_no_warnings(dest: &Path) {
-    let mut file = File::create(&dest.join("test_no_warnings.rs")).unwrap();
+    let mut file = BufferedWriter::new(File::create(&dest.join("test_no_warnings.rs")).unwrap());
 
 
 
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Gl,
-                                                   khronos_api::GL_XML, vec![], "4.5", "core");
-    (write!(&mut file, "mod gl_global {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod gl_global {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Gl,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
 
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticGenerator,
-                                                   gl_generator::registry::Ns::Gl,
-                                                   khronos_api::GL_XML, vec![], "4.5", "core");
-    (write!(&mut file, "mod gl_static {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod gl_static {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticGenerator,
+                                    gl_generator::registry::Ns::Gl,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StructGenerator,
-                                                   gl_generator::registry::Ns::Gl,
-                                                   khronos_api::GL_XML, vec![], "4.5", "core");
-    (write!(&mut file, "mod gl_struct {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod gl_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StructGenerator,
+                                    gl_generator::registry::Ns::Gl,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
-                                                   gl_generator::registry::Ns::Gl,
-                                                   khronos_api::GL_XML, vec![], "4.5", "core");
-    (write!(&mut file, "mod gl_static_struct {{ {} }}", bindings)).unwrap();
-    
-
-
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Glx,
-                                                   khronos_api::GLX_XML, vec![], "1.4", "core");
-    (write!(&mut file, "mod glx_global {{ {} }}", bindings)).unwrap();
-
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticGenerator,
-                                                   gl_generator::registry::Ns::Glx,
-                                                   khronos_api::GLX_XML, vec![], "1.4", "core");
-    (write!(&mut file, "mod glx_static {{ {} }}", bindings)).unwrap();
-    
-    let bindings = gl_generator::generate_bindings(gl_generator::StructGenerator,
-                                                   gl_generator::registry::Ns::Glx,
-                                                   khronos_api::GLX_XML, vec![], "1.4", "core");
-    (write!(&mut file, "mod glx_struct {{ {} }}", bindings)).unwrap();
-    
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
-                                                   gl_generator::registry::Ns::Glx,
-                                                   khronos_api::GLX_XML, vec![], "1.4", "core");
-    (write!(&mut file, "mod glx_static_struct {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod gl_static_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Gl,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
 
 
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Wgl,
-                                                   khronos_api::WGL_XML, vec![], "1.0", "core");
-    (write!(&mut file, "mod wgl_global {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod glx_global {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Glx,
+                                    khronos_api::GLX_XML, vec![], "1.4", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
 
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticGenerator,
-                                                   gl_generator::registry::Ns::Wgl,
-                                                   khronos_api::WGL_XML, vec![], "1.0", "core");
-    (write!(&mut file, "mod wgl_static {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod glx_static {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticGenerator,
+                                    gl_generator::registry::Ns::Glx,
+                                    khronos_api::GLX_XML, vec![], "1.4", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StructGenerator,
-                                                   gl_generator::registry::Ns::Wgl,
-                                                   khronos_api::WGL_XML, vec![], "1.0", "core");
-    (write!(&mut file, "mod wgl_struct {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod glx_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StructGenerator,
+                                    gl_generator::registry::Ns::Glx,
+                                    khronos_api::GLX_XML, vec![], "1.4", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
-                                                   gl_generator::registry::Ns::Wgl,
-                                                   khronos_api::WGL_XML, vec![], "1.0", "core");
-    (write!(&mut file, "mod wgl_static_struct {{ {} }}", bindings)).unwrap();
-    
-
-
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Gles1,
-                                                   khronos_api::GL_XML, vec![], "1.1", "core");
-    (write!(&mut file, "mod gles1_global {{ {} }}", bindings)).unwrap();
-
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticGenerator,
-                                                   gl_generator::registry::Ns::Gles1,
-                                                   khronos_api::GL_XML, vec![], "1.1", "core");
-    (write!(&mut file, "mod gles1_static {{ {} }}", bindings)).unwrap();
-    
-    let bindings = gl_generator::generate_bindings(gl_generator::StructGenerator,
-                                                   gl_generator::registry::Ns::Gles1,
-                                                   khronos_api::GL_XML, vec![], "1.1", "core");
-    (write!(&mut file, "mod gles1_struct {{ {} }}", bindings)).unwrap();
-    
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
-                                                   gl_generator::registry::Ns::Gles1,
-                                                   khronos_api::GL_XML, vec![], "1.1", "core");
-    (write!(&mut file, "mod gles1_static_struct {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod glx_static_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Glx,
+                                    khronos_api::GLX_XML, vec![], "1.4", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
 
 
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Gles2,
-                                                   khronos_api::GL_XML, vec![], "3.1", "core");
-    (write!(&mut file, "mod gles2_global {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod wgl_global {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Wgl,
+                                    khronos_api::WGL_XML, vec![], "1.0", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
 
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticGenerator,
-                                                   gl_generator::registry::Ns::Gles2,
-                                                   khronos_api::GL_XML, vec![], "3.1", "core");
-    (write!(&mut file, "mod gles2_static {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod wgl_static {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticGenerator,
+                                    gl_generator::registry::Ns::Wgl,
+                                    khronos_api::WGL_XML, vec![], "1.0", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StructGenerator,
-                                                   gl_generator::registry::Ns::Gles2,
-                                                   khronos_api::GL_XML, vec![], "3.1", "core");
-    (write!(&mut file, "mod gles2_struct {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod wgl_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StructGenerator,
+                                    gl_generator::registry::Ns::Wgl,
+                                    khronos_api::WGL_XML, vec![], "1.0", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
-                                                   gl_generator::registry::Ns::Gles2,
-                                                   khronos_api::GL_XML, vec![], "3.1", "core");
-    (write!(&mut file, "mod gles2_static_struct {{ {} }}", bindings)).unwrap();
+    (writeln!(&mut file, "mod wgl_static_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Wgl,
+                                    khronos_api::WGL_XML, vec![], "1.0", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
 
 
-    let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                                   gl_generator::registry::Ns::Egl,
-                                                   khronos_api::EGL_XML, vec![], "1.5", "core");
-    (write!(&mut file, "mod egl_global {{ {} {} }}", build_egl_symbols(), bindings)).unwrap();
+    (writeln!(&mut file, "mod gles1_global {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Gles1,
+                                    khronos_api::GL_XML, vec![], "1.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
 
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticGenerator,
-                                                   gl_generator::registry::Ns::Egl,
-                                                   khronos_api::EGL_XML, vec![], "1.5", "core");
-    (write!(&mut file, "mod egl_static {{ {} {} }}", build_egl_symbols(), bindings)).unwrap();
+    (writeln!(&mut file, "mod gles1_static {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticGenerator,
+                                    gl_generator::registry::Ns::Gles1,
+                                    khronos_api::GL_XML, vec![], "1.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StructGenerator,
-                                                   gl_generator::registry::Ns::Egl,
-                                                   khronos_api::EGL_XML, vec![], "1.5", "core");
-    (write!(&mut file, "mod egl_struct {{ {} {} }}", build_egl_symbols(), bindings)).unwrap();
+    (writeln!(&mut file, "mod gles1_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StructGenerator,
+                                    gl_generator::registry::Ns::Gles1,
+                                    khronos_api::GL_XML, vec![], "1.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
-    let bindings = gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
-                                                   gl_generator::registry::Ns::Egl,
-                                                   khronos_api::EGL_XML, vec![], "1.5", "core");
-    (write!(&mut file, "mod egl_static_struct {{ {} {} }}", build_egl_symbols(), bindings)).unwrap();
+    (writeln!(&mut file, "mod gles1_static_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Gles1,
+                                    khronos_api::GL_XML, vec![], "1.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+    
+
+
+    (writeln!(&mut file, "mod gles2_global {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Gles2,
+                                    khronos_api::GL_XML, vec![], "3.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
+    (writeln!(&mut file, "mod gles2_static {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticGenerator,
+                                    gl_generator::registry::Ns::Gles2,
+                                    khronos_api::GL_XML, vec![], "3.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+    
+    (writeln!(&mut file, "mod gles2_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StructGenerator,
+                                    gl_generator::registry::Ns::Gles2,
+                                    khronos_api::GL_XML, vec![], "3.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+    
+    (writeln!(&mut file, "mod gles2_static_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Gles2,
+                                    khronos_api::GL_XML, vec![], "3.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+    
+
+
+    (writeln!(&mut file, "mod egl_global {{ {}", build_egl_symbols())).unwrap();
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Egl,
+                                    khronos_api::EGL_XML, vec![], "1.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
+    (writeln!(&mut file, "mod egl_static {{ {}", build_egl_symbols())).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticGenerator,
+                                    gl_generator::registry::Ns::Egl,
+                                    khronos_api::EGL_XML, vec![], "1.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+    
+    (writeln!(&mut file, "mod egl_struct {{ {}", build_egl_symbols())).unwrap();
+    gl_generator::generate_bindings(gl_generator::StructGenerator,
+                                    gl_generator::registry::Ns::Egl,
+                                    khronos_api::EGL_XML, vec![], "1.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+    
+    (writeln!(&mut file, "mod egl_static_struct {{ {}", build_egl_symbols())).unwrap();
+    gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Egl,
+                                    khronos_api::EGL_XML, vec![], "1.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
     
 
 }

@@ -32,13 +32,13 @@
 //! 
 //! fn main() {
 //!     let dest = Path::new(os::getenv("OUT_DIR").unwrap());
-//! 
-//!     let bindings = gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-//!                                                    gl_generator::registry::Ns::Gl,
-//!                                                    khronos_api::GL_XML, vec![], "4.5", "core");
-//! 
+//!
 //!     let mut file = File::create(&dest.join("gl_bindings.rs")).unwrap();
-//!     (write!(&mut file, "{}", bindings)).unwrap();
+//! 
+//!     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+//!                                     gl_generator::registry::Ns::Gl,
+//!                                     khronos_api::GL_XML, vec![], "4.5", "core"
+//!                                     &mut file).unwrap();
 //! }
 //! ~~~
 //!
@@ -103,6 +103,8 @@ extern crate syntax;
 use generators::Generator;
 use registry::{Registry, Filter, Ns};
 
+use std::io::IoResult;
+
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
 pub use generators::static_struct_gen::StaticStructGenerator;
@@ -114,9 +116,9 @@ pub mod generators;
 pub mod registry;
 
 /// Public function that generates Rust source code.
-pub fn generate_bindings<G>(generator: G, ns: registry::Ns, source: &[u8],
-                            extensions: Vec<String>, version: &str, profile: &str) -> String
-                            where G: Generator
+pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, source: &[u8],
+                               extensions: Vec<String>, version: &str, profile: &str,
+                               dest: &mut W) -> IoResult<()> where G: Generator, W: Writer
 {
     // Get generator field values, using default values if they have not been
     // specified
@@ -134,5 +136,5 @@ pub fn generate_bindings<G>(generator: G, ns: registry::Ns, source: &[u8],
         Registry::from_xml(reader, ns, filter)
     };
 
-    generator.write(&registry, ns)
+    generator.write(&registry, ns, dest)
 }
