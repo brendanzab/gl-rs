@@ -22,5 +22,7 @@ version = "0.0.3"
 path = "../khronos_api"
 version = "0.0.3"
 
-[dependencies]
-xml-rs = "*"
+[dependencies.xml-rs]
+git = "https://github.com/netvl/xml-rs"
+#version = "*"
+
