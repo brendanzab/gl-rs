@@ -19,7 +19,7 @@ extern crate collections;
 extern crate xml;
 
 use std::collections::hash_map::{Vacant, Occupied};
-use self::collections::TreeSet;
+use std::collections::BTreeSet;
 use std::cell::RefCell;
 use std::collections::HashSet;
 use std::collections::HashMap;
@@ -129,8 +129,8 @@ impl Registry {
 
     /// Returns a set of all the types used in the supplied registry. This is useful
     /// for working out what conversions are needed for the specific registry.
-    pub fn get_tys(&self) -> TreeSet<String> {
-        let mut tys = TreeSet::new();
+    pub fn get_tys(&self) -> BTreeSet<String> {
+        let mut tys = BTreeSet::new();
         for def in self.cmds.iter() {
             tys.insert(def.proto.ty.clone());
             for param in def.params.iter() {
