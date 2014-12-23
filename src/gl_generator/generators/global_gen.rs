@@ -21,6 +21,7 @@ use syntax::ext::base::ExtCtxt;
 use syntax::ext::quote::rt::ExtParseUtils;
 use syntax::ptr::P;
 
+#[allow(missing_copy_implementations)]
 pub struct GlobalGenerator;
 
 impl super::Generator for GlobalGenerator {
@@ -82,6 +83,7 @@ fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
             #![allow(dead_code)]
+            #![allow(missing_copy_implementations)]
 
             $aliases
         }
@@ -130,6 +132,7 @@ fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
     let mut result = Vec::new();
 
     result.push((quote_item!(ecx,
+        #[allow(missing_copy_implementations)]
         pub struct FnPtr {
             /// The function pointer that will be used when calling the function.
             f: *const __gl_imports::libc::c_void,

@@ -341,12 +341,12 @@ pub fn generate_bindings(ecx: &mut ExtCtxt, span: Span, tts: &[TokenTree],
     // Generate the registry of all bindings
     let registry = {
         use std::io::BufReader;
-        use std::task;
+        use std::thread::Thread;
 
-        let result = task::try(move || {
+        let result = Thread::spawn(move || {
             let reader = BufReader::new(source);
             Registry::from_xml(reader, ns, filter)
-        });
+        }).join();
 
         match result {
             Ok(reg) => reg,
