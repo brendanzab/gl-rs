@@ -25,7 +25,7 @@ use std::collections::HashSet;
 use std::collections::HashMap;
 use std::fmt;
 use std::str::FromStr;
-use std::slice::Items;
+use std::slice::Iter;
 
 use self::xml::attribute::OwnedAttribute;
 use self::xml::reader::events::XmlEvent;
@@ -158,7 +158,7 @@ impl Registry {
 
 pub struct EnumIterator<'a> {
     seen: HashSet<String>,
-    iter: Items<'a, Enum>,
+    iter: Iter<'a, Enum>,
 }
 
 impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
@@ -176,7 +176,7 @@ impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
 
 pub struct CmdIterator<'a> {
     seen: HashSet<String>,
-    iter: Items<'a, Cmd>,
+    iter: Iter<'a, Cmd>,
 }
 
 impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
