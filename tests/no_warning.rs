@@ -8,4 +8,4 @@ extern crate gl_generator;
 
 extern crate libc;
 
-include!(concat!(env!("OUT_DIR"), "/test_no_warnings.rs"))
+include!(concat!(env!("OUT_DIR"), "/test_no_warnings.rs"));
