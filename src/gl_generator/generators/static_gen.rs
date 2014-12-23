@@ -21,6 +21,7 @@ use syntax::ext::base::ExtCtxt;
 use syntax::ext::quote::rt::ExtParseUtils;
 use syntax::ptr::P;
 
+#[allow(missing_copy_implementations)]
 pub struct StaticGenerator;
 
 impl super::Generator for StaticGenerator {

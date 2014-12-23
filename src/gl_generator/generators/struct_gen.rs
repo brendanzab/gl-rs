@@ -21,6 +21,7 @@ use syntax::ext::base::ExtCtxt;
 use syntax::ext::quote::rt::ExtParseUtils;
 use syntax::ptr::P;
 
+#[allow(missing_copy_implementations)]
 pub struct StructGenerator;
 
 impl super::Generator for StructGenerator {
@@ -80,6 +81,7 @@ fn write_fnptr_struct_def(ecx: &ExtCtxt) -> Vec<P<ast::Item>> {
 
     result.push((quote_item!(ecx,
         #[allow(dead_code)]
+        #[allow(missing_copy_implementations)]
         pub struct FnPtr {
             /// The function pointer that will be used when calling the function.
             f: *const __gl_imports::libc::c_void,
