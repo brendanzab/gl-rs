@@ -18,7 +18,7 @@
 extern crate collections;
 extern crate xml;
 
-use std::collections::hash_map::{Vacant, Occupied};
+use std::collections::hash_map::Entry;
 use std::collections::BTreeSet;
 use std::cell::RefCell;
 use std::collections::HashSet;
@@ -27,6 +27,7 @@ use std::fmt;
 use std::str::FromStr;
 use std::slice::Items;
 
+use self::xml::attribute::OwnedAttribute;
 use self::xml::reader::events::XmlEvent;
 
 use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
@@ -99,8 +100,8 @@ fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
 fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String>>) {
     for (k, v) in b.into_iter() {
         match a.entry(k) {
-            Occupied(mut ent) => { ent.get_mut().extend(v.into_iter()); },
-            Vacant(ent) => { ent.set(v); }
+            Entry::Occupied(mut ent) => { ent.get_mut().extend(v.into_iter()); },
+            Entry::Vacant(ent) => { ent.set(v); }
         }
     }
 }
@@ -318,7 +319,7 @@ impl<R: Buffer> RegistryBuilder<R> {
         }
     }
 
-    fn expect_start_element(&self, n: &str) -> Vec<xml::attribute::OwnedAttribute> {
+    fn expect_start_element(&self, n: &str) -> Vec<OwnedAttribute> {
         match self.recv() {
             XmlEvent::StartElement{ref name, ref attributes, ..}
                 if n == name.local_name.as_slice() => attributes.clone(),
@@ -610,8 +611,8 @@ impl<R: Buffer> RegistryBuilder<R> {
                     match new.alias {
                         Some(ref v) => {
                             match aliases.entry(v.clone()) {
-                                Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
-                                Vacant(ent) => { ent.set(vec![new.proto.ident.clone()]); }
+                                Entry::Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
+                                Entry::Vacant(ent) => { ent.set(vec![new.proto.ident.clone()]); }
                             }
                         },
                         None => { }
@@ -712,16 +713,16 @@ impl<R: Buffer> RegistryBuilder<R> {
     }
 }
 
-fn get_attribute(a: &[xml::attribute::OwnedAttribute], name: &str) -> Option<String> {
+fn get_attribute(a: &[OwnedAttribute], name: &str) -> Option<String> {
     a.iter().find(|a| a.name.local_name.as_slice() == name).map(|e| e.value.clone())
 }
 
 trait FromXML {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Self;
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Self;
 }
 
 impl FromXML for Require {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Require {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Require {
         debug!("Doing a FromXML on Require");
         let comment = get_attribute(a, "comment");
         let (enums, commands) = r.consume_two("enum", "command", "require");
@@ -734,7 +735,7 @@ impl FromXML for Require {
 }
 
 impl FromXML for Remove {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Remove {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
         debug!("Doing a FromXML on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let comment = get_attribute(a, "comment").unwrap();
@@ -750,7 +751,7 @@ impl FromXML for Remove {
 }
 
 impl FromXML for Feature {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Feature {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Feature {
         debug!("Doing a FromXML on Feature");
         let api      = get_attribute(a, "api").unwrap();
         let name     = get_attribute(a, "name").unwrap();
@@ -771,7 +772,7 @@ impl FromXML for Feature {
 }
 
 impl FromXML for Extension {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Extension {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap().as_slice().split('|').map(|x| x.to_string()).collect::<Vec<String>>();
@@ -795,7 +796,7 @@ impl FromXML for Extension {
 }
 
 impl FromXML for String {
-    fn convert<R: Buffer>(_: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> String {
+    fn convert<R: Buffer>(_: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> String {
         get_attribute(a, "name").unwrap()
     }
 }
