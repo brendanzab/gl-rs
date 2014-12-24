@@ -16,84 +16,81 @@
 #![experimental]
 
 use registry::{Registry, Ns};
-use syntax::ast;
-use syntax::ext::base::ExtCtxt;
-use syntax::ext::quote::rt::ExtParseUtils;
-use syntax::ptr::P;
+use std::io::IoResult;
 
 #[allow(missing_copy_implementations)]
 pub struct StaticGenerator;
 
 impl super::Generator for StaticGenerator {
-    fn write(&self, ecx: &ExtCtxt, registry: &Registry, ns: Ns) -> Vec<P<ast::Item>> {
-        let mut result = Vec::new();
-        result.push(write_header(ecx));
-        result.push(write_type_aliases(ecx, &ns));
-        result.extend(write_enums(ecx, registry).into_iter());
-        result.push(write_fns(ecx, registry, &ns));
-        result
+    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+        try!(write_header(dest));
+        try!(write_type_aliases(&ns, dest));
+        try!(write_enums(registry, dest));
+        try!(write_fns(registry, &ns, dest));
+        Ok(())
     }
 }
 
 /// Creates a `__gl_imports` module which contains all the external symbols that we need for the
 ///  bindings.
-fn write_header(ecx: &ExtCtxt) -> P<ast::Item> {
-    (quote_item!(ecx,
-        mod __gl_imports {
+fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest, r#"
+        mod __gl_imports {{
             extern crate libc;
             pub use std::mem;
-        }
-    )).unwrap()
+        }}
+    "#)
 }
 
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_type_aliases`.
-fn write_type_aliases(ecx: &ExtCtxt, ns: &Ns) -> P<ast::Item> {
-    let aliases = super::gen_type_aliases(ecx, ns);
-
-    (quote_item!(ecx,
+fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    try!(writeln!(dest, r#"
         #[stable]
-        pub mod types {
+        pub mod types {{
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
             #![allow(dead_code)]
+    "#));
 
-            $aliases
-        }
-    )).unwrap()
+    try!(super::gen_type_aliases(ns, dest));
+
+    writeln!(dest, "
+        }}
+    ")
 }
 
-/// Writes all the `<enum>` elements at the root of the bindings.
-fn write_enums(ecx: &ExtCtxt, registry: &Registry) -> Vec<P<ast::Item>> {
-    registry.enum_iter().map(|e| {
-        super::gen_enum_item(ecx, e, "types::")
-    }).collect()
+/// Creates all the `<enum>` elements at the root of the bindings.
+fn write_enums<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
+    for e in registry.enum_iter() {
+        try!(super::gen_enum_item(e, "types::", dest));
+    }
+
+    Ok(())
 }
 
 /// Writes all functions corresponding to the GL bindings.
 ///
 /// These are foreign functions, they don't have any content.
-fn write_fns(ecx: &ExtCtxt, registry: &Registry, ns: &Ns) -> P<ast::Item> {
+fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
     let symbols = registry.cmd_iter().map(|c| {
-        use syntax::ext::quote::rt::ToSource;
-
         format!(
             "#[link_name=\"{symbol}\"]
             pub fn {name}({params}) -> {return_suffix};",
             symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
             name = c.proto.ident,
-            params = super::gen_parameters(ecx, c).into_iter().map(|p| p.to_source()).collect::<Vec<String>>().connect(", "),
-            return_suffix = super::gen_return_type(ecx, c).to_source()
+            params = super::gen_parameters(c, true, true).connect(", "),
+            return_suffix = super::gen_return_type(c)
         )
     }).collect::<Vec<String>>().connect("\n");
 
-    ecx.parse_item(format!("
+    writeln!(dest, "
         #[allow(non_snake_case)]
         #[allow(unused_variables)]
         #[allow(dead_code)]
         extern \"system\" {{
-            {}
+            {symbols}
         }}
-    ", symbols))
+    ", symbols = symbols)
 }

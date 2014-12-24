@@ -78,17 +78,4 @@
 #![crate_name = "gl"]
 #![crate_type = "lib"]
 
-#![feature(phase)]
-
-#[phase(plugin)]
-extern crate gl_generator;
-
-generate_gl_bindings! {
-    api: "gl",
-    profile: "core",
-    version: "4.5",
-    generator: "global",
-    extensions: [
-        "GL_EXT_texture_filter_anisotropic",
-    ],
-}
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
