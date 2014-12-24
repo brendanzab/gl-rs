@@ -395,7 +395,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                 }
 
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name.as_slice() == "feature" => {
-                    debug!("Parsing feature: {}", attributes.iter().map(|a| a.borrow()).collect::<Vec<_>>());
+                    debug!("Parsing feature: {}", attributes.as_slice());
                     registry.features.push(FromXML::convert(self, attributes.as_slice()));
                 }
 
@@ -511,7 +511,7 @@ impl<R: Buffer> RegistryBuilder<R> {
         loop {
             match self.recv() {
                 XmlEvent::StartElement{ref name, ref attributes, ..} => {
-                    debug!("Found start element <{} {}>", name, attributes.iter().map(|a| a.borrow()).collect::<Vec<_>>());
+                    debug!("Found start element <{} {}>", name, attributes.as_slice());
                     debug!("one and two are {} and {}", one, two);
 
                     let n = name.clone();
@@ -527,7 +527,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                     } else if two == n.local_name.as_slice() {
                         twos.push(FromXML::convert(self, attributes.as_slice()));
                     } else {
-                        panic!("Unexpected element: <{} {}>", n, attributes.iter().map(|a| a.borrow()).collect::<Vec<_>>());
+                        panic!("Unexpected element: <{} {}>", n, attributes.as_slice());
                     }
                 },
                 XmlEvent::EndElement{ref name} => {
