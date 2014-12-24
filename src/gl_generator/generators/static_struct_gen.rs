@@ -54,6 +54,7 @@ fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer 
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
             #![allow(dead_code)]
+            #![allow(missing_copy_implementations)]
     "#));
 
     try!(super::gen_type_aliases(ns, dest));
