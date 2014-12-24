@@ -16,6 +16,8 @@ fn test_gl() { unsafe {
 
     gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
         std::ptr::null_mut());
+
+    let _: *mut libc::c_void = gl::MapBuffer(0, 0);
 }}
 
 #[test]
