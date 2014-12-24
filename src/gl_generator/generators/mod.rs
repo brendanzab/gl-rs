@@ -143,8 +143,8 @@ pub fn gen_return_type(cmd: &Cmd) -> String {
     // turn the return type into a Rust type
     let ty = ty::to_rust_ty(cmd.proto.ty.as_slice());
 
-    // ... but there is one more step: if the Rust type ends with `c_void`, we replace it with `()`
-    if ty.ends_with("c_void") {
+    // ... but there is one more step: if the Rust type is `c_void`, we replace it with `()`
+    if ty == "__gl_imports::libc::c_void" {
         return "()".to_string();
     }
 
