@@ -97,8 +97,6 @@
 extern crate log;
 
 extern crate khronos_api;
-extern crate rustc;
-extern crate syntax;
 
 use generators::Generator;
 use registry::{Registry, Filter, Ns};
