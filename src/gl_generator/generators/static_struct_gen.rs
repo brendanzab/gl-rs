@@ -131,7 +131,7 @@ fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> wher
     let symbols = registry.cmd_iter().map(|c| {
         format!(
             "#[link_name=\"{symbol}\"]
-            pub fn {name}({params}) -> {return_suffix};",
+            fn {name}({params}) -> {return_suffix};",
             symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).connect(", "),
