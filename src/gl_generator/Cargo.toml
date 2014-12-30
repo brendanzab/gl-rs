@@ -1,7 +1,7 @@
 [package]
 
 name = "gl_generator"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
@@ -19,11 +19,8 @@ version = "0.0.3"
 
 [dependencies.khronos_api]
 path = "../khronos_api"
-version = "0.0.3"
-
-[dependencies.xml-rs]
-git = "https://github.com/netvl/xml-rs"
-#version = "*"
+version = "0.0.4"
 
 [dependencies]
 log = "*"
+xml-rs = "*"
