@@ -117,11 +117,7 @@ fn main() {
 Then use it like this:
 
 ~~~rust
-#![feature(phase)]
 #![feature(globs)]
-
-#[phase(plugin)]
-extern crate gl_generator;
 
 use gles::types::*;
 
