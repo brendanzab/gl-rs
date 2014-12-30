@@ -1,7 +1,11 @@
 [package]
 
 name = "khronos_api"
-version = "0.0.3"
-authors = []
+version = "0.0.4"
+authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
+        "Corey Richardson",
+        "Arseny Kapoulkine",
+        "Pierre Krieger <pierre.krieger1708@gmail.com>"
+]
 description = "Khronos API XML descriptions for gl_generator"
 license = "Apache-2.0"
