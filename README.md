@@ -85,27 +85,57 @@ Add this to your `Cargo.toml`:
 git = "https://github.com/bjz/gl-rs"
 ~~~
 
-Then use it like this:
+Under the `[package]` section, add:
+
+~~~toml
+build = "build.rs"
+~~~
+
+Create a `build.rs` to pull your specific version/API:
 
 ~~~rust
-#[phase(plugin)]
-extern crate gl_generator;
+extern crate gl_generator;    // <-- this is your build dependency
+extern crate khronos_api;    // included by gl_generator
 
-use self::types::*;
+use std::os;
+use std::io::File;
 
-generate_gl_bindings! {
-    api: "gl",
-    profile: "core",
-    version: "4.5",
-    generator: "global",
-    extensions: [
-        "GL_EXT_texture_filter_anisotropic",
-    ],
+fn main() {
+    let dest = Path::new(os::getenv("OUT_DIR").unwrap());
+
+    let mut file = File::create(&dest.join("gl_bindings.rs")).unwrap();
+
+    // This generates bindsings for OpenGL ES v3.1
+    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
+                                    gl_generator::registry::Ns::Gles2,
+                                    khronos_api::GL_XML,
+                                    vec![],
+                                    "3.1", "core", &mut file).unwrap();
 }
 ~~~
 
-The `generate_gl_bindings` macro will generate all the OpenGL functions,
-plus all enumerations, plus all types in the `types` submodule.
+Then use it like this:
+
+~~~rust
+#![feature(globs)]
+
+use gles::types::*;
+
+mod gles {
+    include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
+}
+
+/*
+ * Simple loading example
+ */
+fn main() {
+    // Assuming window is GLFW, initialized, and made current
+    gles::load_with(|s| window.get_proc_address(s));
+}
+~~~
+
+The `build.rs` file will generate all the OpenGL functions in a file named,
+`gl_bindings.rs` plus all enumerations, and all types in the `types` submodule.
 
 ### Arguments
 
