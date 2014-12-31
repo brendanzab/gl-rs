@@ -42,6 +42,7 @@ fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
             extern crate gl_common;
             extern crate libc;
             pub use std::mem;
+            pub use std::kinds::Send;
         }}
     "#)
 }
@@ -211,7 +212,9 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> whe
             }}
 
             {modules}
-        }}",
+        }}
+
+        unsafe impl __gl_imports::Send for {ns} {{}}",
 
         ns = ns.fmt_struct_name(),
 
