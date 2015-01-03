@@ -27,7 +27,7 @@ fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> IoResult<()
     let val_regexed = {
         if enm.value.starts_with("((") && enm.value.ends_with(")") {
             let separator = enm.value.as_slice().chars().skip(2).position(|c| c == ')').unwrap();
-            Some((enm.value.slice(2, separator + 2), enm.value.slice_from(separator + 3).as_slice().trim_chars(')')))
+            Some((enm.value.slice(2, separator + 2), enm.value.slice_from(separator + 3).as_slice().trim_matches(')')))
         } else {
             None
         }
