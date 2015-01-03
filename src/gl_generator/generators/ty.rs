@@ -68,7 +68,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "GLsizei *"                 => "*mut types::GLsizei",
         "GLubyte *"                 => "*mut types::GLubyte",
         "GLuint *"                  => "*mut types::GLuint",
-        "GLuint [2]"                => "*mut [types::GLuint, ..2]",
+        "GLuint [2]"                => "*mut [types::GLuint; 2]",
         "GLuint64 *"                => "*mut types::GLuint64",
         "GLuint64EXT *"             => "*mut types::GLuint64EXT",
         "GLushort *"                => "*mut types::GLushort",
@@ -491,7 +491,7 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
         "
             #[repr(C)]
             pub struct GLXHyperpipeNetworkSGIX {
-                pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
                 pub networkId: super::__gl_imports::libc::c_int,
             }
         ",
@@ -499,7 +499,7 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
         "
             #[repr(C)]
             pub struct GLXHyperpipeConfigSGIX {
-                pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
                 pub channel: super::__gl_imports::libc::c_int,
                 pub participationType: super::__gl_imports::libc::c_uint,
                 pub timeSlice: super::__gl_imports::libc::c_int,
@@ -509,7 +509,7 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
         "
             #[repr(C)]
             pub struct GLXPipeRect {
-                pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
                 pub srcXOrigin: super::__gl_imports::libc::c_int,
                 pub srcYOrigin: super::__gl_imports::libc::c_int,
                 pub srcWidth: super::__gl_imports::libc::c_int,
@@ -524,7 +524,7 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
         "
             #[repr(C)]
             pub struct GLXPipeRectLimits {
-                pub pipeName: [super::__gl_imports::libc::c_char, ..80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
                 pub XOrigin: super::__gl_imports::libc::c_int,
                 pub YOrigin: super::__gl_imports::libc::c_int,
                 pub maxHeight: super::__gl_imports::libc::c_int,
@@ -681,8 +681,8 @@ pub fn build_wgl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
             #[repr(C)]
             pub struct _GPU_DEVICE {
                 cb: DWORD,
-                DeviceName: [CHAR, ..32],
-                DeviceString: [CHAR, ..128],
+                DeviceName: [CHAR; 32],
+                DeviceString: [CHAR; 128],
                 Flags: DWORD,
                 rcVirtualScreen: RECT,
             }

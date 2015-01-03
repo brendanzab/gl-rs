@@ -42,7 +42,7 @@ pub mod gl {
 }
 
 // Vertex data
-static VERTEX_DATA: [GLfloat, ..6] = [
+static VERTEX_DATA: [GLfloat; 6] = [
      0.0,  0.5,
      0.5, -0.5,
     -0.5, -0.5
