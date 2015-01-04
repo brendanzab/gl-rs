@@ -32,7 +32,7 @@ use self::xml::reader::events::XmlEvent;
 
 use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
 
-#[deriving(Copy)]
+#[derive(Copy)]
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
 impl Ns {
@@ -238,7 +238,7 @@ pub struct Cmd {
     pub glx: Option<GlxOpcode>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Feature {
     pub api: String,
     pub name: String,
@@ -247,7 +247,7 @@ pub struct Feature {
     pub removes: Vec<Remove>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Require {
     pub comment: Option<String>,
     /// A reference to the earlier types, by name
@@ -256,7 +256,7 @@ pub struct Require {
     pub commands: Vec<String>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Remove {
     // always core, for now
     pub profile: String,
@@ -267,7 +267,7 @@ pub struct Remove {
     pub commands: Vec<String>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Extension {
     pub name: String,
     /// which apis this extension is defined for (see Feature.api)
