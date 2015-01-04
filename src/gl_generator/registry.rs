@@ -18,8 +18,8 @@
 extern crate collections;
 extern crate xml;
 
-use std::collections::hash_map::{Vacant, Occupied};
-use self::collections::TreeSet;
+use std::collections::hash_map::Entry::{Vacant, Occupied};
+use self::collections::BTreeSet;
 use std::cell::RefCell;
 use std::collections::HashSet;
 use std::collections::HashMap;
@@ -31,7 +31,7 @@ use self::xml::reader::events::XmlEvent;
 
 use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
 
-#[deriving(Copy)]
+#[derive(Copy)]
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
 impl Ns {
@@ -129,8 +129,8 @@ impl Registry {
 
     /// Returns a set of all the types used in the supplied registry. This is useful
     /// for working out what conversions are needed for the specific registry.
-    pub fn get_tys(&self) -> TreeSet<String> {
-        let mut tys = TreeSet::new();
+    pub fn get_tys(&self) -> BTreeSet<String> {
+        let mut tys = BTreeSet::new();
         for def in self.cmds.iter() {
             tys.insert(def.proto.ty.clone());
             for param in def.params.iter() {
@@ -160,7 +160,9 @@ pub struct EnumIterator<'a> {
     iter: Items<'a, Enum>,
 }
 
-impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
+impl<'a> Iterator for EnumIterator<'a> {
+    type Item = &'a Enum;
+
     fn next(&mut self) -> Option<&'a Enum> {
         self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.ident) {
@@ -178,7 +180,9 @@ pub struct CmdIterator<'a> {
     iter: Items<'a, Cmd>,
 }
 
-impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
+impl<'a> Iterator for CmdIterator<'a> {
+    type Item = &'a Cmd;
+
     fn next(&mut self) -> Option<&'a Cmd> {
         self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.proto.ident) {
@@ -237,7 +241,7 @@ pub struct Cmd {
     pub glx: Option<GlxOpcode>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Feature {
     pub api: String,
     pub name: String,
@@ -246,7 +250,7 @@ pub struct Feature {
     pub removes: Vec<Remove>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Require {
     pub comment: Option<String>,
     /// A reference to the earlier types, by name
@@ -255,7 +259,7 @@ pub struct Require {
     pub commands: Vec<String>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Remove {
     // always core, for now
     pub profile: String,
@@ -266,7 +270,7 @@ pub struct Remove {
     pub commands: Vec<String>,
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Extension {
     pub name: String,
     /// which apis this extension is defined for (see Feature.api)
@@ -318,7 +322,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
         }
     }
 
-    fn expect_start_element(&self, n: &str) -> Vec<xml::common::Attribute> {
+    fn expect_start_element(&self, n: &str) -> Vec<xml::attribute::OwnedAttribute> {
         match self.recv() {
             XmlEvent::StartElement{ref name, ref attributes, ..}
                 if n == name.local_name.as_slice() => attributes.clone(),
@@ -501,7 +505,7 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
         }
     }
 
-    fn consume_two<'a, T: FromXML, U: FromXML>(&self, one: &'a str, two: &'a str, end: &'a str) -> (Vec<T>, Vec<U>) {
+    fn consume_two<'b, T: FromXML, U: FromXML>(&self, one: &'b str, two: &'b str, end: &'b str) -> (Vec<T>, Vec<U>) {
         debug!("consume_two: looking for {} and {} until {}", one, two, end);
 
         let mut ones = Vec::new();
@@ -712,16 +716,16 @@ impl<'a, R: Buffer> RegistryBuilder<R> {
     }
 }
 
-fn get_attribute(a: &[xml::common::Attribute], name: &str) -> Option<String> {
+fn get_attribute(a: &[xml::attribute::OwnedAttribute], name: &str) -> Option<String> {
     a.iter().find(|a| a.name.local_name.as_slice() == name).map(|e| e.value.clone())
 }
 
 trait FromXML {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Self;
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Self;
 }
 
 impl FromXML for Require {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Require {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Require {
         debug!("Doing a FromXML on Require");
         let comment = get_attribute(a, "comment");
         let (enums, commands) = r.consume_two("enum", "command", "require");
@@ -734,7 +738,7 @@ impl FromXML for Require {
 }
 
 impl FromXML for Remove {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Remove {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Remove {
         debug!("Doing a FromXML on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let comment = get_attribute(a, "comment").unwrap();
@@ -750,7 +754,7 @@ impl FromXML for Remove {
 }
 
 impl FromXML for Feature {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Feature {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Feature {
         debug!("Doing a FromXML on Feature");
         let api      = get_attribute(a, "api").unwrap();
         let name     = get_attribute(a, "name").unwrap();
@@ -771,7 +775,7 @@ impl FromXML for Feature {
 }
 
 impl FromXML for Extension {
-    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> Extension {
+    fn convert<R: Buffer>(r: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> Extension {
         debug!("Doing a FromXML on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap().as_slice().split('|').map(|x| x.to_string()).collect::<Vec<String>>();
@@ -795,7 +799,7 @@ impl FromXML for Extension {
 }
 
 impl FromXML for String {
-    fn convert<R: Buffer>(_: &RegistryBuilder<R>, a: &[xml::common::Attribute]) -> String {
+    fn convert<R: Buffer>(_: &RegistryBuilder<R>, a: &[xml::attribute::OwnedAttribute]) -> String {
         get_attribute(a, "name").unwrap()
     }
 }
