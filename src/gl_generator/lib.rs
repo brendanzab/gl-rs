@@ -92,6 +92,7 @@
 #![feature(phase)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
+#![feature(associated_types)]
 
 #[phase(plugin, link)]
 extern crate log;

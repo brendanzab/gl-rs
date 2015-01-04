@@ -161,7 +161,9 @@ pub struct EnumIterator<'a> {
     iter: Iter<'a, Enum>,
 }
 
-impl<'a> Iterator<&'a Enum> for EnumIterator<'a> {
+impl<'a> Iterator for EnumIterator<'a> {
+    type Item = &'a Enum;
+
     fn next(&mut self) -> Option<&'a Enum> {
         self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.ident) {
@@ -179,7 +181,9 @@ pub struct CmdIterator<'a> {
     iter: Iter<'a, Cmd>,
 }
 
-impl<'a> Iterator<&'a Cmd> for CmdIterator<'a> {
+impl<'a> Iterator for CmdIterator<'a> {
+    type Item = &'a Cmd;
+
     fn next(&mut self) -> Option<&'a Cmd> {
         self.iter.next().and_then(|def| {
             if !self.seen.contains(&def.proto.ident) {
@@ -425,8 +429,8 @@ impl<R: Buffer> RegistryBuilder<R> {
                     groups, enums, cmds, aliases, features: feats, extensions: exts,
                 } = registry;
 
-                let mut desired_enums = HashSet::new();
-                let mut desired_cmds = HashSet::new();
+                let mut desired_enums: HashSet<String> = HashSet::new();
+                let mut desired_cmds: HashSet<String> = HashSet::new();
 
                 // find the features we want
                 let mut found_feat = false;
