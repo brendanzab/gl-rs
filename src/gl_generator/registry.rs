@@ -99,9 +99,9 @@ fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
 
 fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String>>) {
     for (k, v) in b.into_iter() {
-        match a.entry(k) {
+        match a.entry(&k) {
             Entry::Occupied(mut ent) => { ent.get_mut().extend(v.into_iter()); },
-            Entry::Vacant(ent) => { ent.set(v); }
+            Entry::Vacant(ent) => { ent.insert(v); }
         }
     }
 }
@@ -614,9 +614,9 @@ impl<R: Buffer> RegistryBuilder<R> {
                     let new = self.consume_cmd();
                     match new.alias {
                         Some(ref v) => {
-                            match aliases.entry(v.clone()) {
+                            match aliases.entry(v) {
                                 Entry::Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
-                                Entry::Vacant(ent) => { ent.set(vec![new.proto.ident.clone()]); }
+                                Entry::Vacant(ent) => { ent.insert(vec![new.proto.ident.clone()]); }
                             }
                         },
                         None => { }
