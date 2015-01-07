@@ -81,8 +81,8 @@ custom gfx-rs loader for a project.
 Add this to your `Cargo.toml`:
 
 ~~~toml
-[dependencies.gl_generator]
-git = "https://github.com/bjz/gl-rs"
+[build-dependencies]
+gl_generator = "*"
 ~~~
 
 Under the `[package]` section, add:
@@ -117,10 +117,6 @@ fn main() {
 Then use it like this:
 
 ~~~rust
-#![feature(globs)]
-
-use gles::types::*;
-
 mod gles {
     include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
 }
@@ -139,21 +135,21 @@ The `build.rs` file will generate all the OpenGL functions in a file named,
 
 ### Arguments
 
-Each field can be specified at most once, or not at all. If the field is not
-specified, then a default value will be used.
-
-- `api`: The API to generate. Can be either `"gl"`, `"gles1"`, `"gles2"`,
-  `"wgl"`, `"glx"`, `"egl"`. Defaults to `"gl"`.
-- `profile`: Can be either `"core"` or `"compatibility"`. Defaults to
-  `"core"`. `"core"` will only include all functions supported by the
+- The type of loader to generate. Can be 
+  `gl_generator::StaticGenerator`, `gl_generator::StaticStructGenerator`,
+  `gl_generator::StructGenerator`, or `gl_generator::GlobalGenerator`.
+- The API to generate. Can be `Gl`, `Gles1`, `Gles2`
+  (GLES 2 or 3), `Wgl`, `Glx`, `Egl`.
+- The file which contains the bindings to parse. Can be `GL_XML` (for GL
+  and GL ES), `GLX_XML`, `WGL_XML`, `EGL_XML`.
+- Extra extensions to include in the bindings. These are
+  specified as a list of strings.
+- The requested API version. This is usually in the form
+  `"major.minor"`.
+- The GL profile. Can be either `"core"` or `"compatibility"`. `"core"` will
+  only include all functions supported by the
   requested version it self, while `"compatibility"` will include all the
   functions from previous versions as well.
-- `version`: The requested API version. This is usually in the form
-  `"major.minor"`. Defaults to `"1.0"`
-- `generator`: The type of loader to generate. Can be either `"static"`,
-  `"global"`, or `"struct"`. Defaults to `"static"`.
-- `extensions`: Extra extensions to include in the bindings. These are
-  specified as a list of strings. Defaults to `[]`.
 
 ## Generator types
 
