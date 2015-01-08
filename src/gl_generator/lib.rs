@@ -88,13 +88,12 @@
 #![crate_type = "dylib"]
 
 #![feature(advanced_slice_patterns)]
-#![feature(macro_rules)]
-#![feature(phase)]
+#![feature(plugin)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
-#![feature(associated_types)]
 
-#[phase(plugin, link)]
+#[plugin]
+#[macro_use]
 extern crate log;
 
 extern crate khronos_api;

@@ -1,6 +1,6 @@
-#![feature(phase)]
+#![feature(plugin)]
 
-#[phase(plugin)]
+#[plugin]
 extern crate gl_generator;
 
 extern crate libc;
