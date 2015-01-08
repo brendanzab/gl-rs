@@ -15,7 +15,7 @@ build = "src/gl/build.rs"
 name = "gl"
 path = "src/gl/lib.rs"
 
-[dependencies.gl_generator]
+[build-dependencies.gl_generator]
 path = "src/gl_generator"
 version = "*"
 

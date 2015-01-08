@@ -1,8 +1,5 @@
 #![feature(plugin)]
 
-#[plugin]
-extern crate gl_generator;
-
 extern crate libc;
 
 include!(concat!(env!("OUT_DIR"), "/test_gen_symbols.rs"));
