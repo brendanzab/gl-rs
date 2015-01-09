@@ -62,7 +62,7 @@ impl FromStr for Ns {
     }
 }
 
-impl fmt::Show for Ns {
+impl fmt::String for Ns {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Gl  => write!(fmt, "gl"),
@@ -99,7 +99,7 @@ fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
 
 fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String>>) {
     for (k, v) in b.into_iter() {
-        match a.entry(&k) {
+        match a.entry(k) {
             Entry::Occupied(mut ent) => { ent.get_mut().extend(v.into_iter()); },
             Entry::Vacant(ent) => { ent.insert(v); }
         }
@@ -308,7 +308,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                 XmlEvent::Comment(_) => (),
                 XmlEvent::Whitespace(_) => (),
                 XmlEvent::EndDocument => panic!("The end of the document has been reached"),
-                XmlEvent::Error(err) => panic!("XML error: {}", err),
+                XmlEvent::Error(err) => panic!("XML error: {:?}", err),
                 event => return event,
             }
         }
@@ -319,7 +319,7 @@ impl<R: Buffer> RegistryBuilder<R> {
     fn expect_characters(&self) -> String {
         match self.recv() {
             XmlEvent::Characters(ref ch) => ch.clone(),
-            msg => panic!("Expected characters, found: {}", msg.to_string()),
+            msg => panic!("Expected characters, found: {:?}", msg),
         }
     }
 
@@ -327,22 +327,22 @@ impl<R: Buffer> RegistryBuilder<R> {
         match self.recv() {
             XmlEvent::StartElement{ref name, ref attributes, ..}
                 if n == name.local_name.as_slice() => attributes.clone(),
-            msg => panic!("Expected <{}>, found: {}", n, msg.to_string()),
+            msg => panic!("Expected <{}>, found: {:?}", n, msg),
         }
     }
 
     fn expect_end_element(&self, n: &str) {
         match self.recv() {
             XmlEvent::EndElement{ref name} if n == name.local_name.as_slice() => (),
-            msg => panic!("Expected </{}>, found: {}", n, msg.to_string()),
+            msg => panic!("Expected </{}>, found: {:?}", n, msg),
         }
     }
 
     fn skip_until(&self, event: XmlEvent) {
         loop {
             match self.recv() {
-                XmlEvent::EndDocument => panic!("Expected {}, but reached the end of the document.",
-                                     event.to_string()),
+                XmlEvent::EndDocument => panic!("Expected {:?}, but reached the end of the document.",
+                                     event),
                 ref msg if *msg == event => break,
                 _ => (),
             }
@@ -381,7 +381,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                                 );
                             }
                             XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "groups" => break,
-                            msg => panic!("Expected </groups>, found: {}", msg.to_string()),
+                            msg => panic!("Expected </groups>, found: {:?}", msg),
                         }
                     }
                 }
@@ -399,7 +399,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                 }
 
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name.as_slice() == "feature" => {
-                    debug!("Parsing feature: {}", attributes.as_slice());
+                    debug!("Parsing feature: {:?}", attributes);
                     registry.features.push(FromXML::convert(self, attributes.as_slice()));
                 }
 
@@ -410,7 +410,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                                 registry.extensions.push(FromXML::convert(self, attributes.as_slice()));
                             }
                             XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "extensions" => break,
-                            msg => panic!("Unexpected message {}", msg.to_string()),
+                            msg => panic!("Unexpected message {:?}", msg),
                         }
                     }
                 }
@@ -419,7 +419,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "registry" => break,
 
                 // error handling
-                msg => panic!("Expected </registry>, found: {}", msg.to_string()),
+                msg => panic!("Expected </registry>, found: {:?}", msg),
             }
         }
 
@@ -515,7 +515,7 @@ impl<R: Buffer> RegistryBuilder<R> {
         loop {
             match self.recv() {
                 XmlEvent::StartElement{ref name, ref attributes, ..} => {
-                    debug!("Found start element <{} {}>", name, attributes.as_slice());
+                    debug!("Found start element <{:?} {:?}>", name, attributes);
                     debug!("one and two are {} and {}", one, two);
 
                     let n = name.clone();
@@ -531,11 +531,11 @@ impl<R: Buffer> RegistryBuilder<R> {
                     } else if two == n.local_name.as_slice() {
                         twos.push(FromXML::convert(self, attributes.as_slice()));
                     } else {
-                        panic!("Unexpected element: <{} {}>", n, attributes.as_slice());
+                        panic!("Unexpected element: <{:?} {:?}>", n, attributes.as_slice());
                     }
                 },
                 XmlEvent::EndElement{ref name} => {
-                    debug!("Found end element </{}>", name);
+                    debug!("Found end element </{:?}>", name);
 
                     if (&[one, two]).iter().any(|&x| x == name.local_name.as_slice()) {
                         continue;
@@ -548,10 +548,10 @@ impl<R: Buffer> RegistryBuilder<R> {
                     } else if end == name.local_name.as_slice() {
                         return (ones, twos);
                     } else {
-                        panic!("Unexpected end element {}", name.local_name);
+                        panic!("Unexpected end element {:?}", name.local_name);
                     }
                 },
-                msg => panic!("Unexpected message {}", msg.to_string()) }
+                msg => panic!("Unexpected message {:?}", msg) }
         }
     }
 
@@ -564,7 +564,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                     self.expect_end_element("enum");
                 }
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "group" => break,
-                msg => panic!("Expected </group>, found: {}", msg.to_string()),
+                msg => panic!("Expected </group>, found: {:?}", msg),
             }
         }
         Group {
@@ -598,7 +598,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                 // finished building the namespace
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "enums" => break,
                 // error handling
-                msg => panic!("Expected </enums>, found: {}", msg.to_string()),
+                msg => panic!("Expected </enums>, found: {:?}", msg),
             }
         }
         enums
@@ -614,7 +614,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                     let new = self.consume_cmd();
                     match new.alias {
                         Some(ref v) => {
-                            match aliases.entry(v) {
+                            match aliases.entry(v.clone()) {
                                 Entry::Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
                                 Entry::Vacant(ent) => { ent.insert(vec![new.proto.ident.clone()]); }
                             }
@@ -626,7 +626,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                 // finished building the namespace
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "commands" => break,
                 // error handling
-                msg => panic!("Expected </commands>, found: {}", msg.to_string()),
+                msg => panic!("Expected </commands>, found: {:?}", msg),
             }
         }
         (cmds, aliases)
@@ -668,7 +668,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                     self.expect_end_element("glx");
                 }
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "command" => break,
-                msg => panic!("Expected </command>, found: {}", msg.to_string()),
+                msg => panic!("Expected </command>, found: {:?}", msg),
             }
         }
         let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.as_slice().contains_char('*'));
@@ -692,7 +692,7 @@ impl<R: Buffer> RegistryBuilder<R> {
                 XmlEvent::StartElement{ref name, ..} if name.local_name.as_slice() == "ptype" => (),
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "ptype" => (),
                 XmlEvent::StartElement{ref name, ..} if name.local_name.as_slice() == "name" => break,
-                msg => panic!("Expected binding, found: {}", msg.to_string()),
+                msg => panic!("Expected binding, found: {:?}", msg),
             }
         }
 
@@ -705,7 +705,7 @@ impl<R: Buffer> RegistryBuilder<R> {
             match self.recv() {
                 XmlEvent::Characters(ch) => ty.push_str(ch.as_slice()),
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == outside_tag => break,
-                msg => panic!("Expected binding, found: {}", msg.to_string()),
+                msg => panic!("Expected binding, found: {:?}", msg),
             }
         }
 
@@ -787,7 +787,7 @@ impl FromXML for Extension {
                     require.push(FromXML::convert(r, attributes.as_slice()));
                 }
                 XmlEvent::EndElement{ref name} if name.local_name.as_slice() == "extension" => break,
-                msg => panic!("Unexpected message {}", msg.to_string())
+                msg => panic!("Unexpected message {:?}", msg)
             }
         }
 

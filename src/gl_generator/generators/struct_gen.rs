@@ -42,7 +42,7 @@ fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
             extern crate gl_common;
             extern crate libc;
             pub use std::mem;
-            pub use std::kinds::Send;
+            pub use std::marker::Send;
         }}
     "#)
 }
