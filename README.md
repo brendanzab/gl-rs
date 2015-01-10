@@ -83,6 +83,9 @@ Add this to your `Cargo.toml`:
 ~~~toml
 [build-dependencies]
 gl_generator = "*"
+
+[dependencies]
+gl_common = "*"
 ~~~
 
 Under the `[package]` section, add:
