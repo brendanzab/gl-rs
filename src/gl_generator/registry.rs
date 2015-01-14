@@ -34,6 +34,8 @@ use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
 #[derive(Copy)]
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
+pub enum Fallbacks { All, None }
+
 impl Ns {
     pub fn fmt_struct_name(&self) -> &str {
         match *self {
@@ -307,6 +309,7 @@ struct RegistryBuilder<R> {
 }
 
 pub struct Filter {
+    pub fallbacks: Fallbacks,
     pub extensions: Vec<String>,
     pub profile: String,
     pub version: String,
@@ -495,6 +498,8 @@ impl<R: Buffer> RegistryBuilder<R> {
                         }
                     }
                 }
+
+                let aliases = if let &Filter { fallbacks: Fallbacks::None, ..} = filter { HashMap::new() } else { aliases };
 
                 Registry {
                     groups: groups,
