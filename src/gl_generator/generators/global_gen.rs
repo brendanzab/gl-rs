@@ -52,10 +52,10 @@ fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
 /// Creates the metaloadfn function for fallbacks
 fn write_metaloadfn<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     writeln!(dest, r#"
-        fn metaloadfn<F>(loadfn: F,
+        fn metaloadfn<F>(mut loadfn: F,
                          symbol: &str,
                          fallbacks: &[&str]) -> *const __gl_imports::libc::c_void
-                         where F: Fn(&str) -> *const __gl_imports::libc::c_void {{
+                         where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
             let mut ptr = loadfn(symbol);
             if ptr.is_null() {{
                 for &sym in fallbacks.iter() {{
@@ -206,7 +206,7 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> 
                 }}
 
                 #[allow(dead_code)]
-                pub fn load_with<F>(loadfn: F) where F: Fn(&str) -> *const super::__gl_imports::libc::c_void {{
+                pub fn load_with<F>(loadfn: F) where F: FnMut(&str) -> *const super::__gl_imports::libc::c_void {{
                     unsafe {{
                         storage::{fnname} = FnPtr::new(metaloadfn(loadfn, "{symbol}", {fallbacks}),
                             failing::{fnname} as *const super::__gl_imports::libc::c_void)
@@ -262,7 +262,7 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: 
         /// ~~~
         #[unstable]
         #[allow(dead_code)]
-        pub fn load_with<F>(loadfn: F) where F: Fn(&str) -> *const __gl_imports::libc::c_void {{
+        pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
             {loadings}
         }}
     "#, loadings = loadings));
