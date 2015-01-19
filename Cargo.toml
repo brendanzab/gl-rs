@@ -19,13 +19,12 @@ path = "src/gl/lib.rs"
 path = "src/gl_generator"
 version = "*"
 
-[build-dependencies.khronos_api]
-path = "src/khronos_api"
-version = "0.0.5"
-
 [dependencies.gl_common]
 path = "src/gl_common"
 version = "0.0.3"
 
 #[dev-dependencies.glfw]
 #git = "https://github.com/bjz/glfw-rs"
+
+[dependencies]
+khronos_api = "*"
