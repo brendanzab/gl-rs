@@ -96,7 +96,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> whe
             /// Stub function.
             #[unstable]
             #[allow(dead_code)]
-            pub fn load_with<F>(_loadfn: F) -> {ns} where F: Fn(&str) -> *const __gl_imports::libc::c_void {{
+            pub fn load_with<F>(mut _loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
                 {ns}
             }}
 

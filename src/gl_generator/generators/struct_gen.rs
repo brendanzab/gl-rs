@@ -183,8 +183,8 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> whe
             #[unstable]
             #[allow(dead_code)]
             #[allow(unused_variables)]
-            pub fn load_with<F>(loadfn: F) -> {ns} where F: Fn(&str) -> *const __gl_imports::libc::c_void {{
-                let metaloadfn = |&: symbol: &str, symbols: &[&str]| {{
+            pub fn load_with<F>(mut loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
+                let mut metaloadfn = |&mut: symbol: &str, symbols: &[&str]| {{
                     let mut ptr = loadfn(symbol);
                     if ptr.is_null() {{
                         for &sym in symbols.iter() {{
