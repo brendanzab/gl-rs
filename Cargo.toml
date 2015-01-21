@@ -2,7 +2,7 @@ example = []
 
 [package]
 name = "gl"
-version = "0.0.5"
+version = "0.0.6"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
