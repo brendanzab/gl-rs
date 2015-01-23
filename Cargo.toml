@@ -10,6 +10,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 description = "OpenGL bindings"
 license = "Apache-2.0"
 build = "src/gl/build.rs"
+repository = "https://github.com/bjz/gl-rs/"
 
 [lib]
 name = "gl"
