@@ -110,14 +110,14 @@ fn link_program(gl: &Gl, vs: GLuint, fs: GLuint) -> GLuint { unsafe {
 }}
 
 fn main() {
-    let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
+    let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).ok().expect("Failed to init glfw");
 
     // Choose a GL profile that is compatible with OS X 10.7+
     glfw.window_hint(WindowHint::ContextVersion(3, 2));
     glfw.window_hint(WindowHint::OpenglForwardCompat(true));
     glfw.window_hint(WindowHint::OpenglProfile(OpenGlProfileHint::Core));
 
-    let (window, _) = glfw.create_window(800, 600, "OpenGL", WindowMode::Windowed)
+    let (mut window, _) = glfw.create_window(800, 600, "OpenGL", WindowMode::Windowed)
         .expect("Failed to create GLFW window.");
 
     // It is essential to make the context current before calling `gl::load_with`.
