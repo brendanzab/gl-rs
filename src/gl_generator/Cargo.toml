@@ -7,6 +7,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Arseny Kapoulkine"
 ]
 description = "Syntax extension for creating bindings to the Khronos OpenGL and related APIs"
+repository = "https://github.com/bjz/gl-rs"
 license = "Apache-2.0"
 
 [lib]
