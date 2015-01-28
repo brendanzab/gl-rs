@@ -101,7 +101,7 @@ extern crate gl_generator;    // <-- this is your build dependency
 extern crate khronos_api;    // included by gl_generator
 
 use std::os;
-use std::io::File;
+use std::old_io::File;
 
 fn main() {
     let dest = Path::new(os::getenv("OUT_DIR").unwrap());

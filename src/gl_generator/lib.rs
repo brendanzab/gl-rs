@@ -28,7 +28,7 @@
 //! extern crate khronos_api;
 //! 
 //! use std::os;
-//! use std::io::File;
+//! use std::old_io::File;
 //! 
 //! fn main() {
 //!     let dest = Path::new(os::getenv("OUT_DIR").unwrap());
@@ -101,7 +101,7 @@ extern crate khronos_api;
 use generators::Generator;
 use registry::{Registry, Filter, Ns};
 
-use std::io::IoResult;
+use std::old_io::IoResult;
 
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
@@ -129,7 +129,7 @@ pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, source: &[u8],
 
     // Generate the registry of all bindings
     let registry = {
-        use std::io::BufReader;
+        use std::old_io::BufReader;
         let reader = BufReader::new(source);
         Registry::from_xml(reader, ns, filter)
     };

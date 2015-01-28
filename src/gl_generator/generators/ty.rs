@@ -15,7 +15,7 @@
 
 #![experimental]
 
-use std::io::IoResult;
+use std::old_io::IoResult;
 
 /// Converts a C style type definition to the Rust equivalent
 pub fn to_rust_ty(ty: &str) -> &'static str {
