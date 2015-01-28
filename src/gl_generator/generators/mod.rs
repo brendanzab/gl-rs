@@ -1,5 +1,5 @@
 use registry::{Enum, Registry, Cmd, Ns};
-use std::io::IoResult;
+use std::old_io::IoResult;
 
 mod ty;
 pub mod global_gen;

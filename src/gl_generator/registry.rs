@@ -118,7 +118,7 @@ pub struct Registry {
 impl Registry {
     /// Generate a registry from the supplied XML string
     pub fn from_xml<R: Reader>(data: R, ns: Ns, filter: Option<Filter>) -> Registry {
-        use std::io::BufferedReader;
+        use std::old_io::BufferedReader;
         let data = BufferedReader::new(data);
 
         RegistryBuilder {

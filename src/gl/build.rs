@@ -2,8 +2,8 @@ extern crate gl_generator;
 extern crate khronos_api;
 
 use std::os;
-use std::io::File;
-use std::io::BufferedWriter;
+use std::old_io::File;
+use std::old_io::BufferedWriter;
 
 fn main() {
     let dest = Path::new(os::getenv("OUT_DIR").unwrap());

@@ -16,7 +16,7 @@
 #![experimental]
 
 use registry::{Registry, Ns};
-use std::io::IoResult;
+use std::old_io::IoResult;
 
 #[allow(missing_copy_implementations)]
 pub struct StaticStructGenerator;
