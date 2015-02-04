@@ -49,15 +49,17 @@ impl Ns {
 }
 
 impl FromStr for Ns {
-    fn from_str(s: &str) -> Option<Ns> {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Ns, ()> {
         match s {
-            "gl"  => Some(Gl),
-            "glx" => Some(Glx),
-            "wgl" => Some(Wgl),
-            "egl" => Some(Egl),
-            "gles1" => Some(Gles1),
-            "gles2" => Some(Gles2),
-            _     => None,
+            "gl"  => Ok(Gl),
+            "glx" => Ok(Glx),
+            "wgl" => Ok(Wgl),
+            "egl" => Ok(Egl),
+            "gles1" => Ok(Gles1),
+            "gles2" => Ok(Gles2),
+            _     => Err(()),
         }
     }
 }
