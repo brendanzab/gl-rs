@@ -23,6 +23,7 @@ use std::collections::BTreeSet;
 use std::cell::RefCell;
 use std::collections::HashSet;
 use std::collections::HashMap;
+use std::ops::Add;
 use std::fmt;
 use std::str::FromStr;
 use std::slice::Iter;
@@ -154,6 +155,20 @@ impl Registry {
             seen: HashSet::new(),
             iter: self.cmds.iter(),
         }
+    }
+}
+
+impl Add for Registry {
+    type Output = Registry;
+
+    fn add(mut self, other: Registry) -> Registry {
+        self.groups.extend(other.groups.into_iter());
+        self.enums.extend(other.enums.into_iter());
+        self.cmds.extend(other.cmds.into_iter());
+        self.features.extend(other.features.into_iter());
+        self.extensions.extend(other.extensions.into_iter());
+        self.aliases.extend(other.aliases.into_iter());
+        self
     }
 }
 
