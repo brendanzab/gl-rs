@@ -2,7 +2,7 @@ example = []
 
 [package]
 name = "gl"
-version = "0.0.7"
+version = "0.0.8"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
@@ -26,7 +26,7 @@ version = "0.0.5"
 
 [dependencies.gl_common]
 path = "src/gl_common"
-version = "0.0.3"
+version = "0.0.4"
 
 [dependencies]
 libc = "*"
