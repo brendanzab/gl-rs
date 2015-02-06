@@ -86,6 +86,7 @@ gl_generator = "*"
 
 [dependencies]
 gl_common = "*"
+libc = "*"
 ~~~
 
 Under the `[package]` section, add:
