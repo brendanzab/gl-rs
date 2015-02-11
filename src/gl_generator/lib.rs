@@ -91,8 +91,8 @@
 #![feature(plugin)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
+#![plugin(log)]
 
-#[plugin]
 #[macro_use]
 extern crate log;
 
