@@ -16,12 +16,10 @@ fn main() {
 
 
     // writing tests files
-    // FIXME (https://github.com/rust-lang/cargo/issues/1058): only build the tests file if
-    //                                                         we run "cargo test"
-    //if os::getenv("PROFILE").unwrap() == "test" {
+    if os::getenv("PROFILE").unwrap() == "test" {
         write_test_gen_symbols(&dest);
         write_test_no_warnings(&dest);
-    //}
+    }
 }
 
 fn write_test_gen_symbols(dest: &Path) {
