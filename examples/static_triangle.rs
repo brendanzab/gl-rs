@@ -62,7 +62,7 @@ fn compile_shader(src: &str, ty: GLenum) -> GLuint {
         if status != (gl::TRUE as GLint) {
             let mut len = 0;
             gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buf = Vec::new();
+            let mut buf = Vec::with_capacity(len as usize);
             buf.set_len((len as usize) - 1); // subtract 1 to skip the trailing null character
             gl::GetShaderInfoLog(shader, len, ptr::null_mut(), buf.as_mut_ptr() as *mut GLchar);
             panic!("{}", str::from_utf8(buf.as_slice()).ok().expect("ShaderInfoLog not valid utf8"));
