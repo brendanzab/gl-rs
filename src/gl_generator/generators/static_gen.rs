@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![experimental]
-
 use registry::{Registry, Ns};
 use std::old_io::IoResult;
 
