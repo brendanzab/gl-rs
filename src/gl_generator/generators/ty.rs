@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![experimental]
-
 use std::old_io::IoResult;
 
 /// Converts a C style type definition to the Rust equivalent
