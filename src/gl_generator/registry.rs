@@ -496,8 +496,6 @@ impl<R: Buffer> RegistryBuilder<R> {
                     }
                 }
 
-                let aliases = if filter.profile == "core" { HashMap::new() } else { aliases };
-
                 Registry {
                     groups: groups,
                     enums: enums.into_iter().filter(|e| {
