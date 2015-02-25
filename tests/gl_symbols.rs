@@ -1,7 +1,8 @@
 //! This test ensures that the GL symbols are defined and that fallback works correctly.
 
-extern crate gl;
 extern crate libc;
+
+include!(concat!(env!("OUT_DIR"), "/test_gen_symbols.rs"));
 
 #[test]
 #[ignore]
@@ -24,6 +25,6 @@ fn fallback_works() {
         }
     };
 
-    gl::GenFramebuffers::load_with(loader);
-    assert!(gl::GenFramebuffers::is_loaded());
+    gl_compat::GenFramebuffers::load_with(loader);
+    assert!(gl_compat::GenFramebuffers::is_loaded());
 }
