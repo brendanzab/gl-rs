@@ -1,16 +1,16 @@
 //! This test ensures that the GL symbols are defined and that fallback works correctly.
 
-extern crate gl;
+extern crate gl_tests;
 extern crate libc;
 
 #[test]
 #[ignore]
 fn symbols_exist() { unsafe {
-	gl::Clear(gl::COLOR_BUFFER_BIT);
-	let _: libc::c_uint = gl::CreateProgram();
-	gl::CompileShader(5);
+	gl_tests::Clear(gl_tests::COLOR_BUFFER_BIT);
+	let _: libc::c_uint = gl_tests::CreateProgram();
+	gl_tests::CompileShader(5);
 
-    gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
+    gl_tests::GetActiveUniformBlockiv(0, 0, gl_tests::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
         std::ptr::null_mut());
 } }
 
@@ -24,6 +24,6 @@ fn fallback_works() {
         }
     };
 
-    gl::GenFramebuffers::load_with(loader);
-    assert!(gl::GenFramebuffers::is_loaded());
+    gl_tests::GenFramebuffers::load_with(loader);
+    assert!(gl_tests::GenFramebuffers::is_loaded());
 }
