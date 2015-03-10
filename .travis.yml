@@ -7,9 +7,7 @@ env:
     - secure: SH7xrrH8ONXcrpHzKVJsBuLX1AikKBTBBI0SsEfCWfDZsAur0rQW5ZlPPorhQ0iZUbvw5xwY26T+0EYdBAWOwp7AOBM2iwoGZ15ERTd8o2JX3ZlMQ9AvDHNaXAc6YToj69DaiaimX+oX9DtZeRfQ309Lkp4D1YMrf4X/jhNpQdI=
 
 script:
-  - cargo test --verbose --manifest-path gl_generator/Cargo.toml
-  - cargo test --verbose --manifest-path gl/Cargo.toml
-  - cargo test --verbose --manifest-path gl_tests/Cargo.toml
+  - ./test-all.sh
 
 after_script:
   # the doc directory needs to be in the root for rust-ci
