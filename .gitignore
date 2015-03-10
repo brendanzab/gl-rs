@@ -1,5 +1,11 @@
 .DS_store
-/target
-/examples/*/target
-Cargo.lock
-/src/gl_generator/target/
+/gl/target/
+/gl/Cargo.lock
+/gl_common/target/
+/gl_common/Cargo.lock
+/gl_generator/target/
+/gl_generator/Cargo.lock
+/gl_tests/target/
+/gl_tests/Cargo.lock
+/khronos_api/target/
+/khronos_api/Cargo.lock

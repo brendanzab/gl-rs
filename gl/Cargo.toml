@@ -9,23 +9,19 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 ]
 description = "OpenGL bindings"
 license = "Apache-2.0"
-build = "src/gl/build.rs"
+build = "build.rs"
 repository = "https://github.com/bjz/gl-rs/"
 
-[lib]
-name = "gl"
-path = "src/gl/lib.rs"
-
 [build-dependencies.gl_generator]
-path = "src/gl_generator"
+path = "../gl_generator"
 version = "*"
 
 [build-dependencies.khronos_api]
-path = "src/khronos_api"
+path = "../khronos_api"
 version = "0.0.5"
 
 [dependencies.gl_common]
-path = "src/gl_common"
+path = "../gl_common"
 version = "0.0.4"
 
 [dependencies]

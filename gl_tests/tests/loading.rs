@@ -1,5 +1,5 @@
 extern crate libc;
-extern crate gl;
+extern crate gl_tests;
 extern crate gl_common;
 
 struct X;
@@ -12,5 +12,5 @@ impl gl_common::GlFunctionsSource for X {
 
 #[test]
 fn main() {
-    gl::load(&X);
+    gl_tests::load(&X);
 }
