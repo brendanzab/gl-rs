@@ -90,10 +90,12 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     writeln!(dest, r#"
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
-            fn new(ptr: *const __gl_imports::libc::c_void,
-                panicking_fn: *const __gl_imports::libc::c_void) -> FnPtr {{
+            fn new(ptr: *const __gl_imports::libc::c_void) -> FnPtr {{
                 if ptr.is_null() {{
-                    FnPtr {{ f: panicking_fn, is_loaded: false }}
+                    FnPtr {{
+                        f: missing_fn_panic as *const __gl_imports::libc::c_void,
+                        is_loaded: false
+                    }}
                 }} else {{
                     FnPtr {{ f: ptr, is_loaded: true }}
                 }}
@@ -115,28 +117,13 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> IoResult<()> where W: Writer {
 ///
 /// These functions are the mocks that are called if the real function could not be loaded.
 fn write_panicking_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
-    try!(writeln!(dest,
-        "mod panicking {{
-            use super::types;
-            use super::__gl_imports;
-
-            #[inline(never)]
-            fn missing_fn_panic() -> ! {{
-                panic!(\"{ns} function was not loaded\")
-            }}
-        ", ns = ns));
-
-    for c in registry.cmd_iter() {
-        try!(writeln!(dest,
-            "#[allow(non_snake_case, unused_variables, dead_code)] \
-            pub extern \"system\" fn {name}({params}) -> {return_suffix} {{ missing_fn_panic() }}",
-            name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
-            return_suffix = super::gen_return_type(c)
-        ))
-    }
-
-    writeln!(dest, "}}")
+    writeln!(dest,
+        "
+        #[inline(never)]
+        fn missing_fn_panic() -> ! {{
+            panic!(\"{ns} function was not loaded\")
+        }}
+        ", ns = ns)
 }
 
 /// Creates a structure which stores all the `FnPtr` of the bindings.
@@ -218,7 +205,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> whe
         loadings = registry.cmd_iter().map(|c| {
             let fallbacks = registry.aliases.get(&c.proto.ident);
             format!(
-                "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb}), panicking::{name} as *const __gl_imports::libc::c_void),",
+                "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb})),",
                 name = c.proto.ident,
                 symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
                 fb = match fallbacks {
