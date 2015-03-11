@@ -25,7 +25,7 @@ impl super::Generator for StructGenerator {
         try!(write_type_aliases(&ns, dest));
         try!(write_enums(registry, dest));
         try!(write_fnptr_struct_def(dest));
-        try!(write_failing_fns(registry, dest));
+        try!(write_panicking_fns(registry, &ns, dest));
         try!(write_struct(registry, &ns, dest));
         try!(write_impl(registry, &ns, dest));
         Ok(())
@@ -90,10 +90,12 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     writeln!(dest, r#"
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
-            fn new(ptr: *const __gl_imports::libc::c_void,
-                failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {{
+            fn new(ptr: *const __gl_imports::libc::c_void) -> FnPtr {{
                 if ptr.is_null() {{
-                    FnPtr {{ f: failing_fn, is_loaded: false }}
+                    FnPtr {{
+                        f: missing_fn_panic as *const __gl_imports::libc::c_void,
+                        is_loaded: false
+                    }}
                 }} else {{
                     FnPtr {{ f: ptr, is_loaded: true }}
                 }}
@@ -111,33 +113,17 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     "#)
 }
 
-/// Creates a `failing` module which contains one function per GL command.
+/// Creates a `panicking` module which contains one function per GL command.
 ///
 /// These functions are the mocks that are called if the real function could not be loaded.
-fn write_failing_fns<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
-    let fns = registry.cmd_iter().map(|c| {
-        format!(r#"
-            #[allow(unused_variables)]
-            #[allow(non_snake_case)]
-            #[allow(dead_code)]
-            pub extern "system" fn {name}({params}) -> {return_suffix} {{
-                panic!("`{name}` was not loaded")
-            }}
-            "#,
-            name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
-            return_suffix = super::gen_return_type(c)
-        )
-    }).collect::<Vec<String>>().connect("\n");
-
-    writeln!(dest, r#"
-        mod failing {{
-            use super::types;
-            use super::__gl_imports;
-
-            {fns}
+fn write_panicking_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest,
+        "
+        #[inline(never)]
+        fn missing_fn_panic() -> ! {{
+            panic!(\"{ns} function was not loaded\")
         }}
-    "#, fns = fns)
+        ", ns = ns)
 }
 
 /// Creates a structure which stores all the `FnPtr` of the bindings.
@@ -219,7 +205,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> whe
         loadings = registry.cmd_iter().map(|c| {
             let fallbacks = registry.aliases.get(&c.proto.ident);
             format!(
-                "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb}), failing::{name} as *const __gl_imports::libc::c_void),",
+                "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb})),",
                 name = c.proto.ident,
                 symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
                 fb = match fallbacks {

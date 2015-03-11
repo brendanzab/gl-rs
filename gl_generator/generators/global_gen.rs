@@ -29,7 +29,7 @@ impl super::Generator for GlobalGenerator {
         try!(write_fnptr_struct_def(dest));
         try!(write_ptrs(registry, dest));
         try!(write_fn_mods(registry, &ns, dest));
-        try!(write_failing_fns(registry, dest));
+        try!(write_panicking_fns(registry, &ns, dest));
         try!(write_load_fn(registry, dest));
         Ok(())
     }
@@ -139,9 +139,9 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     writeln!(dest, r#"
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
-            pub fn new(ptr: *const __gl_imports::libc::c_void, failing_fn: *const __gl_imports::libc::c_void) -> FnPtr {{
+            pub fn new(ptr: *const __gl_imports::libc::c_void) -> FnPtr {{
                 if ptr.is_null() {{
-                    FnPtr {{ f: failing_fn, is_loaded: false }}
+                    FnPtr {{ f: missing_fn_panic as *const __gl_imports::libc::c_void, is_loaded: false }}
                 }} else {{
                     FnPtr {{ f: ptr, is_loaded: true }}
                 }}
@@ -155,7 +155,7 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Wri
     let storages = registry.cmd_iter().map(|c| {
         format!(
             "pub static mut {name}: FnPtr = FnPtr {{
-                f: failing::{name} as *const libc::c_void,
+                f: super::missing_fn_panic as *const libc::c_void,
                 is_loaded: false
             }};",
             name = c.proto.ident
@@ -166,7 +166,6 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Wri
         mod storage {{
             #![allow(non_snake_case)]
             use super::__gl_imports::libc;
-            use super::failing;
             use super::FnPtr;
 
             {storages}
@@ -194,7 +193,7 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> 
             #[unstable]
             #[allow(non_snake_case)]
             pub mod {fnname} {{
-                use super::{{failing, storage, metaloadfn}};
+                use super::{{storage, metaloadfn}};
                 use super::FnPtr;
 
                 #[inline]
@@ -206,8 +205,7 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> 
                 #[allow(dead_code)]
                 pub fn load_with<F>(loadfn: F) where F: FnMut(&str) -> *const super::__gl_imports::libc::c_void {{
                     unsafe {{
-                        storage::{fnname} = FnPtr::new(metaloadfn(loadfn, "{symbol}", {fallbacks}),
-                            failing::{fnname} as *const super::__gl_imports::libc::c_void)
+                        storage::{fnname} = FnPtr::new(metaloadfn(loadfn, "{symbol}", {fallbacks}))
                     }}
                 }}
             }}
@@ -217,30 +215,17 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> 
     Ok(())
 }
 
-/// Creates a `failing` module which contains one function per GL command.
+/// Creates a `missing_fn_panic` function.
 ///
-/// These functions are the mocks that are called if the real function could not be loaded.
-fn write_failing_fns<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
-    let functions = registry.cmd_iter().map(|c| {
-        (format!(
-            "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
-            pub extern \"system\" fn {name}({params}) -> {return_suffix} {{ \
-                panic!(\"`{name}` was not loaded\") \
-            }}",
-            name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
-            return_suffix = super::gen_return_type(c)
-        ))
-    }).collect::<Vec<String>>().connect("\n");
-
-    writeln!(dest, r#"
-        mod failing {{
-            use super::types;
-            use super::__gl_imports;
-
-            {functions}
+/// This function is the mock that is called if the real function could not be called.
+fn write_panicking_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    writeln!(dest,
+        "
+        #[inline(never)]
+        fn missing_fn_panic() -> ! {{
+            panic!(\"{ns} function was not loaded\")
         }}
-    "#, functions = functions)
+        ", ns = ns)
 }
 
 /// Creates the `load_with` function.
