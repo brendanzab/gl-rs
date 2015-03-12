@@ -1,14 +1,18 @@
+#![feature(io, path)]
+
 extern crate gl_generator;
 extern crate khronos_api;
 
-use std::os;
-use std::old_io::File;
-use std::old_io::BufferedWriter;
+use std::env;
+use std::io::prelude::*;
+use std::fs::File;
+use std::path::*;
+use std::io::BufWriter;
 
 fn main() {
-    let dest = Path::new(os::getenv("OUT_DIR").unwrap());
+    let dest = PathBuf::new(&env::var("OUT_DIR").unwrap());
 
-    let mut file = BufferedWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
+    let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
                                     gl_generator::registry::Ns::Gl,
                                     gl_generator::Fallbacks::All,
@@ -26,7 +30,7 @@ fn main() {
 }
 
 fn write_test_gen_symbols(dest: &Path) {
-    let mut file = BufferedWriter::new(File::create(&dest.join("test_gen_symbols.rs")).unwrap());
+    let mut file = BufWriter::new(File::create(&dest.join("test_gen_symbols.rs")).unwrap());
 
     (writeln!(&mut file, "mod gl {{")).unwrap();
     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
@@ -70,7 +74,7 @@ fn write_test_gen_symbols(dest: &Path) {
 }
 
 fn write_test_no_warnings(dest: &Path) {
-    let mut file = BufferedWriter::new(File::create(&dest.join("test_no_warnings.rs")).unwrap());
+    let mut file = BufWriter::new(File::create(&dest.join("test_no_warnings.rs")).unwrap());
 
     (writeln!(&mut file, "mod gl_global {{")).unwrap();
     gl_generator::generate_bindings(gl_generator::GlobalGenerator,

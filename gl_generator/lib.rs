@@ -28,7 +28,7 @@
 //! extern crate khronos_api;
 //!
 //! use std::os;
-//! use std::old_io::File;
+//! use std::fs::File;
 //!
 //! fn main() {
 //!     let dest = Path::new(os::getenv("OUT_DIR").unwrap());
@@ -92,6 +92,9 @@
 #![feature(plugin)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
+#![feature(io)]
+#![feature(std_misc)]
+#![feature(collections)]
 #![plugin(log)]
 
 #[macro_use]
@@ -102,7 +105,7 @@ extern crate khronos_api;
 use generators::Generator;
 use registry::{Registry, Filter, Ns};
 
-use std::old_io::IoResult;
+use std::io;
 
 pub use registry::Fallbacks;
 pub use generators::global_gen::GlobalGenerator;
@@ -118,7 +121,7 @@ pub mod registry;
 /// Public function that generates Rust source code.
 pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, fallbacks: Fallbacks, source: &[u8],
                                extensions: Vec<String>, version: &str, profile: &str,
-                               dest: &mut W) -> IoResult<()> where G: Generator, W: Writer
+                               dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
     // Get generator field values, using default values if they have not been
     // specified
@@ -132,7 +135,7 @@ pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, fallbacks: Fallba
 
     // Generate the registry of all bindings
     let registry = {
-        use std::old_io::BufReader;
+        use std::io::BufReader;
         let reader = BufReader::new(source);
         Registry::from_xml(reader, ns, filter)
     };

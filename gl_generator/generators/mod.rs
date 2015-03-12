@@ -1,5 +1,5 @@
 use registry::{Enum, Registry, Cmd, Ns};
-use std::old_io::IoResult;
+use std::io;
 
 mod ty;
 pub mod global_gen;
@@ -10,14 +10,14 @@ pub mod static_struct_gen;
 /// Trait for a bindings generator.
 pub trait Generator {
     /// Builds the GL bindings.
-    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> IoResult<()> where W: Writer;
+    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> io::Result<()> where W: io::Write;
 }
 
 /// This function generates a `const name: type = value;` item.
-fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> IoResult<()> where W: Writer {
+fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()> where W: io::Write {
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
-    let ident = if (enm.ident.as_slice().char_at(0)).is_numeric() {
+    let ident = if (enm.ident.char_at(0)).is_numeric() {
         format!("_{}", enm.ident)
     } else {
         enm.ident.clone()
@@ -26,8 +26,8 @@ fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> IoResult<()
     // if the enum has the value of the form `((Type)Value)`, then `val_regexed` contains `(Type, Value)`
     let val_regexed = {
         if enm.value.starts_with("((") && enm.value.ends_with(")") {
-            let separator = enm.value.as_slice().chars().skip(2).position(|c| c == ')').unwrap();
-            Some((enm.value.slice(2, separator + 2), enm.value.slice_from(separator + 3).as_slice().trim_matches(')')))
+            let separator = enm.value.chars().skip(2).position(|c| c == ')').unwrap();
+            Some((&enm.value[2 .. separator + 2], enm.value[separator + 3 ..].trim_matches(')')))
         } else {
             None
         }
@@ -41,7 +41,7 @@ fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> IoResult<()
             // if the value is like `((Type)Value)`, then the type is `types::Type`
             format!("{}{}", types_prefix, ty)
 
-        } else if enm.value.as_slice().starts_with("\"") {
+        } else if enm.value.starts_with("\"") {
             // some values are of the form "Value" ; if this is the case, we use `&'static str`
             //  instead of `GLenum`
             "&'static str".to_string()
@@ -49,10 +49,10 @@ fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> IoResult<()
         } else {
             // some values are `TRUE` or `FALSE`, in which case we use `GLboolean` instead of
             //  `GLenum`
-            match ident.as_slice() {
+            match &ident[..] {
                 "TRUE" | "FALSE" => format!("{}GLboolean", types_prefix),
                 _ => match enm.ty {
-                    Some(ref s) if s.as_slice() == "ull" => format!("{}GLuint64", types_prefix),
+                    Some(ref s) if &s[..] == "ull" => format!("{}GLuint64", types_prefix),
                     _ => format!("{}GLenum", types_prefix)
                 }
             }
@@ -82,7 +82,7 @@ fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> IoResult<()
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
 ///  things that we can't obtain from the XML files.
-pub fn gen_type_aliases<W>(namespace: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+pub fn gen_type_aliases<W>(namespace: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     match *namespace {
         Ns::Gl | Ns::Gles1 | Ns::Gles2 => {
             try!(ty::build_gl_aliases(dest));
@@ -114,7 +114,7 @@ pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<Str
     cmd.params.iter()
         .map(|binding| {
             // variable name of the binding
-            let ident = match binding.ident.as_slice() {
+            let ident = match &binding.ident[..] {
                 "in" => "in_",
                 "ref" => "ref_",
                 "type" => "type_",
@@ -122,7 +122,7 @@ pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<Str
             };
 
             // rust type of the binding
-            let ty = ty::to_rust_ty(binding.ty.as_slice());
+            let ty = ty::to_rust_ty(&binding.ty[..]);
 
             // returning
             if with_idents && with_types {
@@ -141,7 +141,7 @@ pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<Str
 /// Generates the Rust return type of a `Cmd`.
 pub fn gen_return_type(cmd: &Cmd) -> String {
     // turn the return type into a Rust type
-    let ty = ty::to_rust_ty(cmd.proto.ty.as_slice());
+    let ty = ty::to_rust_ty(&cmd.proto.ty);
 
     // ... but there is one more step: if the Rust type is `c_void`, we replace it with `()`
     if ty == "__gl_imports::libc::c_void" {

@@ -14,13 +14,13 @@
 // limitations under the License.
 
 use registry::{Registry, Ns};
-use std::old_io::IoResult;
+use std::io;
 
 #[allow(missing_copy_implementations)]
 pub struct StaticStructGenerator;
 
 impl super::Generator for StaticStructGenerator {
-    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
         try!(write_header(dest));
         try!(write_type_aliases(&ns, dest));
         try!(write_enums(registry, dest));
@@ -33,7 +33,7 @@ impl super::Generator for StaticStructGenerator {
 
 /// Creates a `__gl_imports` module which contains all the external symbols that we need for the
 ///  bindings.
-fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
         mod __gl_imports {{
             extern crate libc;
@@ -45,7 +45,7 @@ fn write_header<W>(dest: &mut W) -> IoResult<()> where W: Writer {
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_type_aliases`.
-fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
         #[stable]
         pub mod types {{
@@ -63,7 +63,7 @@ fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer 
 }
 
 /// Creates all the `<enum>` elements at the root of the bindings.
-fn write_enums<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Writer {
+fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     for e in registry.enum_iter() {
         try!(super::gen_enum_item(e, "types::", dest));
     }
@@ -74,7 +74,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> IoResult<()> where W: Wr
 /// Creates a stub structure.
 ///
 /// The name of the struct corresponds to the namespace.
-fn write_struct<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+fn write_struct<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, "
         #[allow(non_camel_case_types)]
         #[allow(non_snake_case)]
@@ -88,7 +88,7 @@ fn write_struct<W>(ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
-fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, "
         impl {ns} {{
             /// Stub function.
@@ -122,15 +122,15 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> whe
     )
 }
 
-/// Writes all functions corresponding to the GL bindings.
+/// io::Writes all functions corresponding to the GL bindings.
 ///
 /// These are foreign functions, they don't have any content.
-fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> IoResult<()> where W: Writer {
+fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     let symbols = registry.cmd_iter().map(|c| {
         format!(
             "#[link_name=\"{symbol}\"]
             fn {name}({params}) -> {return_suffix};",
-            symbol = super::gen_symbol_name(ns, c.proto.ident.as_slice()),
+            symbol = super::gen_symbol_name(ns, &c.proto.ident),
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).connect(", "),
             return_suffix = super::gen_return_type(c)
