@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::old_io::IoResult;
+use std::io;
 
 /// Converts a C style type definition to the Rust equivalent
 pub fn to_rust_ty(ty: &str) -> &'static str {
@@ -282,7 +282,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
     }
 }
 
-pub fn build_gl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // Common types from OpenGL 1.1
         "pub type GLenum = super::__gl_imports::libc::c_uint;",
@@ -336,7 +336,7 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
 
         // GLES 1 types
         // "pub type GLclampx = i32;",
-        
+
         // GLES 1/2 types (tagged for GLES 1)
         // "pub type GLbyte = i8;",
         // "pub type GLubyte = u8;",
@@ -347,7 +347,7 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
         // "pub type GLuint64 = u64;",
         // "pub type GLintptr = intptr_t;",
         // "pub type GLsizeiptr = ssize_t;",
-        
+
         // GLES 1/2 types (tagged for GLES 2 - attribute syntax is limited)
         // "pub type GLbyte = i8;",
         // "pub type GLubyte = u8;",
@@ -374,7 +374,7 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     Ok(())
 }
 
-pub fn build_x_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+pub fn build_x_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         "pub type XID = super::__gl_imports::libc::c_ulong;",
         "pub type Bool = super::__gl_imports::libc::c_int;",       // Not sure if this is correct...
@@ -386,7 +386,7 @@ pub fn build_x_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     Ok(())
 }
 
-pub fn build_glx_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         "pub type Font = XID;",
         "pub type Pixmap = XID;",
@@ -536,7 +536,7 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     Ok(())
 }
 
-pub fn build_win_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+pub fn build_win_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // From WinNT.h
         "pub type CHAR = super::__gl_imports::libc::c_char;",
@@ -663,7 +663,7 @@ pub fn build_win_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     Ok(())
 }
 
-pub fn build_wgl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+pub fn build_wgl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // From WinNT.h,
         // #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
@@ -695,7 +695,7 @@ pub fn build_wgl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
     Ok(())
 }
 
-pub fn build_egl_aliases<W>(dest: &mut W) -> IoResult<()> where W: Writer {
+pub fn build_egl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // platform-specific aliases are unknown
         // IMPORTANT: these are alises to the same level of the bindings
