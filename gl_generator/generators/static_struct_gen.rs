@@ -57,9 +57,7 @@ fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::W
 
     try!(super::gen_type_aliases(ns, dest));
 
-    writeln!(dest, "
-        }}
-    ")
+    writeln!(dest, "}}")
 }
 
 /// Creates all the `<enum>` elements at the root of the bindings.
@@ -80,69 +78,64 @@ fn write_struct<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
         #[allow(non_snake_case)]
         #[allow(dead_code)]
         #[stable]
-        pub struct {ns};
-        ",
-
+        pub struct {ns};",
         ns = ns.fmt_struct_name(),
     )
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
 fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
-    writeln!(dest, "
-        impl {ns} {{
+    try!(writeln!(dest,
+        "impl {ns} {{
             /// Stub function.
             #[unstable]
             #[allow(dead_code)]
             pub fn load_with<F>(mut _loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
                 {ns}
-            }}
-
-            {modules}
-        }}",
-
+            }}",
         ns = ns.fmt_struct_name(),
+    ));
 
-        modules = registry.cmd_iter().map(|c| {
-            format!(
-                "#[allow(non_snake_case)]
-                // #[allow(unused_variables)]
-                #[allow(dead_code)]
-                #[inline]
-                #[unstable]
-                pub unsafe fn {name}(&self, {typed_params}) -> {return_suffix} {{
-                    {name}({idents})
-                }}",
-                name = c.proto.ident,
-                typed_params = super::gen_parameters(c, true, true).connect(", "),
-                return_suffix = super::gen_return_type(c),
-                idents = super::gen_parameters(c, true, false).connect(", "),
-            )
-        }).collect::<Vec<String>>().connect("\n")
-    )
+    for c in registry.cmd_iter() {
+        try!(writeln!(dest,
+            "#[allow(non_snake_case)]
+            // #[allow(unused_variables)]
+            #[allow(dead_code)]
+            #[inline]
+            #[unstable]
+            pub unsafe fn {name}(&self, {typed_params}) -> {return_suffix} {{
+                {name}({idents})
+            }}",
+            name = c.proto.ident,
+            typed_params = super::gen_parameters(c, true, true).connect(", "),
+            return_suffix = super::gen_return_type(c),
+            idents = super::gen_parameters(c, true, false).connect(", "),
+        ));
+    }
+
+    writeln!(dest, "}}")
 }
 
 /// io::Writes all functions corresponding to the GL bindings.
 ///
 /// These are foreign functions, they don't have any content.
 fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
-    let symbols = registry.cmd_iter().map(|c| {
-        format!(
-            "#[link_name=\"{symbol}\"]
-            fn {name}({params}) -> {return_suffix};",
+
+    try!(writeln!(dest, "
+        #[allow(non_snake_case)]
+        #[allow(unused_variables)]
+        #[allow(dead_code)]
+        extern \"system\" {{"));
+
+    for c in registry.cmd_iter() {
+        try!(writeln!(dest,
+            "#[link_name=\"{symbol}\"] fn {name}({params}) -> {return_suffix};",
             symbol = super::gen_symbol_name(ns, &c.proto.ident),
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).connect(", "),
             return_suffix = super::gen_return_type(c)
-        )
-    }).collect::<Vec<String>>().connect("\n");
+        ));
+    }
 
-    writeln!(dest, "
-        #[allow(non_snake_case)]
-        #[allow(unused_variables)]
-        #[allow(dead_code)]
-        extern \"system\" {{
-            {}
-        }}
-    ", symbols)
+    writeln!(dest, "}}")
 }

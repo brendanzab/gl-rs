@@ -60,9 +60,7 @@ fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::W
 
     try!(super::gen_type_aliases(ns, dest));
 
-    writeln!(dest, "
-        }}
-    ")
+    writeln!(dest, "}}")
 }
 
 /// Creates all the `<enum>` elements at the root of the bindings.
@@ -76,7 +74,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
-    try!(writeln!(dest, r#"
+    writeln!(dest, "
         #[allow(dead_code)]
         #[allow(missing_copy_implementations)]
         pub struct FnPtr {{
@@ -85,9 +83,7 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
             /// True if the pointer points to a real function, false if points to a `panic!` fn.
             is_loaded: bool,
         }}
-    "#));
 
-    writeln!(dest, r#"
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
             fn new(ptr: *const __gl_imports::libc::c_void) -> FnPtr {{
@@ -110,7 +106,7 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
                 self.is_loaded
             }}
         }}
-    "#)
+    ")
 }
 
 /// Creates a `panicking` module which contains one function per GL command.
@@ -118,46 +114,41 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
 /// These functions are the mocks that are called if the real function could not be loaded.
 fn write_panicking_fns<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest,
-        "
-        #[inline(never)]
+        "#[inline(never)]
         fn missing_fn_panic() -> ! {{
             panic!(\"{ns} function was not loaded\")
-        }}
-        ", ns = ns)
+        }}",
+        ns = ns
+    )
 }
 
 /// Creates a structure which stores all the `FnPtr` of the bindings.
 ///
 /// The name of the struct corresponds to the namespace.
 fn write_struct<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
-    writeln!(dest, "
+    try!(writeln!(dest, "
         #[allow(non_camel_case_types)]
         #[allow(non_snake_case)]
         #[allow(dead_code)]
         #[stable]
-        pub struct {ns} {{
-            {ptrs}
-        }}",
+        pub struct {ns} {{",
+        ns = ns.fmt_struct_name()
+    ));
 
-        ns = ns.fmt_struct_name(),
-        ptrs = registry.cmd_iter().map(|c| {
-            let fallbacks = match registry.aliases.get(&c.proto.ident) {
-                Some(v) => v.clone(),
-                None => Vec::new(),
-            };
-            format!(
-                "{doc} pub {name}: FnPtr,",
-                doc = if fallbacks.len() == 0 { "".to_string() } else { format!("/** Fallbacks: {} */", fallbacks.connect(", ")) },
-                name = c.proto.ident,
-            )
-        }).collect::<Vec<String>>().connect("\n")
-    )
+    for c in registry.cmd_iter() {
+        if let Some(v) = registry.aliases.get(&c.proto.ident) {
+            try!(writeln!(dest, "/// Fallbacks: {}", v.connect(", ")));
+        }
+        try!(writeln!(dest, "pub {name}: FnPtr,", name = c.proto.ident));
+    }
+
+    writeln!(dest, "}}")
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
 fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
-    writeln!(dest, "
-        impl {ns} {{
+    try!(writeln!(dest,
+        "impl {ns} {{
             /// Load each OpenGL symbol using a custom load function. This allows for the
             /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
             ///
@@ -178,56 +169,63 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
                     }}
                     ptr
                 }};
-                {ns} {{
-                    {loadings}
-                }}
-            }}
+                {ns} {{",
+        ns = ns.fmt_struct_name()
+    ));
 
-            /// Load each OpenGL symbol using a custom load function.
-            ///
-            /// ~~~ignore
-            /// let gl = Gl::load(&glfw);
-            /// ~~~
-            #[unstable]
-            #[allow(dead_code)]
-            #[allow(unused_variables)]
-            pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) -> {ns} {{
-                {ns}::load_with(|name| loader.get_proc_addr(name))
-            }}
+    for c in registry.cmd_iter() {
+        try!(writeln!(dest,
+            "{name}: FnPtr::new(metaloadfn(\"{symbol}\", &[{fallbacks}])),",
+            name = c.proto.ident,
+            symbol = super::gen_symbol_name(ns, &c.proto.ident),
+            fallbacks = match registry.aliases.get(&c.proto.ident) {
+                Some(fbs) => {
+                    fbs.iter()
+                       .map(|name| format!("\"{}\"", super::gen_symbol_name(ns, &name)))
+                       .collect::<Vec<_>>().connect(", ")
+                },
+                None => format!(""),
+            },
+        ))
+    }
 
-            {modules}
+    try!(writeln!(dest,
+            "}}
         }}
 
+        /// Load each OpenGL symbol using a custom load function.
+        ///
+        /// ~~~ignore
+        /// let gl = Gl::load(&glfw);
+        /// ~~~
+        #[unstable]
+        #[allow(dead_code)]
+        #[allow(unused_variables)]
+        pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) -> {ns} {{
+            {ns}::load_with(|name| loader.get_proc_addr(name))
+        }}",
+        ns = ns.fmt_struct_name()
+    ));
+
+    for c in registry.cmd_iter() {
+        try!(writeln!(dest,
+            "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
+            #[inline] #[unstable] pub unsafe fn {name}(&self, {params}) -> {return_suffix} {{ \
+                __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
+                    (self.{name}.f)({idents}) \
+            }}",
+            name = c.proto.ident,
+            params = super::gen_parameters(c, true, true).connect(", "),
+            typed_params = super::gen_parameters(c, false, true).connect(", "),
+            return_suffix = super::gen_return_type(c),
+            idents = super::gen_parameters(c, true, false).connect(", "),
+        ))
+    }
+
+    writeln!(dest,
+        "}}
+
         unsafe impl __gl_imports::Send for {ns} {{}}",
-
-        ns = ns.fmt_struct_name(),
-
-        loadings = registry.cmd_iter().map(|c| {
-            let fallbacks = registry.aliases.get(&c.proto.ident);
-            format!(
-                "{name}: FnPtr::new(metaloadfn(\"{symbol}\", {fb})),",
-                name = c.proto.ident,
-                symbol = super::gen_symbol_name(ns, &c.proto.ident),
-                fb = match fallbacks {
-                    Some(fallbacks) => format!("&[{}]", fallbacks.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, &name))).collect::<Vec<_>>().connect(", ")),
-                    None => format!("&[]")
-                },
-            )
-        }).collect::<Vec<String>>().connect("\n"),
-
-        modules = registry.cmd_iter().map(|c| {
-            format!(
-                "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
-                #[inline] #[unstable] pub unsafe fn {name}(&self, {params}) -> {return_suffix} {{ \
-                    __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
-                        (self.{name}.f)({idents}) \
-                }}",
-                name = c.proto.ident,
-                params = super::gen_parameters(c, true, true).connect(", "),
-                typed_params = super::gen_parameters(c, false, true).connect(", "),
-                return_suffix = super::gen_return_type(c),
-                idents = super::gen_parameters(c, true, false).connect(", "),
-            )
-        }).collect::<Vec<String>>().connect("\n")
+        ns = ns.fmt_struct_name()
     )
 }

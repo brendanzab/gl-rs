@@ -101,19 +101,17 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 ///  by `write_ptrs`.
 fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     for c in registry.cmd_iter() {
-        let doc = match registry.aliases.get(&c.proto.ident) {
-            Some(v) => format!("/** Fallbacks: {} */", v.connect(", ")),
-            None => "".to_string()
-        };
+        if let Some(v) = registry.aliases.get(&c.proto.ident) {
+            try!(writeln!(dest, "/// Fallbacks: {}", v.connect(", ")));
+        }
 
         try!(writeln!(dest,
-            "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
-            #[inline] #[unstable] {doc} pub unsafe fn {name}({params}) -> {return_suffix} {{ \
+            "#[allow(non_snake_case, unused_variables, dead_code)] #[inline] #[unstable]
+            pub unsafe fn {name}({params}) -> {return_suffix} {{ \
                 __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                     (storage::{name}.f)({idents}) \
             }}",
             name = c.proto.ident,
-            doc = doc,
             params = super::gen_parameters(c, true, true).connect(", "),
             typed_params = super::gen_parameters(c, false, true).connect(", "),
             return_suffix = super::gen_return_type(c),
@@ -126,7 +124,7 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
-    try!(writeln!(dest, r#"
+    writeln!(dest, "
         #[allow(missing_copy_implementations)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
@@ -134,9 +132,7 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
             /// True if the pointer points to a real function, false if points to a `panic!` fn.
             is_loaded: bool,
         }}
-    "#));
 
-    writeln!(dest, r#"
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
             pub fn new(ptr: *const __gl_imports::libc::c_void) -> FnPtr {{
@@ -147,30 +143,29 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
                 }}
             }}
         }}
-    "#)
+    ")
 }
 
 /// Creates a `storage` module which contains a static `FnPtr` per GL command in the registry.
 fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    let storages = registry.cmd_iter().map(|c| {
-        format!(
+
+    try!(writeln!(dest,
+        "mod storage {{
+            #![allow(non_snake_case)]
+            use super::__gl_imports::libc;
+            use super::FnPtr;"));
+
+    for c in registry.cmd_iter() {
+        try!(writeln!(dest,
             "pub static mut {name}: FnPtr = FnPtr {{
                 f: super::missing_fn_panic as *const libc::c_void,
                 is_loaded: false
             }};",
             name = c.proto.ident
-        )
-    }).collect::<Vec<String>>().connect("\n");
+        ));
+    }
 
-    writeln!(dest, r##"
-        mod storage {{
-            #![allow(non_snake_case)]
-            use super::__gl_imports::libc;
-            use super::FnPtr;
-
-            {storages}
-        }}
-    "##, storages = storages)
+    writeln!(dest, "}}")
 }
 
 /// Creates one module for each GL command.
@@ -220,8 +215,7 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()
 /// This function is the mock that is called if the real function could not be called.
 fn write_panicking_fns<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest,
-        "
-        #[inline(never)]
+        "#[inline(never)]
         fn missing_fn_panic() -> ! {{
             panic!(\"{ns} function was not loaded\")
         }}
@@ -232,12 +226,7 @@ fn write_panicking_fns<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::
 ///
 /// The function calls `load_with` in each module created by `write_fn_mods`.
 fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    let loadings = registry.cmd_iter().map(|c| {
-        let cmd_name = &c.proto.ident[..];
-        format!("{cmd_name}::load_with(|s| loadfn(s));", cmd_name = cmd_name)
-    }).collect::<Vec<String>>().connect("\n");
-
-    try!(writeln!(dest, r#"
+    try!(writeln!(dest, "
         /// Load each OpenGL symbol using a custom load function. This allows for the
         /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
         /// ~~~ignore
@@ -246,11 +235,16 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
         #[unstable]
         #[allow(dead_code)]
         pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
-            {loadings}
-        }}
-    "#, loadings = loadings));
+    "));
 
-    writeln!(dest, r#"
+    for c in registry.cmd_iter() {
+        try!(writeln!(dest, "{cmd_name}::load_with(|s| loadfn(s));",
+                      cmd_name = &c.proto.ident[..]));
+    }
+
+    writeln!(dest, "
+        }}
+
         /// Load each OpenGL symbol using a custom load function.
         ///
         /// ~~~ignore
@@ -261,5 +255,5 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
         pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) {{
             load_with(|name| loader.get_proc_addr(name));
         }}
-    "#)
+    ")
 }
