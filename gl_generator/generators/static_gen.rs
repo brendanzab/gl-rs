@@ -73,23 +73,20 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 ///
 /// These are foreign functions, they don't have any content.
 fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
-    let symbols = registry.cmd_iter().map(|c| {
-        format!(
+    try!(writeln!(dest, "
+        #[allow(non_snake_case, unused_variables, dead_code)]
+        extern \"system\" {{"));
+
+    for c in registry.cmd_iter() {
+        try!(writeln!(dest,
             "#[link_name=\"{symbol}\"]
             pub fn {name}({params}) -> {return_suffix};",
             symbol = super::gen_symbol_name(ns, &c.proto.ident),
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).connect(", "),
             return_suffix = super::gen_return_type(c)
-        )
-    }).collect::<Vec<String>>().connect("\n");
+        ));
+    }
 
-    writeln!(dest, "
-        #[allow(non_snake_case)]
-        #[allow(unused_variables)]
-        #[allow(dead_code)]
-        extern \"system\" {{
-            {symbols}
-        }}
-    ", symbols = symbols)
+    writeln!(dest, "}}")
 }
