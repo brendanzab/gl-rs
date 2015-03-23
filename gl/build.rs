@@ -4,9 +4,11 @@ extern crate khronos_api;
 use std::os;
 use std::fs::File;
 use std::io::BufWriter;
+use std::path::Path;
 
 fn main() {
-    let dest = Path::new(os::getenv("OUT_DIR").unwrap());
+    let out_dir = os::getenv("OUT_DIR").unwrap();
+    let dest = Path::new(&out_dir);
 
     let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
