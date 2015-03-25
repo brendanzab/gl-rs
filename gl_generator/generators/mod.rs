@@ -17,7 +17,7 @@ pub trait Generator {
 fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()> where W: io::Write {
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
-    let ident = if (enm.ident.char_at(0)).is_numeric() {
+    let ident = if (enm.ident.chars().next().unwrap()).is_numeric() {
         format!("_{}", enm.ident)
     } else {
         enm.ident.clone()

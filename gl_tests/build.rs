@@ -1,5 +1,3 @@
-#![feature(io, path)]
-
 extern crate gl_generator;
 extern crate khronos_api;
 
@@ -10,9 +8,9 @@ use std::path::*;
 use std::io::BufWriter;
 
 fn main() {
-    let dest = PathBuf::new(&env::var("OUT_DIR").unwrap());
+    let dest = env::var("OUT_DIR").unwrap();
 
-    let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
+    let mut file = BufWriter::new(File::create(&Path::new(&dest).join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
                                     gl_generator::registry::Ns::Gl,
                                     gl_generator::Fallbacks::All,
@@ -24,8 +22,8 @@ fn main() {
     // FIXME (https://github.com/rust-lang/cargo/issues/1058): only build the tests file if
     //                                                         we run "cargo test"
     //if os::getenv("PROFILE").unwrap() == "test" {
-        write_test_gen_symbols(&dest);
-        write_test_no_warnings(&dest);
+        write_test_gen_symbols(&Path::new(&dest));
+        write_test_no_warnings(&Path::new(&dest));
     //}
 }
 

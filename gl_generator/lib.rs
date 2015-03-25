@@ -27,13 +27,14 @@
 //! extern crate gl_generator;
 //! extern crate khronos_api;
 //!
-//! use std::os;
+//! use std::env;
 //! use std::fs::File;
+//! use std::path::Path;
 //!
 //! fn main() {
-//!     let dest = Path::new(os::getenv("OUT_DIR").unwrap());
+//!     let dest = env::var("OUT_DIR").unwrap();
 //!
-//!     let mut file = File::create(&dest.join("gl_bindings.rs")).unwrap();
+//!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
 //!     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
 //!                                     gl_generator::registry::Ns::Gl,
@@ -88,13 +89,9 @@
 #![crate_name = "gl_generator"]
 #![crate_type = "dylib"]
 
-#![feature(advanced_slice_patterns)]
 #![feature(plugin)]
 #![feature(plugin_registrar)]
 #![feature(quote)]
-#![feature(io)]
-#![feature(std_misc)]
-#![feature(collections)]
 #![plugin(log)]
 
 #[macro_use]
