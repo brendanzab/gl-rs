@@ -84,16 +84,6 @@
 //! - `NativePixmapType`
 //! - `NativeWindowType`
 //!
-
-
-#![crate_name = "gl_generator"]
-#![crate_type = "dylib"]
-
-#![feature(plugin)]
-#![feature(plugin_registrar)]
-#![feature(quote)]
-#![plugin(log)]
-
 #[macro_use]
 extern crate log;
 

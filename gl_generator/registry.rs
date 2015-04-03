@@ -31,7 +31,7 @@ use self::xml::reader::events::XmlEvent;
 
 use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
 
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
 pub enum Fallbacks { All, None }
