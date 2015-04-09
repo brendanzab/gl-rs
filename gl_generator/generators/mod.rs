@@ -14,7 +14,7 @@ pub trait Generator {
 }
 
 /// This function generates a `const name: type = value;` item.
-fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()> where W: io::Write {
+pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()> where W: io::Write {
     // computing the name of the enum
     // if the original starts with a digit, adding an underscore prefix.
     let ident = if (enm.ident.chars().next().unwrap()).is_numeric() {
