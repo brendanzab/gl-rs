@@ -71,7 +71,6 @@ fn write_metaloadfn<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 /// See also `generators::gen_type_aliases`.
 fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
-        #[stable]
         pub mod types {{
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
@@ -106,7 +105,7 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
         }
 
         try!(writeln!(dest,
-            "#[allow(non_snake_case, unused_variables, dead_code)] #[inline] #[unstable]
+            "#[allow(non_snake_case, unused_variables, dead_code)] #[inline]
             pub unsafe fn {name}({params}) -> {return_suffix} {{ \
                 __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                     (storage::{name}.f)({idents}) \
@@ -185,7 +184,6 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()
         let symbol = &symbol[..];
 
         try!(writeln!(dest, r##"
-            #[unstable]
             #[allow(non_snake_case)]
             pub mod {fnname} {{
                 use super::{{storage, metaloadfn}};
@@ -232,7 +230,6 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
         /// ~~~ignore
         /// gl::load_with(|s| glfw.get_proc_address(s));
         /// ~~~
-        #[unstable]
         #[allow(dead_code)]
         pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
     "));
@@ -250,7 +247,6 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
         /// ~~~ignore
         /// gl::load(&glfw);
         /// ~~~
-        #[unstable]
         #[allow(dead_code)]
         pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) {{
             load_with(|name| loader.get_proc_addr(name));

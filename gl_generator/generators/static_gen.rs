@@ -45,7 +45,6 @@ fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 /// See also `generators::gen_type_aliases`.
 fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
-        #[stable]
         pub mod types {{
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
