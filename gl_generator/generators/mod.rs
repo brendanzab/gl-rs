@@ -71,7 +71,6 @@ pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Res
     };
 
     writeln!(dest, "\
-        #[stable]
         #[allow(dead_code)]
         #[allow(non_upper_case_globals)]
         pub const {}: {} = {}; \

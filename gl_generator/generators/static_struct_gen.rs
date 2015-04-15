@@ -47,7 +47,6 @@ fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 /// See also `generators::gen_type_aliases`.
 fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
-        #[stable]
         pub mod types {{
             #![allow(non_camel_case_types)]
             #![allow(non_snake_case)]
@@ -77,7 +76,6 @@ fn write_struct<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
         #[allow(non_camel_case_types)]
         #[allow(non_snake_case)]
         #[allow(dead_code)]
-        #[stable]
         pub struct {ns};",
         ns = ns.fmt_struct_name(),
     )
@@ -88,7 +86,6 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
     try!(writeln!(dest,
         "impl {ns} {{
             /// Stub function.
-            #[unstable]
             #[allow(dead_code)]
             pub fn load_with<F>(mut _loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::libc::c_void {{
                 {ns}
@@ -102,7 +99,6 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
             // #[allow(unused_variables)]
             #[allow(dead_code)]
             #[inline]
-            #[unstable]
             pub unsafe fn {name}(&self, {typed_params}) -> {return_suffix} {{
                 {name}({idents})
             }}",
