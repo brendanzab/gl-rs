@@ -2,6 +2,7 @@ use registry::{Enum, Registry, Cmd, Ns};
 use std::io;
 
 mod ty;
+pub mod debug_struct_gen;
 pub mod global_gen;
 pub mod static_gen;
 pub mod struct_gen;

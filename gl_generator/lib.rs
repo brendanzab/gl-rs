@@ -95,6 +95,7 @@ use registry::{Registry, Filter, Ns};
 use std::io;
 
 pub use registry::Fallbacks;
+pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
 pub use generators::static_struct_gen::StaticStructGenerator;
