@@ -106,6 +106,14 @@ fn write_test_no_warnings(dest: &Path) {
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();
 
+    (writeln!(&mut file, "mod gl_debug_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::DebugStructGenerator,
+                                    gl_generator::registry::Ns::Gl,
+                                    gl_generator::Fallbacks::All,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
 
 
     (writeln!(&mut file, "mod glx_global {{")).unwrap();
@@ -134,6 +142,14 @@ fn write_test_no_warnings(dest: &Path) {
 
     (writeln!(&mut file, "mod glx_static_struct {{")).unwrap();
     gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Glx,
+                                    gl_generator::Fallbacks::All,
+                                    khronos_api::GLX_XML, vec![], "1.4", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
+    (writeln!(&mut file, "mod glx_debug_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::DebugStructGenerator,
                                     gl_generator::registry::Ns::Glx,
                                     gl_generator::Fallbacks::All,
                                     khronos_api::GLX_XML, vec![], "1.4", "core",
@@ -174,6 +190,14 @@ fn write_test_no_warnings(dest: &Path) {
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();
 
+    (writeln!(&mut file, "mod wgl_debug_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::DebugStructGenerator,
+                                    gl_generator::registry::Ns::Wgl,
+                                    gl_generator::Fallbacks::All,
+                                    khronos_api::WGL_XML, vec![], "1.0", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
 
 
     (writeln!(&mut file, "mod gles1_global {{")).unwrap();
@@ -202,6 +226,14 @@ fn write_test_no_warnings(dest: &Path) {
 
     (writeln!(&mut file, "mod gles1_static_struct {{")).unwrap();
     gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Gles1,
+                                    gl_generator::Fallbacks::All,
+                                    khronos_api::GL_XML, vec![], "1.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
+    (writeln!(&mut file, "mod gles1_debug_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::DebugStructGenerator,
                                     gl_generator::registry::Ns::Gles1,
                                     gl_generator::Fallbacks::All,
                                     khronos_api::GL_XML, vec![], "1.1", "core",
@@ -242,6 +274,14 @@ fn write_test_no_warnings(dest: &Path) {
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();
 
+    (writeln!(&mut file, "mod gles2_debug_struct {{")).unwrap();
+    gl_generator::generate_bindings(gl_generator::DebugStructGenerator,
+                                    gl_generator::registry::Ns::Gles2,
+                                    gl_generator::Fallbacks::All,
+                                    khronos_api::GL_XML, vec![], "3.1", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
 
 
     (writeln!(&mut file, "mod egl_global {{ {}", build_egl_symbols())).unwrap();
@@ -270,6 +310,14 @@ fn write_test_no_warnings(dest: &Path) {
 
     (writeln!(&mut file, "mod egl_static_struct {{ {}", build_egl_symbols())).unwrap();
     gl_generator::generate_bindings(gl_generator::StaticStructGenerator,
+                                    gl_generator::registry::Ns::Egl,
+                                    gl_generator::Fallbacks::All,
+                                    khronos_api::EGL_XML, vec![], "1.5", "core",
+                                    &mut file).unwrap();
+    (writeln!(&mut file, "}}")).unwrap();
+
+    (writeln!(&mut file, "mod egl_debug_struct {{ {}", build_egl_symbols())).unwrap();
+    gl_generator::generate_bindings(gl_generator::DebugStructGenerator,
                                     gl_generator::registry::Ns::Egl,
                                     gl_generator::Fallbacks::All,
                                     khronos_api::EGL_XML, vec![], "1.5", "core",
