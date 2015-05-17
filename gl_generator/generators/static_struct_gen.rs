@@ -76,6 +76,7 @@ fn write_struct<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
         #[allow(non_camel_case_types)]
         #[allow(non_snake_case)]
         #[allow(dead_code)]
+        #[derive(Copy, Clone)]
         pub struct {ns};",
         ns = ns.fmt_struct_name(),
     )

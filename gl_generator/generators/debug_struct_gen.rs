@@ -76,6 +76,8 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
     writeln!(dest, "
         #[allow(dead_code)]
         #[allow(missing_copy_implementations)]
+        #[allow(raw_pointer_derive)]
+        #[derive(Clone)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
             f: *const __gl_imports::libc::c_void,
@@ -129,6 +131,7 @@ fn write_struct<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()>
         #[allow(non_camel_case_types)]
         #[allow(non_snake_case)]
         #[allow(dead_code)]
+        #[derive(Clone)]
         pub struct {ns} {{",
         ns = ns.fmt_struct_name()
     ));
