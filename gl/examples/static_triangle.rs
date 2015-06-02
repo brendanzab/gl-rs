@@ -50,7 +50,7 @@ fn compile_shader(src: &str, ty: GLenum) -> GLuint {
     unsafe {
         shader = gl::CreateShader(ty);
         // Attempt to compile the shader
-        let c_str = CString::from_slice(src.as_bytes());
+        let c_str = CString::new(src.as_bytes()).unwrap();
         gl::ShaderSource(shader, 1, &c_str.as_ptr(), ptr::null());
         gl::CompileShader(shader);
 
@@ -65,7 +65,7 @@ fn compile_shader(src: &str, ty: GLenum) -> GLuint {
             let mut buf = Vec::with_capacity(len as usize);
             buf.set_len((len as usize) - 1); // subtract 1 to skip the trailing null character
             gl::GetShaderInfoLog(shader, len, ptr::null_mut(), buf.as_mut_ptr() as *mut GLchar);
-            panic!("{}", str::from_utf8(buf.as_slice()).ok().expect("ShaderInfoLog not valid utf8"));
+            panic!("{}", str::from_utf8(&buf).ok().expect("ShaderInfoLog not valid utf8"));
         }
     }
     shader
@@ -87,7 +87,7 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint { unsafe {
         let mut buf = Vec::with_capacity(len as usize);
         buf.set_len((len as usize) - 1); // subtract 1 to skip the trailing null character
         gl::GetProgramInfoLog(program, len, ptr::null_mut(), buf.as_mut_ptr() as *mut GLchar);
-        panic!("{}", str::from_utf8(buf.as_slice()).ok().expect("ProgramInfoLog not valid utf8"));
+        panic!("{}", str::from_utf8(&buf).ok().expect("ProgramInfoLog not valid utf8"));
     }
     program
 } }
@@ -97,8 +97,8 @@ fn main() {
 
     // Choose a GL profile that is compatible with OS X 10.7+
     glfw.window_hint(WindowHint::ContextVersion(3, 2));
-    glfw.window_hint(WindowHint::OpenglForwardCompat(true));
-    glfw.window_hint(WindowHint::OpenglProfile(OpenGlProfileHint::Core));
+    glfw.window_hint(WindowHint::OpenGlForwardCompat(true));
+    glfw.window_hint(WindowHint::OpenGlProfile(OpenGlProfileHint::Core));
 
     let (mut window, _) = glfw.create_window(800, 600, "OpenGL", WindowMode::Windowed)
         .expect("Failed to create GLFW window.");
@@ -133,11 +133,11 @@ fn main() {
         // Use shader program
         gl::UseProgram(program);
         gl::BindFragDataLocation(program, 0,
-                                 CString::from_slice(b"out_color").as_ptr());
+                                 CString::new("out_color").unwrap().as_ptr());
 
         // Specify the layout of the vertex data
         let pos_attr = gl::GetAttribLocation(program,
-                                             CString::from_slice(b"position").as_ptr());
+                                             CString::new("position").unwrap().as_ptr());
         gl::EnableVertexAttribArray(pos_attr as GLuint);
         gl::VertexAttribPointer(pos_attr as GLuint, 2, gl::FLOAT,
                                 gl::FALSE as GLboolean, 0, ptr::null());
