@@ -1,5 +1,3 @@
-#![feature(plugin)]
-
 extern crate libc;
 
 include!(concat!(env!("OUT_DIR"), "/test_gen_symbols.rs"));
