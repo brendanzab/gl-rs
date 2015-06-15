@@ -18,7 +18,6 @@
 //! You can import the pointer style loader and type aliases like so:
 //!
 //! ~~~no_run
-//! # #![feature(globs)]
 //! # #![allow(unused_imports)]
 //! extern crate gl;
 //! # fn main() {
