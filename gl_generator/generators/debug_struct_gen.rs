@@ -225,15 +225,23 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
             "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
             #[inline] pub unsafe fn {name}(&self, {params}) -> {return_suffix} {{ \
                 {println}
-                __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
-                    (self.{name}.f)({idents}) \
+                let r = __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
+                    (self.{name}.f)({idents});
+                {print_err}
+                r
             }}",
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).connect(", "),
             typed_params = typed_params.connect(", "),
             return_suffix = super::gen_return_type(c),
             idents = idents.connect(", "),
-            println = println
+            println = println,
+            print_err = if c.proto.ident != "GetError" && registry.cmd_iter().find(|c| c.proto.ident == "GetError").is_some() {
+                format!(r#"match __gl_imports::mem::transmute::<_, extern "system" fn() -> u32>
+                    (self.GetError.f)() {{ 0 => (), r => println!("[OpenGL] ^ GL error triggered: {{}}", r) }}"#)
+            } else {
+                format!("")
+            }
         ))
     }
 
