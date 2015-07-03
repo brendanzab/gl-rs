@@ -18,7 +18,7 @@ version = "*"
 
 [build-dependencies.khronos_api]
 path = "../khronos_api"
-version = "0.0.6"
+version = "0.0.7"
 
 [dependencies.gl_common]
 path = "../gl_common"
