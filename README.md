@@ -83,6 +83,7 @@ Add this to your `Cargo.toml`:
 ~~~toml
 [build-dependencies]
 gl_generator = "*"
+khronos_api = "0.0.6"
 
 [dependencies]
 gl_common = "*"
@@ -98,31 +99,33 @@ build = "build.rs"
 Create a `build.rs` to pull your specific version/API:
 
 ~~~rust
-extern crate gl_generator;    // <-- this is your build dependency
-extern crate khronos_api;    // included by gl_generator
+extern crate gl_generator;
+extern crate khronos_api;
 
-use std::os;
-use std::old_io::File;
+use std::env;
+use std::fs::File;
+use std::io::BufWriter;
+use std::path::Path;
 
 fn main() {
-    let dest = Path::new(os::getenv("OUT_DIR").unwrap());
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let dest = Path::new(&out_dir);
 
-    let mut file = File::create(&dest.join("gl_bindings.rs")).unwrap();
-
-    // This generates bindsings for OpenGL ES v3.1
+    let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                    gl_generator::registry::Ns::Gles2,
-                                    khronos_api::GL_XML,
-                                    vec![],
-                                    "3.1", "core", &mut file).unwrap();
+                                    gl_generator::registry::Ns::Gl,
+                                    gl_generator::Fallbacks::All,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
 }
+
 ~~~
 
 Then use it like this:
 
 ~~~rust
 mod gles {
-    include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
+    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }
 
 /*
@@ -135,7 +138,7 @@ fn main() {
 ~~~
 
 The `build.rs` file will generate all the OpenGL functions in a file named,
-`gl_bindings.rs` plus all enumerations, and all types in the `types` submodule.
+`bindings.rs` plus all enumerations, and all types in the `types` submodule.
 
 ### Arguments
 
@@ -154,6 +157,7 @@ The `build.rs` file will generate all the OpenGL functions in a file named,
   only include all functions supported by the
   requested version it self, while `"compatibility"` will include all the
   functions from previous versions as well.
+- The file to save the generated bindings to.
 
 ## Generator types
 
