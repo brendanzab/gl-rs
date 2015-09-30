@@ -2,7 +2,7 @@ example = []
 
 [package]
 name = "gl"
-version = "0.0.12"
+version = "0.1.0"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
@@ -14,7 +14,7 @@ repository = "https://github.com/bjz/gl-rs/"
 
 [build-dependencies.gl_generator]
 path = "../gl_generator"
-version = "*"
+version = "0.1.0"
 
 [build-dependencies.khronos_api]
 path = "../khronos_api"
@@ -22,10 +22,10 @@ version = "0.0.8"
 
 [dependencies.gl_common]
 path = "../gl_common"
-version = "0.0.4"
+version = "0.1.0"
 
 [dependencies]
-libc = "*"
+libc = "0.1"
 
 #[dev-dependencies.glfw]
 #git = "https://github.com/bjz/glfw-rs"
