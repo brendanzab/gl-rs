@@ -2,7 +2,7 @@ example = []
 
 [package]
 name = "gl"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
@@ -22,10 +22,10 @@ version = "0.0.8"
 
 [dependencies.gl_common]
 path = "../gl_common"
-version = "0.1.0"
+version = "0.2.0"
 
 [dependencies]
-libc = "0.1"
+libc = "0.2"
 
 #[dev-dependencies.glfw]
 #git = "https://github.com/bjz/glfw-rs"

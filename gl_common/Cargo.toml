@@ -1,9 +1,9 @@
 [package]
 name = "gl_common"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Pierre Krieger <pierre.krieger1708@gmail.com>"]
 description = "Common glue for libraries using gl-rs"
 license = "Apache-2.0"
 
 [dependencies]
-libc = "0.1"
+libc = "0.2"
