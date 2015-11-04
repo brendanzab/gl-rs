@@ -325,12 +325,12 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type GLint64EXT = i64;",
         "pub type GLuint64EXT = u64;",
 
-        "#[repr(C)] pub struct __GLsync;",
+        "pub enum __GLsync {}",
         "pub type GLsync = *const __GLsync;",
 
         // compatible with OpenCL cl_context
-        "#[repr(C)] pub struct _cl_context;",
-        "#[repr(C)] pub struct _cl_event;",
+        "pub enum _cl_context {}",
+        "pub enum _cl_event {}",
 
         "pub type GLDEBUGPROC = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
         "pub type GLDEBUGPROCARB = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
@@ -380,7 +380,7 @@ pub fn build_x_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         "pub type XID = super::__gl_imports::libc::c_ulong;",
         "pub type Bool = super::__gl_imports::libc::c_int;",       // Not sure if this is correct...
-        "#[repr(C)] pub struct Display;",
+        "pub enum Display {}",
     ].iter() {
         try!(writeln!(dest, "{}", l));
     }
@@ -392,7 +392,7 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         "pub type Font = XID;",
         "pub type Pixmap = XID;",
-        "pub type Visual = ();",   // TODO: not sure
+        "pub enum Visual {}",   // TODO: not sure
         "pub type VisualID = super::__gl_imports::libc::c_ulong;",   // TODO: not sure
         "pub type Window = XID;",
         "pub type GLXFBConfigID = XID;",
