@@ -82,7 +82,7 @@ fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> wh
             pub fn {name}({params}) -> {return_suffix};",
             symbol = super::gen_symbol_name(ns, &c.proto.ident),
             name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
+            params = super::gen_parameters(c, true, true).join(", "),
             return_suffix = super::gen_return_type(c)
         ));
     }

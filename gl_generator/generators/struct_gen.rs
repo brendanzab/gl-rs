@@ -138,7 +138,7 @@ fn write_struct<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()>
 
     for c in registry.cmd_iter() {
         if let Some(v) = registry.aliases.get(&c.proto.ident) {
-            try!(writeln!(dest, "/// Fallbacks: {}", v.connect(", ")));
+            try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
         }
         try!(writeln!(dest, "pub {name}: FnPtr,", name = c.proto.ident));
     }
@@ -182,7 +182,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
                 Some(fbs) => {
                     fbs.iter()
                        .map(|name| format!("\"{}\"", super::gen_symbol_name(ns, &name)))
-                       .collect::<Vec<_>>().connect(", ")
+                       .collect::<Vec<_>>().join(", ")
                 },
                 None => format!(""),
             },
@@ -214,10 +214,10 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
                     (self.{name}.f)({idents}) \
             }}",
             name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
-            typed_params = super::gen_parameters(c, false, true).connect(", "),
+            params = super::gen_parameters(c, true, true).join(", "),
+            typed_params = super::gen_parameters(c, false, true).join(", "),
             return_suffix = super::gen_return_type(c),
-            idents = super::gen_parameters(c, true, false).connect(", "),
+            idents = super::gen_parameters(c, true, false).join(", "),
         ))
     }
 

@@ -138,7 +138,7 @@ fn write_struct<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()>
 
     for c in registry.cmd_iter() {
         if let Some(v) = registry.aliases.get(&c.proto.ident) {
-            try!(writeln!(dest, "/// Fallbacks: {}", v.connect(", ")));
+            try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
         }
         try!(writeln!(dest, "pub {name}: FnPtr,", name = c.proto.ident));
     }
@@ -182,7 +182,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
                 Some(fbs) => {
                     fbs.iter()
                        .map(|name| format!("\"{}\"", super::gen_symbol_name(ns, &name)))
-                       .collect::<Vec<_>>().connect(", ")
+                       .collect::<Vec<_>>().join(", ")
                 },
                 None => format!(""),
             },
@@ -211,7 +211,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
         let typed_params = super::gen_parameters(c, false, true);
         let println = format!("println!(\"[OpenGL] {}({})\" {});",
                                 c.proto.ident,
-                                (0 .. idents.len()).map(|_| "{:?}".to_string()).collect::<Vec<_>>().connect(", "),
+                                (0 .. idents.len()).map(|_| "{:?}".to_string()).collect::<Vec<_>>().join(", "),
                                 idents.iter().zip(typed_params.iter())
                                       .map(|(name, ty)| {
                                           if ty.contains("GLDEBUGPROC") {
@@ -231,10 +231,10 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
                 r
             }}",
             name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
-            typed_params = typed_params.connect(", "),
+            params = super::gen_parameters(c, true, true).join(", "),
+            typed_params = typed_params.join(", "),
             return_suffix = super::gen_return_type(c),
-            idents = idents.connect(", "),
+            idents = idents.join(", "),
             println = println,
             print_err = if c.proto.ident != "GetError" && registry.cmd_iter().find(|c| c.proto.ident == "GetError").is_some() {
                 format!(r#"match __gl_imports::mem::transmute::<_, extern "system" fn() -> u32>
