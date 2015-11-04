@@ -101,7 +101,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     for c in registry.cmd_iter() {
         if let Some(v) = registry.aliases.get(&c.proto.ident) {
-            try!(writeln!(dest, "/// Fallbacks: {}", v.connect(", ")));
+            try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
         }
 
         try!(writeln!(dest,
@@ -111,10 +111,10 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
                     (storage::{name}.f)({idents}) \
             }}",
             name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
-            typed_params = super::gen_parameters(c, false, true).connect(", "),
+            params = super::gen_parameters(c, true, true).join(", "),
+            typed_params = super::gen_parameters(c, false, true).join(", "),
             return_suffix = super::gen_return_type(c),
-            idents = super::gen_parameters(c, true, false).connect(", "),
+            idents = super::gen_parameters(c, true, false).join(", "),
         ));
     }
 
@@ -176,7 +176,7 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()
         let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
                 let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, &name[..]))).collect::<Vec<_>>();
-                format!("&[{}]", names.connect(", "))
+                format!("&[{}]", names.join(", "))
             }, None => "&[]".to_string(),
         };
         let fnname = &c.proto.ident[..];

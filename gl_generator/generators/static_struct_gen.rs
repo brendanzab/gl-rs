@@ -104,9 +104,9 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
                 {name}({idents})
             }}",
             name = c.proto.ident,
-            typed_params = super::gen_parameters(c, true, true).connect(", "),
+            typed_params = super::gen_parameters(c, true, true).join(", "),
             return_suffix = super::gen_return_type(c),
-            idents = super::gen_parameters(c, true, false).connect(", "),
+            idents = super::gen_parameters(c, true, false).join(", "),
         ));
     }
 
@@ -129,7 +129,7 @@ fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> wh
             "#[link_name=\"{symbol}\"] fn {name}({params}) -> {return_suffix};",
             symbol = super::gen_symbol_name(ns, &c.proto.ident),
             name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).connect(", "),
+            params = super::gen_parameters(c, true, true).join(", "),
             return_suffix = super::gen_return_type(c)
         ));
     }
