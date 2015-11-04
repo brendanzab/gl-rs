@@ -40,7 +40,6 @@ impl super::Generator for GlobalGenerator {
 fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
         mod __gl_imports {{
-            extern crate gl_common;
             extern crate libc;
             pub use std::mem;
         }}
@@ -240,16 +239,6 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
     }
 
     writeln!(dest, "
-        }}
-
-        /// Load each OpenGL symbol using a custom load function.
-        ///
-        /// ~~~ignore
-        /// gl::load(&glfw);
-        /// ~~~
-        #[allow(dead_code)]
-        pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) {{
-            load_with(|name| loader.get_proc_addr(name));
         }}
     ")
 }
