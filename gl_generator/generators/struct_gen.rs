@@ -37,7 +37,6 @@ impl super::Generator for StructGenerator {
 fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
         mod __gl_imports {{
-            extern crate gl_common;
             extern crate libc;
             pub use std::mem;
             pub use std::marker::Send;
@@ -191,19 +190,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
 
     try!(writeln!(dest,
             "}}
-        }}
-
-        /// Load each OpenGL symbol using a custom load function.
-        ///
-        /// ~~~ignore
-        /// let gl = Gl::load(&glfw);
-        /// ~~~
-        #[allow(dead_code)]
-        #[allow(unused_variables)]
-        pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) -> {ns} {{
-            {ns}::load_with(|name| loader.get_proc_addr(name))
-        }}",
-        ns = ns.fmt_struct_name()
+        }}"
     ));
 
     for c in registry.cmd_iter() {
