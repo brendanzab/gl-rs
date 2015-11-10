@@ -16,10 +16,10 @@ fn symbols_exist() { unsafe {
 
 #[test]
 fn fallback_works() {
-    fn loader(name: &str) -> *const libc::c_void {
+    fn loader(name: &str) -> *const () {
         match name {
-            "glGenFramebuffers" => 0 as *const libc::c_void,
-            "glGenFramebuffersEXT" => 42 as *const libc::c_void,
+            "glGenFramebuffers" => 0 as *const (),
+            "glGenFramebuffersEXT" => 42 as *const (),
             name => panic!("test tried to load {} unexpectedly!", name)
         }
     };
