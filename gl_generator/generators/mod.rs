@@ -144,7 +144,7 @@ pub fn gen_return_type(cmd: &Cmd) -> String {
     let ty = ty::to_rust_ty(&cmd.proto.ty);
 
     // ... but there is one more step: if the Rust type is `c_void`, we replace it with `()`
-    if ty == "__gl_imports::libc::c_void" {
+    if ty == "()" {
         return "()".to_string();
     }
 

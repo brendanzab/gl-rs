@@ -11,6 +11,3 @@ version = "0.2"
 [build-dependencies.khronos_api]
 path = "../khronos_api"
 version = "0.0.8"
-
-[dependencies]
-libc = "0.2"

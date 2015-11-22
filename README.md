@@ -84,10 +84,6 @@ Add this to your `Cargo.toml`:
 [build-dependencies]
 gl_generator = "*"
 khronos_api = "0.0.6"
-
-[dependencies]
-gl_common = "*"
-libc = "*"
 ~~~
 
 Under the `[package]` section, add:
