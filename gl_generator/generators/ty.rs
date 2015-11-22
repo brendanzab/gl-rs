@@ -73,8 +73,8 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "GLushort *"                => "*mut types::GLushort",
         "GLvoid *"                  => "*mut types::GLvoid",
         "GLvoid **"                 => "*const *mut types::GLvoid",
-        "void *"                    => "*mut ()",
-        "void **"                   => "*const *mut ()",
+        "void *"                    => "*mut __gl_imports::raw::c_void",
+        "void **"                   => "*const *mut __gl_imports::raw::c_void",
         "const GLboolean *"         => "*const types::GLboolean",
         "const GLbyte *"            => "*const types::GLbyte",
         "const GLchar *"            => "*const types::GLchar",
@@ -100,9 +100,9 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "const GLushort *"          => "*const types::GLushort",
         "const GLvdpauSurfaceNV *"  => "*const types::GLvdpauSurfaceNV",
         "const GLvoid *"            => "*const types::GLvoid",
-        "const void *"              => "*const ()",
-        "const void **"             => "*const *const ()",
-        "const void *const*"        => "*const *const ()",
+        "const void *"              => "*const __gl_imports::raw::c_void",
+        "const void **"             => "*const *const __gl_imports::raw::c_void",
+        "const void *const*"        => "*const *const __gl_imports::raw::c_void",
         "const GLboolean **"        => "*const *const types::GLboolean",
         "const GLchar **"           => "*const *const types::GLchar",
         "const GLcharARB **"        => "*const *const types::GLcharARB",
@@ -161,14 +161,14 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         // "const GLubyte *"           => "*GLubyte",
         "const char *"              => "*const __gl_imports::raw::c_char",
         "const int *"               => "*const __gl_imports::raw::c_int",
-        // "const void *"              => "*const ()",
+        // "const void *"              => "*const __gl_imports::raw::c_void",
         "int *"                     => "*mut __gl_imports::raw::c_int",
         "int32_t *"                 => "*mut i32",
         "int64_t *"                 => "*mut i64",
         "long *"                    => "*mut __gl_imports::raw::c_long",
         "unsigned int *"            => "*mut __gl_imports::raw::c_uint",
         "unsigned long *"           => "*mut __gl_imports::raw::c_ulong",
-        // "void *"                    => "*mut ()",
+        // "void *"                    => "*mut __gl_imports::raw::c_void",
 
         // wgl.xml types
         "BOOL"                      => "types::BOOL",
@@ -232,7 +232,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "float *"                   => "*mut __gl_imports::raw::c_float",
         // "int *"                     => "*mut __gl_imports::raw::c_int",
         // "unsigned long *"           => "*mut __gl_imports::raw::c_ulong",
-        // "void *"                    => "*mut ()",
+        // "void *"                    => "*mut __gl_imports::raw::c_void",
 
         // elx.xml types
         "khronos_utime_nanoseconds_t"   => "types::khronos_utime_nanoseconds_t",
@@ -303,11 +303,11 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type GLclampf = super::__gl_imports::raw::c_float;",
         "pub type GLdouble = super::__gl_imports::raw::c_double;",
         "pub type GLclampd = super::__gl_imports::raw::c_double;",
-        "pub type GLeglImageOES = *const ();",
+        "pub type GLeglImageOES = *const super::__gl_imports::raw::c_void;",
         "pub type GLchar = super::__gl_imports::raw::c_char;",
         "pub type GLcharARB = super::__gl_imports::raw::c_char;",
 
-        "#[cfg(target_os = \"macos\")] pub type GLhandleARB = *const ();",
+        "#[cfg(target_os = \"macos\")] pub type GLhandleARB = *const super::__gl_imports::raw::c_void;",
         "#[cfg(not(target_os = \"macos\"))] pub type GLhandleARB = super::__gl_imports::raw::c_uint;",
 
         "pub type GLhalfARB = super::__gl_imports::raw::c_ushort;",
@@ -332,9 +332,9 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub enum _cl_context {}",
         "pub enum _cl_event {}",
 
-        "pub type GLDEBUGPROC = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut ());",
-        "pub type GLDEBUGPROCARB = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut ());",
-        "pub type GLDEBUGPROCKHR = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut ());",
+        "pub type GLDEBUGPROC = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
+        "pub type GLDEBUGPROCARB = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
+        "pub type GLDEBUGPROCKHR = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
 
         // GLES 1 types
         // "pub type GLclampx = i32;",
@@ -366,7 +366,7 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         // GLES 2 types (none currently)
 
         // Vendor extension types
-        "pub type GLDEBUGPROCAMD = extern \"system\" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut ());",
+        "pub type GLDEBUGPROCAMD = extern \"system\" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
         "pub type GLhalfNV = super::__gl_imports::raw::c_ushort;",
         "pub type GLvdpauSurfaceNV = GLintptr;",
     ].iter() {
@@ -396,9 +396,9 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type VisualID = super::__gl_imports::raw::c_ulong;",   // TODO: not sure
         "pub type Window = XID;",
         "pub type GLXFBConfigID = XID;",
-        "pub type GLXFBConfig = *const ();",
+        "pub type GLXFBConfig = *const super::__gl_imports::raw::c_void;",
         "pub type GLXContextID = XID;",
-        "pub type GLXContext = *const ();",
+        "pub type GLXContext = *const super::__gl_imports::raw::c_void;",
         "pub type GLXPixmap = XID;",
         "pub type GLXDrawable = XID;",
         "pub type GLXWindow = XID;",
@@ -408,7 +408,7 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type GLXVideoDeviceNV = super::__gl_imports::raw::c_int;",
         "pub type GLXVideoSourceSGIX = XID;",
         "pub type GLXFBConfigIDSGIX = XID;",
-        "pub type GLXFBConfigSGIX = *const ();",
+        "pub type GLXFBConfigSGIX = *const super::__gl_imports::raw::c_void;",
         "pub type GLXPbufferSGIX = XID;",
 
         "
@@ -554,10 +554,10 @@ pub fn build_win_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type FLOAT = super::__gl_imports::raw::c_float;",
         "pub type HDC = HANDLE;",
         "pub type HENHMETAFILE = HANDLE;",
-        "pub type HGLRC = *const ();",
+        "pub type HGLRC = *const super::__gl_imports::raw::c_void;",
         "pub type INT = super::__gl_imports::raw::c_int;",
-        "pub type PVOID = *const ();",
-        "pub type LPVOID = *const ();",
+        "pub type PVOID = *const super::__gl_imports::raw::c_void;",
+        "pub type LPVOID = *const super::__gl_imports::raw::c_void;",
         "pub type PROC = extern \"system\" fn();",     // Not sure about this one :/
         "
             #[repr(C)]
@@ -669,13 +669,13 @@ pub fn build_wgl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // From WinNT.h,
         // #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
-        "pub type HPBUFFERARB = *const ();",
-        "pub type HPBUFFEREXT = *const ();",
-        "pub type HVIDEOOUTPUTDEVICENV = *const ();",
-        "pub type HPVIDEODEV = *const ();",
-        "pub type HPGPUNV = *const ();",
-        "pub type HGPUNV = *const ();",
-        "pub type HVIDEOINPUTDEVICENV = *const ();",
+        "pub type HPBUFFERARB = *const super::__gl_imports::raw::c_void;",
+        "pub type HPBUFFEREXT = *const super::__gl_imports::raw::c_void;",
+        "pub type HVIDEOOUTPUTDEVICENV = *const super::__gl_imports::raw::c_void;",
+        "pub type HPVIDEODEV = *const super::__gl_imports::raw::c_void;",
+        "pub type HPGPUNV = *const super::__gl_imports::raw::c_void;",
+        "pub type HGPUNV = *const super::__gl_imports::raw::c_void;",
+        "pub type HVIDEOINPUTDEVICENV = *const super::__gl_imports::raw::c_void;",
 
         "
             #[repr(C)]
@@ -719,33 +719,33 @@ pub fn build_egl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type EGLenum = super::__gl_imports::raw::c_uint;",
         "pub type EGLAttribKHR = isize;",
         "pub type EGLAttrib = isize;",
-        "pub type EGLConfig = *const ();",
-        "pub type EGLContext = *const ();",
-        "pub type EGLDeviceEXT = *const ();",
-        "pub type EGLDisplay = *const ();",
-        "pub type EGLSurface = *const ();",
-        "pub type EGLClientBuffer = *const ();",
+        "pub type EGLConfig = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLContext = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLDeviceEXT = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLDisplay = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLSurface = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLClientBuffer = *const super::__gl_imports::raw::c_void;",
         "pub type __eglMustCastToProperFunctionPointerType = extern \"system\" fn() -> ();",
-        "pub type EGLImageKHR = *const ();",
-        "pub type EGLImage = *const ();",
-        "pub type EGLSyncKHR = *const ();",
-        "pub type EGLSync = *const ();",
+        "pub type EGLImageKHR = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLImage = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLSyncKHR = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLSync = *const super::__gl_imports::raw::c_void;",
         "pub type EGLTimeKHR = khronos_utime_nanoseconds_t;",
         "pub type EGLTime = khronos_utime_nanoseconds_t;",
-        "pub type EGLSyncNV = *const ();",
+        "pub type EGLSyncNV = *const super::__gl_imports::raw::c_void;",
         "pub type EGLTimeNV = khronos_utime_nanoseconds_t;",
         "pub type EGLuint64NV = khronos_utime_nanoseconds_t;",
-        "pub type EGLStreamKHR = *const ();",
+        "pub type EGLStreamKHR = *const super::__gl_imports::raw::c_void;",
         "pub type EGLuint64KHR = khronos_uint64_t;",
         "pub type EGLNativeFileDescriptorKHR = super::__gl_imports::raw::c_int;",
         "pub type EGLsizeiANDROID = khronos_ssize_t;",
-        "pub type EGLSetBlobFuncANDROID = extern \"system\" fn(*const (), EGLsizeiANDROID, *const (), EGLsizeiANDROID) -> ();",
-        "pub type EGLGetBlobFuncANDROID = extern \"system\" fn(*const (), EGLsizeiANDROID, *mut (), EGLsizeiANDROID) -> EGLsizeiANDROID;",
+        "pub type EGLSetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::raw::c_void, EGLsizeiANDROID, *const super::__gl_imports::raw::c_void, EGLsizeiANDROID) -> ();",
+        "pub type EGLGetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::raw::c_void, EGLsizeiANDROID, *mut super::__gl_imports::raw::c_void, EGLsizeiANDROID) -> EGLsizeiANDROID;",
 
         "
             #[repr(C)]
             pub struct EGLClientPixmapHI {
-                pData: *const (),
+                pData: *const super::__gl_imports::raw::c_void,
                 iWidth: EGLint,
                 iHeight: EGLint,
                 iStride: EGLint,

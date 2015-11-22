@@ -142,12 +142,6 @@ pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<Str
 pub fn gen_return_type(cmd: &Cmd) -> String {
     // turn the return type into a Rust type
     let ty = ty::to_rust_ty(&cmd.proto.ty);
-
-    // ... but there is one more step: if the Rust type is `c_void`, we replace it with `()`
-    if ty == "()" {
-        return "()".to_string();
-    }
-
     ty.to_string()
 }
 
