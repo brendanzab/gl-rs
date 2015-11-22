@@ -331,17 +331,17 @@ fn build_egl_symbols() -> &'static str {
     "
         #![allow(non_camel_case_types)]
 
-        use libc;
+        use std::os::raw;
 
-        pub type khronos_utime_nanoseconds_t = libc::c_int;
-        pub type khronos_uint64_t = libc::uint64_t;
-        pub type khronos_ssize_t = libc::ssize_t;
-        pub type EGLNativeDisplayType = *const libc::c_void;
-        pub type EGLNativePixmapType = *const libc::c_void;
-        pub type EGLNativeWindowType = *const libc::c_void;
-        pub type EGLint = libc::c_int;
-        pub type NativeDisplayType = *const libc::c_void;
-        pub type NativePixmapType = *const libc::c_void;
-        pub type NativeWindowType = *const libc::c_void;
+        pub type khronos_utime_nanoseconds_t = raw::c_int;
+        pub type khronos_uint64_t = u64;
+        pub type khronos_ssize_t = isize;
+        pub type EGLNativeDisplayType = *const raw::c_void;
+        pub type EGLNativePixmapType = *const raw::c_void;
+        pub type EGLNativeWindowType = *const raw::c_void;
+        pub type EGLint = raw::c_int;
+        pub type NativeDisplayType = *const raw::c_void;
+        pub type NativePixmapType = *const raw::c_void;
+        pub type NativeWindowType = *const raw::c_void;
     "
 }
