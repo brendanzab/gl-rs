@@ -36,8 +36,8 @@ impl super::Generator for StaticStructGenerator {
 fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
         mod __gl_imports {{
-            extern crate libc;
             pub use std::mem;
+            pub use std::os::raw;
         }}
     "#)
 }

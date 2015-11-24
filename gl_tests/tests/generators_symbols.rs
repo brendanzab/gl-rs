@@ -1,4 +1,4 @@
-extern crate libc;
+use std::os::raw;
 
 include!(concat!(env!("OUT_DIR"), "/test_gen_symbols.rs"));
 
@@ -6,20 +6,20 @@ include!(concat!(env!("OUT_DIR"), "/test_gen_symbols.rs"));
 #[ignore]
 fn test_gl() { unsafe {
     gl::Clear(gl::COLOR_BUFFER_BIT);
-    let _: libc::c_uint = gl::CreateProgram();
+    let _: raw::c_uint = gl::CreateProgram();
     gl::CompileShader(5);
 
     gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
         std::ptr::null_mut());
 
-    let _: *mut libc::c_void = gl::MapBuffer(0, 0);
+    let _: *mut raw::c_void = gl::MapBuffer(0, 0);
 }}
 
 #[test]
 #[ignore]
 fn test_gles() { unsafe {
     gles::Clear(gles::COLOR_BUFFER_BIT);
-    let _: libc::c_uint = gles::CreateProgram();
+    let _: raw::c_uint = gles::CreateProgram();
     gles::CompileShader(5);
 }}
 

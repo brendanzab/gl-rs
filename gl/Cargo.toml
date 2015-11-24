@@ -20,8 +20,5 @@ version = "0.2.0"
 path = "../khronos_api"
 version = "0.0.8"
 
-[dependencies]
-libc = "0.2"
-
 #[dev-dependencies.glfw]
 #git = "https://github.com/bjz/glfw-rs"

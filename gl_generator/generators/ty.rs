@@ -52,7 +52,7 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "GLuint64EXT"               => "types::GLuint64EXT",
         "GLushort"                  => "types::GLushort",
         "GLvdpauSurfaceNV"          => "types::GLvdpauSurfaceNV",
-        "void "                     => "__gl_imports::libc::c_void",
+        "void "                     => "()",
         "GLboolean *"               => "*mut types::GLboolean",
         "GLchar *"                  => "*mut types::GLchar",
         "GLcharARB *"               => "*mut types::GLcharARB",
@@ -73,8 +73,8 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "GLushort *"                => "*mut types::GLushort",
         "GLvoid *"                  => "*mut types::GLvoid",
         "GLvoid **"                 => "*const *mut types::GLvoid",
-        "void *"                    => "*mut __gl_imports::libc::c_void",
-        "void **"                   => "*const *mut __gl_imports::libc::c_void",
+        "void *"                    => "*mut __gl_imports::raw::c_void",
+        "void **"                   => "*const *mut __gl_imports::raw::c_void",
         "const GLboolean *"         => "*const types::GLboolean",
         "const GLbyte *"            => "*const types::GLbyte",
         "const GLchar *"            => "*const types::GLchar",
@@ -100,9 +100,9 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "const GLushort *"          => "*const types::GLushort",
         "const GLvdpauSurfaceNV *"  => "*const types::GLvdpauSurfaceNV",
         "const GLvoid *"            => "*const types::GLvoid",
-        "const void *"              => "*const __gl_imports::libc::c_void",
-        "const void **"             => "*const *const __gl_imports::libc::c_void",
-        "const void *const*"        => "*const *const __gl_imports::libc::c_void",
+        "const void *"              => "*const __gl_imports::raw::c_void",
+        "const void **"             => "*const *const __gl_imports::raw::c_void",
+        "const void *const*"        => "*const *const __gl_imports::raw::c_void",
         "const GLboolean **"        => "*const *const types::GLboolean",
         "const GLchar **"           => "*const *const types::GLchar",
         "const GLcharARB **"        => "*const *const types::GLcharARB",
@@ -142,12 +142,12 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "Window"                    => "types::Window",
         "__GLXextFuncPtr"           => "types::__GLXextFuncPtr",
         "const GLXContext"          => "const types::GLXContext",
-        "float "                    => "__gl_imports::libc::c_float",
-        "int "                      => "__gl_imports::libc::c_int",
+        "float "                    => "__gl_imports::raw::c_float",
+        "int "                      => "__gl_imports::raw::c_int",
         "int64_t"                   => "i64",
-        "unsigned int "             => "__gl_imports::libc::c_uint",
-        "unsigned long "            => "__gl_imports::libc::c_ulong",
-        // "void "                     => "__gl_imports::libc::c_void",
+        "unsigned int "             => "__gl_imports::raw::c_uint",
+        "unsigned long "            => "__gl_imports::raw::c_ulong",
+        // "void "                     => "()",
         "DMparams *"                => "*mut types::DMparams",
         "Display *"                 => "*mut types::Display",
         "GLXFBConfig *"             => "*mut types::GLXFBConfig",
@@ -159,16 +159,16 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         // "GLuint *"                  => "*mut types::GLuint",
         "XVisualInfo *"             => "*mut types::XVisualInfo",
         // "const GLubyte *"           => "*GLubyte",
-        "const char *"              => "*const __gl_imports::libc::c_char",
-        "const int *"               => "*const __gl_imports::libc::c_int",
-        // "const void *"              => "*const __gl_imports::libc::c_void",
-        "int *"                     => "*mut __gl_imports::libc::c_int",
+        "const char *"              => "*const __gl_imports::raw::c_char",
+        "const int *"               => "*const __gl_imports::raw::c_int",
+        // "const void *"              => "*const __gl_imports::raw::c_void",
+        "int *"                     => "*mut __gl_imports::raw::c_int",
         "int32_t *"                 => "*mut i32",
         "int64_t *"                 => "*mut i64",
-        "long *"                    => "*mut __gl_imports::libc::c_long",
-        "unsigned int *"            => "*mut __gl_imports::libc::c_uint",
-        "unsigned long *"           => "*mut __gl_imports::libc::c_ulong",
-        // "void *"                    => "*mut __gl_imports::libc::c_void",
+        "long *"                    => "*mut __gl_imports::raw::c_long",
+        "unsigned int *"            => "*mut __gl_imports::raw::c_uint",
+        "unsigned long *"           => "*mut __gl_imports::raw::c_ulong",
+        // "void *"                    => "*mut __gl_imports::raw::c_void",
 
         // wgl.xml types
         "BOOL"                      => "types::BOOL",
@@ -201,9 +201,9 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "PROC"                      => "types::PROC",
         "UINT"                      => "types::UINT",
         "VOID"                      => "types::VOID",
-        // "int "                      => "__gl_imports::libc::c_int",
-        // "unsigned int "             => "__gl_imports::libc::c_uint",
-        // "void "                     => "__gl_imports::libc::c_void",
+        // "int "                      => "__gl_imports::raw::c_int",
+        // "unsigned int "             => "__gl_imports::raw::c_uint",
+        // "void "                     => "()",
         "BOOL *"                    => "*mut types::BOOL",
         "DWORD *"                   => "*mut types::DWORD",
         "FLOAT *"                   => "*mut types::FLOAT",
@@ -227,12 +227,12 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
         "const LPVOID *"            => "*const types::LPVOID",
         "const PIXELFORMATDESCRIPTOR *" => "*const types::IXELFORMATDESCRIPTOR",
         "const USHORT *"            => "*const types::USHORT",
-        // "const char *"              => "*const __gl_imports::libc::c_char",
-        // "const int *"               => "*const __gl_imports::libc::c_int",
-        "float *"                   => "*mut __gl_imports::libc::c_float",
-        // "int *"                     => "*mut __gl_imports::libc::c_int",
-        // "unsigned long *"           => "*mut __gl_imports::libc::c_ulong",
-        // "void *"                    => "*mut __gl_imports::libc::c_void",
+        // "const char *"              => "*const __gl_imports::raw::c_char",
+        // "const int *"               => "*const __gl_imports::raw::c_int",
+        "float *"                   => "*mut __gl_imports::raw::c_float",
+        // "int *"                     => "*mut __gl_imports::raw::c_int",
+        // "unsigned long *"           => "*mut __gl_imports::raw::c_ulong",
+        // "void *"                    => "*mut __gl_imports::raw::c_void",
 
         // elx.xml types
         "khronos_utime_nanoseconds_t"   => "types::khronos_utime_nanoseconds_t",
@@ -287,41 +287,41 @@ pub fn to_rust_ty(ty: &str) -> &'static str {
 pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // Common types from OpenGL 1.1
-        "pub type GLenum = super::__gl_imports::libc::c_uint;",
-        "pub type GLboolean = super::__gl_imports::libc::c_uchar;",
-        "pub type GLbitfield = super::__gl_imports::libc::c_uint;",
-        "pub type GLvoid = super::__gl_imports::libc::c_void;",
-        "pub type GLbyte = super::__gl_imports::libc::c_char;",
-        "pub type GLshort = super::__gl_imports::libc::c_short;",
-        "pub type GLint = super::__gl_imports::libc::c_int;",
-        "pub type GLclampx = super::__gl_imports::libc::c_int;",
-        "pub type GLubyte = super::__gl_imports::libc::c_uchar;",
-        "pub type GLushort = super::__gl_imports::libc::c_ushort;",
-        "pub type GLuint = super::__gl_imports::libc::c_uint;",
-        "pub type GLsizei = super::__gl_imports::libc::c_int;",
-        "pub type GLfloat = super::__gl_imports::libc::c_float;",
-        "pub type GLclampf = super::__gl_imports::libc::c_float;",
-        "pub type GLdouble = super::__gl_imports::libc::c_double;",
-        "pub type GLclampd = super::__gl_imports::libc::c_double;",
-        "pub type GLeglImageOES = *const super::__gl_imports::libc::c_void;",
-        "pub type GLchar = super::__gl_imports::libc::c_char;",
-        "pub type GLcharARB = super::__gl_imports::libc::c_char;",
+        "pub type GLenum = super::__gl_imports::raw::c_uint;",
+        "pub type GLboolean = super::__gl_imports::raw::c_uchar;",
+        "pub type GLbitfield = super::__gl_imports::raw::c_uint;",
+        "pub type GLvoid = ();",
+        "pub type GLbyte = super::__gl_imports::raw::c_char;",
+        "pub type GLshort = super::__gl_imports::raw::c_short;",
+        "pub type GLint = super::__gl_imports::raw::c_int;",
+        "pub type GLclampx = super::__gl_imports::raw::c_int;",
+        "pub type GLubyte = super::__gl_imports::raw::c_uchar;",
+        "pub type GLushort = super::__gl_imports::raw::c_ushort;",
+        "pub type GLuint = super::__gl_imports::raw::c_uint;",
+        "pub type GLsizei = super::__gl_imports::raw::c_int;",
+        "pub type GLfloat = super::__gl_imports::raw::c_float;",
+        "pub type GLclampf = super::__gl_imports::raw::c_float;",
+        "pub type GLdouble = super::__gl_imports::raw::c_double;",
+        "pub type GLclampd = super::__gl_imports::raw::c_double;",
+        "pub type GLeglImageOES = *const super::__gl_imports::raw::c_void;",
+        "pub type GLchar = super::__gl_imports::raw::c_char;",
+        "pub type GLcharARB = super::__gl_imports::raw::c_char;",
 
-        "#[cfg(target_os = \"macos\")] pub type GLhandleARB = *const super::__gl_imports::libc::c_void;",
-        "#[cfg(not(target_os = \"macos\"))] pub type GLhandleARB = super::__gl_imports::libc::c_uint;",
+        "#[cfg(target_os = \"macos\")] pub type GLhandleARB = *const super::__gl_imports::raw::c_void;",
+        "#[cfg(not(target_os = \"macos\"))] pub type GLhandleARB = super::__gl_imports::raw::c_uint;",
 
-        "pub type GLhalfARB = super::__gl_imports::libc::c_ushort;",
-        "pub type GLhalf = super::__gl_imports::libc::c_ushort;",
+        "pub type GLhalfARB = super::__gl_imports::raw::c_ushort;",
+        "pub type GLhalf = super::__gl_imports::raw::c_ushort;",
 
         // Must be 32 bits
         "pub type GLfixed = GLint;",
 
-        "pub type GLintptr = super::__gl_imports::libc::ptrdiff_t;",
-        "pub type GLsizeiptr = super::__gl_imports::libc::ptrdiff_t;",
+        "pub type GLintptr = isize;",
+        "pub type GLsizeiptr = isize;",
         "pub type GLint64 = i64;",
         "pub type GLuint64 = u64;",
-        "pub type GLintptrARB = super::__gl_imports::libc::ptrdiff_t;",
-        "pub type GLsizeiptrARB = super::__gl_imports::libc::ptrdiff_t;",
+        "pub type GLintptrARB = isize;",
+        "pub type GLsizeiptrARB = isize;",
         "pub type GLint64EXT = i64;",
         "pub type GLuint64EXT = u64;",
 
@@ -332,9 +332,9 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub enum _cl_context {}",
         "pub enum _cl_event {}",
 
-        "pub type GLDEBUGPROC = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
-        "pub type GLDEBUGPROCARB = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
-        "pub type GLDEBUGPROCKHR = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
+        "pub type GLDEBUGPROC = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
+        "pub type GLDEBUGPROCARB = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
+        "pub type GLDEBUGPROCKHR = extern \"system\" fn(source: GLenum, gltype: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
 
         // GLES 1 types
         // "pub type GLclampx = i32;",
@@ -366,8 +366,8 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         // GLES 2 types (none currently)
 
         // Vendor extension types
-        "pub type GLDEBUGPROCAMD = extern \"system\" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::libc::c_void);",
-        "pub type GLhalfNV = super::__gl_imports::libc::c_ushort;",
+        "pub type GLDEBUGPROCAMD = extern \"system\" fn(id: GLuint, category: GLenum, severity: GLenum, length: GLsizei, message: *const GLchar, userParam: *mut super::__gl_imports::raw::c_void);",
+        "pub type GLhalfNV = super::__gl_imports::raw::c_ushort;",
         "pub type GLvdpauSurfaceNV = GLintptr;",
     ].iter() {
         try!(writeln!(dest, "{}", l));
@@ -378,8 +378,8 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 
 pub fn build_x_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
-        "pub type XID = super::__gl_imports::libc::c_ulong;",
-        "pub type Bool = super::__gl_imports::libc::c_int;",       // Not sure if this is correct...
+        "pub type XID = super::__gl_imports::raw::c_ulong;",
+        "pub type Bool = super::__gl_imports::raw::c_int;",       // Not sure if this is correct...
         "pub enum Display {}",
     ].iter() {
         try!(writeln!(dest, "{}", l));
@@ -393,22 +393,22 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type Font = XID;",
         "pub type Pixmap = XID;",
         "pub enum Visual {}",   // TODO: not sure
-        "pub type VisualID = super::__gl_imports::libc::c_ulong;",   // TODO: not sure
+        "pub type VisualID = super::__gl_imports::raw::c_ulong;",   // TODO: not sure
         "pub type Window = XID;",
         "pub type GLXFBConfigID = XID;",
-        "pub type GLXFBConfig = *const super::__gl_imports::libc::c_void;",
+        "pub type GLXFBConfig = *const super::__gl_imports::raw::c_void;",
         "pub type GLXContextID = XID;",
-        "pub type GLXContext = *const super::__gl_imports::libc::c_void;",
+        "pub type GLXContext = *const super::__gl_imports::raw::c_void;",
         "pub type GLXPixmap = XID;",
         "pub type GLXDrawable = XID;",
         "pub type GLXWindow = XID;",
         "pub type GLXPbuffer = XID;",
         "pub type __GLXextFuncPtr = extern \"system\" fn();",
         "pub type GLXVideoCaptureDeviceNV = XID;",
-        "pub type GLXVideoDeviceNV = super::__gl_imports::libc::c_int;",
+        "pub type GLXVideoDeviceNV = super::__gl_imports::raw::c_int;",
         "pub type GLXVideoSourceSGIX = XID;",
         "pub type GLXFBConfigIDSGIX = XID;",
-        "pub type GLXFBConfigSGIX = *const super::__gl_imports::libc::c_void;",
+        "pub type GLXFBConfigSGIX = *const super::__gl_imports::raw::c_void;",
         "pub type GLXPbufferSGIX = XID;",
 
         "
@@ -416,45 +416,45 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
             pub struct XVisualInfo {
                 pub visual: *mut Visual,
                 pub visualid: VisualID,
-                pub screen: super::__gl_imports::libc::c_int,
-                pub depth: super::__gl_imports::libc::c_int,
-                pub class: super::__gl_imports::libc::c_int,
-                pub red_mask: super::__gl_imports::libc::c_ulong,
-                pub green_mask: super::__gl_imports::libc::c_ulong,
-                pub blue_mask: super::__gl_imports::libc::c_ulong,
-                pub colormap_size: super::__gl_imports::libc::c_int,
-                pub bits_per_rgb: super::__gl_imports::libc::c_int,
+                pub screen: super::__gl_imports::raw::c_int,
+                pub depth: super::__gl_imports::raw::c_int,
+                pub class: super::__gl_imports::raw::c_int,
+                pub red_mask: super::__gl_imports::raw::c_ulong,
+                pub green_mask: super::__gl_imports::raw::c_ulong,
+                pub blue_mask: super::__gl_imports::raw::c_ulong,
+                pub colormap_size: super::__gl_imports::raw::c_int,
+                pub bits_per_rgb: super::__gl_imports::raw::c_int,
             }
         ",
 
         "
             #[repr(C)]
             pub struct GLXPbufferClobberEvent {
-                pub event_type: super::__gl_imports::libc::c_int,          // GLX_DAMAGED or GLX_SAVED
-                pub draw_type: super::__gl_imports::libc::c_int,           // GLX_WINDOW or GLX_PBUFFER
-                pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
+                pub event_type: super::__gl_imports::raw::c_int,          // GLX_DAMAGED or GLX_SAVED
+                pub draw_type: super::__gl_imports::raw::c_int,           // GLX_WINDOW or GLX_PBUFFER
+                pub serial: super::__gl_imports::raw::c_ulong,            // # of last request processed by server
                 pub send_event: Bool,           // true if this came for SendEvent request
                 pub display: *const Display,          // display the event was read from
                 pub drawable: GLXDrawable,      // XID of Drawable
-                pub buffer_mask: super::__gl_imports::libc::c_uint,        // mask indicating which buffers are affected
-                pub aux_buffer: super::__gl_imports::libc::c_uint,         // which aux buffer was affected
-                pub x: super::__gl_imports::libc::c_int,
-                pub y: super::__gl_imports::libc::c_int,
-                pub width: super::__gl_imports::libc::c_int,
-                pub height: super::__gl_imports::libc::c_int,
-                pub count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more
+                pub buffer_mask: super::__gl_imports::raw::c_uint,        // mask indicating which buffers are affected
+                pub aux_buffer: super::__gl_imports::raw::c_uint,         // which aux buffer was affected
+                pub x: super::__gl_imports::raw::c_int,
+                pub y: super::__gl_imports::raw::c_int,
+                pub width: super::__gl_imports::raw::c_int,
+                pub height: super::__gl_imports::raw::c_int,
+                pub count: super::__gl_imports::raw::c_int,               // if nonzero, at least this many more
             }
         ",
 
         "
             #[repr(C)]
             pub struct GLXBufferSwapComplete {
-                pub type_: super::__gl_imports::libc::c_int,
-                pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
+                pub type_: super::__gl_imports::raw::c_int,
+                pub serial: super::__gl_imports::raw::c_ulong,            // # of last request processed by server
                 pub send_event: Bool,           // true if this came from a SendEvent request
                 pub display: *const Display,          // Display the event was read from
                 pub drawable: GLXDrawable,      // drawable on which event was requested in event mask
-                pub event_type: super::__gl_imports::libc::c_int,
+                pub event_type: super::__gl_imports::raw::c_int,
                 pub ust: i64,
                 pub msc: i64,
                 pub sbc: i64,
@@ -472,63 +472,63 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "
             #[repr(C)]
             pub struct GLXBufferClobberEventSGIX {
-                pub type_: super::__gl_imports::libc::c_int,
-                pub serial: super::__gl_imports::libc::c_ulong,            // # of last request processed by server
+                pub type_: super::__gl_imports::raw::c_int,
+                pub serial: super::__gl_imports::raw::c_ulong,            // # of last request processed by server
                 pub send_event: Bool,           // true if this came for SendEvent request
                 pub display: *const Display,          // display the event was read from
                 pub drawable: GLXDrawable,      // i.d. of Drawable
-                pub event_type: super::__gl_imports::libc::c_int,          // GLX_DAMAGED_SGIX or GLX_SAVED_SGIX
-                pub draw_type: super::__gl_imports::libc::c_int,           // GLX_WINDOW_SGIX or GLX_PBUFFER_SGIX
-                pub mask: super::__gl_imports::libc::c_uint,               // mask indicating which buffers are affected
-                pub x: super::__gl_imports::libc::c_int,
-                pub y: super::__gl_imports::libc::c_int,
-                pub width: super::__gl_imports::libc::c_int,
-                pub height: super::__gl_imports::libc::c_int,
-                pub count: super::__gl_imports::libc::c_int,               // if nonzero, at least this many more
+                pub event_type: super::__gl_imports::raw::c_int,          // GLX_DAMAGED_SGIX or GLX_SAVED_SGIX
+                pub draw_type: super::__gl_imports::raw::c_int,           // GLX_WINDOW_SGIX or GLX_PBUFFER_SGIX
+                pub mask: super::__gl_imports::raw::c_uint,               // mask indicating which buffers are affected
+                pub x: super::__gl_imports::raw::c_int,
+                pub y: super::__gl_imports::raw::c_int,
+                pub width: super::__gl_imports::raw::c_int,
+                pub height: super::__gl_imports::raw::c_int,
+                pub count: super::__gl_imports::raw::c_int,               // if nonzero, at least this many more
             }
         ",
 
         "
             #[repr(C)]
             pub struct GLXHyperpipeNetworkSGIX {
-                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
-                pub networkId: super::__gl_imports::libc::c_int,
+                pub pipeName: [super::__gl_imports::raw::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub networkId: super::__gl_imports::raw::c_int,
             }
         ",
 
         "
             #[repr(C)]
             pub struct GLXHyperpipeConfigSGIX {
-                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
-                pub channel: super::__gl_imports::libc::c_int,
-                pub participationType: super::__gl_imports::libc::c_uint,
-                pub timeSlice: super::__gl_imports::libc::c_int,
+                pub pipeName: [super::__gl_imports::raw::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub channel: super::__gl_imports::raw::c_int,
+                pub participationType: super::__gl_imports::raw::c_uint,
+                pub timeSlice: super::__gl_imports::raw::c_int,
             }
         ",
 
         "
             #[repr(C)]
             pub struct GLXPipeRect {
-                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
-                pub srcXOrigin: super::__gl_imports::libc::c_int,
-                pub srcYOrigin: super::__gl_imports::libc::c_int,
-                pub srcWidth: super::__gl_imports::libc::c_int,
-                pub srcHeight: super::__gl_imports::libc::c_int,
-                pub destXOrigin: super::__gl_imports::libc::c_int,
-                pub destYOrigin: super::__gl_imports::libc::c_int,
-                pub destWidth: super::__gl_imports::libc::c_int,
-                pub destHeight: super::__gl_imports::libc::c_int,
+                pub pipeName: [super::__gl_imports::raw::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub srcXOrigin: super::__gl_imports::raw::c_int,
+                pub srcYOrigin: super::__gl_imports::raw::c_int,
+                pub srcWidth: super::__gl_imports::raw::c_int,
+                pub srcHeight: super::__gl_imports::raw::c_int,
+                pub destXOrigin: super::__gl_imports::raw::c_int,
+                pub destYOrigin: super::__gl_imports::raw::c_int,
+                pub destWidth: super::__gl_imports::raw::c_int,
+                pub destHeight: super::__gl_imports::raw::c_int,
             }
         ",
 
         "
             #[repr(C)]
             pub struct GLXPipeRectLimits {
-                pub pipeName: [super::__gl_imports::libc::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
-                pub XOrigin: super::__gl_imports::libc::c_int,
-                pub YOrigin: super::__gl_imports::libc::c_int,
-                pub maxHeight: super::__gl_imports::libc::c_int,
-                pub maxWidth: super::__gl_imports::libc::c_int,
+                pub pipeName: [super::__gl_imports::raw::c_char; 80],   // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+                pub XOrigin: super::__gl_imports::raw::c_int,
+                pub YOrigin: super::__gl_imports::raw::c_int,
+                pub maxHeight: super::__gl_imports::raw::c_int,
+                pub maxWidth: super::__gl_imports::raw::c_int,
             }
         "
     ].iter() {
@@ -541,23 +541,23 @@ pub fn build_glx_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 pub fn build_win_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // From WinNT.h
-        "pub type CHAR = super::__gl_imports::libc::c_char;",
+        "pub type CHAR = super::__gl_imports::raw::c_char;",
         "pub type HANDLE = PVOID;",
-        "pub type LONG = super::__gl_imports::libc::c_long;",
-        "pub type LPCSTR = *const super::__gl_imports::libc::c_char;",
-        "pub type VOID = super::__gl_imports::libc::c_void;",
+        "pub type LONG = super::__gl_imports::raw::c_long;",
+        "pub type LPCSTR = *const super::__gl_imports::raw::c_char;",
+        "pub type VOID = ();",
 
         // From Windef.h
-        "pub type BOOL = super::__gl_imports::libc::c_int;",
-        "pub type BYTE = super::__gl_imports::libc::c_uchar;",
+        "pub type BOOL = super::__gl_imports::raw::c_int;",
+        "pub type BYTE = super::__gl_imports::raw::c_uchar;",
         "pub type COLORREF = DWORD;",
-        "pub type FLOAT = super::__gl_imports::libc::c_float;",
+        "pub type FLOAT = super::__gl_imports::raw::c_float;",
         "pub type HDC = HANDLE;",
         "pub type HENHMETAFILE = HANDLE;",
-        "pub type HGLRC = *const super::__gl_imports::libc::c_void;",
-        "pub type INT = super::__gl_imports::libc::c_int;",
-        "pub type PVOID = *const super::__gl_imports::libc::c_void;",
-        "pub type LPVOID = *const super::__gl_imports::libc::c_void;",
+        "pub type HGLRC = *const super::__gl_imports::raw::c_void;",
+        "pub type INT = super::__gl_imports::raw::c_int;",
+        "pub type PVOID = *const super::__gl_imports::raw::c_void;",
+        "pub type LPVOID = *const super::__gl_imports::raw::c_void;",
         "pub type PROC = extern \"system\" fn();",     // Not sure about this one :/
         "
             #[repr(C)]
@@ -568,16 +568,16 @@ pub fn build_win_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
                 bottom: LONG,
             }
         ",
-        "pub type UINT = super::__gl_imports::libc::c_uint;",
-        "pub type USHORT = super::__gl_imports::libc::c_ushort;",
-        "pub type WORD = super::__gl_imports::libc::c_ushort;",
+        "pub type UINT = super::__gl_imports::raw::c_uint;",
+        "pub type USHORT = super::__gl_imports::raw::c_ushort;",
+        "pub type WORD = super::__gl_imports::raw::c_ushort;",
 
         // From BaseTsd.h
         "pub type INT32 = i32;",
         "pub type INT64 = i64;",
 
         // From IntSafe.h
-        "pub type DWORD = super::__gl_imports::libc::c_ulong;",
+        "pub type DWORD = super::__gl_imports::raw::c_ulong;",
 
         // From Wingdi.h
         "
@@ -669,13 +669,13 @@ pub fn build_wgl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     for l in [
         // From WinNT.h,
         // #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
-        "pub type HPBUFFERARB = *const super::__gl_imports::libc::c_void;",
-        "pub type HPBUFFEREXT = *const super::__gl_imports::libc::c_void;",
-        "pub type HVIDEOOUTPUTDEVICENV = *const super::__gl_imports::libc::c_void;",
-        "pub type HPVIDEODEV = *const super::__gl_imports::libc::c_void;",
-        "pub type HPGPUNV = *const super::__gl_imports::libc::c_void;",
-        "pub type HGPUNV = *const super::__gl_imports::libc::c_void;",
-        "pub type HVIDEOINPUTDEVICENV = *const super::__gl_imports::libc::c_void;",
+        "pub type HPBUFFERARB = *const super::__gl_imports::raw::c_void;",
+        "pub type HPBUFFEREXT = *const super::__gl_imports::raw::c_void;",
+        "pub type HVIDEOOUTPUTDEVICENV = *const super::__gl_imports::raw::c_void;",
+        "pub type HPVIDEODEV = *const super::__gl_imports::raw::c_void;",
+        "pub type HPGPUNV = *const super::__gl_imports::raw::c_void;",
+        "pub type HGPUNV = *const super::__gl_imports::raw::c_void;",
+        "pub type HVIDEOINPUTDEVICENV = *const super::__gl_imports::raw::c_void;",
 
         "
             #[repr(C)]
@@ -715,37 +715,37 @@ pub fn build_egl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 
         // EGL alises
         "pub type Bool = EGLBoolean;",  // TODO: not sure
-        "pub type EGLBoolean = super::__gl_imports::libc::c_uint;",
-        "pub type EGLenum = super::__gl_imports::libc::c_uint;",
-        "pub type EGLAttribKHR = super::__gl_imports::libc::intptr_t;",
-        "pub type EGLAttrib = super::__gl_imports::libc::intptr_t;",
-        "pub type EGLConfig = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLContext = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLDeviceEXT = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLDisplay = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLSurface = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLClientBuffer = *const super::__gl_imports::libc::c_void;",
+        "pub type EGLBoolean = super::__gl_imports::raw::c_uint;",
+        "pub type EGLenum = super::__gl_imports::raw::c_uint;",
+        "pub type EGLAttribKHR = isize;",
+        "pub type EGLAttrib = isize;",
+        "pub type EGLConfig = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLContext = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLDeviceEXT = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLDisplay = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLSurface = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLClientBuffer = *const super::__gl_imports::raw::c_void;",
         "pub type __eglMustCastToProperFunctionPointerType = extern \"system\" fn() -> ();",
-        "pub type EGLImageKHR = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLImage = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLSyncKHR = *const super::__gl_imports::libc::c_void;",
-        "pub type EGLSync = *const super::__gl_imports::libc::c_void;",
+        "pub type EGLImageKHR = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLImage = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLSyncKHR = *const super::__gl_imports::raw::c_void;",
+        "pub type EGLSync = *const super::__gl_imports::raw::c_void;",
         "pub type EGLTimeKHR = khronos_utime_nanoseconds_t;",
         "pub type EGLTime = khronos_utime_nanoseconds_t;",
-        "pub type EGLSyncNV = *const super::__gl_imports::libc::c_void;",
+        "pub type EGLSyncNV = *const super::__gl_imports::raw::c_void;",
         "pub type EGLTimeNV = khronos_utime_nanoseconds_t;",
         "pub type EGLuint64NV = khronos_utime_nanoseconds_t;",
-        "pub type EGLStreamKHR = *const super::__gl_imports::libc::c_void;",
+        "pub type EGLStreamKHR = *const super::__gl_imports::raw::c_void;",
         "pub type EGLuint64KHR = khronos_uint64_t;",
-        "pub type EGLNativeFileDescriptorKHR = super::__gl_imports::libc::c_int;",
+        "pub type EGLNativeFileDescriptorKHR = super::__gl_imports::raw::c_int;",
         "pub type EGLsizeiANDROID = khronos_ssize_t;",
-        "pub type EGLSetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *const super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> ();",
-        "pub type EGLGetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::libc::c_void, EGLsizeiANDROID, *mut super::__gl_imports::libc::c_void, EGLsizeiANDROID) -> EGLsizeiANDROID;",
+        "pub type EGLSetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::raw::c_void, EGLsizeiANDROID, *const super::__gl_imports::raw::c_void, EGLsizeiANDROID) -> ();",
+        "pub type EGLGetBlobFuncANDROID = extern \"system\" fn(*const super::__gl_imports::raw::c_void, EGLsizeiANDROID, *mut super::__gl_imports::raw::c_void, EGLsizeiANDROID) -> EGLsizeiANDROID;",
 
         "
             #[repr(C)]
             pub struct EGLClientPixmapHI {
-                pData: *const super::__gl_imports::libc::c_void,
+                pData: *const super::__gl_imports::raw::c_void,
                 iWidth: EGLint,
                 iHeight: EGLint,
                 iStride: EGLint,
