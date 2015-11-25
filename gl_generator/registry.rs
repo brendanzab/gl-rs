@@ -331,22 +331,25 @@ impl<R: io::Read> RegistryBuilder<R> {
 
     fn expect_characters(&mut self) -> String {
         match self.next() {
-            XmlEvent::Characters(ref ch) => ch.clone(),
+            XmlEvent::Characters(ch) => ch,
             msg => panic!("Expected characters, found: {:?}", msg),
         }
     }
 
     fn expect_start_element(&mut self, n: &str) -> Vec<OwnedAttribute> {
         match self.next() {
-            XmlEvent::StartElement{ref name, ref attributes, ..}
-                if n == name.local_name => attributes.clone(),
+            XmlEvent::StartElement { name, attributes, .. } => {
+                if n == name.local_name { attributes } else {
+                    panic!("Expected <{}>, found: <{}>", n, name.local_name)
+                }
+            }
             msg => panic!("Expected <{}>, found: {:?}", n, msg),
         }
     }
 
     fn expect_end_element(&mut self, n: &str) {
         match self.next() {
-            XmlEvent::EndElement{ref name} if n == name.local_name => (),
+            XmlEvent::EndElement { ref name } if n == name.local_name => (),
             msg => panic!("Expected </{}>, found: {:?}", n, msg),
         }
     }
@@ -354,8 +357,7 @@ impl<R: io::Read> RegistryBuilder<R> {
     fn skip_until(&mut self, event: XmlEvent) {
         loop {
             match self.next() {
-                XmlEvent::EndDocument => panic!("Expected {:?}, but reached the end of the document.",
-                                     event),
+                XmlEvent::EndDocument => panic!("Expected {:?}, but reached the end of the document.", event),
                 ref msg if *msg == event => break,
                 _ => (),
             }
