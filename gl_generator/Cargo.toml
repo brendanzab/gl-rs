@@ -20,4 +20,4 @@ version = "0.0.8"
 
 [dependencies]
 log = "0.3.2"
-xml-rs = "0.1.26"
+xml-rs = "0.2.2"

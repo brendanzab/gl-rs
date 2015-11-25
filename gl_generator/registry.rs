@@ -17,7 +17,6 @@ extern crate xml;
 
 use std::collections::hash_map::Entry;
 use std::collections::BTreeSet;
-use std::cell::RefCell;
 use std::collections::HashSet;
 use std::collections::HashMap;
 use std::ops::Add;
@@ -26,8 +25,9 @@ use std::str::FromStr;
 use std::slice::Iter;
 use std::io;
 
+use self::xml::EventReader as XmlEventReader;
 use self::xml::attribute::OwnedAttribute;
-use self::xml::reader::events::XmlEvent;
+use self::xml::reader::XmlEvent;
 
 use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
 
@@ -126,7 +126,7 @@ impl Registry {
         RegistryBuilder {
             ns: ns,
             filter: filter,
-            port: RefCell::new(xml::reader::EventReader::new(data)),
+            reader: XmlEventReader::new(data),
         }.consume_registry()
     }
 
@@ -305,7 +305,7 @@ pub struct GlxOpcode {
 struct RegistryBuilder<R: io::Read> {
     pub ns: Ns,
     pub filter: Option<Filter>,
-    pub port: RefCell<xml::reader::EventReader<R>>,
+    pub reader: XmlEventReader<R>,
 }
 
 pub struct Filter {
@@ -318,46 +318,44 @@ pub struct Filter {
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
 impl<R: io::Read> RegistryBuilder<R> {
-    fn recv(&self) -> XmlEvent {
-        for event in self.port.borrow_mut().events() {
-            match event {
-                XmlEvent::StartDocument{..} => (),
+    fn next(&mut self) -> XmlEvent {
+        loop {
+            let event = self.reader.next();
+            match event.unwrap() {
+                XmlEvent::StartDocument { .. } => (),
+                XmlEvent::EndDocument => panic!("The end of the document has been reached"),
                 XmlEvent::Comment(_) => (),
                 XmlEvent::Whitespace(_) => (),
-                XmlEvent::EndDocument => panic!("The end of the document has been reached"),
-                XmlEvent::Error(err) => panic!("XML error: {:?}", err),
                 event => return event,
             }
         }
-
-        unreachable!()
     }
 
-    fn expect_characters(&self) -> String {
-        match self.recv() {
+    fn expect_characters(&mut self) -> String {
+        match self.next() {
             XmlEvent::Characters(ref ch) => ch.clone(),
             msg => panic!("Expected characters, found: {:?}", msg),
         }
     }
 
-    fn expect_start_element(&self, n: &str) -> Vec<OwnedAttribute> {
-        match self.recv() {
+    fn expect_start_element(&mut self, n: &str) -> Vec<OwnedAttribute> {
+        match self.next() {
             XmlEvent::StartElement{ref name, ref attributes, ..}
                 if n == name.local_name => attributes.clone(),
             msg => panic!("Expected <{}>, found: {:?}", n, msg),
         }
     }
 
-    fn expect_end_element(&self, n: &str) {
-        match self.recv() {
+    fn expect_end_element(&mut self, n: &str) {
+        match self.next() {
             XmlEvent::EndElement{ref name} if n == name.local_name => (),
             msg => panic!("Expected </{}>, found: {:?}", n, msg),
         }
     }
 
-    fn skip_until(&self, event: XmlEvent) {
+    fn skip_until(&mut self, event: XmlEvent) {
         loop {
-            match self.recv() {
+            match self.next() {
                 XmlEvent::EndDocument => panic!("Expected {:?}, but reached the end of the document.",
                                      event),
                 ref msg if *msg == event => break,
@@ -366,7 +364,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_registry(&self) -> Registry {
+    fn consume_registry(&mut self) -> Registry {
         self.expect_start_element("registry");
         let mut registry = Registry {
             groups: Vec::new(),
@@ -378,7 +376,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         };
 
         loop {
-            match self.recv() {
+            match self.next() {
                 // ignores
                 XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
                 XmlEvent::StartElement{ref name, ..}
@@ -391,7 +389,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 // add groups
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "groups" => {
                     loop {
-                        match self.recv() {
+                        match self.next() {
                             XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "group" => {
                                 registry.groups.push(
                                     self.consume_group(get_attribute(attributes, "name").unwrap())
@@ -417,14 +415,14 @@ impl<R: io::Read> RegistryBuilder<R> {
 
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "feature" => {
                     debug!("Parsing feature: {:?}", attributes);
-                    registry.features.push(FromXML::convert(self, &attributes));
+                    registry.features.push(FromXml::convert(self, &attributes));
                 }
 
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "extensions" => {
                     loop {
-                        match self.recv() {
+                        match self.next() {
                             XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "extension" => {
-                                registry.extensions.push(FromXML::convert(self, &attributes));
+                                registry.extensions.push(FromXml::convert(self, &attributes));
                             }
                             XmlEvent::EndElement{ref name} if name.local_name == "extensions" => break,
                             msg => panic!("Unexpected message {:?}", msg),
@@ -525,14 +523,14 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_two<'a, T: FromXML, U: FromXML>(&self, one: &'a str, two: &'a str, end: &'a str) -> (Vec<T>, Vec<U>) {
+    fn consume_two<'a, T: FromXml, U: FromXml>(&mut self, one: &'a str, two: &'a str, end: &'a str) -> (Vec<T>, Vec<U>) {
         debug!("consume_two: looking for {} and {} until {}", one, two, end);
 
         let mut ones = Vec::new();
         let mut twos = Vec::new();
 
         loop {
-            match self.recv() {
+            match self.next() {
                 XmlEvent::StartElement{ref name, ref attributes, ..} => {
                     debug!("Found start element <{:?} {:?}>", name, attributes);
                     debug!("one and two are {} and {}", one, two);
@@ -540,7 +538,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                     let n = name.clone();
 
                     if one == n.local_name {
-                        ones.push(FromXML::convert(self, &attributes));
+                        ones.push(FromXml::convert(self, &attributes));
                     } else if "type" == n.local_name {
                         // XXX: GL1.1 contains types, which we never care about anyway.
                         // Make sure consume_two doesn't get used for things which *do*
@@ -548,7 +546,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                         warn!("Ignoring type!");
                         continue;
                     } else if two == n.local_name {
-                        twos.push(FromXML::convert(self, &attributes));
+                        twos.push(FromXml::convert(self, &attributes));
                     } else {
                         panic!("Unexpected element: <{:?} {:?}>", n, &attributes);
                     }
@@ -574,10 +572,10 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_group(&self, name: String) -> Group {
+    fn consume_group(&mut self, name: String) -> Group {
         let mut enms = Vec::new();
         loop {
-            match self.recv() {
+            match self.next() {
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "enum" => {
                     enms.push(get_attribute(&attributes, "name").unwrap());
                     self.expect_end_element("enum");
@@ -592,10 +590,10 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_enums(&self) -> Vec<Enum> {
+    fn consume_enums(&mut self) -> Vec<Enum> {
         let mut enums = Vec::new();
         loop {
-            match self.recv() {
+            match self.next() {
                 // ignores
                 XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "unused" =>
@@ -623,11 +621,11 @@ impl<R: io::Read> RegistryBuilder<R> {
         enums
     }
 
-    fn consume_cmds(&self) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
+    fn consume_cmds(&mut self) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
         let mut cmds = Vec::new();
         let mut aliases: HashMap<String, Vec<String>> = HashMap::new();
         loop {
-            match self.recv() {
+            match self.next() {
                 // add command definition
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "command" => {
                     let new = self.consume_cmd();
@@ -651,7 +649,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         (cmds, aliases)
     }
 
-    fn consume_cmd(&self) -> Cmd {
+    fn consume_cmd(&mut self) -> Cmd {
         // consume command prototype
         let proto_attr = self.expect_start_element("proto");
         let mut proto = self.consume_binding("proto", get_attribute(&proto_attr, "group"));
@@ -662,7 +660,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         let mut vecequiv = None;
         let mut glx = None;
         loop {
-            match self.recv() {
+            match self.next() {
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "param" => {
                     params.push(
                         self.consume_binding("param", get_attribute(&attributes, "group"))
@@ -702,11 +700,11 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_binding(&self, outside_tag: &str, group: Option<String>) -> Binding {
+    fn consume_binding(&mut self, outside_tag: &str, group: Option<String>) -> Binding {
         // consume type
         let mut ty = String::new();
         loop {
-            match self.recv() {
+            match self.next() {
                 XmlEvent::Characters(ch) => ty.push_str(&ch),
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "ptype" => (),
                 XmlEvent::EndElement{ref name} if name.local_name == "ptype" => (),
@@ -721,7 +719,7 @@ impl<R: io::Read> RegistryBuilder<R> {
 
         // consume the type suffix
         loop {
-            match self.recv() {
+            match self.next() {
                 XmlEvent::Characters(ch) => ty.push_str(&ch),
                 XmlEvent::EndElement{ref name} if name.local_name == outside_tag => break,
                 msg => panic!("Expected binding, found: {:?}", msg),
@@ -740,13 +738,13 @@ fn get_attribute(a: &[OwnedAttribute], name: &str) -> Option<String> {
     a.iter().find(|a| a.name.local_name == name).map(|e| e.value.clone())
 }
 
-trait FromXML {
-    fn convert<R: io::Read>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Self;
+trait FromXml {
+    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Self;
 }
 
-impl FromXML for Require {
-    fn convert<R: io::Read>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Require {
-        debug!("Doing a FromXML on Require");
+impl FromXml for Require {
+    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Require {
+        debug!("Doing a FromXml on Require");
         let comment = get_attribute(a, "comment");
         let (enums, commands) = r.consume_two("enum", "command", "require");
         Require {
@@ -757,9 +755,9 @@ impl FromXML for Require {
     }
 }
 
-impl FromXML for Remove {
-    fn convert<R: io::Read>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
-        debug!("Doing a FromXML on Remove");
+impl FromXml for Remove {
+    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
+        debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let comment = get_attribute(a, "comment").unwrap();
         let (enums, commands) = r.consume_two("enum", "command", "remove");
@@ -773,9 +771,9 @@ impl FromXML for Remove {
     }
 }
 
-impl FromXML for Feature {
-    fn convert<R: io::Read>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Feature {
-        debug!("Doing a FromXML on Feature");
+impl FromXml for Feature {
+    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Feature {
+        debug!("Doing a FromXml on Feature");
         let api      = get_attribute(a, "api").unwrap();
         let name     = get_attribute(a, "name").unwrap();
         let number   = get_attribute(a, "number").unwrap();
@@ -794,16 +792,16 @@ impl FromXML for Feature {
     }
 }
 
-impl FromXML for Extension {
-    fn convert<R: io::Read>(r: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> Extension {
-        debug!("Doing a FromXML on Extension");
+impl FromXml for Extension {
+    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Extension {
+        debug!("Doing a FromXml on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap().split('|').map(|x| x.to_string()).collect::<Vec<String>>();
         let mut require = Vec::new();
         loop {
-            match r.recv() {
+            match r.next() {
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "require" => {
-                    require.push(FromXML::convert(r, &attributes));
+                    require.push(FromXml::convert(r, &attributes));
                 }
                 XmlEvent::EndElement{ref name} if name.local_name == "extension" => break,
                 msg => panic!("Unexpected message {:?}", msg)
@@ -818,8 +816,8 @@ impl FromXML for Extension {
     }
 }
 
-impl FromXML for String {
-    fn convert<R: io::Read>(_: &RegistryBuilder<R>, a: &[OwnedAttribute]) -> String {
+impl FromXml for String {
+    fn convert<R: io::Read>(_: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> String {
         get_attribute(a, "name").unwrap()
     }
 }
