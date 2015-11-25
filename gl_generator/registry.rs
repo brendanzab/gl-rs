@@ -29,8 +29,6 @@ use self::xml::EventReader as XmlEventReader;
 use self::xml::attribute::OwnedAttribute;
 use self::xml::reader::XmlEvent;
 
-use self::Ns::{Gl, Glx, Wgl, Egl, Gles1, Gles2};
-
 #[derive(Copy, Clone)]
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
@@ -39,12 +37,12 @@ pub enum Fallbacks { All, None }
 impl Ns {
     pub fn fmt_struct_name(&self) -> &str {
         match *self {
-            Gl  => "Gl",
-            Glx => "Glx",
-            Wgl => "Wgl",
-            Egl => "Egl",
-            Gles1 => "Gles1",
-            Gles2 => "Gles2",
+            Ns::Gl  => "Gl",
+            Ns::Glx => "Glx",
+            Ns::Wgl => "Wgl",
+            Ns::Egl => "Egl",
+            Ns::Gles1 => "Gles1",
+            Ns::Gles2 => "Gles2",
         }
     }
 }
@@ -53,12 +51,12 @@ impl FromStr for Ns {
     type Err = ();
     fn from_str(s: &str) -> Result<Ns, ()> {
         match s {
-            "gl"  => Ok(Gl),
-            "glx" => Ok(Glx),
-            "wgl" => Ok(Wgl),
-            "egl" => Ok(Egl),
-            "gles1" => Ok(Gles1),
-            "gles2" => Ok(Gles2),
+            "gl"  => Ok(Ns::Gl),
+            "glx" => Ok(Ns::Glx),
+            "wgl" => Ok(Ns::Wgl),
+            "egl" => Ok(Ns::Egl),
+            "gles1" => Ok(Ns::Gles1),
+            "gles2" => Ok(Ns::Gles2),
             _     => Err(()),
         }
     }
@@ -67,12 +65,12 @@ impl FromStr for Ns {
 impl fmt::Display for Ns {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Gl  => write!(fmt, "gl"),
-            Glx => write!(fmt, "glx"),
-            Wgl => write!(fmt, "wgl"),
-            Egl => write!(fmt, "egl"),
-            Gles1 => write!(fmt, "gles1"),
-            Gles2 => write!(fmt, "gles2"),
+            Ns::Gl  => write!(fmt, "gl"),
+            Ns::Glx => write!(fmt, "glx"),
+            Ns::Wgl => write!(fmt, "wgl"),
+            Ns::Egl => write!(fmt, "egl"),
+            Ns::Gles1 => write!(fmt, "gles1"),
+            Ns::Gles2 => write!(fmt, "gles2"),
         }
     }
 }
@@ -83,19 +81,19 @@ fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
 
 fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
     match ns {
-        Gl | Gles1 | Gles2 => trim_str(ident, "GL_"),
-        Glx => trim_str(ident, "GLX_"),
-        Wgl =>  trim_str(ident, "WGL_"),
-        Egl =>  trim_str(ident, "EGL_"),
+        Ns::Gl | Ns::Gles1 | Ns::Gles2 => trim_str(ident, "GL_"),
+        Ns::Glx => trim_str(ident, "GLX_"),
+        Ns::Wgl =>  trim_str(ident, "WGL_"),
+        Ns::Egl =>  trim_str(ident, "EGL_"),
     }
 }
 
 fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
     match ns {
-        Gl | Gles1 | Gles2 => trim_str(ident, "gl"),
-        Glx => trim_str(ident, "glX"),
-        Wgl =>  trim_str(ident, "wgl"),
-        Egl =>  trim_str(ident, "egl"),
+        Ns::Gl | Ns::Gles1 | Ns::Gles2 => trim_str(ident, "gl"),
+        Ns::Glx => trim_str(ident, "glX"),
+        Ns::Wgl =>  trim_str(ident, "wgl"),
+        Ns::Egl =>  trim_str(ident, "egl"),
     }
 }
 
