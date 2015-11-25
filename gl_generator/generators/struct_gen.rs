@@ -79,17 +79,17 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
         #[derive(Clone)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
-            f: *const (),
+            f: *const __gl_imports::raw::c_void,
             /// True if the pointer points to a real function, false if points to a `panic!` fn.
             is_loaded: bool,
         }}
 
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
-            fn new(ptr: *const ()) -> FnPtr {{
+            fn new(ptr: *const __gl_imports::raw::c_void) -> FnPtr {{
                 if ptr.is_null() {{
                     FnPtr {{
-                        f: missing_fn_panic as *const (),
+                        f: missing_fn_panic as *const __gl_imports::raw::c_void,
                         is_loaded: false
                     }}
                 }} else {{
@@ -157,7 +157,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
             /// ~~~
             #[allow(dead_code)]
             #[allow(unused_variables)]
-            pub fn load_with<F>(mut loadfn: F) -> {ns} where F: FnMut(&str) -> *const () {{
+            pub fn load_with<F>(mut loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
                 let mut metaloadfn = |symbol: &str, symbols: &[&str]| {{
                     let mut ptr = loadfn(symbol);
                     if ptr.is_null() {{
