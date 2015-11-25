@@ -14,10 +14,9 @@
 // limitations under the License.
 
 extern crate gl;
-extern crate glfw;
+extern crate glutin;
 
 use gl::types::*;
-use glfw::{Context, OpenGlProfileHint, WindowHint, WindowMode};
 use std::mem;
 use std::ptr;
 use std::str;
@@ -93,21 +92,14 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint { unsafe {
 } }
 
 fn main() {
-    let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
-
-    // Choose a GL profile that is compatible with OS X 10.7+
-    glfw.window_hint(WindowHint::ContextVersion(3, 2));
-    glfw.window_hint(WindowHint::OpenGlForwardCompat(true));
-    glfw.window_hint(WindowHint::OpenGlProfile(OpenGlProfileHint::Core));
-
-    let (mut window, _) = glfw.create_window(800, 600, "OpenGL", WindowMode::Windowed)
-        .expect("Failed to create GLFW window.");
+    let window = glutin::Window::new().unwrap();
 
     // It is essential to make the context current before calling `gl::load_with`.
-    window.make_current();
+    unsafe { window.make_current() }.unwrap();
 
     // Load the OpenGL function pointers
-    gl::load_with(|s| window.get_proc_address(s));
+    // TODO: `as *const _` will not be needed once glutin is updated to the latest gl version
+    gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
     // Create GLSL shaders
     let vs = compile_shader(VS_SRC, gl::VERTEX_SHADER);
@@ -143,10 +135,7 @@ fn main() {
                                 gl::FALSE as GLboolean, 0, ptr::null());
     }
 
-    while !window.should_close() {
-        // Poll events
-        glfw.poll_events();
-
+    for event in window.wait_events() {
         unsafe {
             // Clear the screen to black
             gl::ClearColor(0.3, 0.3, 0.3, 1.0);
@@ -156,12 +145,15 @@ fn main() {
             gl::DrawArrays(gl::TRIANGLES, 0, 3);
         }
 
-        // Swap buffers
-        window.swap_buffers();
+        window.swap_buffers().unwrap();
+
+        if let glutin::Event::Closed = event {
+            break;
+        }
     }
 
-    unsafe {
     // Cleanup
+    unsafe {
         gl::DeleteProgram(program);
         gl::DeleteShader(fs);
         gl::DeleteShader(vs);

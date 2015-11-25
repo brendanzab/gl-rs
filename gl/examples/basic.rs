@@ -14,38 +14,28 @@
 // limitations under the License.
 
 extern crate gl;
-extern crate glfw;
-
-use glfw::{Context, OpenGlProfileHint, WindowHint, WindowMode};
+extern crate glutin;
 
 fn main() {
-    let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
-
-    // Choose a GL profile that is compatible with OS X 10.7+
-    glfw.window_hint(WindowHint::ContextVersion(3, 2));
-    glfw.window_hint(WindowHint::OpenglForwardCompat(true));
-    glfw.window_hint(WindowHint::OpenglProfile(OpenGlProfileHint::Core));
-
-    let (window, _) = glfw.create_window(800, 600, "OpenGL", WindowMode::Windowed)
-        .expect("Failed to create GLFW window.");
+    let window = glutin::Window::new().unwrap();
 
     // It is essential to make the context current before calling `gl::load_with`.
-    window.make_current();
+    unsafe { window.make_current() }.unwrap();
 
     // Load the OpenGL function pointers
-    gl::load_with(|s| window.get_proc_address(s));
+    // TODO: `as *const _` will not be needed once glutin is updated to the latest gl version
+    gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-    while !window.should_close() {
-        // Poll events
-        glfw.poll_events();
-
-        // Clear the screen to black
+    for event in window.wait_events() {
         unsafe {
             gl::ClearColor(0.3, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
         }
 
-        // Swap buffers
-        window.swap_buffers();
+        window.swap_buffers().unwrap();
+
+        if let glutin::Event::Closed = event {
+            break;
+        }
     }
 }
