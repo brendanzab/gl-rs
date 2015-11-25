@@ -51,8 +51,8 @@ fn write_metaloadfn<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
         fn metaloadfn<F>(mut loadfn: F,
                          symbol: &str,
-                         fallbacks: &[&str]) -> *const ()
-                         where F: FnMut(&str) -> *const () {{
+                         fallbacks: &[&str]) -> *const __gl_imports::raw::c_void
+                         where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
             let mut ptr = loadfn(symbol);
             if ptr.is_null() {{
                 for &sym in fallbacks.iter() {{
@@ -126,16 +126,16 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
         #[allow(missing_copy_implementations)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
-            f: *const (),
+            f: *const __gl_imports::raw::c_void,
             /// True if the pointer points to a real function, false if points to a `panic!` fn.
             is_loaded: bool,
         }}
 
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
-            pub fn new(ptr: *const ()) -> FnPtr {{
+            pub fn new(ptr: *const __gl_imports::raw::c_void) -> FnPtr {{
                 if ptr.is_null() {{
-                    FnPtr {{ f: missing_fn_panic as *const (), is_loaded: false }}
+                    FnPtr {{ f: missing_fn_panic as *const __gl_imports::raw::c_void, is_loaded: false }}
                 }} else {{
                     FnPtr {{ f: ptr, is_loaded: true }}
                 }}
@@ -150,12 +150,13 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
     try!(writeln!(dest,
         "mod storage {{
             #![allow(non_snake_case)]
+            use super::__gl_imports::raw;
             use super::FnPtr;"));
 
     for c in registry.cmd_iter() {
         try!(writeln!(dest,
             "pub static mut {name}: FnPtr = FnPtr {{
-                f: super::missing_fn_panic as *const (),
+                f: super::missing_fn_panic as *const raw::c_void,
                 is_loaded: false
             }};",
             name = c.proto.ident
@@ -185,6 +186,7 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()
             #[allow(non_snake_case)]
             pub mod {fnname} {{
                 use super::{{storage, metaloadfn}};
+                use super::__gl_imports::raw;
                 use super::FnPtr;
 
                 #[inline]
@@ -194,7 +196,7 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()
                 }}
 
                 #[allow(dead_code)]
-                pub fn load_with<F>(loadfn: F) where F: FnMut(&str) -> *const () {{
+                pub fn load_with<F>(loadfn: F) where F: FnMut(&str) -> *const raw::c_void {{
                     unsafe {{
                         storage::{fnname} = FnPtr::new(metaloadfn(loadfn, "{symbol}", {fallbacks}))
                     }}
@@ -229,7 +231,7 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
         /// gl::load_with(|s| glfw.get_proc_address(s));
         /// ~~~
         #[allow(dead_code)]
-        pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const () {{
+        pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
     "));
 
     for c in registry.cmd_iter() {
