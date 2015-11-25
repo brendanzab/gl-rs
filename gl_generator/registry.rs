@@ -215,27 +215,11 @@ pub struct Group {
     pub enums: Vec<String>,
 }
 
-pub struct EnumNs {
-    pub namespace: String,
-    pub group: Option<String>,
-    pub ty: Option<String>,
-    pub start: Option<String>,
-    pub end: Option<String>,
-    pub vendor: Option<String>,
-    pub comment: Option<String>,
-    pub defs: Vec<Enum>,
-}
-
 pub struct Enum {
     pub ident: String,
     pub value: String,
     pub alias: Option<String>,
     pub ty: Option<String>,
-}
-
-pub struct CmdNs {
-    pub namespace: String,
-    pub defs: Vec<Cmd>,
 }
 
 pub struct Binding {
