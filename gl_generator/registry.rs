@@ -331,11 +331,11 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn skip_until(&mut self, event: XmlEvent) {
+    fn skip_to_end(&mut self, name: &str) {
         loop {
             match self.next() {
-                XmlEvent::EndDocument => panic!("Expected {:?}, but reached the end of the document.", event),
-                ref msg if *msg == event => break,
+                XmlEvent::EndDocument => panic!("Expected </{}>, but reached the end of the document.", name),
+                XmlEvent::EndElement { name: ref n } if n.local_name == name => break,
                 _ => (),
             }
         }
@@ -355,15 +355,9 @@ impl<R: io::Read> RegistryBuilder<R> {
             match self.next() {
                 // ignores
                 XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
-                XmlEvent::StartElement{ref name, ..}
-                    if name.local_name == "comment" =>
-                        self.skip_until(XmlEvent::EndElement { name: name.clone() }),
-                XmlEvent::StartElement{ref name, ..}
-                    if name.local_name == "types" =>
-                        self.skip_until(XmlEvent::EndElement { name: name.clone() }),
-                XmlEvent::StartElement{ref name, ..}
-                    if name.local_name == "groups" =>
-                        self.skip_until(XmlEvent::EndElement { name: name.clone() }),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "comment" => self.skip_to_end("comment"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "types" => self.skip_to_end("types"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "groups" => self.skip_to_end("groups"),
 
                 // add enum namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
@@ -538,8 +532,7 @@ impl<R: io::Read> RegistryBuilder<R> {
             match self.next() {
                 // ignores
                 XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "unused" =>
-                    self.skip_until(XmlEvent::EndElement{name: name.clone()}),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "unused" => self.skip_to_end("unused"),
 
                 // add enum definition
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "enum" => {
