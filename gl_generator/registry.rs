@@ -107,7 +107,6 @@ fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String
 }
 
 pub struct Registry {
-    pub groups: Vec<Group>,
     pub enums: Vec<Enum>,
     pub cmds: Vec<Cmd>,
     pub features: Vec<Feature>,
@@ -160,7 +159,6 @@ impl Add for Registry {
     type Output = Registry;
 
     fn add(mut self, other: Registry) -> Registry {
-        self.groups.extend(other.groups.into_iter());
         self.enums.extend(other.enums.into_iter());
         self.cmds.extend(other.cmds.into_iter());
         self.features.extend(other.features.into_iter());
@@ -208,11 +206,6 @@ impl<'a> Iterator for CmdIterator<'a> {
             }
         })
     }
-}
-
-pub struct Group {
-    pub name: String,
-    pub enums: Vec<String>,
 }
 
 pub struct Enum {
@@ -351,7 +344,6 @@ impl<R: io::Read> RegistryBuilder<R> {
     fn consume_registry(&mut self) -> Registry {
         self.expect_start_element("registry");
         let mut registry = Registry {
-            groups: Vec::new(),
             enums: Vec::new(),
             cmds: Vec::new(),
             features: Vec::new(),
@@ -369,21 +361,9 @@ impl<R: io::Read> RegistryBuilder<R> {
                 XmlEvent::StartElement{ref name, ..}
                     if name.local_name == "types" =>
                         self.skip_until(XmlEvent::EndElement { name: name.clone() }),
-
-                // add groups
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "groups" => {
-                    loop {
-                        match self.next() {
-                            XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "group" => {
-                                registry.groups.push(
-                                    self.consume_group(get_attribute(attributes, "name").unwrap())
-                                );
-                            }
-                            XmlEvent::EndElement{ref name} if name.local_name == "groups" => break,
-                            msg => panic!("Expected </groups>, found: {:?}", msg),
-                        }
-                    }
-                }
+                XmlEvent::StartElement{ref name, ..}
+                    if name.local_name == "groups" =>
+                        self.skip_until(XmlEvent::EndElement { name: name.clone() }),
 
                 // add enum namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
@@ -424,12 +404,9 @@ impl<R: io::Read> RegistryBuilder<R> {
 
         match self.filter {
             Some(ref filter) => {
-                let Registry {
-                    groups, enums, cmds, aliases, features: feats, extensions: exts,
-                } = registry;
-
-                let mut desired_enums: HashSet<String> = HashSet::new();
-                let mut desired_cmds: HashSet<String> = HashSet::new();
+                let Registry { enums, cmds, aliases, features: feats, extensions: exts } = registry;
+                let mut desired_enums = HashSet::new();
+                let mut desired_cmds = HashSet::new();
 
                 // find the features we want
                 let mut found_feat = false;
@@ -484,7 +461,6 @@ impl<R: io::Read> RegistryBuilder<R> {
                 let aliases = if let &Filter { fallbacks: Fallbacks::None, ..} = filter { HashMap::new() } else { aliases };
 
                 Registry {
-                    groups: groups,
                     enums: enums.into_iter().filter(|e| {
                             desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
                             desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
@@ -553,24 +529,6 @@ impl<R: io::Read> RegistryBuilder<R> {
                     }
                 },
                 msg => panic!("Unexpected message {:?}", msg) }
-        }
-    }
-
-    fn consume_group(&mut self, name: String) -> Group {
-        let mut enms = Vec::new();
-        loop {
-            match self.next() {
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "enum" => {
-                    enms.push(get_attribute(&attributes, "name").unwrap());
-                    self.expect_end_element("enum");
-                }
-                XmlEvent::EndElement{ref name} if name.local_name == "group" => break,
-                msg => panic!("Expected </group>, found: {:?}", msg),
-            }
-        }
-        Group {
-            name: name,
-            enums: enms,
         }
     }
 
