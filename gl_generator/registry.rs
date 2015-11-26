@@ -224,10 +224,6 @@ pub struct Binding {
 pub struct Cmd {
     pub proto: Binding,
     pub params: Vec<Binding>,
-    /// True if this command doesn't take any pointers.
-    ///
-    /// Unused by the built-in generators.
-    pub is_safe: bool,
     pub alias: Option<String>,
     pub vecequiv: Option<String>,
     pub glx: Option<GlxOpcode>,
@@ -623,12 +619,10 @@ impl<R: io::Read> RegistryBuilder<R> {
                 msg => panic!("Expected </command>, found: {:?}", msg),
             }
         }
-        let is_safe = params.len() <= 0 || params.iter().all(|p| !p.ty.contains('*'));
 
         Cmd {
             proto: proto,
             params: params,
-            is_safe: is_safe,
             alias: alias,
             vecequiv: vecequiv,
             glx: glx,
