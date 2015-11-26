@@ -218,7 +218,6 @@ pub struct Enum {
 pub struct Binding {
     pub ident: String,
     pub ty: String,
-    pub group: Option<String>,
 }
 
 pub struct Cmd {
@@ -576,8 +575,8 @@ impl<R: io::Read> RegistryBuilder<R> {
 
     fn consume_cmd(&mut self) -> Cmd {
         // consume command prototype
-        let proto_attr = self.expect_start_element("proto");
-        let mut proto = self.consume_binding("proto", get_attribute(&proto_attr, "group"));
+        self.expect_start_element("proto");
+        let mut proto = self.consume_binding("proto");
         proto.ident = trim_cmd_prefix(&proto.ident, self.ns).to_string();
 
         let mut params = Vec::new();
@@ -586,10 +585,8 @@ impl<R: io::Read> RegistryBuilder<R> {
         let mut glx = None;
         loop {
             match self.next() {
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "param" => {
-                    params.push(
-                        self.consume_binding("param", get_attribute(&attributes, "group"))
-                    );
+                XmlEvent::StartElement{ref name, ..} if name.local_name == "param" => {
+                    params.push(self.consume_binding("param"));
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "alias" => {
                     alias = get_attribute(&attributes, "name");
@@ -622,7 +619,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_binding(&mut self, outside_tag: &str, group: Option<String>) -> Binding {
+    fn consume_binding(&mut self, outside_tag: &str) -> Binding {
         // consume type
         let mut ty = String::new();
         loop {
@@ -651,7 +648,6 @@ impl<R: io::Read> RegistryBuilder<R> {
         Binding {
             ident: ident,
             ty: ty,
-            group: group,
         }
     }
 }
