@@ -555,16 +555,13 @@ impl<R: io::Read> RegistryBuilder<R> {
         loop {
             match self.next() {
                 // add command definition
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "command" => {
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "command" => {
                     let new = self.consume_cmd();
-                    match new.alias {
-                        Some(ref v) => {
-                            match aliases.entry(v.clone()) {
-                                Entry::Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
-                                Entry::Vacant(ent) => { ent.insert(vec![new.proto.ident.clone()]); }
-                            }
-                        },
-                        None => { }
+                    if let Some(ref v) = new.alias {
+                        match aliases.entry(v.clone()) {
+                            Entry::Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
+                            Entry::Vacant(ent) => { ent.insert(vec![new.proto.ident.clone()]); }
+                        }
                     }
                     cmds.push(new);
                 }
