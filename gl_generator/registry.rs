@@ -240,7 +240,6 @@ pub struct Feature {
 
 #[derive(Clone)]
 pub struct Require {
-    pub comment: Option<String>,
     /// A reference to the earlier types, by name
     pub enums: Vec<String>,
     /// A reference to the earlier types, by name
@@ -251,7 +250,6 @@ pub struct Require {
 pub struct Remove {
     // always core, for now
     pub profile: String,
-    pub comment: String,
     /// A reference to the earlier types, by name
     pub enums: Vec<String>,
     /// A reference to the earlier types, by name
@@ -270,7 +268,6 @@ pub struct GlxOpcode {
     pub ty: String,
     pub opcode: String,
     pub name: Option<String>,
-    pub comment: Option<String>,
 }
 
 struct RegistryBuilder<R: io::Read> {
@@ -608,10 +605,9 @@ impl<R: io::Read> RegistryBuilder<R> {
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "glx" => {
                     glx = Some(GlxOpcode {
-                        ty:      get_attribute(&attributes, "type").unwrap(),
-                        opcode:  get_attribute(&attributes, "opcode").unwrap(),
-                        name:    get_attribute(&attributes, "name"),
-                        comment: get_attribute(&attributes, "comment"),
+                        ty: get_attribute(&attributes, "type").unwrap(),
+                        opcode: get_attribute(&attributes, "opcode").unwrap(),
+                        name: get_attribute(&attributes, "name"),
                     });
                     self.expect_end_element("glx");
                 }
@@ -672,12 +668,10 @@ trait FromXml {
 }
 
 impl FromXml for Require {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Require {
+    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, _: &[OwnedAttribute]) -> Require {
         debug!("Doing a FromXml on Require");
-        let comment = get_attribute(a, "comment");
         let (enums, commands) = r.consume_two("enum", "command", "require");
         Require {
-            comment: comment,
             enums: enums,
             commands: commands
         }
@@ -688,12 +682,10 @@ impl FromXml for Remove {
     fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
-        let comment = get_attribute(a, "comment").unwrap();
         let (enums, commands) = r.consume_two("enum", "command", "remove");
 
         Remove {
             profile: profile,
-            comment: comment,
             enums: enums,
             commands: commands
         }
