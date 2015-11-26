@@ -290,7 +290,7 @@ pub fn build_gl_aliases<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
         "pub type GLenum = super::__gl_imports::raw::c_uint;",
         "pub type GLboolean = super::__gl_imports::raw::c_uchar;",
         "pub type GLbitfield = super::__gl_imports::raw::c_uint;",
-        "pub type GLvoid = super::__gl_imports::raw::c_void;",
+        "pub type GLvoid = ();",
         "pub type GLbyte = super::__gl_imports::raw::c_char;",
         "pub type GLshort = super::__gl_imports::raw::c_short;",
         "pub type GLint = super::__gl_imports::raw::c_int;",
