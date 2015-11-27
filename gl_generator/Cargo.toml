@@ -14,10 +14,9 @@ license = "Apache-2.0"
 name = "gl_generator"
 path = "lib.rs"
 
-[dev-dependencies.khronos_api]
-path = "../khronos_api"
-version = "0.0.8"
-
 [dependencies]
 log = "0.3.2"
 xml-rs = "0.2.2"
+
+[dev-dependencies]
+khronos_api = "0.0.8"
