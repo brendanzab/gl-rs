@@ -138,7 +138,7 @@ The `build.rs` file will generate all the OpenGL functions in a file named,
 
 ### Arguments
 
-- The type of loader to generate. Can be 
+- The type of loader to generate. Can be
   `gl_generator::StaticGenerator`, `gl_generator::StaticStructGenerator`,
   `gl_generator::StructGenerator`, or `gl_generator::GlobalGenerator`.
 - The API to generate. Can be `Gl`, `Gles1`, `Gles2`
@@ -199,3 +199,24 @@ crate](http://doc.rust-lang.org/guide-plugin.html#syntax-extensions) which
 depends on `gl_generator`. Then, implement the `gl_generator::Generator` trait
 and in your plugin registrar, register a function which calls
 `gl_generator::generate_bindings` with your custom generator and its name.
+
+## Changelog
+
+### gl
+
+#### v0.5.0
+
+- Use glutin from examples
+- Use `raw::c_void` for `GLvoid`
+
+### gl_generator
+
+#### v0.4.0
+
+- Upgrade to xml-rs v0.2.2
+- Use `raw::c_void` for `GLvoid`
+- Remove `registry::{Group, EnumNs, CmdNs}`
+- Remove `groups` field from `registry::Registry`
+- Remove `is_safe` field from `registry::Cmd`
+- Remove `comment` field from `registry::{Require, Remove, GlxOpcode}`
+- Downgrade `khronos_api` to be a dev-dependency
