@@ -84,10 +84,9 @@
 //! - `NativePixmapType`
 //! - `NativeWindowType`
 //!
+
 #[macro_use]
 extern crate log;
-
-extern crate khronos_api;
 
 use generators::Generator;
 use registry::{Registry, Filter, Ns};
