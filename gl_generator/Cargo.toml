@@ -19,4 +19,4 @@ log = "0.3.2"
 xml-rs = "0.2.2"
 
 [dev-dependencies]
-khronos_api = "0.0.8"
+khronos_api = "1.0.0"
