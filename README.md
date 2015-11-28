@@ -204,6 +204,10 @@ and in your plugin registrar, register a function which calls
 
 ### gl
 
+#### v0.5.1
+
+- Upgrade `khronos_api` to v1.0.0
+
 #### v0.5.0
 
 - Use glutin from examples
@@ -211,9 +215,13 @@ and in your plugin registrar, register a function which calls
 
 ### gl_generator
 
+#### v0.4.1
+
+- Upgrade `khronos_api` to v1.0.0
+
 #### v0.4.0
 
-- Upgrade to xml-rs v0.2.2
+- Upgrade `xml-rs` to v0.2.2
 - Use `raw::c_void` for `GLvoid`
 - Remove `registry::{Group, EnumNs, CmdNs}`
 - Remove `groups` field from `registry::Registry`
