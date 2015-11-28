@@ -184,7 +184,7 @@ This generator should only be used only if the platform you are compiling for
 is guaranteed to support the requested API. Otherwise you will get a
 compilation error.
 For example, you can use it for WGL and OpenGL 1.1 on Windows or GLX and
-OpenGL 1.3 on Linux, because Windows and Linux are guanteed to provide
+OpenGL 1.3 on Linux, because Windows and Linux are guaranteed to provide
 implementations for these APIs.
 
 You will need to manually provide the linkage. For example to use WGL or
