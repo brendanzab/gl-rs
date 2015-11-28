@@ -16,7 +16,7 @@ path = "lib.rs"
 
 [dev-dependencies.khronos_api]
 path = "../khronos_api"
-version = "0.0.8"
+version = "1.0.0"
 
 [dependencies]
 log = "0.3.2"
