@@ -2,15 +2,5 @@ language: rust
 
 sudo: false
 
-env:
-  global:
-    - secure: SH7xrrH8ONXcrpHzKVJsBuLX1AikKBTBBI0SsEfCWfDZsAur0rQW5ZlPPorhQ0iZUbvw5xwY26T+0EYdBAWOwp7AOBM2iwoGZ15ERTd8o2JX3ZlMQ9AvDHNaXAc6YToj69DaiaimX+oX9DtZeRfQ309Lkp4D1YMrf4X/jhNpQdI=
-
 script:
-  - ./test-all.sh
-
-after_script:
-  # the doc directory needs to be in the root for rust-ci
-  - cargo doc --manifest-path gl/Cargo.toml
-  - ln -s gl/target/doc doc
-  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
+  - ./bin/cargo test

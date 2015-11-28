@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Runs a cargo command on each of the crates specified in `$manifests`
+#
+# Example usage:
+#
+#      $ bin/cargo clean
+#      $ bin/cargo build
+#      $ bin/cargo test --verbose
+
+manifests=(
+  gl/Cargo.toml
+  gl_generator/Cargo.toml
+  gl_tests/Cargo.toml
+  khronos_api/Cargo.toml
+)
+
+export CARGO_TARGET_DIR=./target
+
+echo ${manifests[@]} | xargs -n 1 -t cargo $* --manifest-path
