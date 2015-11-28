@@ -15,4 +15,6 @@ manifests=(
   khronos_api/Cargo.toml
 )
 
+export CARGO_TARGET_DIR=./target
+
 echo ${manifests[@]} | xargs -n 1 -t cargo $* --manifest-path
