@@ -184,7 +184,7 @@ This generator should only be used only if the platform you are compiling for
 is guaranteed to support the requested API. Otherwise you will get a
 compilation error.
 For example, you can use it for WGL and OpenGL 1.1 on Windows or GLX and
-OpenGL 1.3 on Linux, because Windows and Linux are guanteed to provide
+OpenGL 1.3 on Linux, because Windows and Linux are guaranteed to provide
 implementations for these APIs.
 
 You will need to manually provide the linkage. For example to use WGL or
@@ -204,6 +204,10 @@ and in your plugin registrar, register a function which calls
 
 ### gl
 
+#### v0.5.1
+
+- Upgrade `khronos_api` to v1.0.0
+
 #### v0.5.0
 
 - Use glutin from examples
@@ -211,9 +215,13 @@ and in your plugin registrar, register a function which calls
 
 ### gl_generator
 
+#### v0.4.1
+
+- Upgrade `khronos_api` to v1.0.0
+
 #### v0.4.0
 
-- Upgrade to xml-rs v0.2.2
+- Upgrade `xml-rs` to v0.2.2
 - Use `raw::c_void` for `GLvoid`
 - Remove `registry::{Group, EnumNs, CmdNs}`
 - Remove `groups` field from `registry::Registry`

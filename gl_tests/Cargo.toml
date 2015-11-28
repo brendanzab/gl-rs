@@ -1,13 +1,9 @@
 [package]
 # we don't include some metadata to avoid accidental publishes
 name = "gl_tests"
-version = "0.0.1"
+version = "0.0.0"
 build = "build.rs"
 
-[build-dependencies.gl_generator]
-path = "../gl_generator"
-version = "0.4.0"
-
-[build-dependencies.khronos_api]
-path = "../khronos_api"
-version = "0.0.8"
+[build-dependencies]
+gl_generator = { path = "../gl_generator" }
+khronos_api = { path = "../khronos_api" }
