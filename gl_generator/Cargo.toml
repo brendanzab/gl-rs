@@ -1,14 +1,17 @@
 [package]
 
 name = "gl_generator"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
 ]
-description = "Syntax extension for creating bindings to the Khronos OpenGL and related APIs"
-repository = "https://github.com/bjz/gl-rs"
+description = "Code generators for creating bindings to the Khronos OpenGL APIs."
 license = "Apache-2.0"
+
+homepage = "https://github.com/bjz/gl-rs/gl_generator/"
+repository = "https://github.com/bjz/gl-rs/"
+readme = "README.md"
 
 [lib]
 name = "gl_generator"
