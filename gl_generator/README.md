@@ -20,7 +20,6 @@ Add this to your `Cargo.toml`:
 ```toml
 [build-dependencies]
 gl_generator = "0.4.2"
-khronos_api = "1.0.0"
 ```
 
 Under the `[package]` section, add:
@@ -33,7 +32,6 @@ Create a `build.rs` to pull your specific version/API:
 
 ```rust
 extern crate gl_generator;
-extern crate khronos_api;
 
 use gl_generator::{Fallbacks, GlobalGenerator, Api};
 use std::env;
@@ -47,8 +45,7 @@ fn main() {
 
     let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-                                    khronos_api::GL_XML, vec![], "4.5", "core",
-                                    &mut file).unwrap();
+                                    vec![], "4.5", "core", &mut file).unwrap();
 }
 ```
 
@@ -147,6 +144,8 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 
 - Rename `Ns` to `API`, and expose at the top level
 - Use `Api` for `Extension::supported` and `Filter::api` fields
+- Remove `source` argument from `generate_bindings`, removing the need for
+  clients to depend on the `khronos_api` crate
 
 ### v0.4.2
 

@@ -25,7 +25,6 @@
 //!
 //! ```no_run
 //! extern crate gl_generator;
-//! extern crate khronos_api;
 //!
 //! use gl_generator::{Fallbacks, GlobalGenerator, Api};
 //! use std::env;
@@ -34,12 +33,10 @@
 //!
 //! fn main() {
 //!     let dest = env::var("OUT_DIR").unwrap();
-//!
 //!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
 //!     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-//!                                     khronos_api::GL_XML, vec![], "4.5", "core",
-//!                                     &mut file).unwrap();
+//!                                     vec![], "4.5", "core", &mut file).unwrap();
 //! }
 //! ```
 //!
@@ -84,6 +81,7 @@
 //! - `NativeWindowType`
 //!
 
+extern crate khronos_api;
 #[macro_use]
 extern crate log;
 
@@ -105,7 +103,7 @@ pub mod generators;
 pub mod registry;
 
 /// Public function that generates Rust source code.
-pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fallbacks, source: &[u8],
+pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fallbacks,
                                extensions: Vec<String>, version: &str, profile: &str,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
@@ -122,7 +120,15 @@ pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fall
     // Generate the registry of all bindings
     let registry = {
         use std::io::BufReader;
-        let reader = BufReader::new(source);
+
+        let src = match api {
+            Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => khronos_api::GL_XML,
+            Api::Glx => khronos_api::GLX_XML,
+            Api::Wgl => khronos_api::WGL_XML,
+            Api::Egl => khronos_api::EGL_XML,
+        };
+
+        let reader = BufReader::new(src);
         Registry::from_xml(reader, api, filter)
     };
 

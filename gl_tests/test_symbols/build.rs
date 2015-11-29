@@ -13,7 +13,6 @@
 // limitations under the License.
 
 extern crate gl_generator;
-extern crate khronos_api;
 
 use gl_generator::*;
 use std::env;
@@ -26,6 +25,5 @@ fn main() {
     let mut file = BufWriter::new(File::create(&Path::new(&dest).join("test_symbols.rs")).unwrap());
 
     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-                                    khronos_api::GL_XML, vec![], "4.5", "core",
-                                    &mut file).unwrap();
+                                    vec![], "4.5", "core", &mut file).unwrap();
 }

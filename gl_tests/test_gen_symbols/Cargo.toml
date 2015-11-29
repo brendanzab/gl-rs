@@ -9,4 +9,3 @@ path = "lib.rs"
 
 [build-dependencies]
 gl_generator = { path = "../../gl_generator" }
-khronos_api = { path = "../../khronos_api" }
