@@ -23,7 +23,7 @@
 //! ```no_run
 //! extern crate gl_generator;
 //!
-//! use gl_generator::{Fallbacks, GlobalGenerator, Api};
+//! use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
 //! use std::env;
 //! use std::fs::File;
 //! use std::path::Path;
@@ -33,7 +33,7 @@
 //!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
 //!     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-//!                                     vec![], "4.5", "core", &mut file).unwrap();
+//!                                     vec![], "4.5", Profile::Core, &mut file).unwrap();
 //! }
 //! ```
 //!
@@ -69,7 +69,7 @@ use registry::{Registry, Filter};
 
 use std::io;
 
-pub use registry::{Fallbacks, Api};
+pub use registry::{Fallbacks, Api, Profile};
 pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
@@ -77,8 +77,6 @@ pub use generators::static_struct_gen::StaticStructGenerator;
 pub use generators::struct_gen::StructGenerator;
 
 pub mod generators;
-
-#[allow(dead_code)]
 pub mod registry;
 
 /// Generate OpenGL bindings using the specified generator
@@ -87,15 +85,15 @@ pub mod registry;
 ///
 /// - `generator`: The type of loader to generate.
 /// - `api`: The API to generate.
-/// - `profile`: Can be either `"core"` or `"compatibility"`. `"core"` will only include all
-///   functions supported by the  requested version it self, while `"compatibility"` will include
-///   all the functions from previous versions as well.
+/// - `profile`: `Profile::Core` will only include all functions supported by the requested API
+///   version, while `Profile::Compatibility` will include all the functions from previous versions
+///   of the API as well.
 /// - `version`: The requested API version. This is usually in the form `"major.minor"`.
 /// - `extensions`: A list of extra extensions to include in the bindings.
 /// - `dest`: Where to write the generated rust source code to
 ///
 pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fallbacks,
-                               extensions: Vec<String>, version: &str, profile: &str,
+                               extensions: Vec<String>, version: &str, profile: Profile,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
     // Get generator field values, using default values if they have not been
@@ -105,7 +103,7 @@ pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fall
         fallbacks: fallbacks,
         extensions: extensions,
         version: version.to_string(),
-        profile: profile.to_string(),
+        profile: profile,
     };
 
     // Generate the registry of all bindings

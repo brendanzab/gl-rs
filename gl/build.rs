@@ -14,7 +14,7 @@
 
 extern crate gl_generator;
 
-use gl_generator::{Fallbacks, GlobalGenerator, Api};
+use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
 use std::env;
 use std::fs::File;
 use std::io::BufWriter;
@@ -26,5 +26,5 @@ fn main() {
 
     let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", "core", &mut file).unwrap();
+                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
 }

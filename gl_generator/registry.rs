@@ -32,11 +32,9 @@ use self::xml::reader::XmlEvent;
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum Fallbacks { All, None }
-
 impl FromStr for Api {
     type Err = ();
+
     fn from_str(s: &str) -> Result<Api, ()> {
         match s {
             "gl" => Ok(Api::Gl),
@@ -61,6 +59,24 @@ impl fmt::Display for Api {
             Api::GlCore => write!(fmt, "glcore"),
             Api::Gles1 => write!(fmt, "gles1"),
             Api::Gles2 => write!(fmt, "gles2"),
+        }
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Fallbacks { All, None }
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Profile { Core, Compatibility }
+
+impl FromStr for Profile {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Profile, ()> {
+        match s {
+            "core" => Ok(Profile::Core),
+            "compatibility" => Ok(Profile::Compatibility),
+            _ => Err(()),
         }
     }
 }
@@ -238,8 +254,8 @@ pub struct Require {
 
 #[derive(Clone)]
 pub struct Remove {
-    // always core, for now
-    pub profile: String,
+    // always Core, for now
+    pub profile: Profile,
     /// A reference to the earlier types, by name
     pub enums: Vec<String>,
     /// A reference to the earlier types, by name
@@ -270,7 +286,7 @@ pub struct Filter {
     pub api: Api,
     pub fallbacks: Fallbacks,
     pub extensions: Vec<String>,
-    pub profile: String,
+    pub profile: Profile,
     pub version: String,
 }
 
@@ -661,6 +677,7 @@ impl FromXml for Remove {
     fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
+        let profile = Profile::from_str(&*profile).unwrap();
         let (enums, commands) = r.consume_two("enum", "command", "remove");
 
         Remove {

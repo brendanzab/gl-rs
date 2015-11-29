@@ -33,7 +33,7 @@ Create a `build.rs` to pull your specific version/API:
 ```rust
 extern crate gl_generator;
 
-use gl_generator::{Fallbacks, GlobalGenerator, Api};
+use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
 use std::env;
 use std::fs::File;
 use std::io::BufWriter;
@@ -45,7 +45,7 @@ fn main() {
 
     let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", "core", &mut file).unwrap();
+                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
 }
 ```
 
@@ -127,6 +127,8 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 - Use `Api` for `Extension::supported` and `Filter::api` fields
 - Remove `source` argument from `generate_bindings`, removing the need for
   clients to depend on the `khronos_api` crate
+- Add `Profile` enum for specifying the API profile, and change the `source`
+  argument to use it instead of a string
 
 ### v0.4.2
 
