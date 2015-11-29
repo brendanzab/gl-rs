@@ -12,4 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+extern crate gl_generator;
+extern crate khronos_api;
+
+use gl_generator::*;
+use std::env;
+use std::fs::File;
+use std::io::BufWriter;
+use std::path::*;
+
+fn main() {
+    let dest = env::var("OUT_DIR").unwrap();
+    let mut file = BufWriter::new(File::create(&Path::new(&dest).join("test_symbols.rs")).unwrap());
+
+    gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
+                                    khronos_api::GL_XML, vec![], "4.5", "core",
+                                    &mut file).unwrap();
+}

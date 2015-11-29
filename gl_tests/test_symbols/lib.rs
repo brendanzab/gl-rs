@@ -12,25 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! This test ensures that the GL symbols are defined and that fallback works correctly.
-
-extern crate gl_tests;
-
 use std::os::raw;
 
-#[test]
-#[ignore]
-fn symbols_exist() { unsafe {
-	gl_tests::Clear(gl_tests::COLOR_BUFFER_BIT);
-	let _: raw::c_uint = gl_tests::CreateProgram();
-	gl_tests::CompileShader(5);
+pub mod gl {
+    include!(concat!(env!("OUT_DIR"), "/test_symbols.rs"));
+}
 
-    gl_tests::GetActiveUniformBlockiv(0, 0, gl_tests::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
-        std::ptr::null_mut());
-} }
+pub fn compile_test_symbols_exist() {
+    unsafe {
+    	gl::Clear(gl::COLOR_BUFFER_BIT);
+    	let _: raw::c_uint = gl::CreateProgram();
+    	gl::CompileShader(5);
+        gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER, std::ptr::null_mut());
+    }
+}
 
 #[test]
-fn fallback_works() {
+fn test_fallback_works() {
     fn loader(name: &str) -> *const raw::c_void {
         match name {
             "glGenFramebuffers" => 0 as *const raw::c_void,
@@ -39,6 +37,6 @@ fn fallback_works() {
         }
     };
 
-    gl_tests::GenFramebuffers::load_with(loader);
-    assert!(gl_tests::GenFramebuffers::is_loaded());
+    gl::GenFramebuffers::load_with(loader);
+    assert!(gl::GenFramebuffers::is_loaded());
 }
