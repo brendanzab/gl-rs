@@ -51,7 +51,7 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
             #![allow(missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(registry.ns, dest));
+    try!(super::gen_type_aliases(registry.api, dest));
 
     writeln!(dest, "
         }}
@@ -79,7 +79,7 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
         try!(writeln!(dest,
             "#[link_name=\"{symbol}\"]
             pub fn {name}({params}) -> {return_suffix};",
-            symbol = super::gen_symbol_name(registry.ns, &c.proto.ident),
+            symbol = super::gen_symbol_name(registry.api, &c.proto.ident),
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).join(", "),
             return_suffix = super::gen_return_type(c)

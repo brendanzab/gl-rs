@@ -30,48 +30,48 @@ use self::xml::attribute::OwnedAttribute;
 use self::xml::reader::XmlEvent;
 
 #[derive(Copy, Clone)]
-pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
+pub enum Api { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
 #[derive(Copy, Clone)]
 pub enum Fallbacks { All, None }
 
-impl Ns {
+impl Api {
     pub fn fmt_struct_name(&self) -> &str {
         match *self {
-            Ns::Gl  => "Gl",
-            Ns::Glx => "Glx",
-            Ns::Wgl => "Wgl",
-            Ns::Egl => "Egl",
-            Ns::Gles1 => "Gles1",
-            Ns::Gles2 => "Gles2",
+            Api::Gl  => "Gl",
+            Api::Glx => "Glx",
+            Api::Wgl => "Wgl",
+            Api::Egl => "Egl",
+            Api::Gles1 => "Gles1",
+            Api::Gles2 => "Gles2",
         }
     }
 }
 
-impl FromStr for Ns {
+impl FromStr for Api {
     type Err = ();
-    fn from_str(s: &str) -> Result<Ns, ()> {
+    fn from_str(s: &str) -> Result<Api, ()> {
         match s {
-            "gl"  => Ok(Ns::Gl),
-            "glx" => Ok(Ns::Glx),
-            "wgl" => Ok(Ns::Wgl),
-            "egl" => Ok(Ns::Egl),
-            "gles1" => Ok(Ns::Gles1),
-            "gles2" => Ok(Ns::Gles2),
+            "gl"  => Ok(Api::Gl),
+            "glx" => Ok(Api::Glx),
+            "wgl" => Ok(Api::Wgl),
+            "egl" => Ok(Api::Egl),
+            "gles1" => Ok(Api::Gles1),
+            "gles2" => Ok(Api::Gles2),
             _     => Err(()),
         }
     }
 }
 
-impl fmt::Display for Ns {
+impl fmt::Display for Api {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Ns::Gl  => write!(fmt, "gl"),
-            Ns::Glx => write!(fmt, "glx"),
-            Ns::Wgl => write!(fmt, "wgl"),
-            Ns::Egl => write!(fmt, "egl"),
-            Ns::Gles1 => write!(fmt, "gles1"),
-            Ns::Gles2 => write!(fmt, "gles2"),
+            Api::Gl  => write!(fmt, "gl"),
+            Api::Glx => write!(fmt, "glx"),
+            Api::Wgl => write!(fmt, "wgl"),
+            Api::Egl => write!(fmt, "egl"),
+            Api::Gles1 => write!(fmt, "gles1"),
+            Api::Gles2 => write!(fmt, "gles2"),
         }
     }
 }
@@ -80,21 +80,21 @@ fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
     if s.starts_with(trim) { &s[trim.len()..] } else { s }
 }
 
-fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
-    match ns {
-        Ns::Gl | Ns::Gles1 | Ns::Gles2 => trim_str(ident, "GL_"),
-        Ns::Glx => trim_str(ident, "GLX_"),
-        Ns::Wgl =>  trim_str(ident, "WGL_"),
-        Ns::Egl =>  trim_str(ident, "EGL_"),
+fn trim_enum_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
+    match api {
+        Api::Gl | Api::Gles1 | Api::Gles2 => trim_str(ident, "GL_"),
+        Api::Glx => trim_str(ident, "GLX_"),
+        Api::Wgl =>  trim_str(ident, "WGL_"),
+        Api::Egl =>  trim_str(ident, "EGL_"),
     }
 }
 
-fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
-    match ns {
-        Ns::Gl | Ns::Gles1 | Ns::Gles2 => trim_str(ident, "gl"),
-        Ns::Glx => trim_str(ident, "glX"),
-        Ns::Wgl =>  trim_str(ident, "wgl"),
-        Ns::Egl =>  trim_str(ident, "egl"),
+fn trim_cmd_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
+    match api {
+        Api::Gl | Api::Gles1 | Api::Gles2 => trim_str(ident, "gl"),
+        Api::Glx => trim_str(ident, "glX"),
+        Api::Wgl =>  trim_str(ident, "wgl"),
+        Api::Egl =>  trim_str(ident, "egl"),
     }
 }
 
@@ -108,7 +108,7 @@ fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String
 }
 
 pub struct Registry {
-    pub ns: Ns,
+    pub api: Api,
     pub enums: Vec<Enum>,
     pub cmds: Vec<Cmd>,
     pub features: Vec<Feature>,
@@ -118,12 +118,12 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml<R: io::Read>(data: R, ns: Ns, filter: Option<Filter>) -> Registry {
+    pub fn from_xml<R: io::Read>(data: R, api: Api, filter: Option<Filter>) -> Registry {
         use std::io::BufReader;
         let data = BufReader::new(data);
 
         RegistryBuilder {
-            ns: ns,
+            api: api,
             filter: filter,
             reader: XmlEventReader::new(data),
         }.consume_registry()
@@ -272,7 +272,7 @@ pub struct GlxOpcode {
 }
 
 struct RegistryBuilder<R: io::Read> {
-    pub ns: Ns,
+    pub api: Api,
     pub filter: Option<Filter>,
     pub reader: XmlEventReader<R>,
 }
@@ -338,7 +338,7 @@ impl<R: io::Read> RegistryBuilder<R> {
     fn consume_registry(&mut self) -> Registry {
         self.expect_start_element("registry");
         let mut registry = Registry {
-            ns: self.ns,
+            api: self.api,
             enums: Vec::new(),
             cmds: Vec::new(),
             features: Vec::new(),
@@ -393,7 +393,7 @@ impl<R: io::Read> RegistryBuilder<R> {
 
         match self.filter {
             Some(ref filter) => {
-                let Registry { ns, enums, cmds, aliases, features: feats, extensions: exts } = registry;
+                let Registry { api, enums, cmds, aliases, features: feats, extensions: exts } = registry;
                 let mut desired_enums = HashSet::new();
                 let mut desired_cmds = HashSet::new();
 
@@ -450,7 +450,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 let aliases = if let &Filter { fallbacks: Fallbacks::None, ..} = filter { HashMap::new() } else { aliases };
 
                 Registry {
-                    ns: ns,
+                    api: api,
                     enums: enums.into_iter().filter(|e| {
                             desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
                             desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
@@ -534,7 +534,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "enum" => {
                     enums.push(
                         Enum {
-                            ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), self.ns).to_string(),
+                            ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), self.api).to_string(),
                             value:  get_attribute(&attributes, "value").unwrap(),
                             alias:  get_attribute(&attributes, "alias"),
                             ty:     get_attribute(&attributes, "type"),
@@ -581,7 +581,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         // consume command prototype
         self.expect_start_element("proto");
         let mut proto = self.consume_binding("proto");
-        proto.ident = trim_cmd_prefix(&proto.ident, self.ns).to_string();
+        proto.ident = trim_cmd_prefix(&proto.ident, self.api).to_string();
 
         let mut params = Vec::new();
         let mut alias = None;
@@ -594,7 +594,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "alias" => {
                     alias = get_attribute(&attributes, "name");
-                    alias = alias.map(|t| trim_cmd_prefix(&t, self.ns).to_string());
+                    alias = alias.map(|t| trim_cmd_prefix(&t, self.api).to_string());
                     self.expect_end_element("alias");
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "vecequiv" => {

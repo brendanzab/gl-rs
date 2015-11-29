@@ -76,7 +76,7 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
             #![allow(missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(registry.ns, dest));
+    try!(super::gen_type_aliases(registry.api, dest));
 
     writeln!(dest, "
         }}
@@ -173,12 +173,12 @@ fn write_fn_mods<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
     for c in registry.cmd_iter() {
         let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
-                let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(registry.ns, &name[..]))).collect::<Vec<_>>();
+                let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name[..]))).collect::<Vec<_>>();
                 format!("&[{}]", names.join(", "))
             }, None => "&[]".to_string(),
         };
         let fnname = &c.proto.ident[..];
-        let symbol = super::gen_symbol_name(registry.ns, &c.proto.ident[..]);
+        let symbol = super::gen_symbol_name(registry.api, &c.proto.ident[..]);
         let symbol = &symbol[..];
 
         try!(writeln!(dest, r##"
@@ -214,9 +214,9 @@ fn write_panicking_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> w
     writeln!(dest,
         "#[inline(never)]
         fn missing_fn_panic() -> ! {{
-            panic!(\"{ns} function was not loaded\")
+            panic!(\"{api} function was not loaded\")
         }}
-        ", ns = registry.ns)
+        ", api = registry.api)
 }
 
 /// Creates the `load_with` function.

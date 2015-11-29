@@ -55,7 +55,7 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
             #![allow(missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(registry.ns, dest));
+    try!(super::gen_type_aliases(registry.api, dest));
 
     writeln!(dest, "}}")
 }
@@ -115,9 +115,9 @@ fn write_panicking_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> w
     writeln!(dest,
         "#[inline(never)]
         fn missing_fn_panic() -> ! {{
-            panic!(\"{ns} function was not loaded\")
+            panic!(\"{api} function was not loaded\")
         }}",
-        ns = registry.ns
+        api = registry.api
     )
 }
 
@@ -130,8 +130,8 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
         #[allow(non_snake_case)]
         #[allow(dead_code)]
         #[derive(Clone)]
-        pub struct {ns} {{",
-        ns = registry.ns.fmt_struct_name()
+        pub struct {api} {{",
+        api = registry.api.fmt_struct_name()
     ));
 
     for c in registry.cmd_iter() {
@@ -147,7 +147,7 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
 /// Creates the `impl` of the structure created by `write_struct`.
 fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest,
-        "impl {ns} {{
+        "impl {api} {{
             /// Load each OpenGL symbol using a custom load function. This allows for the
             /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
             ///
@@ -156,7 +156,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             /// ~~~
             #[allow(dead_code)]
             #[allow(unused_variables)]
-            pub fn load_with<F>(mut loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
+            pub fn load_with<F>(mut loadfn: F) -> {api} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
                 let mut metaloadfn = |symbol: &str, symbols: &[&str]| {{
                     let mut ptr = loadfn(symbol);
                     if ptr.is_null() {{
@@ -167,19 +167,19 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
                     }}
                     ptr
                 }};
-                {ns} {{",
-        ns = registry.ns.fmt_struct_name()
+                {api} {{",
+        api = registry.api.fmt_struct_name()
     ));
 
     for c in registry.cmd_iter() {
         try!(writeln!(dest,
             "{name}: FnPtr::new(metaloadfn(\"{symbol}\", &[{fallbacks}])),",
             name = c.proto.ident,
-            symbol = super::gen_symbol_name(registry.ns, &c.proto.ident),
+            symbol = super::gen_symbol_name(registry.api, &c.proto.ident),
             fallbacks = match registry.aliases.get(&c.proto.ident) {
                 Some(fbs) => {
                     fbs.iter()
-                       .map(|name| format!("\"{}\"", super::gen_symbol_name(registry.ns, &name)))
+                       .map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name)))
                        .collect::<Vec<_>>().join(", ")
                 },
                 None => format!(""),
@@ -234,7 +234,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
     writeln!(dest,
         "}}
 
-        unsafe impl __gl_imports::Send for {ns} {{}}",
-        ns = registry.ns.fmt_struct_name()
+        unsafe impl __gl_imports::Send for {api} {{}}",
+        api = registry.api.fmt_struct_name()
     )
 }

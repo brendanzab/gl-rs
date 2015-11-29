@@ -27,31 +27,31 @@ fn main() {
     let mut file = BufWriter::new(File::create(&Path::new(&dest).join("test_gen_symbols.rs")).unwrap());
 
     (writeln!(&mut file, "mod gl {{")).unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
+    gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
                                     khronos_api::GL_XML, vec![], "4.5", "core",
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();
 
     (writeln!(&mut file, "mod gles {{")).unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Gles2, Fallbacks::All,
+    gl_generator::generate_bindings(GlobalGenerator, Api::Gles2, Fallbacks::All,
                                     khronos_api::GL_XML, vec![], "3.1", "core",
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();
 
     (writeln!(&mut file, "mod glx {{")).unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Glx, Fallbacks::All,
+    gl_generator::generate_bindings(GlobalGenerator, Api::Glx, Fallbacks::All,
                                     khronos_api::GLX_XML, vec![], "1.4", "core",
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();
 
     (writeln!(&mut file, "mod wgl {{")).unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Wgl, Fallbacks::All,
+    gl_generator::generate_bindings(GlobalGenerator, Api::Wgl, Fallbacks::All,
                                     khronos_api::WGL_XML, vec![], "1.0", "core",
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();
 
     (writeln!(&mut file, "mod egl {{ {}", build_egl_symbols())).unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Egl, Fallbacks::All,
+    gl_generator::generate_bindings(GlobalGenerator, Api::Egl, Fallbacks::All,
                                     khronos_api::EGL_XML, vec![], "1.5", "core",
                                     &mut file).unwrap();
     (writeln!(&mut file, "}}")).unwrap();

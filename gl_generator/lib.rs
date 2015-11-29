@@ -27,7 +27,7 @@
 //! extern crate gl_generator;
 //! extern crate khronos_api;
 //!
-//! use gl_generator::{Fallbacks, GlobalGenerator, Ns};
+//! use gl_generator::{Fallbacks, GlobalGenerator, Api};
 //! use std::env;
 //! use std::fs::File;
 //! use std::path::Path;
@@ -37,7 +37,7 @@
 //!
 //!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
-//!     gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
+//!     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
 //!                                     khronos_api::GL_XML, vec![], "4.5", "core",
 //!                                     &mut file).unwrap();
 //! }
@@ -92,7 +92,7 @@ use registry::{Registry, Filter};
 
 use std::io;
 
-pub use registry::{Fallbacks, Ns};
+pub use registry::{Fallbacks, Api};
 pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
@@ -105,7 +105,7 @@ pub mod generators;
 pub mod registry;
 
 /// Public function that generates Rust source code.
-pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, fallbacks: Fallbacks, source: &[u8],
+pub fn generate_bindings<G, W>(generator: G, ns: registry::Api, fallbacks: Fallbacks, source: &[u8],
                                extensions: Vec<String>, version: &str, profile: &str,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {

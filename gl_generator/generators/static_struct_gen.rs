@@ -53,7 +53,7 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
             #![allow(missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(registry.ns, dest));
+    try!(super::gen_type_aliases(registry.api, dest));
 
     writeln!(dest, "}}")
 }
@@ -76,21 +76,21 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
         #[allow(non_snake_case)]
         #[allow(dead_code)]
         #[derive(Copy, Clone)]
-        pub struct {ns};",
-        ns = registry.ns.fmt_struct_name(),
+        pub struct {api};",
+        api = registry.api.fmt_struct_name(),
     )
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
 fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest,
-        "impl {ns} {{
+        "impl {api} {{
             /// Stub function.
             #[allow(dead_code)]
-            pub fn load_with<F>(mut _loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
-                {ns}
+            pub fn load_with<F>(mut _loadfn: F) -> {api} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
+                {api}
             }}",
-        ns = registry.ns.fmt_struct_name(),
+        api = registry.api.fmt_struct_name(),
     ));
 
     for c in registry.cmd_iter() {
@@ -126,7 +126,7 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
     for c in registry.cmd_iter() {
         try!(writeln!(dest,
             "#[link_name=\"{symbol}\"] fn {name}({params}) -> {return_suffix};",
-            symbol = super::gen_symbol_name(registry.ns, &c.proto.ident),
+            symbol = super::gen_symbol_name(registry.api, &c.proto.ident),
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).join(", "),
             return_suffix = super::gen_return_type(c)

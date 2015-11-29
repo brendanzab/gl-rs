@@ -25,7 +25,7 @@ fn main() {
     let dest = env::var("OUT_DIR").unwrap();
     let mut file = BufWriter::new(File::create(&Path::new(&dest).join("test_symbols.rs")).unwrap());
 
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
+    gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
                                     khronos_api::GL_XML, vec![], "4.5", "core",
                                     &mut file).unwrap();
 }
