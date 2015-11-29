@@ -25,7 +25,7 @@ pub mod static_struct_gen;
 /// Trait for a bindings generator.
 pub trait Generator {
     /// Builds the GL bindings.
-    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> io::Result<()> where W: io::Write;
+    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write;
 }
 
 /// This function generates a `const name: type = value;` item.
@@ -96,8 +96,8 @@ pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Res
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
 ///  things that we can't obtain from the XML files.
-pub fn gen_type_aliases<W>(namespace: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
-    match *namespace {
+pub fn gen_type_aliases<W>(ns: Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+    match ns {
         Ns::Gl | Ns::Gles1 | Ns::Gles2 => {
             try!(ty::build_gl_aliases(dest));
         }
@@ -162,8 +162,8 @@ pub fn gen_return_type(cmd: &Cmd) -> String {
 /// Generates the native symbol name of a `Cmd`.
 ///
 /// Example results: `"glClear"`, `"wglCreateContext"`, etc.
-pub fn gen_symbol_name(ns: &Ns, cmd: &str) -> String {
-    (match *ns {
+pub fn gen_symbol_name(ns: Ns, cmd: &str) -> String {
+    (match ns {
         Ns::Gl | Ns::Gles1 | Ns::Gles2 => "gl",
         Ns::Glx => "glX",
         Ns::Wgl => "wgl",

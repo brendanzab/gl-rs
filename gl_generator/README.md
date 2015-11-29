@@ -35,20 +35,21 @@ Create a `build.rs` to pull your specific version/API:
 extern crate gl_generator;
 extern crate khronos_api;
 
-use gl_generator::{Fallbacks, GlobalGenerator, Ns};
+use gl_generator::{Fallbacks, GlobalGenerator, Ns, RegistryBuilder};
 use std::env;
 use std::fs::File;
-use std::io::BufWriter;
 use std::path::Path;
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let dest = Path::new(&out_dir);
+    let dest = env::var("OUT_DIR").unwrap();
 
-    let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
-                                    khronos_api::GL_XML, vec![], "4.5", "core",
-                                    &mut file).unwrap();
+    let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
+
+    RegistryBuilder::new(Ns::Gl, "4.5", "core")
+        .with_fallbacks(Fallbacks::All)
+        .parse(khronos_api::GL_XML)
+        .write(GlobalGenerator, &mut file)
+        .unwrap();
 }
 ```
 
@@ -126,15 +127,6 @@ You will need to manually provide the linkage. For example to use WGL or
 OpenGL 1.1 on Windows, you will need to add
 `#[link="OpenGL32.lib"] extern {}` somewhere in your code.
 
-### Custom Generators
-
-The `gl_generator` crate is extensible. This is a niche feature useful only in
-very rare cases. To create a custom generator, [create a new plugin
-crate](http://doc.rust-lang.org/guide-plugin.html#syntax-extensions) which
-depends on `gl_generator`. Then, implement the `gl_generator::Generator` trait
-and in your plugin registrar, register a function which calls
-`gl_generator::generate_bindings` with your custom generator and its name.
-
 ## Extra features
 
 The global and struct generators will attempt to use fallbacks functions when
@@ -142,6 +134,13 @@ they are available. For example, if `glGenFramebuffers` cannot be loaded it will
 also attempt to load `glGenFramebuffersEXT` as a fallback.
 
 ## Changelog
+
+### vX.X.X
+
+- Remove `generate_bindings` function
+- Add `RegistryBuilder` struct, with fluent builder API
+- Allow extensions to be specified with generic `AsRef<str>`s
+- Expose `Ns` at the top level
 
 ### v0.4.2
 
