@@ -126,5 +126,5 @@ pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, fallbacks: Fallba
         Registry::from_xml(reader, ns, filter)
     };
 
-    generator.write(&registry, ns, dest)
+    generator.write(&registry, dest)
 }
