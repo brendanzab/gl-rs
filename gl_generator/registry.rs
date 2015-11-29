@@ -29,8 +29,8 @@ use self::xml::EventReader as XmlEventReader;
 use self::xml::attribute::OwnedAttribute;
 use self::xml::reader::XmlEvent;
 
-#[derive(Copy, Clone)]
-pub enum Api { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
 
 #[derive(Copy, Clone)]
 pub enum Fallbacks { All, None }
@@ -39,10 +39,11 @@ impl FromStr for Api {
     type Err = ();
     fn from_str(s: &str) -> Result<Api, ()> {
         match s {
-            "gl"  => Ok(Api::Gl),
+            "gl" => Ok(Api::Gl),
             "glx" => Ok(Api::Glx),
             "wgl" => Ok(Api::Wgl),
             "egl" => Ok(Api::Egl),
+            "glcore" => Ok(Api::GlCore),
             "gles1" => Ok(Api::Gles1),
             "gles2" => Ok(Api::Gles2),
             _     => Err(()),
@@ -57,6 +58,7 @@ impl fmt::Display for Api {
             Api::Glx => write!(fmt, "glx"),
             Api::Wgl => write!(fmt, "wgl"),
             Api::Egl => write!(fmt, "egl"),
+            Api::GlCore => write!(fmt, "glcore"),
             Api::Gles1 => write!(fmt, "gles1"),
             Api::Gles2 => write!(fmt, "gles2"),
         }
@@ -69,7 +71,7 @@ fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
 
 fn trim_enum_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
     match api {
-        Api::Gl | Api::Gles1 | Api::Gles2 => trim_str(ident, "GL_"),
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "GL_"),
         Api::Glx => trim_str(ident, "GLX_"),
         Api::Wgl =>  trim_str(ident, "WGL_"),
         Api::Egl =>  trim_str(ident, "EGL_"),
@@ -78,7 +80,7 @@ fn trim_enum_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
 
 fn trim_cmd_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
     match api {
-        Api::Gl | Api::Gles1 | Api::Gles2 => trim_str(ident, "gl"),
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "gl"),
         Api::Glx => trim_str(ident, "glX"),
         Api::Wgl =>  trim_str(ident, "wgl"),
         Api::Egl =>  trim_str(ident, "egl"),
@@ -219,7 +221,7 @@ pub struct Cmd {
 
 #[derive(Clone)]
 pub struct Feature {
-    pub api: String,
+    pub api: Api,
     pub name: String,
     pub number: String,
     pub requires: Vec<Require>,
@@ -248,7 +250,7 @@ pub struct Remove {
 pub struct Extension {
     pub name: String,
     /// which apis this extension is defined for (see Feature.api)
-    pub supported: Vec<String>,
+    pub supported: Vec<Api>,
     pub requires: Vec<Require>,
 }
 
@@ -265,11 +267,11 @@ struct RegistryBuilder<R: io::Read> {
 }
 
 pub struct Filter {
+    pub api: Api,
     pub fallbacks: Fallbacks,
     pub extensions: Vec<String>,
     pub profile: String,
     pub version: String,
-    pub api: String,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
@@ -679,9 +681,10 @@ impl FromXml for Remove {
 impl FromXml for Feature {
     fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Feature {
         debug!("Doing a FromXml on Feature");
-        let api      = get_attribute(a, "api").unwrap();
-        let name     = get_attribute(a, "name").unwrap();
-        let number   = get_attribute(a, "number").unwrap();
+        let api = get_attribute(a, "api").unwrap();
+        let api = Api::from_str(&*api).unwrap();
+        let name = get_attribute(a, "name").unwrap();
+        let number = get_attribute(a, "number").unwrap();
 
         debug!("Found api = {}, name = {}, number = {}", api, name, number);
 
@@ -701,7 +704,11 @@ impl FromXml for Extension {
     fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Extension {
         debug!("Doing a FromXml on Extension");
         let name = get_attribute(a, "name").unwrap();
-        let supported = get_attribute(a, "supported").unwrap().split('|').map(|x| x.to_string()).collect::<Vec<String>>();
+        let supported = get_attribute(a, "supported").unwrap()
+            .split('|')
+            .map(|x| Api::from_str(x))
+            .map(Result::unwrap)
+            .collect::<Vec<_>>();
         let mut require = Vec::new();
         loop {
             match r.next() {

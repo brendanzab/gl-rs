@@ -146,6 +146,7 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 ### vX.X.X
 
 - Rename `Ns` to `API`, and expose at the top level
+- Use `Api` for `Extension::supported` and `Filter::api` fields
 
 ### v0.4.2
 

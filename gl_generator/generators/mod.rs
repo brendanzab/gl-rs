@@ -34,6 +34,7 @@ pub fn gen_struct_name(api: Api) -> &'static str {
         Api::Glx => "Glx",
         Api::Wgl => "Wgl",
         Api::Egl => "Egl",
+        Api::GlCore => "GlCore",
         Api::Gles1 => "Gles1",
         Api::Gles2 => "Gles2",
     }
@@ -109,7 +110,7 @@ pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Res
 ///  things that we can't obtain from the XML files.
 pub fn gen_type_aliases<W>(api: Api, dest: &mut W) -> io::Result<()> where W: io::Write {
     match api {
-        Api::Gl | Api::Gles1 | Api::Gles2 => {
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => {
             try!(ty::build_gl_aliases(dest));
         }
 
@@ -175,7 +176,7 @@ pub fn gen_return_type(cmd: &Cmd) -> String {
 /// Example results: `"glClear"`, `"wglCreateContext"`, etc.
 pub fn gen_symbol_name(api: Api, cmd: &str) -> String {
     match api {
-        Api::Gl | Api::Gles1 | Api::Gles2 => format!("gl{}", cmd),
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => format!("gl{}", cmd),
         Api::Glx => format!("glX{}", cmd),
         Api::Wgl => format!("wgl{}", cmd),
         Api::Egl => format!("egl{}", cmd),

@@ -105,14 +105,14 @@ pub mod generators;
 pub mod registry;
 
 /// Public function that generates Rust source code.
-pub fn generate_bindings<G, W>(generator: G, ns: registry::Api, fallbacks: Fallbacks, source: &[u8],
+pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fallbacks, source: &[u8],
                                extensions: Vec<String>, version: &str, profile: &str,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
     // Get generator field values, using default values if they have not been
     // specified
     let filter = Some(Filter {
-        api: ns.to_string(),
+        api: api,
         fallbacks: fallbacks,
         extensions: extensions,
         version: version.to_string(),
@@ -123,7 +123,7 @@ pub fn generate_bindings<G, W>(generator: G, ns: registry::Api, fallbacks: Fallb
     let registry = {
         use std::io::BufReader;
         let reader = BufReader::new(source);
-        Registry::from_xml(reader, ns, filter)
+        Registry::from_xml(reader, api, filter)
     };
 
     generator.write(&registry, dest)
