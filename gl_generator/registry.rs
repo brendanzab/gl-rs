@@ -118,7 +118,7 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml<R: io::Read>(data: R, ns: Ns, filter: Option<Filter>) -> Registry {
+    pub fn from_xml<R: io::Read, ExtName: AsRef<str>>(data: R, ns: Ns, filter: Option<Filter<ExtName>>) -> Registry {
         use std::io::BufReader;
         let data = BufReader::new(data);
 
@@ -271,22 +271,22 @@ pub struct GlxOpcode {
     pub name: Option<String>,
 }
 
-struct RegistryBuilder<R: io::Read> {
+struct RegistryBuilder<R: io::Read, ExtName: AsRef<str>> {
     pub ns: Ns,
-    pub filter: Option<Filter>,
+    pub filter: Option<Filter<ExtName>>,
     pub reader: XmlEventReader<R>,
 }
 
-pub struct Filter {
+pub struct Filter<ExtName> {
     pub fallbacks: Fallbacks,
-    pub extensions: Vec<String>,
+    pub extensions: Vec<ExtName>,
     pub profile: String,
     pub version: String,
     pub api: String,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
-impl<R: io::Read> RegistryBuilder<R> {
+impl<R: io::Read, ExtName: AsRef<str>> RegistryBuilder<R, ExtName> {
     fn next(&mut self) -> XmlEvent {
         loop {
             let event = self.reader.next();
@@ -436,7 +436,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 }
 
                 for ext in exts.iter() {
-                    if filter.extensions.iter().any(|x| x == &ext.name) {
+                    if filter.extensions.iter().any(|x| x.as_ref() == &ext.name) {
                         if !ext.supported.iter().any(|x| x == &filter.api) {
                             panic!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
                         }
@@ -661,11 +661,16 @@ fn get_attribute(a: &[OwnedAttribute], name: &str) -> Option<String> {
 }
 
 trait FromXml {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Self;
+    fn convert<R, ExtName>(r: &mut RegistryBuilder<R, ExtName>, a: &[OwnedAttribute]) -> Self where
+        R: io::Read,
+        ExtName: AsRef<str>;
 }
 
 impl FromXml for Require {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, _: &[OwnedAttribute]) -> Require {
+    fn convert<R, ExtName>(r: &mut RegistryBuilder<R, ExtName>, _: &[OwnedAttribute]) -> Require where
+        R: io::Read,
+        ExtName: AsRef<str>,
+    {
         debug!("Doing a FromXml on Require");
         let (enums, commands) = r.consume_two("enum", "command", "require");
         Require {
@@ -676,7 +681,10 @@ impl FromXml for Require {
 }
 
 impl FromXml for Remove {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
+    fn convert<R, ExtName>(r: &mut RegistryBuilder<R, ExtName>, a: &[OwnedAttribute]) -> Remove where
+        R: io::Read,
+        ExtName: AsRef<str>,
+    {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let (enums, commands) = r.consume_two("enum", "command", "remove");
@@ -690,7 +698,10 @@ impl FromXml for Remove {
 }
 
 impl FromXml for Feature {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Feature {
+    fn convert<R, ExtName>(r: &mut RegistryBuilder<R, ExtName>, a: &[OwnedAttribute]) -> Feature where
+        R: io::Read,
+        ExtName: AsRef<str>,
+    {
         debug!("Doing a FromXml on Feature");
         let api      = get_attribute(a, "api").unwrap();
         let name     = get_attribute(a, "name").unwrap();
@@ -711,7 +722,10 @@ impl FromXml for Feature {
 }
 
 impl FromXml for Extension {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Extension {
+    fn convert<R, ExtName>(r: &mut RegistryBuilder<R, ExtName>, a: &[OwnedAttribute]) -> Extension where
+        R: io::Read,
+        ExtName: AsRef<str>,
+    {
         debug!("Doing a FromXml on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap().split('|').map(|x| x.to_string()).collect::<Vec<String>>();
@@ -735,7 +749,10 @@ impl FromXml for Extension {
 }
 
 impl FromXml for String {
-    fn convert<R: io::Read>(_: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> String {
+    fn convert<R, ExtName>(_: &mut RegistryBuilder<R, ExtName>, a: &[OwnedAttribute]) -> String where
+        R: io::Read,
+        ExtName: AsRef<str>,
+    {
         get_attribute(a, "name").unwrap()
     }
 }

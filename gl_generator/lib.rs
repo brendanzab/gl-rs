@@ -107,16 +107,16 @@ pub mod generators;
 pub mod registry;
 
 #[derive(Clone)]
-pub struct RegistryBuilder {
+pub struct RegistryBuilder<ExtName> {
     ns: Ns,
     version: String,
     profile: String,
     fallbacks: Fallbacks,
-    extensions: Vec<String>,
+    extensions: Vec<ExtName>,
 }
 
-impl RegistryBuilder {
-    pub fn new(ns: Ns, version: &str, profile: &str) -> RegistryBuilder {
+impl RegistryBuilder<String> {
+    pub fn new(ns: Ns, version: &str, profile: &str) -> RegistryBuilder<String> {
         RegistryBuilder {
             ns: ns,
             version: version.to_string(),
@@ -125,16 +125,29 @@ impl RegistryBuilder {
             extensions: vec![],
         }
     }
+}
 
-    pub fn with_fallbacks(self, fallbacks: Fallbacks) -> RegistryBuilder {
+impl<ExtName> RegistryBuilder<ExtName> {
+    pub fn with_fallbacks(self, fallbacks: Fallbacks) -> RegistryBuilder<ExtName> {
         RegistryBuilder { fallbacks: fallbacks, ..self }
     }
 
-    pub fn with_extensions(self, extensions: Vec<String>) -> RegistryBuilder {
-        RegistryBuilder { extensions: extensions, ..self }
+    pub fn with_extensions<NewExtName = String>(self, extensions: Vec<NewExtName>) -> RegistryBuilder<NewExtName> where
+        NewExtName: AsRef<str>,
+    {
+        let RegistryBuilder { ns, version, profile, fallbacks, .. } = self;
+        RegistryBuilder {
+            ns: ns,
+            version: version,
+            profile: profile,
+            fallbacks: fallbacks,
+            extensions: extensions,
+        }
     }
 
-    pub fn parse(self, src: &[u8]) -> Registry {
+    pub fn parse(self, src: &[u8]) -> Registry where
+        ExtName: AsRef<str>,
+    {
         use std::io::BufReader;
 
         let filter = Some(Filter {

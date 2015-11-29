@@ -139,6 +139,7 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 
 - Remove `generate_bindings` function
 - Add `RegistryBuilder` struct, with fluent builder API
+- Allow extensions to be specified with generic `AsRef<str>`s
 - Expose `Ns` at the top level
 
 ### v0.4.2
