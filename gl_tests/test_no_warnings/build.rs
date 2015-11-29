@@ -17,13 +17,12 @@ extern crate gl_generator;
 use gl_generator::*;
 use std::env;
 use std::fs::File;
-use std::io::BufWriter;
 use std::io::prelude::*;
 use std::path::*;
 
 fn main() {
     let dest = env::var("OUT_DIR").unwrap();
-    let mut file = BufWriter::new(File::create(&Path::new(&dest).join("test_no_warnings.rs")).unwrap());
+    let mut file = File::create(&Path::new(&dest).join("test_no_warnings.rs")).unwrap();
 
     // Gl
 

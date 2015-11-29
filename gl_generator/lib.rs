@@ -132,8 +132,6 @@ pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
 
     // Generate the registry of all bindings
     let registry = {
-        use std::io::BufReader;
-
         let src = match api {
             Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => khronos_api::GL_XML,
             Api::Glx => khronos_api::GLX_XML,
@@ -141,8 +139,7 @@ pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
             Api::Egl => khronos_api::EGL_XML,
         };
 
-        let reader = BufReader::new(src);
-        Registry::from_xml(reader, api, filter)
+        Registry::from_xml(src, api, filter)
     };
 
     generator.write(&registry, dest)

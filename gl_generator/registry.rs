@@ -99,9 +99,6 @@ pub struct Registry {
 impl Registry {
     /// Generate a registry from the supplied XML string
     pub fn from_xml<R: io::Read>(data: R, api: Api, filter: Filter) -> Registry {
-        use std::io::BufReader;
-        let data = BufReader::new(data);
-
         RegistryBuilder {
             api: api,
             reader: XmlEventReader::new(data),

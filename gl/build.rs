@@ -17,14 +17,12 @@ extern crate gl_generator;
 use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
 use std::env;
 use std::fs::File;
-use std::io::BufWriter;
 use std::path::Path;
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
-    let dest = Path::new(&out_dir);
+    let mut file = File::create(&Path::new(&out_dir).join("bindings.rs")).unwrap();
 
-    let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
                                     vec![], "4.5", Profile::Core, &mut file).unwrap();
 }
