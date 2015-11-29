@@ -127,9 +127,8 @@ impl Registry {
 
         RegistryBuilder {
             api: api,
-            filter: filter,
             reader: XmlEventReader::new(data),
-        }.consume_registry()
+        }.consume_registry(filter)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
@@ -274,7 +273,6 @@ pub struct GlxOpcode {
 
 struct RegistryBuilder<R: io::Read> {
     pub api: Api,
-    pub filter: Filter,
     pub reader: XmlEventReader<R>,
 }
 
@@ -336,7 +334,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_registry(&mut self) -> Registry {
+    fn consume_registry(&mut self, filter: Filter) -> Registry {
         self.expect_start_element("registry");
 
         let mut enums = Vec::new();
@@ -397,13 +395,13 @@ impl<R: io::Read> RegistryBuilder<R> {
         let mut found_feature = false;
         for f in features.iter() {
             // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == self.filter.api && f.number <= self.filter.version {
+            if f.api == filter.api && f.number <= filter.version {
                 for req in f.requires.iter() {
                     desired_enums.extend(req.enums.iter().map(|x| x.clone()));
                     desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                 }
             }
-            if f.number == self.filter.version {
+            if f.number == filter.version {
                 found_feature = true;
             }
         }
@@ -411,9 +409,9 @@ impl<R: io::Read> RegistryBuilder<R> {
         // remove the things that should be removed
         for f in features.iter() {
             // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == self.filter.api && f.number <= self.filter.version {
+            if f.api == filter.api && f.number <= filter.version {
                 for rem in f.removes.iter() {
-                    if rem.profile == self.filter.profile {
+                    if rem.profile == filter.profile {
                         for enm in rem.enums.iter() {
                             debug!("Removing {}", enm);
                             desired_enums.remove(enm);
@@ -428,13 +426,13 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
 
         if !found_feature {
-            panic!("Did not find version {} in the registry", self.filter.version);
+            panic!("Did not find version {} in the registry", filter.version);
         }
 
         for extension in extensions.iter() {
-            if self.filter.extensions.iter().any(|x| x == &extension.name) {
-                if !extension.supported.iter().any(|x| x == &self.filter.api) {
-                    panic!("Requested {}, which doesn't support the {} API", extension.name, self.filter.api);
+            if filter.extensions.iter().any(|x| x == &extension.name) {
+                if !extension.supported.iter().any(|x| x == &filter.api) {
+                    panic!("Requested {}, which doesn't support the {} API", extension.name, filter.api);
                 }
                 for req in extension.requires.iter() {
                     desired_enums.extend(req.enums.iter().map(|x| x.clone()));
@@ -461,7 +459,7 @@ impl<R: io::Read> RegistryBuilder<R> {
             api: self.api,
             enums: enums.into_iter().filter(is_desired_enum).collect(),
             cmds: cmds.into_iter().filter(is_desired_cmd).collect(),
-            aliases: if self.filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
+            aliases: if filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
         }
     }
 
