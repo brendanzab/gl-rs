@@ -111,13 +111,13 @@ pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fall
 {
     // Get generator field values, using default values if they have not been
     // specified
-    let filter = Some(Filter {
+    let filter = Filter {
         api: api,
         fallbacks: fallbacks,
         extensions: extensions,
         version: version.to_string(),
         profile: profile.to_string(),
-    });
+    };
 
     // Generate the registry of all bindings
     let registry = {

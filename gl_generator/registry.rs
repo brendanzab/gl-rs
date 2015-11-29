@@ -32,7 +32,7 @@ use self::xml::reader::XmlEvent;
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Fallbacks { All, None }
 
 impl FromStr for Api {
@@ -107,7 +107,7 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml<R: io::Read>(data: R, api: Api, filter: Option<Filter>) -> Registry {
+    pub fn from_xml<R: io::Read>(data: R, api: Api, filter: Filter) -> Registry {
         use std::io::BufReader;
         let data = BufReader::new(data);
 
@@ -262,7 +262,7 @@ pub struct GlxOpcode {
 
 struct RegistryBuilder<R: io::Read> {
     pub api: Api,
-    pub filter: Option<Filter>,
+    pub filter: Filter,
     pub reader: XmlEventReader<R>,
 }
 
@@ -380,85 +380,78 @@ impl<R: io::Read> RegistryBuilder<R> {
             }
         }
 
-        match self.filter {
-            Some(ref filter) => {
-                let Registry { api, enums, cmds, aliases, features: feats, extensions: exts } = registry;
-                let mut desired_enums = HashSet::new();
-                let mut desired_cmds = HashSet::new();
+        let Registry { api, enums, cmds, aliases, features: feats, extensions: exts } = registry;
+        let mut desired_enums = HashSet::new();
+        let mut desired_cmds = HashSet::new();
 
-                // find the features we want
-                let mut found_feat = false;
-                for f in feats.iter() {
-                    // XXX: verify that the string comparison with <= actually works as desired
-                    if f.api == filter.api && f.number <= filter.version {
-                        for req in f.requires.iter() {
-                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
-                        }
-                    }
-                    if f.number == filter.version {
-                        found_feat = true;
-                    }
+        // find the features we want
+        let mut found_feat = false;
+        for f in feats.iter() {
+            // XXX: verify that the string comparison with <= actually works as desired
+            if f.api == self.filter.api && f.number <= self.filter.version {
+                for req in f.requires.iter() {
+                    desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                 }
+            }
+            if f.number == self.filter.version {
+                found_feat = true;
+            }
+        }
 
-                // remove the things that should be removed
-                for f in feats.iter() {
-                    // XXX: verify that the string comparison with <= actually works as desired
-                    if f.api == filter.api && f.number <= filter.version {
-                        for rem in f.removes.iter() {
-                            if rem.profile == filter.profile {
-                                for enm in rem.enums.iter() {
-                                    debug!("Removing {}", enm);
-                                    desired_enums.remove(enm);
-                                }
-                                for cmd in rem.commands.iter() {
-                                    debug!("Removing {}", cmd);
-                                    desired_cmds.remove(cmd);
-                                }
-                            }
+        // remove the things that should be removed
+        for f in feats.iter() {
+            // XXX: verify that the string comparison with <= actually works as desired
+            if f.api == self.filter.api && f.number <= self.filter.version {
+                for rem in f.removes.iter() {
+                    if rem.profile == self.filter.profile {
+                        for enm in rem.enums.iter() {
+                            debug!("Removing {}", enm);
+                            desired_enums.remove(enm);
+                        }
+                        for cmd in rem.commands.iter() {
+                            debug!("Removing {}", cmd);
+                            desired_cmds.remove(cmd);
                         }
                     }
                 }
+            }
+        }
 
-                if !found_feat {
-                    panic!("Did not find version {} in the registry", filter.version);
+        if !found_feat {
+            panic!("Did not find version {} in the registry", self.filter.version);
+        }
+
+        for ext in exts.iter() {
+            if self.filter.extensions.iter().any(|x| x == &ext.name) {
+                if !ext.supported.iter().any(|x| x == &self.filter.api) {
+                    panic!("Requested {}, which doesn't support the {} API", ext.name, self.filter.api);
                 }
-
-                for ext in exts.iter() {
-                    if filter.extensions.iter().any(|x| x == &ext.name) {
-                        if !ext.supported.iter().any(|x| x == &filter.api) {
-                            panic!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
-                        }
-                        for req in ext.requires.iter() {
-                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
-                        }
-                    }
+                for req in ext.requires.iter() {
+                    desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                 }
+            }
+        }
 
-                let aliases = if let &Filter { fallbacks: Fallbacks::None, ..} = filter { HashMap::new() } else { aliases };
-
-                Registry {
-                    api: api,
-                    enums: enums.into_iter().filter(|e| {
-                            desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
-                            desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
-                            desired_enums.contains(&("GLX_".to_string() + &e.ident)) ||
-                            desired_enums.contains(&("EGL_".to_string() + &e.ident))
-                        }).collect::<Vec<Enum>>(),
-                    cmds: cmds.into_iter().filter(|c| {
-                            desired_cmds.contains(&("gl".to_string() + &c.proto.ident)) ||
-                            desired_cmds.contains(&("wgl".to_string() + &c.proto.ident)) ||
-                            desired_cmds.contains(&("glX".to_string() + &c.proto.ident)) ||
-                            desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
-                        }).collect::<Vec<Cmd>>(),
-                    // these aren't important after this step
-                    features: Vec::new(),
-                    extensions: Vec::new(),
-                    aliases: aliases,
-                }
-            },
-            None => registry
+        Registry {
+            api: api,
+            enums: enums.into_iter().filter(|e| {
+                    desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
+                    desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
+                    desired_enums.contains(&("GLX_".to_string() + &e.ident)) ||
+                    desired_enums.contains(&("EGL_".to_string() + &e.ident))
+                }).collect(),
+            cmds: cmds.into_iter().filter(|c| {
+                    desired_cmds.contains(&("gl".to_string() + &c.proto.ident)) ||
+                    desired_cmds.contains(&("wgl".to_string() + &c.proto.ident)) ||
+                    desired_cmds.contains(&("glX".to_string() + &c.proto.ident)) ||
+                    desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
+                }).collect(),
+            // these aren't important after this step
+            features: Vec::new(),
+            extensions: Vec::new(),
+            aliases: if self.filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
         }
     }
 
