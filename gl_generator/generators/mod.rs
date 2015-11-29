@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use registry::{Enum, Registry, Cmd, Ns};
+use Api;
+use registry::{Enum, Registry, Cmd};
 use std::io;
 
 mod ty;
@@ -25,7 +26,19 @@ pub mod static_struct_gen;
 /// Trait for a bindings generator.
 pub trait Generator {
     /// Builds the GL bindings.
-    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> io::Result<()> where W: io::Write;
+    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write;
+}
+
+pub fn gen_struct_name(api: Api) -> &'static str {
+    match api {
+        Api::Gl  => "Gl",
+        Api::Glx => "Glx",
+        Api::Wgl => "Wgl",
+        Api::Egl => "Egl",
+        Api::GlCore => "GlCore",
+        Api::Gles1 => "Gles1",
+        Api::Gles2 => "Gles2",
+    }
 }
 
 /// This function generates a `const name: type = value;` item.
@@ -96,25 +109,25 @@ pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Res
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
 ///  things that we can't obtain from the XML files.
-pub fn gen_type_aliases<W>(namespace: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
-    match *namespace {
-        Ns::Gl | Ns::Gles1 | Ns::Gles2 => {
+pub fn gen_type_aliases<W>(api: Api, dest: &mut W) -> io::Result<()> where W: io::Write {
+    match api {
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => {
             try!(ty::build_gl_aliases(dest));
         }
 
-        Ns::Glx => {
+        Api::Glx => {
             try!(ty::build_gl_aliases(dest));
             try!(ty::build_x_aliases(dest));
             try!(ty::build_glx_aliases(dest));
         }
 
-        Ns::Wgl => {
+        Api::Wgl => {
             try!(ty::build_gl_aliases(dest));
             try!(ty::build_win_aliases(dest));
             try!(ty::build_wgl_aliases(dest));
         }
 
-        Ns::Egl => {
+        Api::Egl => {
             try!(ty::build_gl_aliases(dest));
             try!(ty::build_egl_aliases(dest));
         }
@@ -162,11 +175,11 @@ pub fn gen_return_type(cmd: &Cmd) -> String {
 /// Generates the native symbol name of a `Cmd`.
 ///
 /// Example results: `"glClear"`, `"wglCreateContext"`, etc.
-pub fn gen_symbol_name(ns: &Ns, cmd: &str) -> String {
-    (match *ns {
-        Ns::Gl | Ns::Gles1 | Ns::Gles2 => "gl",
-        Ns::Glx => "glX",
-        Ns::Wgl => "wgl",
-        Ns::Egl => "egl",
-    }).to_string() + cmd
+pub fn gen_symbol_name(api: Api, cmd: &str) -> String {
+    match api {
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => format!("gl{}", cmd),
+        Api::Glx => format!("glX{}", cmd),
+        Api::Wgl => format!("wgl{}", cmd),
+        Api::Egl => format!("egl{}", cmd),
+    }
 }

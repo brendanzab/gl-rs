@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use registry::{Registry, Ns};
+use registry::Registry;
 use std::io;
 
 #[allow(missing_copy_implementations)]
 pub struct GlobalGenerator;
 
 impl super::Generator for GlobalGenerator {
-    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
         try!(write_header(dest));
         try!(write_metaloadfn(dest));
-        try!(write_type_aliases(&ns, dest));
+        try!(write_type_aliases(registry, dest));
         try!(write_enums(registry, dest));
         try!(write_fns(registry, dest));
         try!(write_fnptr_struct_def(dest));
         try!(write_ptrs(registry, dest));
-        try!(write_fn_mods(registry, &ns, dest));
-        try!(write_panicking_fns(&ns, dest));
+        try!(write_fn_mods(registry, dest));
+        try!(write_panicking_fns(registry, dest));
         try!(write_load_fn(registry, dest));
         Ok(())
     }
@@ -67,7 +67,7 @@ fn write_metaloadfn<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_type_aliases`.
-fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
         pub mod types {{
             #![allow(non_camel_case_types)]
@@ -76,7 +76,7 @@ fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::W
             #![allow(missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(ns, dest));
+    try!(super::gen_type_aliases(registry.api, dest));
 
     writeln!(dest, "
         }}
@@ -169,16 +169,16 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
 ///
 /// Each module contains `is_loaded` and `load_with` which interact with the `storage` module
 ///  created by `write_ptrs`.
-fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_fn_mods<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     for c in registry.cmd_iter() {
         let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
-                let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(ns, &name[..]))).collect::<Vec<_>>();
+                let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name[..]))).collect::<Vec<_>>();
                 format!("&[{}]", names.join(", "))
             }, None => "&[]".to_string(),
         };
         let fnname = &c.proto.ident[..];
-        let symbol = super::gen_symbol_name(ns, &c.proto.ident[..]);
+        let symbol = super::gen_symbol_name(registry.api, &c.proto.ident[..]);
         let symbol = &symbol[..];
 
         try!(writeln!(dest, r##"
@@ -210,13 +210,13 @@ fn write_fn_mods<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()
 /// Creates a `missing_fn_panic` function.
 ///
 /// This function is the mock that is called if the real function could not be called.
-fn write_panicking_fns<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_panicking_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest,
         "#[inline(never)]
         fn missing_fn_panic() -> ! {{
-            panic!(\"{ns} function was not loaded\")
+            panic!(\"{api} function was not loaded\")
         }}
-        ", ns = ns)
+        ", api = registry.api)
 }
 
 /// Creates the `load_with` function.

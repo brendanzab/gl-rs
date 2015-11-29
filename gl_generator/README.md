@@ -20,7 +20,6 @@ Add this to your `Cargo.toml`:
 ```toml
 [build-dependencies]
 gl_generator = "0.4.2"
-khronos_api = "1.0.0"
 ```
 
 Under the `[package]` section, add:
@@ -33,22 +32,18 @@ Create a `build.rs` to pull your specific version/API:
 
 ```rust
 extern crate gl_generator;
-extern crate khronos_api;
 
-use gl_generator::{Fallbacks, GlobalGenerator, Ns};
+use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
 use std::env;
 use std::fs::File;
-use std::io::BufWriter;
 use std::path::Path;
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let dest = Path::new(&out_dir);
+    let dest = env::var("OUT_DIR").unwrap();
+    let mut file = File::create(&Path::new(&dest).join("bindings.rs")).unwrap();
 
-    let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
-                                    khronos_api::GL_XML, vec![], "4.5", "core",
-                                    &mut file).unwrap();
+    gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
+                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
 }
 ```
 
@@ -70,25 +65,6 @@ fn main() {
 
 The `build.rs` file will generate all the OpenGL functions in a file named,
 `bindings.rs` plus all enumerations, and all types in the `types` submodule.
-
-### Arguments
-
-- The type of loader to generate. Can be
-  `gl_generator::StaticGenerator`, `gl_generator::StaticStructGenerator`,
-  `gl_generator::StructGenerator`, or `gl_generator::GlobalGenerator`.
-- The API to generate. Can be `Gl`, `Gles1`, `Gles2`
-  (GLES 2 or 3), `Wgl`, `Glx`, `Egl`.
-- The file which contains the bindings to parse. Can be `GL_XML` (for GL
-  and GL ES), `GLX_XML`, `WGL_XML`, `EGL_XML`.
-- Extra extensions to include in the bindings. These are
-  specified as a list of strings.
-- The requested API version. This is usually in the form
-  `"major.minor"`.
-- The GL profile. Can be either `"core"` or `"compatibility"`. `"core"` will
-  only include all functions supported by the
-  requested version it self, while `"compatibility"` will include all the
-  functions from previous versions as well.
-- The file to save the generated bindings to.
 
 ## Generator types
 
@@ -142,6 +118,18 @@ they are available. For example, if `glGenFramebuffers` cannot be loaded it will
 also attempt to load `glGenFramebuffersEXT` as a fallback.
 
 ## Changelog
+
+### vX.X.X
+
+- Rename `Ns` to `API`, and expose at the top level
+- Use `Api` for `Extension::supported` and `Filter::api` fields
+- Remove `source` argument from `generate_bindings`, removing the need for
+  clients to depend on the `khronos_api` crate
+- Add `Profile` enum for specifying the API profile, and change the `source`
+  argument to use it instead of a string
+- Remove `features` and `extensions` fields from `Registry`
+- Hide `registry::{Feature, Filter, Require, Remove, Extension}` from the public API
+- Move `registry::{Fallbacks, Api, Profile}` to top level module
 
 ### v0.4.2
 

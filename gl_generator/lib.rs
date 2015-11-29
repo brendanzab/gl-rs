@@ -13,33 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! # gl_generator
+//! An OpenGL bindings generator. It defines a function named `generate_bindings` which can be
+//! used to generate all constants and functions of a given OpenGL version.
 //!
-//! `gl_generator` is an OpenGL bindings generator. It defines a function
-//!  named `generate_bindings` which can be used to generate all constants
-//!  and functions of a given OpenGL version.
-//!
-//! ## Example
+//! # Example
 //!
 //! In `build.rs`:
 //!
 //! ```no_run
 //! extern crate gl_generator;
-//! extern crate khronos_api;
 //!
-//! use gl_generator::{Fallbacks, GlobalGenerator, Ns};
+//! use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
 //! use std::env;
 //! use std::fs::File;
 //! use std::path::Path;
 //!
 //! fn main() {
 //!     let dest = env::var("OUT_DIR").unwrap();
-//!
 //!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
-//!     gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
-//!                                     khronos_api::GL_XML, vec![], "4.5", "core",
-//!                                     &mut file).unwrap();
+//!     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
+//!                                     vec![], "4.5", Profile::Core, &mut file).unwrap();
 //! }
 //! ```
 //!
@@ -49,25 +43,7 @@
 //! include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
 //! ```
 //!
-//! ## Arguments
-//!
-//! Each field can be specified at most once, or not at all. If the field is not
-//! specified, then a default value will be used.
-//!
-//! - `api`: The API to generate. Can be either `"gl"`, `"gles1"`, `"gles2"`,
-//!   `"wgl"`, `"glx"`, `"egl"`. Defaults to `"gl"`.
-//! - `profile`: Can be either `"core"` or `"compatibility"`. Defaults to
-//!   `"core"`. `"core"` will only include all functions supported by the
-//!   requested version it self, while `"compatibility"` will include all the
-//!   functions from previous versions as well.
-//! - `version`: The requested API version. This is usually in the form
-//!   `"major.minor"`. Defaults to `"1.0"`
-//! - `generator`: The type of loader to generate. Can be either `"static"`,
-//!   `"global"`, or `"struct"`. Defaults to `"static"`.
-//! - `extensions`: Extra extensions to include in the bindings. These are
-//!   specified as a list of strings. Defaults to `[]`.
-//!
-//! ## About EGL
+//! # About EGL
 //!
 //! When you generate bindings for EGL, the following platform-specific types must be declared
 //!  *at the same level where you include the bindings*:
@@ -88,11 +64,11 @@
 extern crate log;
 
 use generators::Generator;
-use registry::{Registry, Filter};
+use registry::Registry;
 
+use std::fmt;
 use std::io;
 
-pub use registry::{Fallbacks, Ns};
 pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
@@ -100,31 +76,49 @@ pub use generators::static_struct_gen::StaticStructGenerator;
 pub use generators::struct_gen::StructGenerator;
 
 pub mod generators;
-
-#[allow(dead_code)]
 pub mod registry;
 
-/// Public function that generates Rust source code.
-pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, fallbacks: Fallbacks, source: &[u8],
-                               extensions: Vec<String>, version: &str, profile: &str,
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
+
+impl fmt::Display for Api {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Api::Gl  => write!(fmt, "gl"),
+            Api::Glx => write!(fmt, "glx"),
+            Api::Wgl => write!(fmt, "wgl"),
+            Api::Egl => write!(fmt, "egl"),
+            Api::GlCore => write!(fmt, "glcore"),
+            Api::Gles1 => write!(fmt, "gles1"),
+            Api::Gles2 => write!(fmt, "gles2"),
+        }
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Fallbacks { All, None }
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Profile { Core, Compatibility }
+
+/// Generate OpenGL bindings using the specified generator
+///
+/// # Arguments
+///
+/// - `generator`: The type of loader to generate.
+/// - `api`: The API to generate.
+/// - `profile`: `Profile::Core` will only include all functions supported by the requested API
+///   version, while `Profile::Compatibility` will include all the functions from previous versions
+///   of the API as well.
+/// - `version`: The requested API version. This is usually in the form `"major.minor"`.
+/// - `extensions`: A list of extra extensions to include in the bindings.
+/// - `dest`: Where to write the generated rust source code to
+///
+pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
+                               extensions: Vec<String>, version: &str, profile: Profile,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
-    // Get generator field values, using default values if they have not been
-    // specified
-    let filter = Some(Filter {
-        api: ns.to_string(),
-        fallbacks: fallbacks,
-        extensions: extensions,
-        version: version.to_string(),
-        profile: profile.to_string(),
-    });
-
-    // Generate the registry of all bindings
-    let registry = {
-        use std::io::BufReader;
-        let reader = BufReader::new(source);
-        Registry::from_xml(reader, ns, filter)
-    };
-
-    generator.write(&registry, ns, dest)
+    let registry = Registry::new(api, fallbacks, extensions, version, profile);
+    generator.write(&registry, dest)
 }

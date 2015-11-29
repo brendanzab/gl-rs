@@ -14,63 +14,47 @@
 // limitations under the License.
 
 extern crate xml;
+extern crate khronos_api;
 
 use std::collections::hash_map::Entry;
 use std::collections::BTreeSet;
 use std::collections::HashSet;
 use std::collections::HashMap;
 use std::ops::Add;
-use std::fmt;
 use std::str::FromStr;
 use std::slice::Iter;
 use std::io;
 
+use {Fallbacks, Api, Profile};
 use self::xml::EventReader as XmlEventReader;
 use self::xml::attribute::OwnedAttribute;
 use self::xml::reader::XmlEvent;
 
-#[derive(Copy, Clone)]
-pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
-
-pub enum Fallbacks { All, None }
-
-impl Ns {
-    pub fn fmt_struct_name(&self) -> &str {
-        match *self {
-            Ns::Gl  => "Gl",
-            Ns::Glx => "Glx",
-            Ns::Wgl => "Wgl",
-            Ns::Egl => "Egl",
-            Ns::Gles1 => "Gles1",
-            Ns::Gles2 => "Gles2",
-        }
-    }
-}
-
-impl FromStr for Ns {
+impl FromStr for Api {
     type Err = ();
-    fn from_str(s: &str) -> Result<Ns, ()> {
+
+    fn from_str(s: &str) -> Result<Api, ()> {
         match s {
-            "gl"  => Ok(Ns::Gl),
-            "glx" => Ok(Ns::Glx),
-            "wgl" => Ok(Ns::Wgl),
-            "egl" => Ok(Ns::Egl),
-            "gles1" => Ok(Ns::Gles1),
-            "gles2" => Ok(Ns::Gles2),
+            "gl" => Ok(Api::Gl),
+            "glx" => Ok(Api::Glx),
+            "wgl" => Ok(Api::Wgl),
+            "egl" => Ok(Api::Egl),
+            "glcore" => Ok(Api::GlCore),
+            "gles1" => Ok(Api::Gles1),
+            "gles2" => Ok(Api::Gles2),
             _     => Err(()),
         }
     }
 }
 
-impl fmt::Display for Ns {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Ns::Gl  => write!(fmt, "gl"),
-            Ns::Glx => write!(fmt, "glx"),
-            Ns::Wgl => write!(fmt, "wgl"),
-            Ns::Egl => write!(fmt, "egl"),
-            Ns::Gles1 => write!(fmt, "gles1"),
-            Ns::Gles2 => write!(fmt, "gles2"),
+impl FromStr for Profile {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Profile, ()> {
+        match s {
+            "core" => Ok(Profile::Core),
+            "compatibility" => Ok(Profile::Compatibility),
+            _ => Err(()),
         }
     }
 }
@@ -79,21 +63,21 @@ fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
     if s.starts_with(trim) { &s[trim.len()..] } else { s }
 }
 
-fn trim_enum_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
-    match ns {
-        Ns::Gl | Ns::Gles1 | Ns::Gles2 => trim_str(ident, "GL_"),
-        Ns::Glx => trim_str(ident, "GLX_"),
-        Ns::Wgl =>  trim_str(ident, "WGL_"),
-        Ns::Egl =>  trim_str(ident, "EGL_"),
+fn trim_enum_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
+    match api {
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "GL_"),
+        Api::Glx => trim_str(ident, "GLX_"),
+        Api::Wgl =>  trim_str(ident, "WGL_"),
+        Api::Egl =>  trim_str(ident, "EGL_"),
     }
 }
 
-fn trim_cmd_prefix<'a>(ident: &'a str, ns: Ns) -> &'a str {
-    match ns {
-        Ns::Gl | Ns::Gles1 | Ns::Gles2 => trim_str(ident, "gl"),
-        Ns::Glx => trim_str(ident, "glX"),
-        Ns::Wgl =>  trim_str(ident, "wgl"),
-        Ns::Egl =>  trim_str(ident, "egl"),
+fn trim_cmd_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
+    match api {
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "gl"),
+        Api::Glx => trim_str(ident, "glX"),
+        Api::Wgl =>  trim_str(ident, "wgl"),
+        Api::Egl =>  trim_str(ident, "egl"),
     }
 }
 
@@ -107,24 +91,30 @@ fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String
 }
 
 pub struct Registry {
+    pub api: Api,
     pub enums: Vec<Enum>,
     pub cmds: Vec<Cmd>,
-    pub features: Vec<Feature>,
-    pub extensions: Vec<Extension>,
     pub aliases: HashMap<String, Vec<String>>,
 }
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml<R: io::Read>(data: R, ns: Ns, filter: Option<Filter>) -> Registry {
-        use std::io::BufReader;
-        let data = BufReader::new(data);
+    pub fn new(api: Api, fallbacks: Fallbacks, extensions: Vec<String>, version: &str, profile: Profile) -> Registry {
+        let filter = Filter {
+            fallbacks: fallbacks,
+            extensions: extensions,
+            version: version.to_string(),
+            profile: profile,
+        };
 
-        RegistryBuilder {
-            ns: ns,
-            filter: filter,
-            reader: XmlEventReader::new(data),
-        }.consume_registry()
+        let src = match api {
+            Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => khronos_api::GL_XML,
+            Api::Glx => self::khronos_api::GLX_XML,
+            Api::Wgl => self::khronos_api::WGL_XML,
+            Api::Egl => self::khronos_api::EGL_XML,
+        };
+
+        RegistryParser::parse(src, api, filter)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
@@ -161,8 +151,6 @@ impl Add for Registry {
     fn add(mut self, other: Registry) -> Registry {
         self.enums.extend(other.enums.into_iter());
         self.cmds.extend(other.cmds.into_iter());
-        self.features.extend(other.features.into_iter());
-        self.extensions.extend(other.extensions.into_iter());
         self.aliases.extend(other.aliases.into_iter());
         self
     }
@@ -229,8 +217,8 @@ pub struct Cmd {
 }
 
 #[derive(Clone)]
-pub struct Feature {
-    pub api: String,
+struct Feature {
+    pub api: Api,
     pub name: String,
     pub number: String,
     pub requires: Vec<Require>,
@@ -238,7 +226,7 @@ pub struct Feature {
 }
 
 #[derive(Clone)]
-pub struct Require {
+struct Require {
     /// A reference to the earlier types, by name
     pub enums: Vec<String>,
     /// A reference to the earlier types, by name
@@ -246,9 +234,9 @@ pub struct Require {
 }
 
 #[derive(Clone)]
-pub struct Remove {
-    // always core, for now
-    pub profile: String,
+struct Remove {
+    // always Core, for now
+    pub profile: Profile,
     /// A reference to the earlier types, by name
     pub enums: Vec<String>,
     /// A reference to the earlier types, by name
@@ -256,10 +244,10 @@ pub struct Remove {
 }
 
 #[derive(Clone)]
-pub struct Extension {
+struct Extension {
     pub name: String,
     /// which apis this extension is defined for (see Feature.api)
-    pub supported: Vec<String>,
+    pub supported: Vec<Api>,
     pub requires: Vec<Require>,
 }
 
@@ -269,22 +257,20 @@ pub struct GlxOpcode {
     pub name: Option<String>,
 }
 
-struct RegistryBuilder<R: io::Read> {
-    pub ns: Ns,
-    pub filter: Option<Filter>,
-    pub reader: XmlEventReader<R>,
+struct RegistryParser<R: io::Read> {
+    api: Api,
+    reader: XmlEventReader<R>,
 }
 
-pub struct Filter {
-    pub fallbacks: Fallbacks,
-    pub extensions: Vec<String>,
-    pub profile: String,
-    pub version: String,
-    pub api: String,
+struct Filter {
+    fallbacks: Fallbacks,
+    extensions: Vec<String>,
+    profile: Profile,
+    version: String,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
-impl<R: io::Read> RegistryBuilder<R> {
+impl<R: io::Read> RegistryParser<R> {
     fn next(&mut self) -> XmlEvent {
         loop {
             let event = self.reader.next();
@@ -333,46 +319,50 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_registry(&mut self) -> Registry {
-        self.expect_start_element("registry");
-        let mut registry = Registry {
-            enums: Vec::new(),
-            cmds: Vec::new(),
-            features: Vec::new(),
-            extensions: Vec::new(),
-            aliases: HashMap::new(),
+    fn parse(src: R, api: Api, filter: Filter) -> Registry {
+        let mut parser = RegistryParser {
+            api: api,
+            reader: XmlEventReader::new(src),
         };
 
+        parser.expect_start_element("registry");
+
+        let mut enums = Vec::new();
+        let mut cmds = Vec::new();
+        let mut features = Vec::new();
+        let mut extensions = Vec::new();
+        let mut aliases = HashMap::new();
+
         loop {
-            match self.next() {
+            match parser.next() {
                 // ignores
                 XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "comment" => self.skip_to_end("comment"),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "types" => self.skip_to_end("types"),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "groups" => self.skip_to_end("groups"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "comment" => parser.skip_to_end("comment"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "types" => parser.skip_to_end("types"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "groups" => parser.skip_to_end("groups"),
 
                 // add enum namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
-                    registry.enums.extend(self.consume_enums().into_iter());
+                    enums.extend(parser.consume_enums().into_iter());
                 }
 
                 // add command namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "commands" => {
-                    let (cmds, aliases) = self.consume_cmds();
-                    registry.cmds.extend(cmds.into_iter());
-                    merge_map(&mut registry.aliases, aliases);
+                    let (new_cmds, new_aliases) = parser.consume_cmds();
+                    cmds.extend(new_cmds.into_iter());
+                    merge_map(&mut aliases, new_aliases);
                 }
 
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "feature" => {
                     debug!("Parsing feature: {:?}", attributes);
-                    registry.features.push(FromXml::convert(self, &attributes));
+                    features.push(Feature::convert(&mut parser, &attributes));
                 }
 
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "extensions" => {
                     loop {
-                        match self.next() {
+                        match parser.next() {
                             XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "extension" => {
-                                registry.extensions.push(FromXml::convert(self, &attributes));
+                                extensions.push(Extension::convert(&mut parser, &attributes));
                             }
                             XmlEvent::EndElement{ref name} if name.local_name == "extensions" => break,
                             msg => panic!("Unexpected message {:?}", msg),
@@ -388,84 +378,78 @@ impl<R: io::Read> RegistryBuilder<R> {
             }
         }
 
-        match self.filter {
-            Some(ref filter) => {
-                let Registry { enums, cmds, aliases, features: feats, extensions: exts } = registry;
-                let mut desired_enums = HashSet::new();
-                let mut desired_cmds = HashSet::new();
+        let mut desired_enums = HashSet::new();
+        let mut desired_cmds = HashSet::new();
 
-                // find the features we want
-                let mut found_feat = false;
-                for f in feats.iter() {
-                    // XXX: verify that the string comparison with <= actually works as desired
-                    if f.api == filter.api && f.number <= filter.version {
-                        for req in f.requires.iter() {
-                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
-                        }
-                    }
-                    if f.number == filter.version {
-                        found_feat = true;
-                    }
+        // find the features we want
+        let mut found_feature = false;
+        for f in features.iter() {
+            // XXX: verify that the string comparison with <= actually works as desired
+            if f.api == api && f.number <= filter.version {
+                for req in f.requires.iter() {
+                    desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                 }
+            }
+            if f.number == filter.version {
+                found_feature = true;
+            }
+        }
 
-                // remove the things that should be removed
-                for f in feats.iter() {
-                    // XXX: verify that the string comparison with <= actually works as desired
-                    if f.api == filter.api && f.number <= filter.version {
-                        for rem in f.removes.iter() {
-                            if rem.profile == filter.profile {
-                                for enm in rem.enums.iter() {
-                                    debug!("Removing {}", enm);
-                                    desired_enums.remove(enm);
-                                }
-                                for cmd in rem.commands.iter() {
-                                    debug!("Removing {}", cmd);
-                                    desired_cmds.remove(cmd);
-                                }
-                            }
+        // remove the things that should be removed
+        for f in features.iter() {
+            // XXX: verify that the string comparison with <= actually works as desired
+            if f.api == api && f.number <= filter.version {
+                for rem in f.removes.iter() {
+                    if rem.profile == filter.profile {
+                        for enm in rem.enums.iter() {
+                            debug!("Removing {}", enm);
+                            desired_enums.remove(enm);
+                        }
+                        for cmd in rem.commands.iter() {
+                            debug!("Removing {}", cmd);
+                            desired_cmds.remove(cmd);
                         }
                     }
                 }
+            }
+        }
 
-                if !found_feat {
-                    panic!("Did not find version {} in the registry", filter.version);
+        if !found_feature {
+            panic!("Did not find version {} in the registry", filter.version);
+        }
+
+        for extension in extensions.iter() {
+            if filter.extensions.iter().any(|x| x == &extension.name) {
+                if !extension.supported.iter().any(|x| x == &api) {
+                    panic!("Requested {}, which doesn't support the {} API", extension.name, api);
                 }
-
-                for ext in exts.iter() {
-                    if filter.extensions.iter().any(|x| x == &ext.name) {
-                        if !ext.supported.iter().any(|x| x == &filter.api) {
-                            panic!("Requested {}, which doesn't support the {} API", ext.name, filter.api);
-                        }
-                        for req in ext.requires.iter() {
-                            desired_enums.extend(req.enums.iter().map(|x| x.clone()));
-                            desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
-                        }
-                    }
+                for req in extension.requires.iter() {
+                    desired_enums.extend(req.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                 }
+            }
+        }
 
-                let aliases = if let &Filter { fallbacks: Fallbacks::None, ..} = filter { HashMap::new() } else { aliases };
+        let is_desired_enum = |e: &Enum| {
+            desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
+            desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
+            desired_enums.contains(&("GLX_".to_string() + &e.ident)) ||
+            desired_enums.contains(&("EGL_".to_string() + &e.ident))
+        };
 
-                Registry {
-                    enums: enums.into_iter().filter(|e| {
-                            desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
-                            desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
-                            desired_enums.contains(&("GLX_".to_string() + &e.ident)) ||
-                            desired_enums.contains(&("EGL_".to_string() + &e.ident))
-                        }).collect::<Vec<Enum>>(),
-                    cmds: cmds.into_iter().filter(|c| {
-                            desired_cmds.contains(&("gl".to_string() + &c.proto.ident)) ||
-                            desired_cmds.contains(&("wgl".to_string() + &c.proto.ident)) ||
-                            desired_cmds.contains(&("glX".to_string() + &c.proto.ident)) ||
-                            desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
-                        }).collect::<Vec<Cmd>>(),
-                    // these aren't important after this step
-                    features: Vec::new(),
-                    extensions: Vec::new(),
-                    aliases: aliases,
-                }
-            },
-            None => registry
+        let is_desired_cmd = |c: &Cmd| {
+            desired_cmds.contains(&("gl".to_string() + &c.proto.ident)) ||
+            desired_cmds.contains(&("wgl".to_string() + &c.proto.ident)) ||
+            desired_cmds.contains(&("glX".to_string() + &c.proto.ident)) ||
+            desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
+        };
+
+        Registry {
+            api: api,
+            enums: enums.into_iter().filter(is_desired_enum).collect(),
+            cmds: cmds.into_iter().filter(is_desired_cmd).collect(),
+            aliases: if filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
         }
     }
 
@@ -530,7 +514,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "enum" => {
                     enums.push(
                         Enum {
-                            ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), self.ns).to_string(),
+                            ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), self.api).to_string(),
                             value:  get_attribute(&attributes, "value").unwrap(),
                             alias:  get_attribute(&attributes, "alias"),
                             ty:     get_attribute(&attributes, "type"),
@@ -577,7 +561,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         // consume command prototype
         self.expect_start_element("proto");
         let mut proto = self.consume_binding("proto");
-        proto.ident = trim_cmd_prefix(&proto.ident, self.ns).to_string();
+        proto.ident = trim_cmd_prefix(&proto.ident, self.api).to_string();
 
         let mut params = Vec::new();
         let mut alias = None;
@@ -590,7 +574,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "alias" => {
                     alias = get_attribute(&attributes, "name");
-                    alias = alias.map(|t| trim_cmd_prefix(&t, self.ns).to_string());
+                    alias = alias.map(|t| trim_cmd_prefix(&t, self.api).to_string());
                     self.expect_end_element("alias");
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "vecequiv" => {
@@ -657,11 +641,11 @@ fn get_attribute(a: &[OwnedAttribute], name: &str) -> Option<String> {
 }
 
 trait FromXml {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Self;
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Self;
 }
 
 impl FromXml for Require {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, _: &[OwnedAttribute]) -> Require {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, _: &[OwnedAttribute]) -> Require {
         debug!("Doing a FromXml on Require");
         let (enums, commands) = r.consume_two("enum", "command", "require");
         Require {
@@ -672,9 +656,10 @@ impl FromXml for Require {
 }
 
 impl FromXml for Remove {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Remove {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
+        let profile = Profile::from_str(&*profile).unwrap();
         let (enums, commands) = r.consume_two("enum", "command", "remove");
 
         Remove {
@@ -686,11 +671,12 @@ impl FromXml for Remove {
 }
 
 impl FromXml for Feature {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Feature {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Feature {
         debug!("Doing a FromXml on Feature");
-        let api      = get_attribute(a, "api").unwrap();
-        let name     = get_attribute(a, "name").unwrap();
-        let number   = get_attribute(a, "number").unwrap();
+        let api = get_attribute(a, "api").unwrap();
+        let api = Api::from_str(&*api).unwrap();
+        let name = get_attribute(a, "name").unwrap();
+        let number = get_attribute(a, "number").unwrap();
 
         debug!("Found api = {}, name = {}, number = {}", api, name, number);
 
@@ -707,10 +693,14 @@ impl FromXml for Feature {
 }
 
 impl FromXml for Extension {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Extension {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Extension {
         debug!("Doing a FromXml on Extension");
         let name = get_attribute(a, "name").unwrap();
-        let supported = get_attribute(a, "supported").unwrap().split('|').map(|x| x.to_string()).collect::<Vec<String>>();
+        let supported = get_attribute(a, "supported").unwrap()
+            .split('|')
+            .map(|x| Api::from_str(x))
+            .map(Result::unwrap)
+            .collect::<Vec<_>>();
         let mut require = Vec::new();
         loop {
             match r.next() {
@@ -731,7 +721,7 @@ impl FromXml for Extension {
 }
 
 impl FromXml for String {
-    fn convert<R: io::Read>(_: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> String {
+    fn convert<R: io::Read>(_: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> String {
         get_attribute(a, "name").unwrap()
     }
 }
