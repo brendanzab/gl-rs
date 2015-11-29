@@ -116,8 +116,6 @@ pub struct Registry {
     pub api: Api,
     pub enums: Vec<Enum>,
     pub cmds: Vec<Cmd>,
-    pub features: Vec<Feature>,
-    pub extensions: Vec<Extension>,
     pub aliases: HashMap<String, Vec<String>>,
 }
 
@@ -168,8 +166,6 @@ impl Add for Registry {
     fn add(mut self, other: Registry) -> Registry {
         self.enums.extend(other.enums.into_iter());
         self.cmds.extend(other.cmds.into_iter());
-        self.features.extend(other.features.into_iter());
-        self.extensions.extend(other.extensions.into_iter());
         self.aliases.extend(other.aliases.into_iter());
         self
     }
@@ -342,14 +338,12 @@ impl<R: io::Read> RegistryBuilder<R> {
 
     fn consume_registry(&mut self) -> Registry {
         self.expect_start_element("registry");
-        let mut registry = Registry {
-            api: self.api,
-            enums: Vec::new(),
-            cmds: Vec::new(),
-            features: Vec::new(),
-            extensions: Vec::new(),
-            aliases: HashMap::new(),
-        };
+
+        let mut enums = Vec::new();
+        let mut cmds = Vec::new();
+        let mut features = Vec::new();
+        let mut extensions = Vec::new();
+        let mut aliases = HashMap::new();
 
         loop {
             match self.next() {
@@ -361,26 +355,26 @@ impl<R: io::Read> RegistryBuilder<R> {
 
                 // add enum namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
-                    registry.enums.extend(self.consume_enums().into_iter());
+                    enums.extend(self.consume_enums().into_iter());
                 }
 
                 // add command namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "commands" => {
-                    let (cmds, aliases) = self.consume_cmds();
-                    registry.cmds.extend(cmds.into_iter());
-                    merge_map(&mut registry.aliases, aliases);
+                    let (new_cmds, new_aliases) = self.consume_cmds();
+                    cmds.extend(new_cmds.into_iter());
+                    merge_map(&mut aliases, new_aliases);
                 }
 
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "feature" => {
                     debug!("Parsing feature: {:?}", attributes);
-                    registry.features.push(FromXml::convert(self, &attributes));
+                    features.push(Feature::convert(self, &attributes));
                 }
 
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "extensions" => {
                     loop {
                         match self.next() {
                             XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "extension" => {
-                                registry.extensions.push(FromXml::convert(self, &attributes));
+                                extensions.push(Extension::convert(self, &attributes));
                             }
                             XmlEvent::EndElement{ref name} if name.local_name == "extensions" => break,
                             msg => panic!("Unexpected message {:?}", msg),
@@ -396,13 +390,12 @@ impl<R: io::Read> RegistryBuilder<R> {
             }
         }
 
-        let Registry { api, enums, cmds, aliases, features: feats, extensions: exts } = registry;
         let mut desired_enums = HashSet::new();
         let mut desired_cmds = HashSet::new();
 
         // find the features we want
-        let mut found_feat = false;
-        for f in feats.iter() {
+        let mut found_feature = false;
+        for f in features.iter() {
             // XXX: verify that the string comparison with <= actually works as desired
             if f.api == self.filter.api && f.number <= self.filter.version {
                 for req in f.requires.iter() {
@@ -411,12 +404,12 @@ impl<R: io::Read> RegistryBuilder<R> {
                 }
             }
             if f.number == self.filter.version {
-                found_feat = true;
+                found_feature = true;
             }
         }
 
         // remove the things that should be removed
-        for f in feats.iter() {
+        for f in features.iter() {
             // XXX: verify that the string comparison with <= actually works as desired
             if f.api == self.filter.api && f.number <= self.filter.version {
                 for rem in f.removes.iter() {
@@ -434,39 +427,40 @@ impl<R: io::Read> RegistryBuilder<R> {
             }
         }
 
-        if !found_feat {
+        if !found_feature {
             panic!("Did not find version {} in the registry", self.filter.version);
         }
 
-        for ext in exts.iter() {
-            if self.filter.extensions.iter().any(|x| x == &ext.name) {
-                if !ext.supported.iter().any(|x| x == &self.filter.api) {
-                    panic!("Requested {}, which doesn't support the {} API", ext.name, self.filter.api);
+        for extension in extensions.iter() {
+            if self.filter.extensions.iter().any(|x| x == &extension.name) {
+                if !extension.supported.iter().any(|x| x == &self.filter.api) {
+                    panic!("Requested {}, which doesn't support the {} API", extension.name, self.filter.api);
                 }
-                for req in ext.requires.iter() {
+                for req in extension.requires.iter() {
                     desired_enums.extend(req.enums.iter().map(|x| x.clone()));
                     desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                 }
             }
         }
 
+        let is_desired_enum = |e: &Enum| {
+            desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
+            desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
+            desired_enums.contains(&("GLX_".to_string() + &e.ident)) ||
+            desired_enums.contains(&("EGL_".to_string() + &e.ident))
+        };
+
+        let is_desired_cmd = |c: &Cmd| {
+            desired_cmds.contains(&("gl".to_string() + &c.proto.ident)) ||
+            desired_cmds.contains(&("wgl".to_string() + &c.proto.ident)) ||
+            desired_cmds.contains(&("glX".to_string() + &c.proto.ident)) ||
+            desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
+        };
+
         Registry {
-            api: api,
-            enums: enums.into_iter().filter(|e| {
-                    desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
-                    desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
-                    desired_enums.contains(&("GLX_".to_string() + &e.ident)) ||
-                    desired_enums.contains(&("EGL_".to_string() + &e.ident))
-                }).collect(),
-            cmds: cmds.into_iter().filter(|c| {
-                    desired_cmds.contains(&("gl".to_string() + &c.proto.ident)) ||
-                    desired_cmds.contains(&("wgl".to_string() + &c.proto.ident)) ||
-                    desired_cmds.contains(&("glX".to_string() + &c.proto.ident)) ||
-                    desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
-                }).collect(),
-            // these aren't important after this step
-            features: Vec::new(),
-            extensions: Vec::new(),
+            api: self.api,
+            enums: enums.into_iter().filter(is_desired_enum).collect(),
+            cmds: cmds.into_iter().filter(is_desired_cmd).collect(),
             aliases: if self.filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
         }
     }

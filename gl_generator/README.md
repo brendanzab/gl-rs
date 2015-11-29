@@ -129,6 +129,7 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
   clients to depend on the `khronos_api` crate
 - Add `Profile` enum for specifying the API profile, and change the `source`
   argument to use it instead of a string
+- Remove `features` and `extensions` fields from `Registry`
 
 ### v0.4.2
 
