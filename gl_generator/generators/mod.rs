@@ -28,6 +28,17 @@ pub trait Generator {
     fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write;
 }
 
+pub fn gen_struct_name(api: Api) -> &'static str {
+    match api {
+        Api::Gl  => "Gl",
+        Api::Glx => "Glx",
+        Api::Wgl => "Wgl",
+        Api::Egl => "Egl",
+        Api::Gles1 => "Gles1",
+        Api::Gles2 => "Gles2",
+    }
+}
+
 /// This function generates a `const name: type = value;` item.
 pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()> where W: io::Write {
     // computing the name of the enum

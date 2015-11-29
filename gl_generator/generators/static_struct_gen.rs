@@ -77,7 +77,7 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
         #[allow(dead_code)]
         #[derive(Copy, Clone)]
         pub struct {api};",
-        api = registry.api.fmt_struct_name(),
+        api = super::gen_struct_name(registry.api),
     )
 }
 
@@ -90,7 +90,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             pub fn load_with<F>(mut _loadfn: F) -> {api} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
                 {api}
             }}",
-        api = registry.api.fmt_struct_name(),
+        api = super::gen_struct_name(registry.api),
     ));
 
     for c in registry.cmd_iter() {

@@ -35,19 +35,6 @@ pub enum Api { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 #[derive(Copy, Clone)]
 pub enum Fallbacks { All, None }
 
-impl Api {
-    pub fn fmt_struct_name(&self) -> &str {
-        match *self {
-            Api::Gl  => "Gl",
-            Api::Glx => "Glx",
-            Api::Wgl => "Wgl",
-            Api::Egl => "Egl",
-            Api::Gles1 => "Gles1",
-            Api::Gles2 => "Gles2",
-        }
-    }
-}
-
 impl FromStr for Api {
     type Err = ();
     fn from_str(s: &str) -> Result<Api, ()> {

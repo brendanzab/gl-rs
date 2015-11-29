@@ -131,7 +131,7 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
         #[allow(dead_code)]
         #[derive(Clone)]
         pub struct {api} {{",
-        api = registry.api.fmt_struct_name()
+        api = super::gen_struct_name(registry.api)
     ));
 
     for c in registry.cmd_iter() {
@@ -168,7 +168,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
                     ptr
                 }};
                 {api} {{",
-        api = registry.api.fmt_struct_name()
+        api = super::gen_struct_name(registry.api)
     ));
 
     for c in registry.cmd_iter() {
@@ -211,6 +211,6 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
         "}}
 
         unsafe impl __gl_imports::Send for {api} {{}}",
-        api = registry.api.fmt_struct_name()
+        api = super::gen_struct_name(registry.api)
     )
 }
