@@ -15,6 +15,8 @@
 extern crate gl_generator;
 
 use gl_generator::*;
+use gl_generator::generators::Generator;
+use gl_generator::registry::Registry;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -26,164 +28,146 @@ fn main() {
 
     // Gl
 
+    let gl_registry = Registry::new(Api::Gl, Fallbacks::All, vec![], "4.5", Profile::Core);
+
     writeln!(&mut file, "mod gl_global {{").unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
+    GlobalGenerator.write(&gl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_static {{").unwrap();
-    gl_generator::generate_bindings(StaticGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
+    StaticGenerator.write(&gl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_struct {{").unwrap();
-    gl_generator::generate_bindings(StructGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
+    StructGenerator.write(&gl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_static_struct {{").unwrap();
-    gl_generator::generate_bindings(StaticStructGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
+    StaticStructGenerator.write(&gl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_debug_struct {{").unwrap();
-    gl_generator::generate_bindings(DebugStructGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
+    DebugStructGenerator.write(&gl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Glx
 
+    let glx_registry = Registry::new(Api::Glx, Fallbacks::All, vec![], "1.4", Profile::Core);
+
     writeln!(&mut file, "mod glx_global {{").unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Api::Glx, Fallbacks::All,
-                                    vec![], "1.4", Profile::Core, &mut file).unwrap();
+    GlobalGenerator.write(&glx_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_static {{").unwrap();
-    gl_generator::generate_bindings(StaticGenerator, Api::Glx, Fallbacks::All,
-                                    vec![], "1.4", Profile::Core, &mut file).unwrap();
+    StaticGenerator.write(&glx_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_struct {{").unwrap();
-    gl_generator::generate_bindings(StructGenerator, Api::Glx, Fallbacks::All,
-                                    vec![], "1.4", Profile::Core, &mut file).unwrap();
+    StructGenerator.write(&glx_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_static_struct {{").unwrap();
-    gl_generator::generate_bindings(StaticStructGenerator, Api::Glx, Fallbacks::All,
-                                    vec![], "1.4", Profile::Core, &mut file).unwrap();
+    StaticStructGenerator.write(&glx_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_debug_struct {{").unwrap();
-    gl_generator::generate_bindings(DebugStructGenerator, Api::Glx, Fallbacks::All,
-                                    vec![], "1.4", Profile::Core, &mut file).unwrap();
+    DebugStructGenerator.write(&glx_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Wgl
 
+    let wgl_registry = Registry::new(Api::Wgl, Fallbacks::All, vec![], "1.0", Profile::Core);
+
     writeln!(&mut file, "mod wgl_global {{").unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Api::Wgl, Fallbacks::All,
-                                    vec![], "1.0", Profile::Core, &mut file).unwrap();
+    GlobalGenerator.write(&wgl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_static {{").unwrap();
-    gl_generator::generate_bindings(StaticGenerator, Api::Wgl, Fallbacks::All,
-                                    vec![], "1.0", Profile::Core, &mut file).unwrap();
+    StaticGenerator.write(&wgl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_struct {{").unwrap();
-    gl_generator::generate_bindings(StructGenerator, Api::Wgl, Fallbacks::All,
-                                    vec![], "1.0", Profile::Core, &mut file).unwrap();
+    StructGenerator.write(&wgl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_static_struct {{").unwrap();
-    gl_generator::generate_bindings(StaticStructGenerator, Api::Wgl, Fallbacks::All,
-                                    vec![], "1.0", Profile::Core, &mut file).unwrap();
+    StaticStructGenerator.write(&wgl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_debug_struct {{").unwrap();
-    gl_generator::generate_bindings(DebugStructGenerator, Api::Wgl, Fallbacks::All,
-                                    vec![], "1.0", Profile::Core, &mut file).unwrap();
+    DebugStructGenerator.write(&wgl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Gles1
 
+    let gles1_registry = Registry::new(Api::Gles1, Fallbacks::All, vec![], "1.1", Profile::Core);
+
     writeln!(&mut file, "mod gles1_global {{").unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Api::Gles1, Fallbacks::All,
-                                    vec![], "1.1", Profile::Core, &mut file).unwrap();
+    GlobalGenerator.write(&gles1_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_static {{").unwrap();
-    gl_generator::generate_bindings(StaticGenerator, Api::Gles1, Fallbacks::All,
-                                    vec![], "1.1", Profile::Core, &mut file).unwrap();
+    StaticGenerator.write(&gles1_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_struct {{").unwrap();
-    gl_generator::generate_bindings(StructGenerator, Api::Gles1, Fallbacks::All,
-                                    vec![], "1.1", Profile::Core, &mut file).unwrap();
+    StructGenerator.write(&gles1_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_static_struct {{").unwrap();
-    gl_generator::generate_bindings(StaticStructGenerator, Api::Gles1, Fallbacks::All,
-                                    vec![], "1.1", Profile::Core, &mut file).unwrap();
+    StaticStructGenerator.write(&gles1_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_debug_struct {{").unwrap();
-    gl_generator::generate_bindings(DebugStructGenerator, Api::Gles1, Fallbacks::All,
-                                    vec![], "1.1", Profile::Core, &mut file).unwrap();
+    DebugStructGenerator.write(&gles1_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Gles2
 
+    let gles2_registry = Registry::new(Api::Gles2, Fallbacks::All, vec![], "3.1", Profile::Core);
+
     writeln!(&mut file, "mod gles2_global {{").unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Api::Gles2, Fallbacks::All,
-                                    vec![], "3.1", Profile::Core, &mut file).unwrap();
+    GlobalGenerator.write(&gles2_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_static {{").unwrap();
-    gl_generator::generate_bindings(StaticGenerator, Api::Gles2, Fallbacks::All,
-                                    vec![], "3.1", Profile::Core, &mut file).unwrap();
+    StaticGenerator.write(&gles2_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_struct {{").unwrap();
-    gl_generator::generate_bindings(StructGenerator, Api::Gles2, Fallbacks::All,
-                                    vec![], "3.1", Profile::Core, &mut file).unwrap();
+    StructGenerator.write(&gles2_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_static_struct {{").unwrap();
-    gl_generator::generate_bindings(StaticStructGenerator, Api::Gles2, Fallbacks::All,
-                                    vec![], "3.1", Profile::Core, &mut file).unwrap();
+    StaticStructGenerator.write(&gles2_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_debug_struct {{").unwrap();
-    gl_generator::generate_bindings(DebugStructGenerator, Api::Gles2, Fallbacks::All,
-                                    vec![], "3.1", Profile::Core, &mut file).unwrap();
+    DebugStructGenerator.write(&gles2_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Egl
 
+    let egl_registry = Registry::new(Api::Egl, Fallbacks::All, vec![], "1.5", Profile::Core);
+
     writeln!(&mut file, "mod egl_global {{ {}", build_egl_symbols()).unwrap();
-    gl_generator::generate_bindings(GlobalGenerator, Api::Egl, Fallbacks::All,
-                                    vec![], "1.5", Profile::Core, &mut file).unwrap();
+    GlobalGenerator.write(&egl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl_static {{ {}", build_egl_symbols()).unwrap();
-    gl_generator::generate_bindings(StaticGenerator, Api::Egl, Fallbacks::All,
-                                    vec![], "1.5", Profile::Core, &mut file).unwrap();
+    StaticGenerator.write(&egl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl_struct {{ {}", build_egl_symbols()).unwrap();
-    gl_generator::generate_bindings(StructGenerator, Api::Egl, Fallbacks::All,
-                                    vec![], "1.5", Profile::Core, &mut file).unwrap();
+    StructGenerator.write(&egl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl_static_struct {{ {}", build_egl_symbols()).unwrap();
-    gl_generator::generate_bindings(StaticStructGenerator, Api::Egl, Fallbacks::All,
-                                    vec![], "1.5", Profile::Core, &mut file).unwrap();
+    StaticStructGenerator.write(&egl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl_debug_struct {{ {}", build_egl_symbols()).unwrap();
-    gl_generator::generate_bindings(DebugStructGenerator, Api::Egl, Fallbacks::All,
-                                    vec![], "1.5", Profile::Core, &mut file).unwrap();
+    DebugStructGenerator.write(&egl_registry, &mut file).unwrap();
     writeln!(&mut file, "}}").unwrap();
 }
 
