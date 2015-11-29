@@ -23,10 +23,11 @@
 //!
 //! In `build.rs`:
 //!
-//! ~~~no_run
+//! ```no_run
 //! extern crate gl_generator;
 //! extern crate khronos_api;
 //!
+//! use gl_generator::{Fallbacks, GlobalGenerator, Ns};
 //! use std::env;
 //! use std::fs::File;
 //! use std::path::Path;
@@ -36,19 +37,17 @@
 //!
 //!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
-//!     gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-//!                                     gl_generator::registry::Ns::Gl,
-//!                                     gl_generator::Fallbacks::All,
+//!     gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
 //!                                     khronos_api::GL_XML, vec![], "4.5", "core",
 //!                                     &mut file).unwrap();
 //! }
-//! ~~~
+//! ```
 //!
 //! In your project:
 //!
-//! ~~~ignore
+//! ```ignore
 //! include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
-//! ~~~
+//! ```
 //!
 //! ## Arguments
 //!
@@ -89,11 +88,11 @@
 extern crate log;
 
 use generators::Generator;
-use registry::{Registry, Filter, Ns};
+use registry::{Registry, Filter};
 
 use std::io;
 
-pub use registry::Fallbacks;
+pub use registry::{Fallbacks, Ns};
 pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;

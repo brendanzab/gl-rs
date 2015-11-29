@@ -35,6 +35,7 @@ Create a `build.rs` to pull your specific version/API:
 extern crate gl_generator;
 extern crate khronos_api;
 
+use gl_generator::{Fallbacks, GlobalGenerator, Ns};
 use std::env;
 use std::fs::File;
 use std::io::BufWriter;
@@ -45,9 +46,7 @@ fn main() {
     let dest = Path::new(&out_dir);
 
     let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
-    gl_generator::generate_bindings(gl_generator::GlobalGenerator,
-                                    gl_generator::registry::Ns::Gl,
-                                    gl_generator::Fallbacks::All,
+    gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
                                     khronos_api::GL_XML, vec![], "4.5", "core",
                                     &mut file).unwrap();
 }
