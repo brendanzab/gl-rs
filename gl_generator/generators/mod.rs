@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use registry::{Enum, Registry, Cmd, Api};
+use Api;
+use registry::{Enum, Registry, Cmd};
 use std::io;
 
 mod ty;

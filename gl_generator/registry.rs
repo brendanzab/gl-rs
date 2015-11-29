@@ -20,17 +20,14 @@ use std::collections::BTreeSet;
 use std::collections::HashSet;
 use std::collections::HashMap;
 use std::ops::Add;
-use std::fmt;
 use std::str::FromStr;
 use std::slice::Iter;
 use std::io;
 
+use {Fallbacks, Api, Profile};
 use self::xml::EventReader as XmlEventReader;
 use self::xml::attribute::OwnedAttribute;
 use self::xml::reader::XmlEvent;
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
 
 impl FromStr for Api {
     type Err = ();
@@ -48,26 +45,6 @@ impl FromStr for Api {
         }
     }
 }
-
-impl fmt::Display for Api {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Api::Gl  => write!(fmt, "gl"),
-            Api::Glx => write!(fmt, "glx"),
-            Api::Wgl => write!(fmt, "wgl"),
-            Api::Egl => write!(fmt, "egl"),
-            Api::GlCore => write!(fmt, "glcore"),
-            Api::Gles1 => write!(fmt, "gles1"),
-            Api::Gles2 => write!(fmt, "gles2"),
-        }
-    }
-}
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum Fallbacks { All, None }
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum Profile { Core, Compatibility }
 
 impl FromStr for Profile {
     type Err = ();

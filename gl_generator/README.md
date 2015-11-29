@@ -131,6 +131,7 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
   argument to use it instead of a string
 - Remove `features` and `extensions` fields from `Registry`
 - Hide `registry::{Feature, Require, Remove, Extension}` from the public API
+- Move `registry::{Fallbacks, Api, Profile}` to top level module
 
 ### v0.4.2
 

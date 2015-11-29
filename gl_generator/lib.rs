@@ -67,9 +67,9 @@ extern crate log;
 use generators::Generator;
 use registry::{Registry, Filter};
 
+use std::fmt;
 use std::io;
 
-pub use registry::{Fallbacks, Api, Profile};
 pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
@@ -78,6 +78,30 @@ pub use generators::struct_gen::StructGenerator;
 
 pub mod generators;
 pub mod registry;
+
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
+
+impl fmt::Display for Api {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Api::Gl  => write!(fmt, "gl"),
+            Api::Glx => write!(fmt, "glx"),
+            Api::Wgl => write!(fmt, "wgl"),
+            Api::Egl => write!(fmt, "egl"),
+            Api::GlCore => write!(fmt, "glcore"),
+            Api::Gles1 => write!(fmt, "gles1"),
+            Api::Gles2 => write!(fmt, "gles2"),
+        }
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Fallbacks { All, None }
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum Profile { Core, Compatibility }
 
 /// Generate OpenGL bindings using the specified generator
 ///
@@ -92,7 +116,7 @@ pub mod registry;
 /// - `extensions`: A list of extra extensions to include in the bindings.
 /// - `dest`: Where to write the generated rust source code to
 ///
-pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fallbacks,
+pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
                                extensions: Vec<String>, version: &str, profile: Profile,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
