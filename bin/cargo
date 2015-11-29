@@ -1,20 +1,32 @@
 #!/bin/bash
 
-# Runs a cargo command on each of the crates specified in `$manifests`
+# Runs a cargo command on each of the crates
 #
 # Example usage:
 #
 #      $ bin/cargo clean
 #      $ bin/cargo build
 #      $ bin/cargo test --verbose
-
-manifests=(
-  gl/Cargo.toml
-  gl_generator/Cargo.toml
-  gl_tests/Cargo.toml
-  khronos_api/Cargo.toml
-)
+#      $ FILTER=tests bin/cargo test
+#      $ FILTER=crates bin/cargo build
+#      $ TEST="no_warnings gen_symbols" bin/cargo test
 
 export CARGO_TARGET_DIR=./target
 
-echo ${manifests[@]} | xargs -n 1 -t cargo $* --manifest-path
+crate_paths=( gl/ gl_generator/ khronos_api/ )
+test_paths=( gl_tests/test_*/ )
+all_paths=( ${crate_paths[@]} ${test_paths[@]} )
+
+if [ -z "${TEST}" ]; then
+  case $FILTER in
+    'crates' ) paths=( ${crate_paths[@]} ) ;;
+    'tests' ) paths=( ${test_paths[@]} ) ;;
+    * )  paths=( ${all_paths[@]} ) ;;
+  esac
+else
+  paths=( $TEST )
+  paths=( ${paths[@]/#/gl_tests/test_} )
+  paths=( ${paths[@]/%//} )
+fi
+
+echo ${paths[@]/%/Cargo.toml} | xargs -n 1 -t cargo $* --manifest-path
