@@ -60,7 +60,6 @@
 //! - `NativeWindowType`
 //!
 
-extern crate khronos_api;
 #[macro_use]
 extern crate log;
 
@@ -120,8 +119,6 @@ pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
                                extensions: Vec<String>, version: &str, profile: Profile,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
-    // Get generator field values, using default values if they have not been
-    // specified
     let filter = Filter {
         api: api,
         fallbacks: fallbacks,
@@ -130,17 +127,6 @@ pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
         profile: profile,
     };
 
-    // Generate the registry of all bindings
-    let registry = {
-        let src = match api {
-            Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => khronos_api::GL_XML,
-            Api::Glx => khronos_api::GLX_XML,
-            Api::Wgl => khronos_api::WGL_XML,
-            Api::Egl => khronos_api::EGL_XML,
-        };
-
-        Registry::from_xml(src, api, filter)
-    };
-
+    let registry = Registry::new(api, filter);
     generator.write(&registry, dest)
 }

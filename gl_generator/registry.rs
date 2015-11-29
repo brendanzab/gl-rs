@@ -14,6 +14,7 @@
 // limitations under the License.
 
 extern crate xml;
+extern crate khronos_api;
 
 use std::collections::hash_map::Entry;
 use std::collections::BTreeSet;
@@ -98,11 +99,15 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn from_xml<R: io::Read>(data: R, api: Api, filter: Filter) -> Registry {
-        RegistryBuilder {
-            api: api,
-            reader: XmlEventReader::new(data),
-        }.consume_registry(filter)
+    pub fn new(api: Api, filter: Filter) -> Registry {
+        let src = match api {
+            Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => khronos_api::GL_XML,
+            Api::Glx => self::khronos_api::GLX_XML,
+            Api::Wgl => self::khronos_api::WGL_XML,
+            Api::Egl => self::khronos_api::EGL_XML,
+        };
+
+        RegistryParser::parse(src, api, filter)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
@@ -245,7 +250,7 @@ pub struct GlxOpcode {
     pub name: Option<String>,
 }
 
-struct RegistryBuilder<R: io::Read> {
+struct RegistryParser<R: io::Read> {
     pub api: Api,
     pub reader: XmlEventReader<R>,
 }
@@ -259,7 +264,7 @@ pub struct Filter {
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
-impl<R: io::Read> RegistryBuilder<R> {
+impl<R: io::Read> RegistryParser<R> {
     fn next(&mut self) -> XmlEvent {
         loop {
             let event = self.reader.next();
@@ -308,8 +313,13 @@ impl<R: io::Read> RegistryBuilder<R> {
         }
     }
 
-    fn consume_registry(&mut self, filter: Filter) -> Registry {
-        self.expect_start_element("registry");
+    fn parse(src: R, api: Api, filter: Filter) -> Registry {
+        let mut parser = RegistryParser {
+            api: api,
+            reader: XmlEventReader::new(src),
+        };
+
+        parser.expect_start_element("registry");
 
         let mut enums = Vec::new();
         let mut cmds = Vec::new();
@@ -318,35 +328,35 @@ impl<R: io::Read> RegistryBuilder<R> {
         let mut aliases = HashMap::new();
 
         loop {
-            match self.next() {
+            match parser.next() {
                 // ignores
                 XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "comment" => self.skip_to_end("comment"),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "types" => self.skip_to_end("types"),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "groups" => self.skip_to_end("groups"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "comment" => parser.skip_to_end("comment"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "types" => parser.skip_to_end("types"),
+                XmlEvent::StartElement { ref name, .. } if name.local_name == "groups" => parser.skip_to_end("groups"),
 
                 // add enum namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
-                    enums.extend(self.consume_enums().into_iter());
+                    enums.extend(parser.consume_enums().into_iter());
                 }
 
                 // add command namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "commands" => {
-                    let (new_cmds, new_aliases) = self.consume_cmds();
+                    let (new_cmds, new_aliases) = parser.consume_cmds();
                     cmds.extend(new_cmds.into_iter());
                     merge_map(&mut aliases, new_aliases);
                 }
 
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "feature" => {
                     debug!("Parsing feature: {:?}", attributes);
-                    features.push(Feature::convert(self, &attributes));
+                    features.push(Feature::convert(&mut parser, &attributes));
                 }
 
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "extensions" => {
                     loop {
-                        match self.next() {
+                        match parser.next() {
                             XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "extension" => {
-                                extensions.push(Extension::convert(self, &attributes));
+                                extensions.push(Extension::convert(&mut parser, &attributes));
                             }
                             XmlEvent::EndElement{ref name} if name.local_name == "extensions" => break,
                             msg => panic!("Unexpected message {:?}", msg),
@@ -430,7 +440,7 @@ impl<R: io::Read> RegistryBuilder<R> {
         };
 
         Registry {
-            api: self.api,
+            api: api,
             enums: enums.into_iter().filter(is_desired_enum).collect(),
             cmds: cmds.into_iter().filter(is_desired_cmd).collect(),
             aliases: if filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
@@ -625,11 +635,11 @@ fn get_attribute(a: &[OwnedAttribute], name: &str) -> Option<String> {
 }
 
 trait FromXml {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Self;
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Self;
 }
 
 impl FromXml for Require {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, _: &[OwnedAttribute]) -> Require {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, _: &[OwnedAttribute]) -> Require {
         debug!("Doing a FromXml on Require");
         let (enums, commands) = r.consume_two("enum", "command", "require");
         Require {
@@ -640,7 +650,7 @@ impl FromXml for Require {
 }
 
 impl FromXml for Remove {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Remove {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Remove {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let profile = Profile::from_str(&*profile).unwrap();
@@ -655,7 +665,7 @@ impl FromXml for Remove {
 }
 
 impl FromXml for Feature {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Feature {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Feature {
         debug!("Doing a FromXml on Feature");
         let api = get_attribute(a, "api").unwrap();
         let api = Api::from_str(&*api).unwrap();
@@ -677,7 +687,7 @@ impl FromXml for Feature {
 }
 
 impl FromXml for Extension {
-    fn convert<R: io::Read>(r: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> Extension {
+    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Extension {
         debug!("Doing a FromXml on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap()
@@ -705,7 +715,7 @@ impl FromXml for Extension {
 }
 
 impl FromXml for String {
-    fn convert<R: io::Read>(_: &mut RegistryBuilder<R>, a: &[OwnedAttribute]) -> String {
+    fn convert<R: io::Read>(_: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> String {
         get_attribute(a, "name").unwrap()
     }
 }
