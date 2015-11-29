@@ -68,25 +68,6 @@ fn main() {
 The `build.rs` file will generate all the OpenGL functions in a file named,
 `bindings.rs` plus all enumerations, and all types in the `types` submodule.
 
-### Arguments
-
-- The type of loader to generate. Can be
-  `gl_generator::StaticGenerator`, `gl_generator::StaticStructGenerator`,
-  `gl_generator::StructGenerator`, or `gl_generator::GlobalGenerator`.
-- The API to generate. Can be `Gl`, `Gles1`, `Gles2`
-  (GLES 2 or 3), `Wgl`, `Glx`, `Egl`.
-- The file which contains the bindings to parse. Can be `GL_XML` (for GL
-  and GL ES), `GLX_XML`, `WGL_XML`, `EGL_XML`.
-- Extra extensions to include in the bindings. These are
-  specified as a list of strings.
-- The requested API version. This is usually in the form
-  `"major.minor"`.
-- The GL profile. Can be either `"core"` or `"compatibility"`. `"core"` will
-  only include all functions supported by the
-  requested version it self, while `"compatibility"` will include all the
-  functions from previous versions as well.
-- The file to save the generated bindings to.
-
 ## Generator types
 
 ### Global generator

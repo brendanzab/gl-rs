@@ -13,13 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! # gl_generator
+//! An OpenGL bindings generator. It defines a function named `generate_bindings` which can be
+//! used to generate all constants and functions of a given OpenGL version.
 //!
-//! `gl_generator` is an OpenGL bindings generator. It defines a function
-//!  named `generate_bindings` which can be used to generate all constants
-//!  and functions of a given OpenGL version.
-//!
-//! ## Example
+//! # Example
 //!
 //! In `build.rs`:
 //!
@@ -46,25 +43,7 @@
 //! include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
 //! ```
 //!
-//! ## Arguments
-//!
-//! Each field can be specified at most once, or not at all. If the field is not
-//! specified, then a default value will be used.
-//!
-//! - `api`: The API to generate. Can be either `"gl"`, `"gles1"`, `"gles2"`,
-//!   `"wgl"`, `"glx"`, `"egl"`. Defaults to `"gl"`.
-//! - `profile`: Can be either `"core"` or `"compatibility"`. Defaults to
-//!   `"core"`. `"core"` will only include all functions supported by the
-//!   requested version it self, while `"compatibility"` will include all the
-//!   functions from previous versions as well.
-//! - `version`: The requested API version. This is usually in the form
-//!   `"major.minor"`. Defaults to `"1.0"`
-//! - `generator`: The type of loader to generate. Can be either `"static"`,
-//!   `"global"`, or `"struct"`. Defaults to `"static"`.
-//! - `extensions`: Extra extensions to include in the bindings. These are
-//!   specified as a list of strings. Defaults to `[]`.
-//!
-//! ## About EGL
+//! # About EGL
 //!
 //! When you generate bindings for EGL, the following platform-specific types must be declared
 //!  *at the same level where you include the bindings*:
@@ -102,7 +81,19 @@ pub mod generators;
 #[allow(dead_code)]
 pub mod registry;
 
-/// Public function that generates Rust source code.
+/// Generate OpenGL bindings using the specified generator
+///
+/// # Arguments
+///
+/// - `generator`: The type of loader to generate.
+/// - `api`: The API to generate.
+/// - `profile`: Can be either `"core"` or `"compatibility"`. `"core"` will only include all
+///   functions supported by the  requested version it self, while `"compatibility"` will include
+///   all the functions from previous versions as well.
+/// - `version`: The requested API version. This is usually in the form `"major.minor"`.
+/// - `extensions`: A list of extra extensions to include in the bindings.
+/// - `dest`: Where to write the generated rust source code to
+///
 pub fn generate_bindings<G, W>(generator: G, api: registry::Api, fallbacks: Fallbacks,
                                extensions: Vec<String>, version: &str, profile: &str,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
