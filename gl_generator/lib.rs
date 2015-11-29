@@ -64,7 +64,7 @@
 extern crate log;
 
 use generators::Generator;
-use registry::{Registry, Filter};
+use registry::Registry;
 
 use std::fmt;
 use std::io;
@@ -119,14 +119,6 @@ pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
                                extensions: Vec<String>, version: &str, profile: Profile,
                                dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
 {
-    let filter = Filter {
-        api: api,
-        fallbacks: fallbacks,
-        extensions: extensions,
-        version: version.to_string(),
-        profile: profile,
-    };
-
-    let registry = Registry::new(api, filter);
+    let registry = Registry::new(api, fallbacks, extensions, version, profile);
     generator.write(&registry, dest)
 }

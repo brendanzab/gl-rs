@@ -99,7 +99,14 @@ pub struct Registry {
 
 impl Registry {
     /// Generate a registry from the supplied XML string
-    pub fn new(api: Api, filter: Filter) -> Registry {
+    pub fn new(api: Api, fallbacks: Fallbacks, extensions: Vec<String>, version: &str, profile: Profile) -> Registry {
+        let filter = Filter {
+            fallbacks: fallbacks,
+            extensions: extensions,
+            version: version.to_string(),
+            profile: profile,
+        };
+
         let src = match api {
             Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => khronos_api::GL_XML,
             Api::Glx => self::khronos_api::GLX_XML,
@@ -251,16 +258,15 @@ pub struct GlxOpcode {
 }
 
 struct RegistryParser<R: io::Read> {
-    pub api: Api,
-    pub reader: XmlEventReader<R>,
+    api: Api,
+    reader: XmlEventReader<R>,
 }
 
-pub struct Filter {
-    pub api: Api,
-    pub fallbacks: Fallbacks,
-    pub extensions: Vec<String>,
-    pub profile: Profile,
-    pub version: String,
+struct Filter {
+    fallbacks: Fallbacks,
+    extensions: Vec<String>,
+    profile: Profile,
+    version: String,
 }
 
 /// A big, ugly, imperative impl with methods that accumulates a Registry struct
@@ -379,7 +385,7 @@ impl<R: io::Read> RegistryParser<R> {
         let mut found_feature = false;
         for f in features.iter() {
             // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == filter.api && f.number <= filter.version {
+            if f.api == api && f.number <= filter.version {
                 for req in f.requires.iter() {
                     desired_enums.extend(req.enums.iter().map(|x| x.clone()));
                     desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
@@ -393,7 +399,7 @@ impl<R: io::Read> RegistryParser<R> {
         // remove the things that should be removed
         for f in features.iter() {
             // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == filter.api && f.number <= filter.version {
+            if f.api == api && f.number <= filter.version {
                 for rem in f.removes.iter() {
                     if rem.profile == filter.profile {
                         for enm in rem.enums.iter() {
@@ -415,8 +421,8 @@ impl<R: io::Read> RegistryParser<R> {
 
         for extension in extensions.iter() {
             if filter.extensions.iter().any(|x| x == &extension.name) {
-                if !extension.supported.iter().any(|x| x == &filter.api) {
-                    panic!("Requested {}, which doesn't support the {} API", extension.name, filter.api);
+                if !extension.supported.iter().any(|x| x == &api) {
+                    panic!("Requested {}, which doesn't support the {} API", extension.name, api);
                 }
                 for req in extension.requires.iter() {
                     desired_enums.extend(req.enums.iter().map(|x| x.clone()));
