@@ -98,12 +98,15 @@ pub struct Registry {
 }
 
 impl Registry {
-    /// Generate a registry from the supplied XML string
-    pub fn new(api: Api, fallbacks: Fallbacks, extensions: Vec<String>, version: &str, profile: Profile) -> Registry {
+    pub fn new<'a, Exts>(api: Api, version: (u8, u8), profile: Profile, fallbacks: Fallbacks, extensions: Exts) -> Registry where
+        Exts: AsRef<[&'a str]>,
+    {
+        let (major, minor) = version;
+
         let filter = Filter {
             fallbacks: fallbacks,
             extensions: extensions,
-            version: version.to_string(),
+            version: format!("{}.{}", major, minor),
             profile: profile,
         };
 
@@ -262,9 +265,9 @@ struct RegistryParser<R: io::Read> {
     reader: XmlEventReader<R>,
 }
 
-struct Filter {
+struct Filter<Extensions> {
     fallbacks: Fallbacks,
-    extensions: Vec<String>,
+    extensions: Extensions,
     profile: Profile,
     version: String,
 }
@@ -319,7 +322,9 @@ impl<R: io::Read> RegistryParser<R> {
         }
     }
 
-    fn parse(src: R, api: Api, filter: Filter) -> Registry {
+    fn parse<'a, Exts>(src: R, api: Api, filter: Filter<Exts>) -> Registry where
+        Exts: AsRef<[&'a str]>,
+    {
         let mut parser = RegistryParser {
             api: api,
             reader: XmlEventReader::new(src),
@@ -420,7 +425,7 @@ impl<R: io::Read> RegistryParser<R> {
         }
 
         for extension in extensions.iter() {
-            if filter.extensions.iter().any(|x| x == &extension.name) {
+            if filter.extensions.as_ref().iter().any(|x| x == &extension.name) {
                 if !extension.supported.iter().any(|x| x == &api) {
                     panic!("Requested {}, which doesn't support the {} API", extension.name, api);
                 }
