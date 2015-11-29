@@ -32,6 +32,7 @@ use self::xml::reader::XmlEvent;
 #[derive(Copy, Clone)]
 pub enum Ns { Gl, Glx, Wgl, Egl, Gles1, Gles2 }
 
+#[derive(Copy, Clone)]
 pub enum Fallbacks { All, None }
 
 impl Ns {
@@ -107,6 +108,7 @@ fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String
 }
 
 pub struct Registry {
+    pub ns: Ns,
     pub enums: Vec<Enum>,
     pub cmds: Vec<Cmd>,
     pub features: Vec<Feature>,
@@ -336,6 +338,7 @@ impl<R: io::Read> RegistryBuilder<R> {
     fn consume_registry(&mut self) -> Registry {
         self.expect_start_element("registry");
         let mut registry = Registry {
+            ns: self.ns,
             enums: Vec::new(),
             cmds: Vec::new(),
             features: Vec::new(),
@@ -390,7 +393,7 @@ impl<R: io::Read> RegistryBuilder<R> {
 
         match self.filter {
             Some(ref filter) => {
-                let Registry { enums, cmds, aliases, features: feats, extensions: exts } = registry;
+                let Registry { ns, enums, cmds, aliases, features: feats, extensions: exts } = registry;
                 let mut desired_enums = HashSet::new();
                 let mut desired_cmds = HashSet::new();
 
@@ -447,6 +450,7 @@ impl<R: io::Read> RegistryBuilder<R> {
                 let aliases = if let &Filter { fallbacks: Fallbacks::None, ..} = filter { HashMap::new() } else { aliases };
 
                 Registry {
+                    ns: ns,
                     enums: enums.into_iter().filter(|e| {
                             desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
                             desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||

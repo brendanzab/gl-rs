@@ -65,6 +65,10 @@ if gl::Viewport::is_loaded() {
 
 ## Changelog
 
+### vX.X.X
+
+- Upgrade to `gl_generator` vX.X.X
+
 ### v0.5.2
 
 - Update crate metadata

@@ -27,7 +27,7 @@
 //! extern crate gl_generator;
 //! extern crate khronos_api;
 //!
-//! use gl_generator::{Fallbacks, GlobalGenerator, Ns};
+//! use gl_generator::{Fallbacks, GlobalGenerator, Ns, RegistryBuilder};
 //! use std::env;
 //! use std::fs::File;
 //! use std::path::Path;
@@ -37,9 +37,11 @@
 //!
 //!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
-//!     gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
-//!                                     khronos_api::GL_XML, vec![], "4.5", "core",
-//!                                     &mut file).unwrap();
+//!     RegistryBuilder::new(Ns::Gl, "4.5", "core")
+//!         .with_fallbacks(Fallbacks::All)
+//!         .parse(khronos_api::GL_XML)
+//!         .write(GlobalGenerator, &mut file)
+//!         .unwrap();
 //! }
 //! ```
 //!
@@ -104,27 +106,54 @@ pub mod generators;
 #[allow(dead_code)]
 pub mod registry;
 
-/// Public function that generates Rust source code.
-pub fn generate_bindings<G, W>(generator: G, ns: registry::Ns, fallbacks: Fallbacks, source: &[u8],
-                               extensions: Vec<String>, version: &str, profile: &str,
-                               dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
-{
-    // Get generator field values, using default values if they have not been
-    // specified
-    let filter = Some(Filter {
-        api: ns.to_string(),
-        fallbacks: fallbacks,
-        extensions: extensions,
-        version: version.to_string(),
-        profile: profile.to_string(),
-    });
+#[derive(Clone)]
+pub struct RegistryBuilder {
+    ns: Ns,
+    version: String,
+    profile: String,
+    fallbacks: Fallbacks,
+    extensions: Vec<String>,
+}
 
-    // Generate the registry of all bindings
-    let registry = {
+impl RegistryBuilder {
+    pub fn new(ns: Ns, version: &str, profile: &str) -> RegistryBuilder {
+        RegistryBuilder {
+            ns: ns,
+            version: version.to_string(),
+            profile: profile.to_string(),
+            fallbacks: Fallbacks::None,
+            extensions: vec![],
+        }
+    }
+
+    pub fn with_fallbacks(self, fallbacks: Fallbacks) -> RegistryBuilder {
+        RegistryBuilder { fallbacks: fallbacks, ..self }
+    }
+
+    pub fn with_extensions(self, extensions: Vec<String>) -> RegistryBuilder {
+        RegistryBuilder { extensions: extensions, ..self }
+    }
+
+    pub fn parse(self, src: &[u8]) -> Registry {
         use std::io::BufReader;
-        let reader = BufReader::new(source);
-        Registry::from_xml(reader, ns, filter)
-    };
 
-    generator.write(&registry, ns, dest)
+        let filter = Some(Filter {
+            api: self.ns.to_string(),
+            fallbacks: self.fallbacks,
+            extensions: self.extensions,
+            version: self.version.to_string(),
+            profile: self.profile.to_string(),
+        });
+
+        let reader = BufReader::new(src);
+        Registry::from_xml(reader, self.ns, filter)
+    }
+}
+
+impl Registry {
+    pub fn write<G, W>(&self, generator: G, dest: &mut W) -> io::Result<()> where
+        G: Generator, W: io::Write
+    {
+        generator.write(&self, dest)
+    }
 }

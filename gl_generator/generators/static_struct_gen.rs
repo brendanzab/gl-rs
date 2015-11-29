@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use registry::{Registry, Ns};
+use registry::Registry;
 use std::io;
 
 #[allow(missing_copy_implementations)]
 pub struct StaticStructGenerator;
 
 impl super::Generator for StaticStructGenerator {
-    fn write<W>(&self, registry: &Registry, ns: Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
         try!(write_header(dest));
-        try!(write_type_aliases(&ns, dest));
+        try!(write_type_aliases(registry, dest));
         try!(write_enums(registry, dest));
-        try!(write_struct(&ns, dest));
-        try!(write_impl(registry, &ns, dest));
-        try!(write_fns(registry, &ns, dest));
+        try!(write_struct(registry, dest));
+        try!(write_impl(registry, dest));
+        try!(write_fns(registry, dest));
         Ok(())
     }
 }
@@ -44,7 +44,7 @@ fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_type_aliases`.
-fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
         pub mod types {{
             #![allow(non_camel_case_types)]
@@ -53,7 +53,7 @@ fn write_type_aliases<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::W
             #![allow(missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(ns, dest));
+    try!(super::gen_type_aliases(registry.ns, dest));
 
     writeln!(dest, "}}")
 }
@@ -70,19 +70,19 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 /// Creates a stub structure.
 ///
 /// The name of the struct corresponds to the namespace.
-fn write_struct<W>(ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, "
         #[allow(non_camel_case_types)]
         #[allow(non_snake_case)]
         #[allow(dead_code)]
         #[derive(Copy, Clone)]
         pub struct {ns};",
-        ns = ns.fmt_struct_name(),
+        ns = registry.ns.fmt_struct_name(),
     )
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
-fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest,
         "impl {ns} {{
             /// Stub function.
@@ -90,7 +90,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
             pub fn load_with<F>(mut _loadfn: F) -> {ns} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
                 {ns}
             }}",
-        ns = ns.fmt_struct_name(),
+        ns = registry.ns.fmt_struct_name(),
     ));
 
     for c in registry.cmd_iter() {
@@ -115,7 +115,7 @@ fn write_impl<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> w
 /// io::Writes all functions corresponding to the GL bindings.
 ///
 /// These are foreign functions, they don't have any content.
-fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
 
     try!(writeln!(dest, "
         #[allow(non_snake_case)]
@@ -126,7 +126,7 @@ fn write_fns<W>(registry: &Registry, ns: &Ns, dest: &mut W) -> io::Result<()> wh
     for c in registry.cmd_iter() {
         try!(writeln!(dest,
             "#[link_name=\"{symbol}\"] fn {name}({params}) -> {return_suffix};",
-            symbol = super::gen_symbol_name(ns, &c.proto.ident),
+            symbol = super::gen_symbol_name(registry.ns, &c.proto.ident),
             name = c.proto.ident,
             params = super::gen_parameters(c, true, true).join(", "),
             return_suffix = super::gen_return_type(c)

@@ -15,18 +15,18 @@
 extern crate gl_generator;
 extern crate khronos_api;
 
-use gl_generator::{Fallbacks, GlobalGenerator, Ns};
+use gl_generator::{Fallbacks, GlobalGenerator, Ns, RegistryBuilder};
 use std::env;
 use std::fs::File;
-use std::io::BufWriter;
 use std::path::Path;
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let dest = Path::new(&out_dir);
+    let dest = env::var("OUT_DIR").unwrap();
+    let mut file = File::create(&Path::new(&dest).join("bindings.rs")).unwrap();
 
-    let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
-    gl_generator::generate_bindings(GlobalGenerator, Ns::Gl, Fallbacks::All,
-                                    khronos_api::GL_XML, vec![], "4.5", "core",
-                                    &mut file).unwrap();
+    RegistryBuilder::new(Ns::Gl, "4.5", "core")
+        .with_fallbacks(Fallbacks::All)
+        .parse(khronos_api::GL_XML)
+        .write(GlobalGenerator, &mut file)
+        .unwrap();
 }
