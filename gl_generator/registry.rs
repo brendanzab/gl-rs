@@ -231,7 +231,7 @@ pub struct Cmd {
 }
 
 #[derive(Clone)]
-pub struct Feature {
+struct Feature {
     pub api: Api,
     pub name: String,
     pub number: String,
@@ -240,7 +240,7 @@ pub struct Feature {
 }
 
 #[derive(Clone)]
-pub struct Require {
+struct Require {
     /// A reference to the earlier types, by name
     pub enums: Vec<String>,
     /// A reference to the earlier types, by name
@@ -248,7 +248,7 @@ pub struct Require {
 }
 
 #[derive(Clone)]
-pub struct Remove {
+struct Remove {
     // always Core, for now
     pub profile: Profile,
     /// A reference to the earlier types, by name
@@ -258,7 +258,7 @@ pub struct Remove {
 }
 
 #[derive(Clone)]
-pub struct Extension {
+struct Extension {
     pub name: String,
     /// which apis this extension is defined for (see Feature.api)
     pub supported: Vec<Api>,

@@ -130,6 +130,7 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 - Add `Profile` enum for specifying the API profile, and change the `source`
   argument to use it instead of a string
 - Remove `features` and `extensions` fields from `Registry`
+- Hide `registry::{Feature, Require, Remove, Extension}` from the public API
 
 ### v0.4.2
 
