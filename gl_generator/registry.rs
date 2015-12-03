@@ -394,16 +394,7 @@ impl<R: io::Read> RegistryParser<R> {
                     desired_enums.extend(req.enums.iter().map(|x| x.clone()));
                     desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
                 }
-            }
-            if f.number == filter.version {
-                found_feature = true;
-            }
-        }
 
-        // remove the things that should be removed
-        for f in features.iter() {
-            // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == api && f.number <= filter.version {
                 for rem in f.removes.iter() {
                     if rem.profile == filter.profile {
                         for enm in rem.enums.iter() {
@@ -416,6 +407,9 @@ impl<R: io::Read> RegistryParser<R> {
                         }
                     }
                 }
+            }
+            if f.number == filter.version {
+                found_feature = true;
             }
         }
 
