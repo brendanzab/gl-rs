@@ -102,6 +102,7 @@ impl Registry {
         Exts: AsRef<[&'a str]>,
     {
         let (major, minor) = version;
+        let extensions = extensions.as_ref().iter().map(<&str>::to_string).collect();
 
         let filter = Filter {
             fallbacks: fallbacks,
@@ -265,9 +266,9 @@ struct RegistryParser<R: io::Read> {
     reader: XmlEventReader<R>,
 }
 
-struct Filter<Extensions> {
+struct Filter {
     fallbacks: Fallbacks,
-    extensions: Extensions,
+    extensions: BTreeSet<String>,
     profile: Profile,
     version: String,
 }
@@ -322,9 +323,7 @@ impl<R: io::Read> RegistryParser<R> {
         }
     }
 
-    fn parse<'a, Exts>(src: R, api: Api, filter: Filter<Exts>) -> Registry where
-        Exts: AsRef<[&'a str]>,
-    {
+    fn parse(src: R, api: Api, filter: Filter) -> Registry {
         let mut parser = RegistryParser {
             api: api,
             reader: XmlEventReader::new(src),
@@ -425,8 +424,8 @@ impl<R: io::Read> RegistryParser<R> {
         }
 
         for extension in extensions.iter() {
-            if filter.extensions.as_ref().iter().any(|x| x == &extension.name) {
-                if !extension.supported.iter().any(|x| x == &api) {
+            if filter.extensions.contains(&extension.name) {
+                if !extension.supported.contains(&api) {
                     panic!("Requested {}, which doesn't support the {} API", extension.name, api);
                 }
                 for req in extension.requires.iter() {
