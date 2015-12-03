@@ -113,9 +113,9 @@ impl Registry {
 
         let src = match api {
             Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => khronos_api::GL_XML,
-            Api::Glx => self::khronos_api::GLX_XML,
-            Api::Wgl => self::khronos_api::WGL_XML,
-            Api::Egl => self::khronos_api::EGL_XML,
+            Api::Glx => khronos_api::GLX_XML,
+            Api::Wgl => khronos_api::WGL_XML,
+            Api::Egl => khronos_api::EGL_XML,
         };
 
         RegistryParser::parse(src, api, filter)
