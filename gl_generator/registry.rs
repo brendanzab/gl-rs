@@ -488,7 +488,7 @@ impl<R: io::Read> RegistryParser<R> {
                 XmlEvent::EndElement{ref name} => {
                     debug!("Found end element </{:?}>", name);
 
-                    if (&[one, two]).iter().any(|&x| x == name.local_name) {
+                    if one == name.local_name || two == name.local_name {
                         continue;
                     } else if "type" == name.local_name {
                         // XXX: GL1.1 contains types, which we never care about anyway.
