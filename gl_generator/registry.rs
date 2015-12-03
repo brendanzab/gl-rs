@@ -390,18 +390,18 @@ impl<R: io::Read> RegistryParser<R> {
         for f in features.iter() {
             // XXX: verify that the string comparison with <= actually works as desired
             if f.api == api && f.number <= filter.version {
-                for req in f.requires.iter() {
-                    desired_enums.extend(req.enums.iter().map(|x| x.clone()));
-                    desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
+                for require in f.requires.iter() {
+                    desired_enums.extend(require.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(require.commands.iter().map(|x| x.clone()));
                 }
 
-                for rem in f.removes.iter() {
-                    if rem.profile == filter.profile {
-                        for enm in rem.enums.iter() {
+                for remove in f.removes.iter() {
+                    if remove.profile == filter.profile {
+                        for enm in remove.enums.iter() {
                             debug!("Removing {}", enm);
                             desired_enums.remove(enm);
                         }
-                        for cmd in rem.commands.iter() {
+                        for cmd in remove.commands.iter() {
                             debug!("Removing {}", cmd);
                             desired_cmds.remove(cmd);
                         }
@@ -422,9 +422,9 @@ impl<R: io::Read> RegistryParser<R> {
                 if !extension.supported.contains(&api) {
                     panic!("Requested {}, which doesn't support the {} API", extension.name, api);
                 }
-                for req in extension.requires.iter() {
-                    desired_enums.extend(req.enums.iter().map(|x| x.clone()));
-                    desired_cmds.extend(req.commands.iter().map(|x| x.clone()));
+                for require in extension.requires.iter() {
+                    desired_enums.extend(require.enums.iter().map(|x| x.clone()));
+                    desired_cmds.extend(require.commands.iter().map(|x| x.clone()));
                 }
             }
         }
