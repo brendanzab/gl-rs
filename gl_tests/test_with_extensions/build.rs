@@ -14,16 +14,16 @@
 
 extern crate gl_generator;
 
-use gl_generator::{Registry, Fallbacks, GlobalGenerator, Api, Profile};
+use gl_generator::*;
 use std::env;
 use std::fs::File;
-use std::path::Path;
+use std::path::*;
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let mut file = File::create(&Path::new(&out_dir).join("bindings.rs")).unwrap();
+    let dest = env::var("OUT_DIR").unwrap();
+    let mut file = File::create(&Path::new(&dest).join("test_symbols.rs")).unwrap();
 
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
+    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, ["GL_ARB_debug_output"])
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
 }

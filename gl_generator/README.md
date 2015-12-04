@@ -33,33 +33,34 @@ Create a `build.rs` to pull your specific version/API:
 ```rust
 extern crate gl_generator;
 
-use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
+use gl_generator::{Registry, Api, Profile, Fallbacks, GlobalGenerator};
 use std::env;
 use std::fs::File;
 use std::path::Path;
 
 fn main() {
     let dest = env::var("OUT_DIR").unwrap();
-    let mut file = File::create(&Path::new(&dest).join("bindings.rs")).unwrap();
+    let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 
-    gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-                                    vec![], "4.5", Profile::Core, &mut file).unwrap();
+    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
+        .write_bindings(GlobalGenerator, &mut file)
+        .unwrap();
 }
 ```
 
 Then use it like this:
 
 ```rust
-mod gles {
+mod gl {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }
 
-/*
- * Simple loading example
- */
+/// Simple loading example
 fn main() {
-    // Assuming window is GLFW, initialized, and made current
-    gles::load_with(|s| window.get_proc_address(s));
+    let window = ...;
+
+    // Assuming `window` is GLFW: initialize, and made current
+    gl::load_with(|s| window.get_proc_address(s));
 }
 ```
 
@@ -105,11 +106,8 @@ OpenGL 1.1 on Windows, you will need to add
 ### Custom Generators
 
 The `gl_generator` crate is extensible. This is a niche feature useful only in
-very rare cases. To create a custom generator, [create a new plugin
-crate](http://doc.rust-lang.org/guide-plugin.html#syntax-extensions) which
-depends on `gl_generator`. Then, implement the `gl_generator::Generator` trait
-and in your plugin registrar, register a function which calls
-`gl_generator::generate_bindings` with your custom generator and its name.
+very rare cases. To create a custom generator, implement the
+`gl_generator::generators::Generator` trait.
 
 ## Extra features
 
@@ -122,14 +120,16 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 ### vX.X.X
 
 - Rename `Ns` to `API`, and expose at the top level
-- Use `Api` for `Extension::supported` and `Filter::api` fields
-- Remove `source` argument from `generate_bindings`, removing the need for
-  clients to depend on the `khronos_api` crate
-- Add `Profile` enum for specifying the API profile, and change the `source`
-  argument to use it instead of a string
-- Remove `features` and `extensions` fields from `Registry`
-- Hide `registry::{Feature, Filter, Require, Remove, Extension}` from the public API
-- Move `registry::{Fallbacks, Api, Profile}` to top level module
+- Remove the need for clients to depend on the `khronos_api` crate by
+  determining the XML source based on the requested `API`
+- Use a `(u8, u8)` instead of a string for the target version number
+- Use a `Profile` enum instead of a string for the profile
+- Remove unused fields from `Registry`
+- Accept types satisfying `AsRef<[&str]>` for extension lists
+- Separate parsing and generation stages in API
+- Hide `registry::{Feature, Filter, Require, Remove, Extension}` types from the
+  public API
+- Move `registry::{Fallbacks, Api, Profile}` types to top level module
 
 ### v0.4.2
 

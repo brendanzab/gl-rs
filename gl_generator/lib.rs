@@ -23,7 +23,7 @@
 //! ```no_run
 //! extern crate gl_generator;
 //!
-//! use gl_generator::{Fallbacks, GlobalGenerator, Api, Profile};
+//! use gl_generator::{Registry, Api, Profile, Fallbacks, GlobalGenerator};
 //! use std::env;
 //! use std::fs::File;
 //! use std::path::Path;
@@ -32,8 +32,9 @@
 //!     let dest = env::var("OUT_DIR").unwrap();
 //!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
 //!
-//!     gl_generator::generate_bindings(GlobalGenerator, Api::Gl, Fallbacks::All,
-//!                                     vec![], "4.5", Profile::Core, &mut file).unwrap();
+//!     Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
+//!         .write_bindings(GlobalGenerator, &mut file)
+//!         .unwrap();
 //! }
 //! ```
 //!
@@ -64,11 +65,11 @@
 extern crate log;
 
 use generators::Generator;
-use registry::Registry;
 
 use std::fmt;
 use std::io;
 
+pub use registry::Registry;
 pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
@@ -102,23 +103,11 @@ pub enum Fallbacks { All, None }
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Profile { Core, Compatibility }
 
-/// Generate OpenGL bindings using the specified generator
-///
-/// # Arguments
-///
-/// - `generator`: The type of loader to generate.
-/// - `api`: The API to generate.
-/// - `profile`: `Profile::Core` will only include all functions supported by the requested API
-///   version, while `Profile::Compatibility` will include all the functions from previous versions
-///   of the API as well.
-/// - `version`: The requested API version. This is usually in the form `"major.minor"`.
-/// - `extensions`: A list of extra extensions to include in the bindings.
-/// - `dest`: Where to write the generated rust source code to
-///
-pub fn generate_bindings<G, W>(generator: G, api: Api, fallbacks: Fallbacks,
-                               extensions: Vec<String>, version: &str, profile: Profile,
-                               dest: &mut W) -> io::Result<()> where G: Generator, W: io::Write
-{
-    let registry = Registry::new(api, fallbacks, extensions, version, profile);
-    generator.write(&registry, dest)
+impl Registry {
+    pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()> where
+        G: Generator,
+        W: io::Write,
+    {
+        generator.write(&self, output)
+    }
 }
