@@ -59,9 +59,9 @@ impl Registry {
     /// for working out what conversions are needed for the specific registry.
     pub fn get_tys(&self) -> BTreeSet<String> {
         let mut tys = BTreeSet::new();
-        for def in self.cmds.iter() {
+        for def in &self.cmds {
             tys.insert(def.proto.ty.clone());
-            for param in def.params.iter() {
+            for param in &def.params {
                 tys.insert(param.ty.clone());
             }
         }
