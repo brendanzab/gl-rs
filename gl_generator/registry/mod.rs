@@ -36,7 +36,9 @@ impl Registry {
         Exts: AsRef<[&'a str]>,
     {
         let (major, minor) = version;
-        let extensions = extensions.as_ref().iter().map(<&str>::to_string).collect();
+        let extensions = extensions.as_ref().iter()
+            .map(<&str>::to_string)
+            .collect();
 
         let filter = parse::Filter {
             fallbacks: fallbacks,
@@ -87,9 +89,9 @@ impl Add for Registry {
     type Output = Registry;
 
     fn add(mut self, other: Registry) -> Registry {
-        self.enums.extend(other.enums.into_iter());
-        self.cmds.extend(other.cmds.into_iter());
-        self.aliases.extend(other.aliases.into_iter());
+        self.enums.extend(other.enums);
+        self.cmds.extend(other.cmds);
+        self.aliases.extend(other.aliases);
         self
     }
 }
