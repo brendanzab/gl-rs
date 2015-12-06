@@ -41,6 +41,7 @@ impl Registry {
             .collect();
 
         let filter = parse::Filter {
+            api: api,
             fallbacks: fallbacks,
             extensions: extensions,
             version: format!("{}.{}", major, minor),
@@ -54,7 +55,7 @@ impl Registry {
             Api::Egl => khronos_api::EGL_XML,
         };
 
-        parse::RegistryParser::parse(src, api, filter)
+        parse::from_xml(src, filter)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful

@@ -62,6 +62,7 @@
 
 #[macro_use]
 extern crate log;
+extern crate xml;
 
 use generators::Generator;
 
