@@ -151,14 +151,14 @@ impl<R: io::Read> RegistryParser<R> {
         }
     }
 
-    fn expect_characters(&mut self) -> String {
+    fn consume_characters(&mut self) -> String {
         match self.next() {
             XmlEvent::Characters(ch) => ch,
             msg => panic!("Expected characters, found: {:?}", msg),
         }
     }
 
-    fn expect_start_element(&mut self, n: &str) -> Vec<OwnedAttribute> {
+    fn consume_start_element(&mut self, n: &str) -> Vec<OwnedAttribute> {
         match self.next() {
             XmlEvent::StartElement { name, attributes, .. } => {
                 if n == name.local_name { attributes } else {
@@ -169,7 +169,7 @@ impl<R: io::Read> RegistryParser<R> {
         }
     }
 
-    fn expect_end_element(&mut self, n: &str) {
+    fn consume_end_element(&mut self, n: &str) {
         match self.next() {
             XmlEvent::EndElement { ref name } if n == name.local_name => (),
             msg => panic!("Expected </{}>, found: {:?}", n, msg),
@@ -192,7 +192,7 @@ impl<R: io::Read> RegistryParser<R> {
             reader: XmlEventReader::new(src),
         };
 
-        parser.expect_start_element("registry");
+        parser.consume_start_element("registry");
 
         let mut enums = Vec::new();
         let mut cmds = Vec::new();
@@ -381,7 +381,7 @@ impl<R: io::Read> RegistryParser<R> {
                             ty:     get_attribute(&attributes, "type"),
                         }
                     );
-                    self.expect_end_element("enum");
+                    self.consume_end_element("enum");
                 }
 
                 // finished building the namespace
@@ -420,7 +420,7 @@ impl<R: io::Read> RegistryParser<R> {
 
     fn consume_cmd(&mut self) -> Cmd {
         // consume command prototype
-        self.expect_start_element("proto");
+        self.consume_start_element("proto");
         let mut proto = self.consume_binding("proto");
         proto.ident = trim_cmd_prefix(&proto.ident, self.api).to_string();
 
@@ -436,11 +436,11 @@ impl<R: io::Read> RegistryParser<R> {
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "alias" => {
                     alias = get_attribute(&attributes, "name");
                     alias = alias.map(|t| trim_cmd_prefix(&t, self.api).to_string());
-                    self.expect_end_element("alias");
+                    self.consume_end_element("alias");
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "vecequiv" => {
                     vecequiv = get_attribute(&attributes, "vecequiv");
-                    self.expect_end_element("vecequiv");
+                    self.consume_end_element("vecequiv");
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "glx" => {
                     glx = Some(GlxOpcode {
@@ -448,7 +448,7 @@ impl<R: io::Read> RegistryParser<R> {
                         opcode: get_attribute(&attributes, "opcode").unwrap(),
                         name: get_attribute(&attributes, "name"),
                     });
-                    self.expect_end_element("glx");
+                    self.consume_end_element("glx");
                 }
                 XmlEvent::EndElement{ref name} if name.local_name == "command" => break,
                 msg => panic!("Expected </command>, found: {:?}", msg),
@@ -478,8 +478,8 @@ impl<R: io::Read> RegistryParser<R> {
         }
 
         // consume identifier
-        let ident = self.expect_characters();
-        self.expect_end_element("name");
+        let ident = self.consume_characters();
+        self.consume_end_element("name");
 
         // consume the type suffix
         loop {
