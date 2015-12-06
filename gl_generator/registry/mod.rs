@@ -26,7 +26,7 @@ use Generator;
 
 mod parse;
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
 
 impl fmt::Display for Api {
@@ -43,12 +43,13 @@ impl fmt::Display for Api {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Fallbacks { All, None }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Profile { Core, Compatibility }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Enum {
     pub ident: String,
     pub value: String,
@@ -56,11 +57,13 @@ pub struct Enum {
     pub ty: Option<String>,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Binding {
     pub ident: String,
     pub ty: String,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Cmd {
     pub proto: Binding,
     pub params: Vec<Binding>,
@@ -69,12 +72,14 @@ pub struct Cmd {
     pub glx: Option<GlxOpcode>,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct GlxOpcode {
     pub ty: String,
     pub opcode: String,
     pub name: Option<String>,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Registry {
     pub api: Api,
     pub enums: Vec<Enum>,
