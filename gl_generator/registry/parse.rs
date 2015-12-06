@@ -71,7 +71,7 @@ fn trim_cmd_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
 }
 
 fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String>>) {
-    for (k, v) in b.into_iter() {
+    for (k, v) in b {
         match a.entry(k) {
             Entry::Occupied(mut ent) => { ent.get_mut().extend(v.into_iter()); },
             Entry::Vacant(ent) => { ent.insert(v); }
@@ -240,21 +240,21 @@ impl<R: io::Read> RegistryParser<R> {
 
         // find the features we want
         let mut found_feature = false;
-        for f in features.iter() {
+        for f in &features {
             // XXX: verify that the string comparison with <= actually works as desired
             if f.api == api && f.number <= filter.version {
-                for require in f.requires.iter() {
+                for require in &f.requires {
                     desired_enums.extend(require.enums.iter().map(|x| x.clone()));
                     desired_cmds.extend(require.commands.iter().map(|x| x.clone()));
                 }
 
-                for remove in f.removes.iter() {
+                for remove in &f.removes {
                     if remove.profile == filter.profile {
-                        for enm in remove.enums.iter() {
+                        for enm in &remove.enums {
                             debug!("Removing {}", enm);
                             desired_enums.remove(enm);
                         }
-                        for cmd in remove.commands.iter() {
+                        for cmd in &remove.commands {
                             debug!("Removing {}", cmd);
                             desired_cmds.remove(cmd);
                         }
@@ -270,12 +270,12 @@ impl<R: io::Read> RegistryParser<R> {
             panic!("Did not find version {} in the registry", filter.version);
         }
 
-        for extension in extensions.iter() {
+        for extension in &extensions {
             if filter.extensions.contains(&extension.name) {
                 if !extension.supported.contains(&api) {
                     panic!("Requested {}, which doesn't support the {} API", extension.name, api);
                 }
-                for require in extension.requires.iter() {
+                for require in &extension.requires {
                     desired_enums.extend(require.enums.iter().map(|x| x.clone()));
                     desired_cmds.extend(require.commands.iter().map(|x| x.clone()));
                 }

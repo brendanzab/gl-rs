@@ -160,7 +160,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
                 let mut metaloadfn = |symbol: &str, symbols: &[&str]| {{
                     let mut ptr = loadfn(symbol);
                     if ptr.is_null() {{
-                        for &sym in symbols.iter() {{
+                        for &sym in symbols {{
                             ptr = loadfn(sym);
                             if !ptr.is_null() {{ break; }}
                         }}

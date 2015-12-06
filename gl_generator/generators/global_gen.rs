@@ -54,7 +54,7 @@ fn write_metaloadfn<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
                          where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
             let mut ptr = loadfn(symbol);
             if ptr.is_null() {{
-                for &sym in fallbacks.iter() {{
+                for &sym in fallbacks {{
                     ptr = loadfn(sym);
                     if !ptr.is_null() {{ break; }}
                 }}
