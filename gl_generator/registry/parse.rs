@@ -20,7 +20,6 @@ use std::collections::hash_map::Entry;
 use std::collections::BTreeSet;
 use std::collections::HashSet;
 use std::collections::HashMap;
-use std::str::FromStr;
 use std::io;
 use self::xml::attribute::OwnedAttribute;
 use self::xml::EventReader as XmlEventReader;
@@ -29,32 +28,24 @@ use self::xml::reader::XmlEvent;
 use {Fallbacks, Api, Profile};
 use registry::{Binding, Cmd, Enum, GlxOpcode, Registry};
 
-impl FromStr for Api {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Api, ()> {
-        match s {
-            "gl" => Ok(Api::Gl),
-            "glx" => Ok(Api::Glx),
-            "wgl" => Ok(Api::Wgl),
-            "egl" => Ok(Api::Egl),
-            "glcore" => Ok(Api::GlCore),
-            "gles1" => Ok(Api::Gles1),
-            "gles2" => Ok(Api::Gles2),
-            _     => Err(()),
-        }
+fn api_from_str(src: &str) -> Result<Api, ()> {
+    match src {
+        "gl" => Ok(Api::Gl),
+        "glx" => Ok(Api::Glx),
+        "wgl" => Ok(Api::Wgl),
+        "egl" => Ok(Api::Egl),
+        "glcore" => Ok(Api::GlCore),
+        "gles1" => Ok(Api::Gles1),
+        "gles2" => Ok(Api::Gles2),
+        _     => Err(()),
     }
 }
 
-impl FromStr for Profile {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Profile, ()> {
-        match s {
-            "core" => Ok(Profile::Core),
-            "compatibility" => Ok(Profile::Compatibility),
-            _ => Err(()),
-        }
+fn profile_from_str(src: &str) -> Result<Profile, ()> {
+    match src {
+        "core" => Ok(Profile::Core),
+        "compatibility" => Ok(Profile::Compatibility),
+        _ => Err(()),
     }
 }
 
@@ -520,7 +511,7 @@ impl FromXml for Remove {
     fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Remove {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
-        let profile = Profile::from_str(&*profile).unwrap();
+        let profile = profile_from_str(&profile).unwrap();
         let (enums, commands) = r.consume_two("enum", "command", "remove");
 
         Remove {
@@ -535,7 +526,7 @@ impl FromXml for Feature {
     fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Feature {
         debug!("Doing a FromXml on Feature");
         let api = get_attribute(a, "api").unwrap();
-        let api = Api::from_str(&*api).unwrap();
+        let api = api_from_str(&api).unwrap();
         let name = get_attribute(a, "name").unwrap();
         let number = get_attribute(a, "number").unwrap();
 
@@ -559,7 +550,7 @@ impl FromXml for Extension {
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap()
             .split('|')
-            .map(|x| Api::from_str(x))
+            .map(api_from_str)
             .map(Result::unwrap)
             .collect::<Vec<_>>();
         let mut require = Vec::new();
