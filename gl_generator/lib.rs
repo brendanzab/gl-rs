@@ -64,7 +64,11 @@
 extern crate log;
 extern crate xml;
 
+#[cfg(feature = "unstable_generator_utils")]
 pub mod generators;
+#[cfg(not(feature = "unstable_generator_utils"))]
+mod generators;
+
 mod registry;
 
 pub use generators::Generator;

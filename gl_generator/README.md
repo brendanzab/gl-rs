@@ -105,9 +105,21 @@ OpenGL 1.1 on Windows, you will need to add
 
 ### Custom Generators
 
-The `gl_generator` crate is extensible. This is a niche feature useful only in
-very rare cases. To create a custom generator, implement the
-`gl_generator::generators::Generator` trait.
+The `gl_generator` can be extended with custom generators. This is a niche
+feature useful only in very rare cases. To create a custom generator, implement
+the `gl_generator::Generator` trait. See the source of the
+`gl_generator::generators` module for examples.
+
+Various utility functions are provided in the `generators` module, but the api
+is unstable, so it has been placed behind a feature flag. In access these
+functions, you will need to add the `"unstable_generator_utils"` feature to
+your `Cargo.toml`:
+
+```toml
+[build-dependencies.gl_generator]
+version = "0.4.2"
+features = ["unstable_generator_utils"]
+```
 
 ## Extra features
 

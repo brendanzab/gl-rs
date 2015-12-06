@@ -17,6 +17,9 @@ readme = "README.md"
 name = "gl_generator"
 path = "lib.rs"
 
+[features]
+unstable_generator_utils = []
+
 [dependencies]
 khronos_api = { version = "1.0.0", path = "../khronos_api" }
 log = "0.3.2"
