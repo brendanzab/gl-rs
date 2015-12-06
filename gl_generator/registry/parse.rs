@@ -73,7 +73,7 @@ fn trim_cmd_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
 fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String>>) {
     for (k, v) in b {
         match a.entry(k) {
-            Entry::Occupied(mut ent) => { ent.get_mut().extend(v.into_iter()); },
+            Entry::Occupied(mut ent) => { ent.get_mut().extend(v); },
             Entry::Vacant(ent) => { ent.insert(v); }
         }
     }
@@ -200,13 +200,13 @@ impl<R: io::Read> RegistryParser<R> {
 
                 // add enum namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
-                    enums.extend(parser.consume_enums().into_iter());
+                    enums.extend(parser.consume_enums());
                 }
 
                 // add command namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "commands" => {
                     let (new_cmds, new_aliases) = parser.consume_cmds();
-                    cmds.extend(new_cmds.into_iter());
+                    cmds.extend(new_cmds);
                     merge_map(&mut aliases, new_aliases);
                 }
 
