@@ -19,6 +19,7 @@ use std::collections::BTreeSet;
 use std::collections::HashSet;
 use std::collections::HashMap;
 use std::io;
+use xml::attribute::OwnedAttribute;
 use xml::EventReader as XmlEventReader;
 use xml::reader::XmlEvent;
 
@@ -33,8 +34,32 @@ pub fn from_xml<R: io::Read>(src: R, filter: Filter) -> Registry {
 }
 
 #[derive(Debug, PartialEq, Eq)]
+struct Attribute {
+    key: String,
+    value: String,
+}
+
+impl Attribute {
+    fn new<Key, Value>(key: Key, value: Value) -> Attribute where
+        Key: ToString,
+        Value: ToString,
+    {
+        Attribute {
+            key: key.to_string(),
+            value: value.to_string(),
+        }
+    }
+}
+
+impl From<OwnedAttribute> for Attribute {
+    fn from(attribute: OwnedAttribute) -> Attribute {
+        Attribute::new(attribute.name.local_name, attribute.value)
+    }
+}
+
+#[derive(Debug, PartialEq, Eq)]
 enum ParseEvent {
-    Start(String, Vec<(String, String)>),
+    Start(String, Vec<Attribute>),
     End(String),
     Text(String),
 }
@@ -46,7 +71,7 @@ impl ParseEvent {
             XmlEvent::EndDocument => None,
             XmlEvent::StartElement { name, attributes, .. } => {
                 let attributes = attributes.into_iter()
-                    .map(|att| (att.name.local_name, att.value))
+                    .map(Attribute::from)
                     .collect();
                 Some(ParseEvent::Start(name.local_name, attributes))
             },
@@ -286,7 +311,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         }
     }
 
-    fn consume_start_element(&mut self, expected_name: &str) -> Vec<(String, String)> {
+    fn consume_start_element(&mut self, expected_name: &str) -> Vec<Attribute> {
         match self.next().unwrap() {
             ParseEvent::Start(name, attributes) => {
                 if expected_name == name { attributes } else {
@@ -500,18 +525,18 @@ impl<T> Parse for T where
     T: Sized + Iterator<Item = ParseEvent>,
 {}
 
-fn get_attribute(attribs: &[(String, String)], name: &str) -> Option<String> {
+fn get_attribute(attribs: &[Attribute], key: &str) -> Option<String> {
     attribs.iter()
-        .find(|attrib| attrib.0 == name)
-        .map(|attrib| attrib.1.clone())
+        .find(|attrib| attrib.key == key)
+        .map(|attrib| attrib.value.clone())
 }
 
 trait FromXml {
-    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Self;
+    fn convert<P: Parse>(parser: &mut P, a: &[Attribute]) -> Self;
 }
 
 impl FromXml for Require {
-    fn convert<P: Parse>(parser: &mut P, _: &[(String, String)]) -> Require {
+    fn convert<P: Parse>(parser: &mut P, _: &[Attribute]) -> Require {
         debug!("Doing a FromXml on Require");
         let (enums, commands) = parser.consume_two("enum", "command", "require");
         Require {
@@ -522,7 +547,7 @@ impl FromXml for Require {
 }
 
 impl FromXml for Remove {
-    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Remove {
+    fn convert<P: Parse>(parser: &mut P, a: &[Attribute]) -> Remove {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let profile = profile_from_str(&profile).unwrap();
@@ -537,7 +562,7 @@ impl FromXml for Remove {
 }
 
 impl FromXml for Feature {
-    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Feature {
+    fn convert<P: Parse>(parser: &mut P, a: &[Attribute]) -> Feature {
         debug!("Doing a FromXml on Feature");
         let api = get_attribute(a, "api").unwrap();
         let api = api_from_str(&api).unwrap();
@@ -559,7 +584,7 @@ impl FromXml for Feature {
 }
 
 impl FromXml for Extension {
-    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Extension {
+    fn convert<P: Parse>(parser: &mut P, a: &[Attribute]) -> Extension {
         debug!("Doing a FromXml on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap()
@@ -587,7 +612,7 @@ impl FromXml for Extension {
 }
 
 impl FromXml for String {
-    fn convert<P: Parse>(_: &mut P, a: &[(String, String)]) -> String {
+    fn convert<P: Parse>(_: &mut P, a: &[Attribute]) -> String {
         get_attribute(a, "name").unwrap()
     }
 }
@@ -602,7 +627,7 @@ mod tests {
             use xml::namespace::Namespace;
             use xml::reader::XmlEvent;
 
-            use registry::parse::ParseEvent;
+            use registry::parse::{Attribute, ParseEvent};
 
             #[test]
             fn test_start_event() {
@@ -617,8 +642,8 @@ mod tests {
                 let expected = ParseEvent::Start(
                     "element".to_string(),
                     vec![
-                        ("attr1".to_string(), "val1".to_string()),
-                        ("attr2".to_string(), "val2".to_string()),
+                        Attribute::new("attr1", "val1"),
+                        Attribute::new("attr2", "val2"),
                     ],
                 );
                 assert_eq!(ParseEvent::from_xml(given), Some(expected));
