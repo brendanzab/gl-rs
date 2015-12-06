@@ -64,50 +64,14 @@
 extern crate log;
 extern crate xml;
 
-use generators::Generator;
+pub mod generators;
+mod registry;
 
-use std::fmt;
-use std::io;
-
-pub use registry::Registry;
+pub use generators::Generator;
 pub use generators::debug_struct_gen::DebugStructGenerator;
 pub use generators::global_gen::GlobalGenerator;
 pub use generators::static_gen::StaticGenerator;
 pub use generators::static_struct_gen::StaticStructGenerator;
 pub use generators::struct_gen::StructGenerator;
 
-pub mod generators;
-pub mod registry;
-
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
-
-impl fmt::Display for Api {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Api::Gl  => write!(fmt, "gl"),
-            Api::Glx => write!(fmt, "glx"),
-            Api::Wgl => write!(fmt, "wgl"),
-            Api::Egl => write!(fmt, "egl"),
-            Api::GlCore => write!(fmt, "glcore"),
-            Api::Gles1 => write!(fmt, "gles1"),
-            Api::Gles2 => write!(fmt, "gles2"),
-        }
-    }
-}
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum Fallbacks { All, None }
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum Profile { Core, Compatibility }
-
-impl Registry {
-    pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()> where
-        G: Generator,
-        W: io::Write,
-    {
-        generator.write(&self, output)
-    }
-}
+pub use registry::*;
