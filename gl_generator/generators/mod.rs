@@ -16,7 +16,7 @@ use Api;
 use registry::{Enum, Registry, Cmd};
 use std::io;
 
-mod ty;
+pub mod ty;
 pub mod debug_struct_gen;
 pub mod global_gen;
 pub mod static_gen;
