@@ -115,11 +115,11 @@ struct Extension {
 }
 
 pub struct RegistryParser<R: io::Read> {
-    api: Api,
     reader: XmlEventReader<R>,
 }
 
 pub struct Filter {
+    pub api: Api,
     pub fallbacks: Fallbacks,
     pub extensions: BTreeSet<String>,
     pub profile: Profile,
@@ -176,9 +176,8 @@ impl<R: io::Read> RegistryParser<R> {
         }
     }
 
-    pub fn parse(src: R, api: Api, filter: Filter) -> Registry {
+    pub fn parse(src: R, filter: Filter) -> Registry {
         let mut parser = RegistryParser {
-            api: api,
             reader: XmlEventReader::new(src),
         };
 
@@ -200,12 +199,12 @@ impl<R: io::Read> RegistryParser<R> {
 
                 // add enum namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
-                    enums.extend(parser.consume_enums());
+                    enums.extend(parser.consume_enums(filter.api));
                 }
 
                 // add command namespace
                 XmlEvent::StartElement{ref name, ..} if name.local_name == "commands" => {
-                    let (new_cmds, new_aliases) = parser.consume_cmds();
+                    let (new_cmds, new_aliases) = parser.consume_cmds(filter.api);
                     cmds.extend(new_cmds);
                     merge_map(&mut aliases, new_aliases);
                 }
@@ -240,15 +239,15 @@ impl<R: io::Read> RegistryParser<R> {
 
         // find the features we want
         let mut found_feature = false;
-        for f in &features {
+        for feature in &features {
             // XXX: verify that the string comparison with <= actually works as desired
-            if f.api == api && f.number <= filter.version {
-                for require in &f.requires {
+            if feature.api == filter.api && feature.number <= filter.version {
+                for require in &feature.requires {
                     desired_enums.extend(require.enums.iter().map(|x| x.clone()));
                     desired_cmds.extend(require.commands.iter().map(|x| x.clone()));
                 }
 
-                for remove in &f.removes {
+                for remove in &feature.removes {
                     if remove.profile == filter.profile {
                         for enm in &remove.enums {
                             debug!("Removing {}", enm);
@@ -261,7 +260,7 @@ impl<R: io::Read> RegistryParser<R> {
                     }
                 }
             }
-            if f.number == filter.version {
+            if feature.number == filter.version {
                 found_feature = true;
             }
         }
@@ -272,8 +271,8 @@ impl<R: io::Read> RegistryParser<R> {
 
         for extension in &extensions {
             if filter.extensions.contains(&extension.name) {
-                if !extension.supported.contains(&api) {
-                    panic!("Requested {}, which doesn't support the {} API", extension.name, api);
+                if !extension.supported.contains(&filter.api) {
+                    panic!("Requested {}, which doesn't support the {} API", extension.name, filter.api);
                 }
                 for require in &extension.requires {
                     desired_enums.extend(require.enums.iter().map(|x| x.clone()));
@@ -297,7 +296,7 @@ impl<R: io::Read> RegistryParser<R> {
         };
 
         Registry {
-            api: api,
+            api: filter.api,
             enums: enums.into_iter().filter(is_desired_enum).collect(),
             cmds: cmds.into_iter().filter(is_desired_cmd).collect(),
             aliases: if filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
@@ -353,7 +352,7 @@ impl<R: io::Read> RegistryParser<R> {
         }
     }
 
-    fn consume_enums(&mut self) -> Vec<Enum> {
+    fn consume_enums(&mut self, api: Api) -> Vec<Enum> {
         let mut enums = Vec::new();
         loop {
             match self.next() {
@@ -365,7 +364,7 @@ impl<R: io::Read> RegistryParser<R> {
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "enum" => {
                     enums.push(
                         Enum {
-                            ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), self.api).to_string(),
+                            ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), api).to_string(),
                             value:  get_attribute(&attributes, "value").unwrap(),
                             alias:  get_attribute(&attributes, "alias"),
                             ty:     get_attribute(&attributes, "type"),
@@ -383,14 +382,14 @@ impl<R: io::Read> RegistryParser<R> {
         enums
     }
 
-    fn consume_cmds(&mut self) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
+    fn consume_cmds(&mut self, api: Api) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
         let mut cmds = Vec::new();
         let mut aliases: HashMap<String, Vec<String>> = HashMap::new();
         loop {
             match self.next() {
                 // add command definition
                 XmlEvent::StartElement { ref name, .. } if name.local_name == "command" => {
-                    let new = self.consume_cmd();
+                    let new = self.consume_cmd(api);
                     if let Some(ref v) = new.alias {
                         match aliases.entry(v.clone()) {
                             Entry::Occupied(mut ent) => { ent.get_mut().push(new.proto.ident.clone()); },
@@ -408,11 +407,11 @@ impl<R: io::Read> RegistryParser<R> {
         (cmds, aliases)
     }
 
-    fn consume_cmd(&mut self) -> Cmd {
+    fn consume_cmd(&mut self, api: Api) -> Cmd {
         // consume command prototype
         self.consume_start_element("proto");
         let mut proto = self.consume_binding("proto");
-        proto.ident = trim_cmd_prefix(&proto.ident, self.api).to_string();
+        proto.ident = trim_cmd_prefix(&proto.ident, api).to_string();
 
         let mut params = Vec::new();
         let mut alias = None;
@@ -425,7 +424,7 @@ impl<R: io::Read> RegistryParser<R> {
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "alias" => {
                     alias = get_attribute(&attributes, "name");
-                    alias = alias.map(|t| trim_cmd_prefix(&t, self.api).to_string());
+                    alias = alias.map(|t| trim_cmd_prefix(&t, api).to_string());
                     self.consume_end_element("alias");
                 }
                 XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "vecequiv" => {
