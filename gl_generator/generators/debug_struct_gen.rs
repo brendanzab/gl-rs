@@ -62,8 +62,8 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
 
 /// Creates all the `<enum>` elements at the root of the bindings.
 fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for e in registry.enum_iter() {
-        try!(super::gen_enum_item(e, "types::", dest));
+    for enm in &registry.enums {
+        try!(super::gen_enum_item(enm, "types::", dest));
     }
 
     Ok(())
@@ -134,11 +134,11 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
         api = super::gen_struct_name(registry.api)
     ));
 
-    for c in registry.cmd_iter() {
-        if let Some(v) = registry.aliases.get(&c.proto.ident) {
+    for cmd in &registry.cmds {
+        if let Some(v) = registry.aliases.get(&cmd.proto.ident) {
             try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
         }
-        try!(writeln!(dest, "pub {name}: FnPtr,", name = c.proto.ident));
+        try!(writeln!(dest, "pub {name}: FnPtr,", name = cmd.proto.ident));
     }
 
     writeln!(dest, "}}")
@@ -171,12 +171,12 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
         api = super::gen_struct_name(registry.api)
     ));
 
-    for c in registry.cmd_iter() {
+    for cmd in &registry.cmds {
         try!(writeln!(dest,
             "{name}: FnPtr::new(metaloadfn(\"{symbol}\", &[{fallbacks}])),",
-            name = c.proto.ident,
-            symbol = super::gen_symbol_name(registry.api, &c.proto.ident),
-            fallbacks = match registry.aliases.get(&c.proto.ident) {
+            name = cmd.proto.ident,
+            symbol = super::gen_symbol_name(registry.api, &cmd.proto.ident),
+            fallbacks = match registry.aliases.get(&cmd.proto.ident) {
                 Some(fbs) => {
                     fbs.iter()
                        .map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name)))
@@ -192,11 +192,11 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
         }}"
     ));
 
-    for c in registry.cmd_iter() {
-        let idents = super::gen_parameters(c, true, false);
-        let typed_params = super::gen_parameters(c, false, true);
+    for cmd in &registry.cmds {
+        let idents = super::gen_parameters(cmd, true, false);
+        let typed_params = super::gen_parameters(cmd, false, true);
         let println = format!("println!(\"[OpenGL] {}({})\" {});",
-                                c.proto.ident,
+                                cmd.proto.ident,
                                 (0 .. idents.len()).map(|_| "{:?}".to_string()).collect::<Vec<_>>().join(", "),
                                 idents.iter().zip(typed_params.iter())
                                       .map(|(name, ty)| {
@@ -216,13 +216,13 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
                 {print_err}
                 r
             }}",
-            name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).join(", "),
+            name = cmd.proto.ident,
+            params = super::gen_parameters(cmd, true, true).join(", "),
             typed_params = typed_params.join(", "),
-            return_suffix = super::gen_return_type(c),
+            return_suffix = super::gen_return_type(cmd),
             idents = idents.join(", "),
             println = println,
-            print_err = if c.proto.ident != "GetError" && registry.cmd_iter().find(|c| c.proto.ident == "GetError").is_some() {
+            print_err = if cmd.proto.ident != "GetError" && registry.cmds.iter().find(|cmd| cmd.proto.ident == "GetError").is_some() {
                 format!(r#"match __gl_imports::mem::transmute::<_, extern "system" fn() -> u32>
                     (self.GetError.f)() {{ 0 => (), r => println!("[OpenGL] ^ GL error triggered: {{}}", r) }}"#)
             } else {

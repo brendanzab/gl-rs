@@ -85,8 +85,8 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
 
 /// Creates all the `<enum>` elements at the root of the bindings.
 fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for e in registry.enum_iter() {
-        try!(super::gen_enum_item(e, "types::", dest));
+    for enm in &registry.enums {
+        try!(super::gen_enum_item(enm, "types::", dest));
     }
 
     Ok(())
@@ -97,7 +97,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 /// The function calls the corresponding function pointer stored in the `storage` module created
 ///  by `write_ptrs`.
 fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for c in registry.cmd_iter() {
+    for c in &registry.cmds {
         if let Some(v) = registry.aliases.get(&c.proto.ident) {
             try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
         }
@@ -152,7 +152,7 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             use super::__gl_imports::raw;
             use super::FnPtr;"));
 
-    for c in registry.cmd_iter() {
+    for c in &registry.cmds {
         try!(writeln!(dest,
             "pub static mut {name}: FnPtr = FnPtr {{
                 f: super::missing_fn_panic as *const raw::c_void,
@@ -170,7 +170,7 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
 /// Each module contains `is_loaded` and `load_with` which interact with the `storage` module
 ///  created by `write_ptrs`.
 fn write_fn_mods<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for c in registry.cmd_iter() {
+    for c in &registry.cmds {
         let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
                 let names = v.iter().map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name[..]))).collect::<Vec<_>>();
@@ -233,7 +233,7 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
         pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
     "));
 
-    for c in registry.cmd_iter() {
+    for c in &registry.cmds {
         try!(writeln!(dest, "{cmd_name}::load_with(|s| loadfn(s));",
                       cmd_name = &c.proto.ident[..]));
     }

@@ -62,8 +62,8 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
 
 /// Creates all the `<enum>` elements at the root of the bindings.
 fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for e in registry.enum_iter() {
-        try!(super::gen_enum_item(e, "types::", dest));
+    for enm in &registry.enums {
+        try!(super::gen_enum_item(enm, "types::", dest));
     }
 
     Ok(())
@@ -134,11 +134,11 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
         api = super::gen_struct_name(registry.api)
     ));
 
-    for c in registry.cmd_iter() {
-        if let Some(v) = registry.aliases.get(&c.proto.ident) {
+    for cmd in &registry.cmds {
+        if let Some(v) = registry.aliases.get(&cmd.proto.ident) {
             try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
         }
-        try!(writeln!(dest, "pub {name}: FnPtr,", name = c.proto.ident));
+        try!(writeln!(dest, "pub {name}: FnPtr,", name = cmd.proto.ident));
     }
 
     writeln!(dest, "}}")
@@ -171,12 +171,12 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
         api = super::gen_struct_name(registry.api)
     ));
 
-    for c in registry.cmd_iter() {
+    for cmd in &registry.cmds {
         try!(writeln!(dest,
             "{name}: FnPtr::new(metaloadfn(\"{symbol}\", &[{fallbacks}])),",
-            name = c.proto.ident,
-            symbol = super::gen_symbol_name(registry.api, &c.proto.ident),
-            fallbacks = match registry.aliases.get(&c.proto.ident) {
+            name = cmd.proto.ident,
+            symbol = super::gen_symbol_name(registry.api, &cmd.proto.ident),
+            fallbacks = match registry.aliases.get(&cmd.proto.ident) {
                 Some(fbs) => {
                     fbs.iter()
                        .map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name)))
@@ -192,18 +192,18 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
         }}"
     ));
 
-    for c in registry.cmd_iter() {
+    for cmd in &registry.cmds {
         try!(writeln!(dest,
             "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
             #[inline] pub unsafe fn {name}(&self, {params}) -> {return_suffix} {{ \
                 __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                     (self.{name}.f)({idents}) \
             }}",
-            name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).join(", "),
-            typed_params = super::gen_parameters(c, false, true).join(", "),
-            return_suffix = super::gen_return_type(c),
-            idents = super::gen_parameters(c, true, false).join(", "),
+            name = cmd.proto.ident,
+            params = super::gen_parameters(cmd, true, true).join(", "),
+            typed_params = super::gen_parameters(cmd, false, true).join(", "),
+            return_suffix = super::gen_return_type(cmd),
+            idents = super::gen_parameters(cmd, true, false).join(", "),
         ))
     }
 
