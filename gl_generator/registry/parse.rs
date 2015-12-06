@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate xml;
 extern crate khronos_api;
 
 use std::collections::hash_map::Entry;
@@ -20,12 +19,46 @@ use std::collections::BTreeSet;
 use std::collections::HashSet;
 use std::collections::HashMap;
 use std::io;
-use self::xml::attribute::OwnedAttribute;
-use self::xml::EventReader as XmlEventReader;
-use self::xml::reader::XmlEvent;
+use xml::EventReader as XmlEventReader;
+use xml::reader::XmlEvent;
 
 use {Fallbacks, Api, Profile};
 use registry::{Binding, Cmd, Enum, GlxOpcode, Registry};
+
+pub fn from_xml<R: io::Read>(src: R, filter: Filter) -> Registry {
+    XmlEventReader::new(src).into_iter()
+        .map(Result::unwrap)
+        .filter_map(ParseEvent::from_xml)
+        .parse(filter)
+}
+
+#[derive(Debug, PartialEq, Eq)]
+enum ParseEvent {
+    Start(String, Vec<(String, String)>),
+    End(String),
+    Text(String),
+}
+
+impl ParseEvent {
+    fn from_xml(event: XmlEvent) -> Option<ParseEvent> {
+        match event {
+            XmlEvent::StartDocument { .. } => None,
+            XmlEvent::EndDocument => None,
+            XmlEvent::StartElement { name, attributes, .. } => {
+                let attributes = attributes.into_iter()
+                    .map(|att| (att.name.local_name, att.value))
+                    .collect();
+                Some(ParseEvent::Start(name.local_name, attributes))
+            },
+            XmlEvent::EndElement { name } => Some(ParseEvent::End(name.local_name)),
+            XmlEvent::Characters(chars) => Some(ParseEvent::Text(chars)),
+            XmlEvent::ProcessingInstruction { .. } => None,
+            XmlEvent::CData(_) => None,
+            XmlEvent::Comment(_) => None,
+            XmlEvent::Whitespace(_) => None,
+        }
+    }
+}
 
 fn api_from_str(src: &str) -> Result<Api, ()> {
     match src {
@@ -114,10 +147,6 @@ struct Extension {
     pub requires: Vec<Require>,
 }
 
-pub struct RegistryParser<R: io::Read> {
-    reader: XmlEventReader<R>,
-}
-
 pub struct Filter {
     pub api: Api,
     pub fallbacks: Fallbacks,
@@ -126,62 +155,9 @@ pub struct Filter {
     pub version: String,
 }
 
-/// A big, ugly, imperative impl with methods that accumulates a Registry struct
-impl<R: io::Read> RegistryParser<R> {
-    fn next(&mut self) -> XmlEvent {
-        loop {
-            let event = self.reader.next();
-            match event.unwrap() {
-                XmlEvent::StartDocument { .. } => (),
-                XmlEvent::EndDocument => panic!("The end of the document has been reached"),
-                XmlEvent::Comment(_) => (),
-                XmlEvent::Whitespace(_) => (),
-                event => return event,
-            }
-        }
-    }
-
-    fn consume_characters(&mut self) -> String {
-        match self.next() {
-            XmlEvent::Characters(ch) => ch,
-            msg => panic!("Expected characters, found: {:?}", msg),
-        }
-    }
-
-    fn consume_start_element(&mut self, n: &str) -> Vec<OwnedAttribute> {
-        match self.next() {
-            XmlEvent::StartElement { name, attributes, .. } => {
-                if n == name.local_name { attributes } else {
-                    panic!("Expected <{}>, found: <{}>", n, name.local_name)
-                }
-            }
-            msg => panic!("Expected <{}>, found: {:?}", n, msg),
-        }
-    }
-
-    fn consume_end_element(&mut self, n: &str) {
-        match self.next() {
-            XmlEvent::EndElement { ref name } if n == name.local_name => (),
-            msg => panic!("Expected </{}>, found: {:?}", n, msg),
-        }
-    }
-
-    fn skip_to_end(&mut self, name: &str) {
-        loop {
-            match self.next() {
-                XmlEvent::EndDocument => panic!("Expected </{}>, but reached the end of the document.", name),
-                XmlEvent::EndElement { name: ref n } if n.local_name == name => break,
-                _ => (),
-            }
-        }
-    }
-
-    pub fn parse(src: R, filter: Filter) -> Registry {
-        let mut parser = RegistryParser {
-            reader: XmlEventReader::new(src),
-        };
-
-        parser.consume_start_element("registry");
+trait Parse: Sized + Iterator<Item = ParseEvent> {
+    fn parse(mut self, filter: Filter) -> Registry {
+        self.consume_start_element("registry");
 
         let mut enums = Vec::new();
         let mut cmds = Vec::new();
@@ -189,48 +165,48 @@ impl<R: io::Read> RegistryParser<R> {
         let mut extensions = Vec::new();
         let mut aliases = HashMap::new();
 
-        loop {
-            match parser.next() {
+        while let Some(event) = self.next() {
+            match event {
                 // ignores
-                XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "comment" => parser.skip_to_end("comment"),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "types" => parser.skip_to_end("types"),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "groups" => parser.skip_to_end("groups"),
+                ParseEvent::Text(_) => (),
+                ParseEvent::Start(ref name, _) if name == "comment" => self.skip_to_end("comment"),
+                ParseEvent::Start(ref name, _) if name == "types" => self.skip_to_end("types"),
+                ParseEvent::Start(ref name, _) if name == "groups" => self.skip_to_end("groups"),
 
                 // add enum namespace
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "enums" => {
-                    enums.extend(parser.consume_enums(filter.api));
+                ParseEvent::Start(ref name, _) if name == "enums" => {
+                    enums.extend(self.consume_enums(filter.api));
                 }
 
                 // add command namespace
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "commands" => {
-                    let (new_cmds, new_aliases) = parser.consume_cmds(filter.api);
+                ParseEvent::Start(ref name, _) if name == "commands" => {
+                    let (new_cmds, new_aliases) = self.consume_cmds(filter.api);
                     cmds.extend(new_cmds);
                     merge_map(&mut aliases, new_aliases);
                 }
 
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "feature" => {
+                ParseEvent::Start(ref name, ref attributes) if name == "feature" => {
                     debug!("Parsing feature: {:?}", attributes);
-                    features.push(Feature::convert(&mut parser, &attributes));
+                    features.push(Feature::convert(&mut self, &attributes));
                 }
 
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "extensions" => {
+                ParseEvent::Start(ref name, _) if name == "extensions" => {
                     loop {
-                        match parser.next() {
-                            XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "extension" => {
-                                extensions.push(Extension::convert(&mut parser, &attributes));
+                        match self.next().unwrap() {
+                            ParseEvent::Start(ref name, ref attributes) if name == "extension" => {
+                                extensions.push(Extension::convert(&mut self, &attributes));
                             }
-                            XmlEvent::EndElement{ref name} if name.local_name == "extensions" => break,
-                            msg => panic!("Unexpected message {:?}", msg),
+                            ParseEvent::End(ref name) if name == "extensions" => break,
+                            event => panic!("Unexpected message {:?}", event),
                         }
                     }
                 }
 
                 // finished building the registry
-                XmlEvent::EndElement{ref name} if name.local_name == "registry" => break,
+                ParseEvent::End(ref name) if name == "registry" => break,
 
                 // error handling
-                msg => panic!("Expected </registry>, found: {:?}", msg),
+                event => panic!("Expected </registry>, found: {:?}", event),
             }
         }
 
@@ -303,6 +279,40 @@ impl<R: io::Read> RegistryParser<R> {
         }
     }
 
+    fn consume_characters(&mut self) -> String {
+        match self.next().unwrap() {
+            ParseEvent::Text(ch) => ch,
+            event => panic!("Expected characters, found: {:?}", event),
+        }
+    }
+
+    fn consume_start_element(&mut self, expected_name: &str) -> Vec<(String, String)> {
+        match self.next().unwrap() {
+            ParseEvent::Start(name, attributes) => {
+                if expected_name == name { attributes } else {
+                    panic!("Expected <{}>, found: <{}>", expected_name, name)
+                }
+            }
+            event => panic!("Expected <{}>, found: {:?}", expected_name, event),
+        }
+    }
+
+    fn consume_end_element(&mut self, expected_name: &str) {
+        match self.next().unwrap() {
+            ParseEvent::End(ref name) if expected_name == name => (),
+            event => panic!("Expected </{}>, found: {:?}", expected_name, event),
+        }
+    }
+
+    fn skip_to_end(&mut self, expected_name: &str) {
+        loop {
+            match self.next().unwrap() {
+                ParseEvent::End(ref name) if expected_name == name => break,
+                _ => {},
+            }
+        }
+    }
+
     fn consume_two<'a, T: FromXml, U: FromXml>(&mut self, one: &'a str, two: &'a str, end: &'a str) -> (Vec<T>, Vec<U>) {
         debug!("consume_two: looking for {} and {} until {}", one, two, end);
 
@@ -310,58 +320,58 @@ impl<R: io::Read> RegistryParser<R> {
         let mut twos = Vec::new();
 
         loop {
-            match self.next() {
-                XmlEvent::StartElement{ref name, ref attributes, ..} => {
+            match self.next().unwrap() {
+                ParseEvent::Start(ref name, ref attributes) => {
                     debug!("Found start element <{:?} {:?}>", name, attributes);
                     debug!("one and two are {} and {}", one, two);
 
                     let n = name.clone();
 
-                    if one == n.local_name {
+                    if one == n {
                         ones.push(FromXml::convert(self, &attributes));
-                    } else if "type" == n.local_name {
+                    } else if "type" == n {
                         // XXX: GL1.1 contains types, which we never care about anyway.
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
                         continue;
-                    } else if two == n.local_name {
+                    } else if two == n {
                         twos.push(FromXml::convert(self, &attributes));
                     } else {
                         panic!("Unexpected element: <{:?} {:?}>", n, &attributes);
                     }
                 },
-                XmlEvent::EndElement{ref name} => {
+                ParseEvent::End(ref name) => {
                     debug!("Found end element </{:?}>", name);
 
-                    if one == name.local_name || two == name.local_name {
+                    if one == name || two == name {
                         continue;
-                    } else if "type" == name.local_name {
+                    } else if "type" == name {
                         // XXX: GL1.1 contains types, which we never care about anyway.
                         // Make sure consume_two doesn't get used for things which *do*
                         // care about type.
                         warn!("Ignoring type!");
                         continue;
-                    } else if end == name.local_name {
+                    } else if end == name {
                         return (ones, twos);
                     } else {
-                        panic!("Unexpected end element {:?}", name.local_name);
+                        panic!("Unexpected end element {:?}", name);
                     }
                 },
-                msg => panic!("Unexpected message {:?}", msg) }
+                event => panic!("Unexpected message {:?}", event) }
         }
     }
 
     fn consume_enums(&mut self, api: Api) -> Vec<Enum> {
         let mut enums = Vec::new();
         loop {
-            match self.next() {
+            match self.next().unwrap() {
                 // ignores
-                XmlEvent::Characters(_) | XmlEvent::Comment(_) => (),
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "unused" => self.skip_to_end("unused"),
+                ParseEvent::Text(_) => {},
+                ParseEvent::Start(ref name, _) if name == "unused" => self.skip_to_end("unused"),
 
                 // add enum definition
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "enum" => {
+                ParseEvent::Start(ref name, ref attributes) if name == "enum" => {
                     enums.push(
                         Enum {
                             ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), api).to_string(),
@@ -374,9 +384,9 @@ impl<R: io::Read> RegistryParser<R> {
                 }
 
                 // finished building the namespace
-                XmlEvent::EndElement{ref name} if name.local_name == "enums" => break,
+                ParseEvent::End(ref name) if name == "enums" => break,
                 // error handling
-                msg => panic!("Expected </enums>, found: {:?}", msg),
+                event => panic!("Expected </enums>, found: {:?}", event),
             }
         }
         enums
@@ -386,9 +396,9 @@ impl<R: io::Read> RegistryParser<R> {
         let mut cmds = Vec::new();
         let mut aliases: HashMap<String, Vec<String>> = HashMap::new();
         loop {
-            match self.next() {
+            match self.next().unwrap() {
                 // add command definition
-                XmlEvent::StartElement { ref name, .. } if name.local_name == "command" => {
+                ParseEvent::Start(ref name, _) if name == "command" => {
                     let new = self.consume_cmd(api);
                     if let Some(ref v) = new.alias {
                         match aliases.entry(v.clone()) {
@@ -399,9 +409,9 @@ impl<R: io::Read> RegistryParser<R> {
                     cmds.push(new);
                 }
                 // finished building the namespace
-                XmlEvent::EndElement{ref name} if name.local_name == "commands" => break,
+                ParseEvent::End(ref name) if name == "commands" => break,
                 // error handling
-                msg => panic!("Expected </commands>, found: {:?}", msg),
+                event => panic!("Expected </commands>, found: {:?}", event),
             }
         }
         (cmds, aliases)
@@ -418,20 +428,20 @@ impl<R: io::Read> RegistryParser<R> {
         let mut vecequiv = None;
         let mut glx = None;
         loop {
-            match self.next() {
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "param" => {
+            match self.next().unwrap() {
+                ParseEvent::Start(ref name, _) if name == "param" => {
                     params.push(self.consume_binding("param"));
                 }
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "alias" => {
+                ParseEvent::Start(ref name, ref attributes) if name == "alias" => {
                     alias = get_attribute(&attributes, "name");
                     alias = alias.map(|t| trim_cmd_prefix(&t, api).to_string());
                     self.consume_end_element("alias");
                 }
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "vecequiv" => {
+                ParseEvent::Start(ref name, ref attributes) if name == "vecequiv" => {
                     vecequiv = get_attribute(&attributes, "vecequiv");
                     self.consume_end_element("vecequiv");
                 }
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "glx" => {
+                ParseEvent::Start(ref name, ref attributes) if name == "glx" => {
                     glx = Some(GlxOpcode {
                         ty: get_attribute(&attributes, "type").unwrap(),
                         opcode: get_attribute(&attributes, "opcode").unwrap(),
@@ -439,8 +449,8 @@ impl<R: io::Read> RegistryParser<R> {
                     });
                     self.consume_end_element("glx");
                 }
-                XmlEvent::EndElement{ref name} if name.local_name == "command" => break,
-                msg => panic!("Expected </command>, found: {:?}", msg),
+                ParseEvent::End(ref name) if name == "command" => break,
+                event => panic!("Expected </command>, found: {:?}", event),
             }
         }
 
@@ -457,12 +467,12 @@ impl<R: io::Read> RegistryParser<R> {
         // consume type
         let mut ty = String::new();
         loop {
-            match self.next() {
-                XmlEvent::Characters(ch) => ty.push_str(&ch),
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "ptype" => (),
-                XmlEvent::EndElement{ref name} if name.local_name == "ptype" => (),
-                XmlEvent::StartElement{ref name, ..} if name.local_name == "name" => break,
-                msg => panic!("Expected binding, found: {:?}", msg),
+            match self.next().unwrap() {
+                ParseEvent::Text(text) => ty.push_str(&text),
+                ParseEvent::Start(ref name, _) if name == "ptype" => (),
+                ParseEvent::End(ref name) if name == "ptype" => (),
+                ParseEvent::Start(ref name, _) if name == "name" => break,
+                event => panic!("Expected binding, found: {:?}", event),
             }
         }
 
@@ -472,10 +482,10 @@ impl<R: io::Read> RegistryParser<R> {
 
         // consume the type suffix
         loop {
-            match self.next() {
-                XmlEvent::Characters(ch) => ty.push_str(&ch),
-                XmlEvent::EndElement{ref name} if name.local_name == outside_tag => break,
-                msg => panic!("Expected binding, found: {:?}", msg),
+            match self.next().unwrap() {
+                ParseEvent::Text(text) => ty.push_str(&text),
+                ParseEvent::End(ref name) if name == outside_tag => break,
+                event => panic!("Expected binding, found: {:?}", event),
             }
         }
 
@@ -486,18 +496,24 @@ impl<R: io::Read> RegistryParser<R> {
     }
 }
 
-fn get_attribute(a: &[OwnedAttribute], name: &str) -> Option<String> {
-    a.iter().find(|a| a.name.local_name == name).map(|e| e.value.clone())
+impl<T> Parse for T where
+    T: Sized + Iterator<Item = ParseEvent>,
+{}
+
+fn get_attribute(attribs: &[(String, String)], name: &str) -> Option<String> {
+    attribs.iter()
+        .find(|attrib| attrib.0 == name)
+        .map(|attrib| attrib.1.clone())
 }
 
 trait FromXml {
-    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Self;
+    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Self;
 }
 
 impl FromXml for Require {
-    fn convert<R: io::Read>(r: &mut RegistryParser<R>, _: &[OwnedAttribute]) -> Require {
+    fn convert<P: Parse>(parser: &mut P, _: &[(String, String)]) -> Require {
         debug!("Doing a FromXml on Require");
-        let (enums, commands) = r.consume_two("enum", "command", "require");
+        let (enums, commands) = parser.consume_two("enum", "command", "require");
         Require {
             enums: enums,
             commands: commands
@@ -506,11 +522,11 @@ impl FromXml for Require {
 }
 
 impl FromXml for Remove {
-    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Remove {
+    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Remove {
         debug!("Doing a FromXml on Remove");
         let profile = get_attribute(a, "profile").unwrap();
         let profile = profile_from_str(&profile).unwrap();
-        let (enums, commands) = r.consume_two("enum", "command", "remove");
+        let (enums, commands) = parser.consume_two("enum", "command", "remove");
 
         Remove {
             profile: profile,
@@ -521,7 +537,7 @@ impl FromXml for Remove {
 }
 
 impl FromXml for Feature {
-    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Feature {
+    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Feature {
         debug!("Doing a FromXml on Feature");
         let api = get_attribute(a, "api").unwrap();
         let api = api_from_str(&api).unwrap();
@@ -530,7 +546,7 @@ impl FromXml for Feature {
 
         debug!("Found api = {}, name = {}, number = {}", api, name, number);
 
-        let (require, remove) = r.consume_two("require", "remove", "feature");
+        let (require, remove) = parser.consume_two("require", "remove", "feature");
 
         Feature {
             api: api,
@@ -543,7 +559,7 @@ impl FromXml for Feature {
 }
 
 impl FromXml for Extension {
-    fn convert<R: io::Read>(r: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> Extension {
+    fn convert<P: Parse>(parser: &mut P, a: &[(String, String)]) -> Extension {
         debug!("Doing a FromXml on Extension");
         let name = get_attribute(a, "name").unwrap();
         let supported = get_attribute(a, "supported").unwrap()
@@ -553,12 +569,12 @@ impl FromXml for Extension {
             .collect::<Vec<_>>();
         let mut require = Vec::new();
         loop {
-            match r.next() {
-                XmlEvent::StartElement{ref name, ref attributes, ..} if name.local_name == "require" => {
-                    require.push(FromXml::convert(r, &attributes));
+            match parser.next().unwrap() {
+                ParseEvent::Start(ref name, ref attributes) if name == "require" => {
+                    require.push(FromXml::convert(parser, &attributes));
                 }
-                XmlEvent::EndElement{ref name} if name.local_name == "extension" => break,
-                msg => panic!("Unexpected message {:?}", msg)
+                ParseEvent::End(ref name) if name == "extension" => break,
+                event => panic!("Unexpected message {:?}", event)
             }
         }
 
@@ -571,7 +587,101 @@ impl FromXml for Extension {
 }
 
 impl FromXml for String {
-    fn convert<R: io::Read>(_: &mut RegistryParser<R>, a: &[OwnedAttribute]) -> String {
+    fn convert<P: Parse>(_: &mut P, a: &[(String, String)]) -> String {
         get_attribute(a, "name").unwrap()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod parse_event {
+        mod from_xml {
+            use xml::attribute::OwnedAttribute;
+            use xml::common::XmlVersion;
+            use xml::name::OwnedName;
+            use xml::namespace::Namespace;
+            use xml::reader::XmlEvent;
+
+            use registry::parse::ParseEvent;
+
+            #[test]
+            fn test_start_event() {
+                let given = XmlEvent::StartElement {
+                    name: OwnedName::local("element"),
+                    attributes: vec![
+                        OwnedAttribute::new(OwnedName::local("attr1"), "val1"),
+                        OwnedAttribute::new(OwnedName::local("attr2"), "val2"),
+                    ],
+                    namespace: Namespace::empty(),
+                };
+                let expected = ParseEvent::Start(
+                    "element".to_string(),
+                    vec![
+                        ("attr1".to_string(), "val1".to_string()),
+                        ("attr2".to_string(), "val2".to_string()),
+                    ],
+                );
+                assert_eq!(ParseEvent::from_xml(given), Some(expected));
+            }
+
+            #[test]
+            fn test_end_element() {
+                let given = XmlEvent::EndElement {
+                    name: OwnedName::local("element"),
+                };
+                let expected = ParseEvent::End("element".to_string());
+                assert_eq!(ParseEvent::from_xml(given), Some(expected));
+            }
+
+            #[test]
+            fn test_characters() {
+                let given = XmlEvent::Characters("text".to_string());
+                let expected = ParseEvent::Text("text".to_string());
+                assert_eq!(ParseEvent::from_xml(given), Some(expected));
+            }
+
+            #[test]
+            fn test_start_document() {
+                let given = XmlEvent::StartDocument {
+                    version: XmlVersion::Version10,
+                    encoding: "".to_string(),
+                    standalone: None,
+                };
+                assert_eq!(ParseEvent::from_xml(given), None);
+            }
+
+            #[test]
+            fn test_end_document() {
+                let given = XmlEvent::EndDocument;
+                assert_eq!(ParseEvent::from_xml(given), None);
+            }
+
+            #[test]
+            fn test_processing_instruction() {
+                let given = XmlEvent::ProcessingInstruction {
+                    name: "".to_string(),
+                    data: None,
+                };
+                assert_eq!(ParseEvent::from_xml(given), None);
+            }
+
+            #[test]
+            fn test_cdata() {
+                let given = XmlEvent::CData("CData".to_string());
+                assert_eq!(ParseEvent::from_xml(given), None);
+            }
+
+            #[test]
+            fn test_comment() {
+                let given = XmlEvent::Comment("Comment".to_string());
+                assert_eq!(ParseEvent::from_xml(given), None);
+            }
+
+            #[test]
+            fn test_whitespace() {
+                let given = XmlEvent::Whitespace("Whitespace".to_string());
+                assert_eq!(ParseEvent::from_xml(given), None);
+            }
+        }
     }
 }

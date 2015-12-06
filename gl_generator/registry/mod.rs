@@ -55,7 +55,7 @@ impl Registry {
             Api::Egl => khronos_api::EGL_XML,
         };
 
-        parse::RegistryParser::parse(src, filter)
+        parse::from_xml(src, filter)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
