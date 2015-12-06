@@ -60,8 +60,8 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
 
 /// Creates all the `<enum>` elements at the root of the bindings.
 fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for e in registry.enum_iter() {
-        try!(super::gen_enum_item(e, "types::", dest));
+    for enm in &registry.enums {
+        try!(super::gen_enum_item(enm, "types::", dest));
     }
 
     Ok(())
@@ -75,14 +75,14 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
         #[allow(non_snake_case, unused_variables, dead_code)]
         extern \"system\" {{"));
 
-    for c in registry.cmd_iter() {
+    for cmd in &registry.cmds {
         try!(writeln!(dest,
             "#[link_name=\"{symbol}\"]
             pub fn {name}({params}) -> {return_suffix};",
-            symbol = super::gen_symbol_name(registry.api, &c.proto.ident),
-            name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).join(", "),
-            return_suffix = super::gen_return_type(c)
+            symbol = super::gen_symbol_name(registry.api, &cmd.proto.ident),
+            name = cmd.proto.ident,
+            params = super::gen_parameters(cmd, true, true).join(", "),
+            return_suffix = super::gen_return_type(cmd)
         ));
     }
 

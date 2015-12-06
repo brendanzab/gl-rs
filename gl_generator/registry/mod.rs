@@ -15,12 +15,10 @@
 extern crate khronos_api;
 
 use std::collections::BTreeSet;
-use std::collections::HashSet;
 use std::collections::HashMap;
 use std::fmt;
 use std::io;
 use std::ops::Add;
-use std::slice::Iter;
 
 use Generator;
 
@@ -133,20 +131,6 @@ impl Registry {
         }
         tys
     }
-
-    pub fn enum_iter<'a>(&'a self) -> EnumIterator<'a> {
-        EnumIterator {
-            seen: HashSet::new(),
-            iter: self.enums.iter(),
-        }
-    }
-
-    pub fn cmd_iter<'a>(&'a self) -> CmdIterator<'a> {
-        CmdIterator {
-            seen: HashSet::new(),
-            iter: self.cmds.iter(),
-        }
-    }
 }
 
 impl Add for Registry {
@@ -157,45 +141,5 @@ impl Add for Registry {
         self.cmds.extend(other.cmds);
         self.aliases.extend(other.aliases);
         self
-    }
-}
-
-pub struct EnumIterator<'a> {
-    seen: HashSet<String>,
-    iter: Iter<'a, Enum>,
-}
-
-impl<'a> Iterator for EnumIterator<'a> {
-    type Item = &'a Enum;
-
-    fn next(&mut self) -> Option<&'a Enum> {
-        self.iter.next().and_then(|def| {
-            if !self.seen.contains(&def.ident) {
-                self.seen.insert(def.ident.clone());
-                Some(def)
-            } else {
-                self.next()
-            }
-        })
-    }
-}
-
-pub struct CmdIterator<'a> {
-    seen: HashSet<String>,
-    iter: Iter<'a, Cmd>,
-}
-
-impl<'a> Iterator for CmdIterator<'a> {
-    type Item = &'a Cmd;
-
-    fn next(&mut self) -> Option<&'a Cmd> {
-        self.iter.next().and_then(|def| {
-            if !self.seen.contains(&def.proto.ident) {
-                self.seen.insert(def.proto.ident.clone());
-                Some(def)
-            } else {
-                self.next()
-            }
-        })
     }
 }
