@@ -17,13 +17,69 @@ extern crate khronos_api;
 use std::collections::BTreeSet;
 use std::collections::HashSet;
 use std::collections::HashMap;
+use std::fmt;
+use std::io;
 use std::ops::Add;
 use std::slice::Iter;
 
-use {Fallbacks, Api, Profile};
+use Generator;
 
 mod parse;
 
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
+
+impl fmt::Display for Api {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Api::Gl  => write!(fmt, "gl"),
+            Api::Glx => write!(fmt, "glx"),
+            Api::Wgl => write!(fmt, "wgl"),
+            Api::Egl => write!(fmt, "egl"),
+            Api::GlCore => write!(fmt, "glcore"),
+            Api::Gles1 => write!(fmt, "gles1"),
+            Api::Gles2 => write!(fmt, "gles2"),
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Fallbacks { All, None }
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Profile { Core, Compatibility }
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Enum {
+    pub ident: String,
+    pub value: String,
+    pub alias: Option<String>,
+    pub ty: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Binding {
+    pub ident: String,
+    pub ty: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Cmd {
+    pub proto: Binding,
+    pub params: Vec<Binding>,
+    pub alias: Option<String>,
+    pub vecequiv: Option<String>,
+    pub glx: Option<GlxOpcode>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct GlxOpcode {
+    pub ty: String,
+    pub opcode: String,
+    pub name: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Registry {
     pub api: Api,
     pub enums: Vec<Enum>,
@@ -56,6 +112,13 @@ impl Registry {
         };
 
         parse::from_xml(src, filter)
+    }
+
+    pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()> where
+        G: Generator,
+        W: io::Write,
+    {
+        generator.write(&self, output)
     }
 
     /// Returns a set of all the types used in the supplied registry. This is useful
@@ -135,30 +198,4 @@ impl<'a> Iterator for CmdIterator<'a> {
             }
         })
     }
-}
-
-pub struct Enum {
-    pub ident: String,
-    pub value: String,
-    pub alias: Option<String>,
-    pub ty: Option<String>,
-}
-
-pub struct Binding {
-    pub ident: String,
-    pub ty: String,
-}
-
-pub struct Cmd {
-    pub proto: Binding,
-    pub params: Vec<Binding>,
-    pub alias: Option<String>,
-    pub vecequiv: Option<String>,
-    pub glx: Option<GlxOpcode>,
-}
-
-pub struct GlxOpcode {
-    pub ty: String,
-    pub opcode: String,
-    pub name: Option<String>,
 }
