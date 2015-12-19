@@ -138,21 +138,33 @@ fn trim_enum_prefix(ident: &str, api: Api) -> String {
 }
 
 fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<String>) -> Enum {
-    // computing the type of the enum
-    let ty = match ty {
-        Some(ref ty) if ty == "u" => "GLuint",
-        Some(ref ty) if ty == "ull" => "GLuint64",
-        Some(ty) => panic!("Unhandled enum type: {}", ty),
-        None if value.starts_with("\"") => "&'static str",
-        None if ident == "TRUE" || ident == "FALSE" => "GLboolean",
-        None => "GLenum",
+    let (ty, value, cast) = {
+        if value.starts_with("((") {
+            // Some enums have a value of the form `((Type)Value)`.
+            let mut iter = value.trim_left_matches("((").split(")");
+            match (iter.next(), iter.next(), iter.next()) {
+                (Some(ty), Some(value), Some("")) => (Cow::Owned(ty.to_string()), value.to_string(), true),
+                (_, _, _) => panic!("Unexpected value format: {}", value),
+            }
+        } else {
+            let ty = match ty {
+                Some(ref ty) if ty == "u" => "GLuint",
+                Some(ref ty) if ty == "ull" => "GLuint64",
+                Some(ty) => panic!("Unhandled enum type: {}", ty),
+                None if value.starts_with("\"") => "&'static str",
+                None if ident == "TRUE" || ident == "FALSE" => "GLboolean",
+                None => "GLenum",
+            };
+            (Cow::Borrowed(ty), value, false)
+        }
     };
 
     Enum {
         ident: ident,
         value: value,
+        cast: cast,
         alias: alias,
-        ty: Cow::Borrowed(ty),
+        ty: ty,
     }
 }
 
@@ -980,12 +992,22 @@ mod tests {
         use registry::parse;
 
         #[test]
+        fn test_cast() {
+            let e = parse::make_enum("FOO".to_string(), None, "((EGLint)-1)".to_string(), Some("BAR".to_string()));
+            assert_eq!(e.ident, "FOO");
+            assert_eq!(e.value, "-1");
+            assert_eq!(e.alias, Some("BAR".to_string()));
+            assert_eq!(e.ty, "EGLint");
+        }
+
+        #[test]
         fn test_no_type() {
             let e = parse::make_enum("FOO".to_string(), None, "value".to_string(), Some("BAR".to_string()));
             assert_eq!(e.ident, "FOO");
             assert_eq!(e.value, "value");
             assert_eq!(e.alias, Some("BAR".to_string()));
             assert_eq!(e.ty, "GLenum");
+            assert_eq!(e.cast, false);
         }
 
         #[test]
