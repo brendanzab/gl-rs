@@ -45,7 +45,7 @@ fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 
 /// Creates a `types` module which contains all the type aliases.
 ///
-/// See also `generators::gen_type_aliases`.
+/// See also `generators::gen_types`.
 fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
         pub mod types {{
@@ -55,7 +55,7 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> wh
             #![allow(missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(registry.api, dest));
+    try!(super::gen_types(registry.api, dest));
 
     writeln!(dest, "}}")
 }
