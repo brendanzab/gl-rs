@@ -72,21 +72,13 @@ pub fn gen_types<W>(api: Api, dest: &mut W) -> io::Result<()> where W: io::Write
 pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<String> {
     cmd.params.iter()
         .map(|binding| {
-            // variable name of the binding
-            let ident = match &binding.ident[..] {
-                "in" => "in_",
-                "ref" => "ref_",
-                "type" => "type_",
-                ident => ident,
-            };
-
             // returning
             if with_idents && with_types {
-                format!("{}: {}", ident, binding.ty)
+                format!("{}: {}", binding.ident, binding.ty)
             } else if with_types {
                 format!("{}", binding.ty)
             } else if with_idents {
-                format!("{}", ident)
+                format!("{}", binding.ident)
             } else {
                 panic!()
             }

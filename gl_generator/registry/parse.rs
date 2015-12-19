@@ -108,10 +108,18 @@ fn profile_from_str(src: &str) -> Result<Profile, ()> {
 }
 
 fn underscore_numeric_prefix(src: &str) -> String {
-    if (src.chars().next().unwrap()).is_numeric() {
-        format!("_{}", src)
-    } else {
-        src.to_string()
+    match src.chars().next() {
+        Some(c) if c.is_numeric() => format!("_{}", src),
+        Some(_) | None => src.to_string(),
+    }
+}
+
+fn underscore_keyword(ident: String) -> String {
+    match ident.as_ref() {
+        "in" => "in_".to_string(),
+        "ref" => "ref_".to_string(),
+        "type" => "type_".to_string(),
+        _ => ident,
     }
 }
 
@@ -532,7 +540,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         }
 
         // consume identifier
-        let ident = self.consume_characters();
+        let ident = underscore_keyword(self.consume_characters());
         self.consume_end_element("name");
 
         // consume the type suffix
@@ -921,6 +929,39 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
 
 #[cfg(test)]
 mod tests {
+    mod underscore_numeric_prefix {
+        use registry::parse;
+
+        #[test]
+        fn test_numeric_prefix() {
+            assert_eq!(parse::underscore_numeric_prefix("3"), "_3");
+            assert_eq!(parse::underscore_numeric_prefix("123_FOO"), "_123_FOO");
+        }
+
+        #[test]
+        fn test_non_numeric_prefix() {
+            assert_eq!(parse::underscore_numeric_prefix(""), "");
+            assert_eq!(parse::underscore_numeric_prefix("A"), "A");
+            assert_eq!(parse::underscore_numeric_prefix("FOO"), "FOO");
+        }
+    }
+
+    mod underscore_keyword {
+        use registry::parse;
+
+        #[test]
+        fn test_keyword() {
+            assert_eq!(parse::underscore_keyword("in".to_string()), "in_");
+            assert_eq!(parse::underscore_keyword("ref".to_string()), "ref_");
+            assert_eq!(parse::underscore_keyword("type".to_string()), "type_");
+        }
+
+        #[test]
+        fn test_non_keyword() {
+            assert_eq!(parse::underscore_keyword("foo".to_string()), "foo");
+            assert_eq!(parse::underscore_keyword("bar".to_string()), "bar");
+        }
+    }
     mod make_enum {
         use registry::parse;
 
