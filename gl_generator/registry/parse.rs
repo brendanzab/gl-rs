@@ -132,11 +132,11 @@ fn trim_enum_prefix(ident: &str, api: Api) -> String {
 fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<String>) -> Enum {
     // computing the type of the enum
     let ty = match ty {
-        _ if value.starts_with("\"") => "&'static str",
-        _ if ident == "TRUE" || ident == "FALSE" => "GLboolean",
         Some(ref ty) if ty == "u" => "GLuint",
         Some(ref ty) if ty == "ull" => "GLuint64",
         Some(ty) => panic!("Unhandled enum type: {}", ty),
+        None if value.starts_with("\"") => "&'static str",
+        None if ident == "TRUE" || ident == "FALSE" => "GLboolean",
         None => "GLenum",
     };
 
@@ -921,6 +921,56 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
 
 #[cfg(test)]
 mod tests {
+    mod make_enum {
+        use registry::parse;
+
+        #[test]
+        fn test_no_type() {
+            let e = parse::make_enum("FOO".to_string(), None, "value".to_string(), Some("BAR".to_string()));
+            assert_eq!(e.ident, "FOO");
+            assert_eq!(e.value, "value");
+            assert_eq!(e.alias, Some("BAR".to_string()));
+            assert_eq!(e.ty, "GLenum");
+        }
+
+        #[test]
+        fn test_u() {
+            let e = parse::make_enum("FOO".to_string(), Some("u".to_string()), String::new(), None);
+            assert_eq!(e.ty, "GLuint");
+        }
+
+        #[test]
+        fn test_ull() {
+            let e = parse::make_enum("FOO".to_string(), Some("ull".to_string()), String::new(), None);
+            assert_eq!(e.ty, "GLuint64");
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_unknown_type() {
+            let e = parse::make_enum("FOO".to_string(), Some("blargh".to_string()), String::new(), None);
+            assert_eq!(e.ty, "GLuint64");
+        }
+
+        #[test]
+        fn test_value_str() {
+            let e = parse::make_enum("FOO".to_string(), None, "\"hi\"".to_string(), None);
+            assert_eq!(e.ty, "&'static str");
+        }
+
+        #[test]
+        fn test_ident_true() {
+            let e = parse::make_enum("TRUE".to_string(), None, String::new(), None);
+            assert_eq!(e.ty, "GLboolean");
+        }
+
+        #[test]
+        fn test_ident_false() {
+            let e = parse::make_enum("FALSE".to_string(), None, String::new(), None);
+            assert_eq!(e.ty, "GLboolean");
+        }
+    }
+
     mod parse_event {
         mod from_xml {
             use xml::attribute::OwnedAttribute;
