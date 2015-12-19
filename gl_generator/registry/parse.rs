@@ -108,10 +108,18 @@ fn profile_from_str(src: &str) -> Result<Profile, ()> {
 }
 
 fn underscore_numeric_prefix(src: &str) -> String {
-    if (src.chars().next().unwrap()).is_numeric() {
-        format!("_{}", src)
-    } else {
-        src.to_string()
+    match src.chars().next() {
+        Some(c) if c.is_numeric() => format!("_{}", src),
+        Some(_) | None => src.to_string(),
+    }
+}
+
+fn underscore_keyword(ident: String) -> String {
+    match ident.as_ref() {
+        "in" => "in_".to_string(),
+        "ref" => "ref_".to_string(),
+        "type" => "type_".to_string(),
+        _ => ident,
     }
 }
 
@@ -130,21 +138,40 @@ fn trim_enum_prefix(ident: &str, api: Api) -> String {
 }
 
 fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<String>) -> Enum {
-    // computing the type of the enum
-    let ty = match ty {
-        Some(ref ty) if ty == "u" => "GLuint",
-        Some(ref ty) if ty == "ull" => "GLuint64",
-        Some(ty) => panic!("Unhandled enum type: {}", ty),
-        None if value.starts_with("\"") => "&'static str",
-        None if ident == "TRUE" || ident == "FALSE" => "GLboolean",
-        None => "GLenum",
+    let (ty, value, cast) = {
+        if value.starts_with("((") && value.ends_with(")") {
+            // Some enums have a value of the form `'((' type ')' expr ')'`.
+
+            // nothing to see here....
+            // just brute forcing some paren matching... (ﾉ ◕ ◡ ◕)ﾉ *:･ﾟ✧
+            let working = &value[2 .. value.len() - 1];
+            if let Some((i, _)) = working.match_indices(")").next() {
+                let ty = working[.. i].to_string();
+                let value = working[i + 1 ..].to_string();
+
+                (Cow::Owned(ty), value, true)
+            } else {
+                panic!("Unexpected value format: {}", value)
+            }
+        } else {
+            let ty = match ty {
+                Some(ref ty) if ty == "u" => "GLuint",
+                Some(ref ty) if ty == "ull" => "GLuint64",
+                Some(ty) => panic!("Unhandled enum type: {}", ty),
+                None if value.starts_with("\"") => "&'static str",
+                None if ident == "TRUE" || ident == "FALSE" => "GLboolean",
+                None => "GLenum",
+            };
+            (Cow::Borrowed(ty), value, false)
+        }
     };
 
     Enum {
         ident: ident,
         value: value,
+        cast: cast,
         alias: alias,
-        ty: Cow::Borrowed(ty),
+        ty: ty,
     }
 }
 
@@ -532,7 +559,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         }
 
         // consume identifier
-        let ident = self.consume_characters();
+        let ident = underscore_keyword(self.consume_characters());
         self.consume_end_element("name");
 
         // consume the type suffix
@@ -768,10 +795,10 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         // "GLsizei"                   => "types::GLsizei",
         // "GLuint"                    => "types::GLuint",
         "Pixmap"                    => "types::Pixmap",
-        //"Status"                    => "types::Status",
-        //"VLNode"                    => "types::VLNode",
-        //"VLPath"                    => "types::VLPath",
-        //"VLServer"                  => "types::VLServer",
+        "Status"                    => "types::Status",
+        "VLNode"                    => "types::VLNode",
+        "VLPath"                    => "types::VLPath",
+        "VLServer"                  => "types::VLServer",
         "Window"                    => "types::Window",
         "__GLXextFuncPtr"           => "types::__GLXextFuncPtr",
         "const GLXContext"          => "const types::GLXContext",
@@ -893,10 +920,12 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLDeviceEXT"              => "types::EGLDeviceEXT",
         "EGLDisplay"                => "types::EGLDisplay",
         "EGLSurface"                => "types::EGLSurface",
-        "EGLClientBuffer"               => "types::EGLClientBuffer",
-        "__eglMustCastToProperFunctionPointerType"  => "types::__eglMustCastToProperFunctionPointerType",
+        "EGLClientBuffer"           => "types::EGLClientBuffer",
+        "__eglMustCastToProperFunctionPointerType" => "types::__eglMustCastToProperFunctionPointerType",
         "EGLImageKHR"               => "types::EGLImageKHR",
         "EGLImage"                  => "types::EGLImage",
+        "EGLOutputLayerEXT"         => "types::EGLOutputLayerEXT",
+        "EGLOutputPortEXT"          => "types::EGLOutputPortEXT",
         "EGLSyncKHR"                => "types::EGLSyncKHR",
         "EGLSync"                   => "types::EGLSync",
         "EGLTimeKHR"                => "types::EGLTimeKHR",
@@ -906,11 +935,23 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLuint64NV"               => "types::EGLuint64NV",
         "EGLStreamKHR"              => "types::EGLStreamKHR",
         "EGLuint64KHR"              => "types::EGLuint64KHR",
-        "EGLNativeFileDescriptorKHR"    => "types::EGLNativeFileDescriptorKHR",
+        "EGLNativeFileDescriptorKHR" => "types::EGLNativeFileDescriptorKHR",
         "EGLsizeiANDROID"           => "types::EGLsizeiANDROID",
         "EGLSetBlobFuncANDROID"     => "types::EGLSetBlobFuncANDROID",
         "EGLGetBlobFuncANDROID"     => "types::EGLGetBlobFuncANDROID",
         "EGLClientPixmapHI"         => "types::EGLClientPixmapHI",
+        "struct EGLClientPixmapHI *" => "*const types::EGLClientPixmapHI",
+        "const EGLAttribKHR *"      => "*const types::EGLAttribKHR",
+        "const EGLuint64KHR *"      => "*const types::EGLuint64KHR",
+        "EGLAttribKHR *"            => "*mut types::EGLAttribKHR",
+        "EGLDeviceEXT *"            => "*mut types::EGLDeviceEXT",
+        "EGLNativeDisplayType *"    => "*mut types::EGLNativeDisplayType",
+        "EGLNativePixmapType *"     => "*mut types::EGLNativePixmapType",
+        "EGLNativeWindowType *"     => "*mut types::EGLNativeWindowType",
+        "EGLOutputLayerEXT *"       => "*mut types::EGLOutputLayerEXT",
+        "EGLTimeKHR *"              => "*mut types::EGLTimeKHR",
+        "EGLOutputPortEXT *"        => "*mut types::EGLOutputPortEXT",
+        "EGLuint64KHR *"            => "*mut types::EGLuint64KHR",
 
         // failure
         _ => panic!("Type conversion not implemented for `{}`", ty.as_ref()),
@@ -921,8 +962,57 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
 
 #[cfg(test)]
 mod tests {
+    mod underscore_numeric_prefix {
+        use registry::parse;
+
+        #[test]
+        fn test_numeric_prefix() {
+            assert_eq!(parse::underscore_numeric_prefix("3"), "_3");
+            assert_eq!(parse::underscore_numeric_prefix("123_FOO"), "_123_FOO");
+        }
+
+        #[test]
+        fn test_non_numeric_prefix() {
+            assert_eq!(parse::underscore_numeric_prefix(""), "");
+            assert_eq!(parse::underscore_numeric_prefix("A"), "A");
+            assert_eq!(parse::underscore_numeric_prefix("FOO"), "FOO");
+        }
+    }
+
+    mod underscore_keyword {
+        use registry::parse;
+
+        #[test]
+        fn test_keyword() {
+            assert_eq!(parse::underscore_keyword("in".to_string()), "in_");
+            assert_eq!(parse::underscore_keyword("ref".to_string()), "ref_");
+            assert_eq!(parse::underscore_keyword("type".to_string()), "type_");
+        }
+
+        #[test]
+        fn test_non_keyword() {
+            assert_eq!(parse::underscore_keyword("foo".to_string()), "foo");
+            assert_eq!(parse::underscore_keyword("bar".to_string()), "bar");
+        }
+    }
     mod make_enum {
         use registry::parse;
+
+        #[test]
+        fn test_cast_0() {
+            let e = parse::make_enum("FOO".to_string(), None, "((EGLint)-1)".to_string(), Some("BAR".to_string()));
+            assert_eq!(e.ident, "FOO");
+            assert_eq!((&*e.ty, &*e.value), ("EGLint", "-1"));
+            assert_eq!(e.alias, Some("BAR".to_string()));
+        }
+
+        #[test]
+        fn test_cast_1() {
+            let e = parse::make_enum("FOO".to_string(), None, "((EGLint)(-1))".to_string(), Some("BAR".to_string()));
+            assert_eq!(e.ident, "FOO");
+            assert_eq!((&*e.ty, &*e.value), ("EGLint", "(-1)"));
+            assert_eq!(e.alias, Some("BAR".to_string()));
+        }
 
         #[test]
         fn test_no_type() {
@@ -931,6 +1021,7 @@ mod tests {
             assert_eq!(e.value, "value");
             assert_eq!(e.alias, Some("BAR".to_string()));
             assert_eq!(e.ty, "GLenum");
+            assert_eq!(e.cast, false);
         }
 
         #[test]
@@ -948,8 +1039,7 @@ mod tests {
         #[test]
         #[should_panic]
         fn test_unknown_type() {
-            let e = parse::make_enum("FOO".to_string(), Some("blargh".to_string()), String::new(), None);
-            assert_eq!(e.ty, "GLuint64");
+            parse::make_enum("FOO".to_string(), Some("blargh".to_string()), String::new(), None);
         }
 
         #[test]
