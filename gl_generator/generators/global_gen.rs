@@ -70,10 +70,7 @@ fn write_metaloadfn<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
         pub mod types {{
-            #![allow(non_camel_case_types)]
-            #![allow(non_snake_case)]
-            #![allow(dead_code)]
-            #![allow(missing_copy_implementations)]
+            #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
     "#));
 
     try!(super::gen_types(registry.api, dest));

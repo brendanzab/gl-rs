@@ -43,7 +43,7 @@ pub fn gen_struct_name(api: Api) -> &'static str {
 /// This function generates a `const name: type = value;` item.
 pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest,
-        "#[allow(dead_code)] #[allow(non_upper_case_globals)] pub const {ident}: {types_prefix}{ty} = {value}{cast_suffix};",
+        "#[allow(dead_code, non_upper_case_globals)] pub const {ident}: {types_prefix}{ty} = {value}{cast_suffix};",
         ident = enm.ident,
         types_prefix = if enm.value == "&'static str" { "" } else { types_prefix },
         ty = enm.ty,
