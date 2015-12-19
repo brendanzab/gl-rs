@@ -45,7 +45,7 @@ pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Res
     writeln!(dest,
         "#[allow(dead_code, non_upper_case_globals)] pub const {ident}: {types_prefix}{ty} = {value};",
         ident = enm.ident,
-        types_prefix = if enm.value == "&'static str" { "" } else { types_prefix },
+        types_prefix = if enm.ty == "&'static str" { "" } else { types_prefix },
         ty = enm.ty,
         value = enm.value,
     )
