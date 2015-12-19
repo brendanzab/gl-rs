@@ -43,17 +43,14 @@ fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 
 /// Creates a `types` module which contains all the type aliases.
 ///
-/// See also `generators::gen_type_aliases`.
+/// See also `generators::gen_types`.
 fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
         pub mod types {{
-            #![allow(non_camel_case_types)]
-            #![allow(non_snake_case)]
-            #![allow(dead_code)]
-            #![allow(missing_copy_implementations)]
+            #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(registry.api, dest));
+    try!(super::gen_types(registry.api, dest));
 
     writeln!(dest, "}}")
 }
@@ -72,9 +69,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 /// The name of the struct corresponds to the namespace.
 fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, "
-        #[allow(non_camel_case_types)]
-        #[allow(non_snake_case)]
-        #[allow(dead_code)]
+        #[allow(non_camel_case_types, non_snake_case, dead_code)]
         #[derive(Copy, Clone)]
         pub struct {api};",
         api = super::gen_struct_name(registry.api),
@@ -104,7 +99,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             }}",
             name = cmd.proto.ident,
             typed_params = super::gen_parameters(cmd, true, true).join(", "),
-            return_suffix = super::gen_return_type(cmd),
+            return_suffix = cmd.proto.ty,
             idents = super::gen_parameters(cmd, true, false).join(", "),
         ));
     }
@@ -129,7 +124,7 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
             symbol = super::gen_symbol_name(registry.api, &cmd.proto.ident),
             name = cmd.proto.ident,
             params = super::gen_parameters(cmd, true, true).join(", "),
-            return_suffix = super::gen_return_type(cmd)
+            return_suffix = cmd.proto.ty,
         ));
     }
 

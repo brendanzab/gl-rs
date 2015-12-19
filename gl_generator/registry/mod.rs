@@ -14,6 +14,7 @@
 
 extern crate khronos_api;
 
+use std::borrow::Cow;
 use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::fmt;
@@ -52,13 +53,13 @@ pub struct Enum {
     pub ident: String,
     pub value: String,
     pub alias: Option<String>,
-    pub ty: Option<String>,
+    pub ty: Cow<'static, str>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Binding {
     pub ident: String,
-    pub ty: String,
+    pub ty: Cow<'static, str>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -72,7 +73,6 @@ pub struct Cmd {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct GlxOpcode {
-    pub ty: String,
     pub opcode: String,
     pub name: Option<String>,
 }
@@ -121,12 +121,12 @@ impl Registry {
 
     /// Returns a set of all the types used in the supplied registry. This is useful
     /// for working out what conversions are needed for the specific registry.
-    pub fn get_tys(&self) -> BTreeSet<String> {
+    pub fn get_tys(&self) -> BTreeSet<&str> {
         let mut tys = BTreeSet::new();
         for def in &self.cmds {
-            tys.insert(def.proto.ty.clone());
+            tys.insert(def.proto.ty.as_ref());
             for param in &def.params {
-                tys.insert(param.ty.clone());
+                tys.insert(param.ty.as_ref());
             }
         }
         tys

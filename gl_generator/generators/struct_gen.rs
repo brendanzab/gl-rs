@@ -45,17 +45,14 @@ fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 
 /// Creates a `types` module which contains all the type aliases.
 ///
-/// See also `generators::gen_type_aliases`.
+/// See also `generators::gen_types`.
 fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, r#"
         pub mod types {{
-            #![allow(non_camel_case_types)]
-            #![allow(non_snake_case)]
-            #![allow(dead_code)]
-            #![allow(missing_copy_implementations)]
+            #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
     "#));
 
-    try!(super::gen_type_aliases(registry.api, dest));
+    try!(super::gen_types(registry.api, dest));
 
     writeln!(dest, "}}")
 }
@@ -72,9 +69,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, "
-        #[allow(dead_code)]
-        #[allow(missing_copy_implementations)]
-        #[allow(raw_pointer_derive)]
+        #[allow(dead_code, missing_copy_implementations, raw_pointer_derive)]
         #[derive(Clone)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
@@ -126,9 +121,7 @@ fn write_panicking_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> w
 /// The name of the struct corresponds to the namespace.
 fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     try!(writeln!(dest, "
-        #[allow(non_camel_case_types)]
-        #[allow(non_snake_case)]
-        #[allow(dead_code)]
+        #[allow(non_camel_case_types, non_snake_case, dead_code)]
         #[derive(Clone)]
         pub struct {api} {{",
         api = super::gen_struct_name(registry.api)
@@ -154,8 +147,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             /// ~~~ignore
             /// let gl = Gl::load_with(|s| glfw.get_proc_address(s));
             /// ~~~
-            #[allow(dead_code)]
-            #[allow(unused_variables)]
+            #[allow(dead_code, unused_variables)]
             pub fn load_with<F>(mut loadfn: F) -> {api} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
                 let mut metaloadfn = |symbol: &str, symbols: &[&str]| {{
                     let mut ptr = loadfn(symbol);
@@ -194,7 +186,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
 
     for cmd in &registry.cmds {
         try!(writeln!(dest,
-            "#[allow(non_snake_case)] #[allow(unused_variables)] #[allow(dead_code)]
+            "#[allow(non_snake_case, unused_variables, dead_code)]
             #[inline] pub unsafe fn {name}(&self, {params}) -> {return_suffix} {{ \
                 __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                     (self.{name}.f)({idents}) \
@@ -202,7 +194,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             name = cmd.proto.ident,
             params = super::gen_parameters(cmd, true, true).join(", "),
             typed_params = super::gen_parameters(cmd, false, true).join(", "),
-            return_suffix = super::gen_return_type(cmd),
+            return_suffix = cmd.proto.ty,
             idents = super::gen_parameters(cmd, true, false).join(", "),
         ))
     }

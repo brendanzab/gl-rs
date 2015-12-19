@@ -19,15 +19,7 @@ use gl_generator::generators;
 fn main() {
     let _ = generators::gen_struct_name;
     let _ = generators::gen_enum_item::<Vec<u8>>;
-    let _ = generators::gen_type_aliases::<Vec<u8>>;
+    let _ = generators::gen_types::<Vec<u8>>;
     let _ = generators::gen_parameters;
-    let _ = generators::gen_return_type;
     let _ = generators::gen_symbol_name;
-    let _ = generators::ty::to_rust_ty;
-    let _ = generators::ty::build_gl_aliases::<Vec<u8>>;
-    let _ = generators::ty::build_x_aliases::<Vec<u8>>;
-    let _ = generators::ty::build_glx_aliases::<Vec<u8>>;
-    let _ = generators::ty::build_win_aliases::<Vec<u8>>;
-    let _ = generators::ty::build_wgl_aliases::<Vec<u8>>;
-    let _ = generators::ty::build_egl_aliases::<Vec<u8>>;
 }

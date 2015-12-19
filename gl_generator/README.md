@@ -142,6 +142,9 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 - Hide `registry::{Feature, Filter, Require, Remove, Extension}` types from the
   public API
 - Move `registry::{Fallbacks, Api, Profile}` types to top level module
+- Remove `GlxOpcode::type` field
+- Make `ty` fields on `Enum` and `Binding` take `Cow<'static, str>`s to reduce
+  allocations
 
 ### v0.4.2
 
