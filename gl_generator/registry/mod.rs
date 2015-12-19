@@ -52,8 +52,9 @@ pub enum Profile { Core, Compatibility }
 pub struct Enum {
     pub ident: String,
     pub value: String,
+    pub cast: bool,
     pub alias: Option<String>,
-    pub ty: Option<String>,
+    pub ty: Cow<'static, str>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]

@@ -42,66 +42,17 @@ pub fn gen_struct_name(api: Api) -> &'static str {
 
 /// This function generates a `const name: type = value;` item.
 pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()> where W: io::Write {
-    // computing the name of the enum
-    // if the original starts with a digit, adding an underscore prefix.
-    let ident = if (enm.ident.chars().next().unwrap()).is_numeric() {
-        format!("_{}", enm.ident)
-    } else {
-        enm.ident.clone()
-    };
-
-    // if the enum has the value of the form `((Type)Value)`, then `val_regexed` contains `(Type, Value)`
-    let val_regexed = {
-        if enm.value.starts_with("((") && enm.value.ends_with(")") {
-            let separator = enm.value.chars().skip(2).position(|c| c == ')').unwrap();
-            Some((&enm.value[2 .. separator + 2], enm.value[separator + 3 ..].trim_matches(')')))
-        } else {
-            None
-        }
-    };
-
-    // computing the type of the enum
-    let ty = {
-        // some enums have a value of the form `((Type)Value)` ; if this is the case, we need to
-        //  replace the type of the enum (which is GLenum by default) by the type in the expression
-        if let Some((ty, _)) = val_regexed {
-            // if the value is like `((Type)Value)`, then the type is `types::Type`
-            format!("{}{}", types_prefix, ty)
-
-        } else if enm.value.starts_with("\"") {
-            // some values are of the form "Value" ; if this is the case, we use `&'static str`
-            //  instead of `GLenum`
-            "&'static str".to_string()
-
-        } else {
-            // some values are `TRUE` or `FALSE`, in which case we use `GLboolean` instead of
-            //  `GLenum`
-            match &ident[..] {
-                "TRUE" | "FALSE" => format!("{}GLboolean", types_prefix),
-                _ => match enm.ty {
-                    Some(ref s) if &s[..] == "ull" => format!("{}GLuint64", types_prefix),
-                    _ => format!("{}GLenum", types_prefix)
-                }
-            }
-        }
-    };
-
-    // computing the value of the enum
-    let value = {
-        // similar to the type, some values are `((Type)Value)`
-        // replacing "((Type)Value)" by "Value as types::Type"
-        if let Some((ty, val)) = val_regexed {
-            format!("{} as {}{}", val, types_prefix, ty)
-        } else {
-            enm.value.clone()
-        }
-    };
-
-    writeln!(dest, "\
-        #[allow(dead_code)]
-        #[allow(non_upper_case_globals)]
-        pub const {}: {} = {}; \
-    ", ident, ty, value)
+    writeln!(dest,
+        "#[allow(dead_code)] #[allow(non_upper_case_globals)] pub const {ident}: {types_prefix}{ty} = {value}{cast_suffix};",
+        ident = enm.ident,
+        types_prefix = if enm.value == "&'static str" { "" } else { types_prefix },
+        ty = enm.ty,
+        value = enm.value,
+        cast_suffix = match enm.cast {
+            true => format!("as {}{}", types_prefix, enm.ty),
+            false => String::new(),
+        },
+    )
 }
 
 /// Generates all the type aliases for a namespace.

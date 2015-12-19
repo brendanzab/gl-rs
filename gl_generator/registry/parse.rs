@@ -107,17 +107,26 @@ fn profile_from_str(src: &str) -> Result<Profile, ()> {
     }
 }
 
+fn underscore_numeric_prefix(src: &str) -> String {
+    if (src.chars().next().unwrap()).is_numeric() {
+        format!("_{}", src)
+    } else {
+        src.to_string()
+    }
+}
+
 fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
     if s.starts_with(trim) { &s[trim.len()..] } else { s }
 }
 
-fn trim_enum_prefix<'a>(ident: &'a str, api: Api) -> &'a str {
-    match api {
+fn trim_enum_prefix(ident: &str, api: Api) -> String {
+    let ident = match api {
         Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "GL_"),
         Api::Glx => trim_str(ident, "GLX_"),
         Api::Wgl =>  trim_str(ident, "WGL_"),
         Api::Egl =>  trim_str(ident, "EGL_"),
-    }
+    };
+    underscore_numeric_prefix(ident)
 }
 
 fn trim_cmd_prefix(ident: &str, api: Api) -> &str {
@@ -398,16 +407,8 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
 
                 // add enum definition
                 ParseEvent::Start(ref name, ref attributes) if name == "enum" => {
-                    enums.push(
-                        Enum {
-                            ident:  trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), api).to_string(),
-                            value:  get_attribute(&attributes, "value").unwrap(),
-                            alias:  get_attribute(&attributes, "alias"),
-                            ty:     get_attribute(&attributes, "type"),
-                        }
-                    );
-                    self.consume_end_element("enum");
-                }
+                    enums.push(self.consume_enum(api, attributes));
+                },
 
                 // finished building the namespace
                 ParseEvent::End(ref name) if name == "enums" => break,
@@ -416,6 +417,45 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
             }
         }
         enums
+    }
+
+    fn consume_enum(&mut self, api: Api, attributes: &[Attribute]) -> Enum {
+        let ident = trim_enum_prefix(&get_attribute(&attributes, "name").unwrap(), api).to_string();
+        let value = get_attribute(&attributes, "value").unwrap();
+        let alias = get_attribute(&attributes, "alias");
+        let ty = get_attribute(&attributes, "type");
+        self.consume_end_element("enum");
+
+        // computing the type of the enum
+        let (ty, value, cast) = {
+            if value.starts_with("((") && value.ends_with(")") {
+                // Some enums have a value of the form `((Type)Value)`. If this is the case, we need to
+                // replace the type of the enum (which is GLenum by default) by the type in the expression
+                let separator = value.chars().position(|c| c == ')').unwrap();
+                let value = value[separator + 3 ..].trim_matches(')').to_string();
+                let ty = value[2 .. separator + 2].to_string();
+
+                (Cow::Owned(ty), value, true)
+            } else {
+                let ty = match ty {
+                    _ if value.starts_with("\"") => "&'static str",
+                    _ if ident == "TRUE" || ident == "FALSE" => "GLboolean",
+                    Some(ref ty) if ty == "u" => "GLuint",
+                    Some(ref ty) if ty == "ull" => "GLuint64",
+                    Some(ty) => panic!("Unhandled enum type: {}", ty),
+                    None => "GLenum",
+                };
+                (Cow::Borrowed(ty), value, false)
+            }
+        };
+
+        Enum {
+            ident: ident,
+            value: value,
+            cast: cast,
+            alias: alias,
+            ty: ty,
+        }
     }
 
     fn consume_cmds(&mut self, api: Api) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
