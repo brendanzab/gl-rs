@@ -15,7 +15,7 @@ export CARGO_TARGET_DIR=./target
 
 CRATE_PATHS=( gl/ gl_generator/ khronos_api/ )
 TEST_PATHS=( gl_tests/test_*/ )
-ALL_PATHS=( ${CRATE_PATHS[@]} ${test_paths[@]} )
+ALL_PATHS=( ${CRATE_PATHS[@]} ${TEST_PATHS[@]} )
 
 if [ -z "${TEST}" ]; then
   case $FILTER in
@@ -25,8 +25,8 @@ if [ -z "${TEST}" ]; then
   esac
 else
   PATHS=( $TEST )
-  PATHS=( ${paths[@]/#/gl_tests/test_} )
-  PATHS=( ${paths[@]/%//} )
+  PATHS=( ${PATHS[@]/#/gl_tests/test_} )
+  PATHS=( ${PATHS[@]/%//} )
 fi
 
 export RUST_BACKTRACE=1
