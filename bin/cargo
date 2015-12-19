@@ -13,20 +13,21 @@
 
 export CARGO_TARGET_DIR=./target
 
-crate_paths=( gl/ gl_generator/ khronos_api/ )
-test_paths=( gl_tests/test_*/ )
-all_paths=( ${crate_paths[@]} ${test_paths[@]} )
+CRATE_PATHS=( gl/ gl_generator/ khronos_api/ )
+TEST_PATHS=( gl_tests/test_*/ )
+ALL_PATHS=( ${CRATE_PATHS[@]} ${test_paths[@]} )
 
 if [ -z "${TEST}" ]; then
   case $FILTER in
-    'crates' ) paths=( ${crate_paths[@]} ) ;;
-    'tests' ) paths=( ${test_paths[@]} ) ;;
-    * )  paths=( ${all_paths[@]} ) ;;
+    'crates' ) PATHS=( ${CRATE_PATHS[@]} ) ;;
+    'tests' ) PATHS=( ${TEST_PATHS[@]} ) ;;
+    * )  PATHS=( ${ALL_PATHS[@]} ) ;;
   esac
 else
-  paths=( $TEST )
-  paths=( ${paths[@]/#/gl_tests/test_} )
-  paths=( ${paths[@]/%//} )
+  PATHS=( $TEST )
+  PATHS=( ${paths[@]/#/gl_tests/test_} )
+  PATHS=( ${paths[@]/%//} )
 fi
 
-echo ${paths[@]/%/Cargo.toml} | xargs -n 1 -t cargo $* --manifest-path
+echo ${PATHS[@]/%/Cargo.toml} \
+  | xargs -n 1 -t cargo $* --manifest-path
