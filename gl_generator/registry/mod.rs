@@ -74,7 +74,6 @@ pub struct Cmd {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct GlxOpcode {
-    pub ty: String,
     pub opcode: String,
     pub name: Option<String>,
 }

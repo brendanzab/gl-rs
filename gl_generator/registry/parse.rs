@@ -509,7 +509,6 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                 }
                 ParseEvent::Start(ref name, ref attributes) if name == "glx" => {
                     glx = Some(GlxOpcode {
-                        ty: get_attribute(&attributes, "type").unwrap(),
                         opcode: get_attribute(&attributes, "opcode").unwrap(),
                         name: get_attribute(&attributes, "name"),
                     });
