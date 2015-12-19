@@ -219,7 +219,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             name = cmd.proto.ident,
             params = super::gen_parameters(cmd, true, true).join(", "),
             typed_params = typed_params.join(", "),
-            return_suffix = super::gen_return_type(cmd),
+            return_suffix = cmd.proto.ty,
             idents = idents.join(", "),
             println = println,
             print_err = if cmd.proto.ident != "GetError" && registry.cmds.iter().find(|cmd| cmd.proto.ident == "GetError").is_some() {

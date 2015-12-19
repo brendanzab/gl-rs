@@ -202,7 +202,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             name = cmd.proto.ident,
             params = super::gen_parameters(cmd, true, true).join(", "),
             typed_params = super::gen_parameters(cmd, false, true).join(", "),
-            return_suffix = super::gen_return_type(cmd),
+            return_suffix = cmd.proto.ty,
             idents = super::gen_parameters(cmd, true, false).join(", "),
         ))
     }

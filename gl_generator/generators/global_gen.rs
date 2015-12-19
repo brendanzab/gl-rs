@@ -97,8 +97,8 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 /// The function calls the corresponding function pointer stored in the `storage` module created
 ///  by `write_ptrs`.
 fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for c in &registry.cmds {
-        if let Some(v) = registry.aliases.get(&c.proto.ident) {
+    for cmd in &registry.cmds {
+        if let Some(v) = registry.aliases.get(&cmd.proto.ident) {
             try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
         }
 
@@ -108,11 +108,11 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
                 __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
                     (storage::{name}.f)({idents}) \
             }}",
-            name = c.proto.ident,
-            params = super::gen_parameters(c, true, true).join(", "),
-            typed_params = super::gen_parameters(c, false, true).join(", "),
-            return_suffix = super::gen_return_type(c),
-            idents = super::gen_parameters(c, true, false).join(", "),
+            name = cmd.proto.ident,
+            params = super::gen_parameters(cmd, true, true).join(", "),
+            typed_params = super::gen_parameters(cmd, false, true).join(", "),
+            return_suffix = cmd.proto.ty,
+            idents = super::gen_parameters(cmd, true, false).join(", "),
         ));
     }
 

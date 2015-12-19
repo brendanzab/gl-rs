@@ -104,7 +104,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             }}",
             name = cmd.proto.ident,
             typed_params = super::gen_parameters(cmd, true, true).join(", "),
-            return_suffix = super::gen_return_type(cmd),
+            return_suffix = cmd.proto.ty,
             idents = super::gen_parameters(cmd, true, false).join(", "),
         ));
     }
@@ -129,7 +129,7 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
             symbol = super::gen_symbol_name(registry.api, &cmd.proto.ident),
             name = cmd.proto.ident,
             params = super::gen_parameters(cmd, true, true).join(", "),
-            return_suffix = super::gen_return_type(cmd)
+            return_suffix = cmd.proto.ty,
         ));
     }
 
