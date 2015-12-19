@@ -139,12 +139,19 @@ fn trim_enum_prefix(ident: &str, api: Api) -> String {
 
 fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<String>) -> Enum {
     let (ty, value, cast) = {
-        if value.starts_with("((") {
-            // Some enums have a value of the form `((Type)Value)`.
-            let mut iter = value.trim_left_matches("((").split(")");
-            match (iter.next(), iter.next(), iter.next()) {
-                (Some(ty), Some(value), Some("")) => (Cow::Owned(ty.to_string()), value.to_string(), true),
-                (_, _, _) => panic!("Unexpected value format: {}", value),
+        if value.starts_with("((") && value.ends_with(")") {
+            // Some enums have a value of the form `'((' type ')' expr ')'`.
+
+            // nothing to see here....
+            // just brute forcing some paren matching... (ﾉ ◕ ◡ ◕)ﾉ *:･ﾟ✧
+            let working = &value[2 .. value.len() - 1];
+            if let Some((i, _)) = working.match_indices(")").next() {
+                let ty = working[.. i].to_string();
+                let value = working[i + 1 ..].to_string();
+
+                (Cow::Owned(ty), value, true)
+            } else {
+                panic!("Unexpected value format: {}", value)
             }
         } else {
             let ty = match ty {
@@ -992,12 +999,19 @@ mod tests {
         use registry::parse;
 
         #[test]
-        fn test_cast() {
+        fn test_cast_0() {
             let e = parse::make_enum("FOO".to_string(), None, "((EGLint)-1)".to_string(), Some("BAR".to_string()));
             assert_eq!(e.ident, "FOO");
-            assert_eq!(e.value, "-1");
+            assert_eq!((&*e.ty, &*e.value), ("EGLint", "-1"));
             assert_eq!(e.alias, Some("BAR".to_string()));
-            assert_eq!(e.ty, "EGLint");
+        }
+
+        #[test]
+        fn test_cast_1() {
+            let e = parse::make_enum("FOO".to_string(), None, "((EGLint)(-1))".to_string(), Some("BAR".to_string()));
+            assert_eq!(e.ident, "FOO");
+            assert_eq!((&*e.ty, &*e.value), ("EGLint", "(-1)"));
+            assert_eq!(e.alias, Some("BAR".to_string()));
         }
 
         #[test]
@@ -1025,8 +1039,7 @@ mod tests {
         #[test]
         #[should_panic]
         fn test_unknown_type() {
-            let e = parse::make_enum("FOO".to_string(), Some("blargh".to_string()), String::new(), None);
-            assert_eq!(e.ty, "GLuint64");
+            parse::make_enum("FOO".to_string(), Some("blargh".to_string()), String::new(), None);
         }
 
         #[test]
