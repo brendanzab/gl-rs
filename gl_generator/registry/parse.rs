@@ -129,6 +129,25 @@ fn trim_enum_prefix(ident: &str, api: Api) -> String {
     underscore_numeric_prefix(ident)
 }
 
+fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<String>) -> Enum {
+    // computing the type of the enum
+    let ty = match ty {
+        _ if value.starts_with("\"") => "&'static str",
+        _ if ident == "TRUE" || ident == "FALSE" => "GLboolean",
+        Some(ref ty) if ty == "u" => "GLuint",
+        Some(ref ty) if ty == "ull" => "GLuint64",
+        Some(ty) => panic!("Unhandled enum type: {}", ty),
+        None => "GLenum",
+    };
+
+    Enum {
+        ident: ident,
+        value: value,
+        alias: alias,
+        ty: Cow::Borrowed(ty),
+    }
+}
+
 fn trim_cmd_prefix(ident: &str, api: Api) -> &str {
     match api {
         Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "gl"),
@@ -426,36 +445,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         let ty = get_attribute(&attributes, "type");
         self.consume_end_element("enum");
 
-        // computing the type of the enum
-        let (ty, value, cast) = {
-            if value.starts_with("((") && value.ends_with(")") {
-                // Some enums have a value of the form `((Type)Value)`. If this is the case, we need to
-                // replace the type of the enum (which is GLenum by default) by the type in the expression
-                let separator = value.chars().position(|c| c == ')').unwrap();
-                let value = value[separator + 3 ..].trim_matches(')').to_string();
-                let ty = value[2 .. separator + 2].to_string();
-
-                (Cow::Owned(ty), value, true)
-            } else {
-                let ty = match ty {
-                    _ if value.starts_with("\"") => "&'static str",
-                    _ if ident == "TRUE" || ident == "FALSE" => "GLboolean",
-                    Some(ref ty) if ty == "u" => "GLuint",
-                    Some(ref ty) if ty == "ull" => "GLuint64",
-                    Some(ty) => panic!("Unhandled enum type: {}", ty),
-                    None => "GLenum",
-                };
-                (Cow::Borrowed(ty), value, false)
-            }
-        };
-
-        Enum {
-            ident: ident,
-            value: value,
-            cast: cast,
-            alias: alias,
-            ty: ty,
-        }
+        make_enum(ident, ty, value, alias)
     }
 
     fn consume_cmds(&mut self, api: Api) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
