@@ -69,7 +69,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: 
 /// Creates a `FnPtr` structure which contains the store for a single binding.
 fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, "
-        #[allow(dead_code, missing_copy_implementations, raw_pointer_derive)]
+        #[allow(dead_code, missing_copy_implementations)]
         #[derive(Clone)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
