@@ -22,5 +22,5 @@ unstable_generator_utils = []
 
 [dependencies]
 khronos_api = { version = "1.0.0", path = "../khronos_api" }
-log = "0.3.2"
-xml-rs = "0.2.2"
+log = "0.3.5"
+xml-rs = "0.3.0"
