@@ -4,33 +4,43 @@
 
 ## Overview
 
+This repository contains the necessary building blocks for OpenGL wrapper
+libraries. For more information on each crate, see their respective READMEs
+listed below.
+
 The following crates are contained in this repository:
 
-### [gl](https://github.com/bjz/gl-rs/tree/master/gl)
+### gl
 
 [![Version](https://img.shields.io/crates/v/gl.svg)](https://crates.io/crates/gl) [![License](https://img.shields.io/crates/l/gl.svg)](https://github.com/bjz/gl-rs/blob/master/LICENSE) [![Downloads](https://img.shields.io/crates/d/gl.svg)](https://crates.io/crates/gl)
+
+[README](https://github.com/bjz/gl-rs/tree/master/gl)
 
 An OpenGL function pointer loader for the Rust Programming Language.
 
 ```toml
 [dependencies]
-gl = "0.5.2"
+gl = "0.6.0"
 ```
 
-### [gl_generator](https://github.com/bjz/gl-rs/tree/master/gl_generator)
+### gl_generator
 
 [![Version](https://img.shields.io/crates/v/gl_generator.svg)](https://crates.io/crates/gl_generator) [![License](https://img.shields.io/crates/l/gl_generator.svg)](https://github.com/bjz/gl-rs/blob/master/LICENSE) [![Downloads](https://img.shields.io/crates/d/gl_generator.svg)](https://crates.io/crates/gl_generator)
+
+[README](https://github.com/bjz/gl-rs/tree/master/gl_generator)
 
 Code generators for creating bindings to the Khronos OpenGL APIs.
 
 ```toml
 [build-dependencies]
-gl_generator = "0.4.2"
+gl_generator = "0.5.0"
 ```
 
-### [khronos_api](https://github.com/bjz/gl-rs/tree/master/khronos_api)
+### khronos_api
 
 [![Version](https://img.shields.io/crates/v/khronos_api.svg)](https://crates.io/crates/khronos_api) [![License](https://img.shields.io/crates/l/khronos_api.svg)](https://github.com/bjz/gl-rs/blob/master/LICENSE) [![Downloads](https://img.shields.io/crates/d/khronos_api.svg)](https://crates.io/crates/khronos_api)
+
+[README](https://github.com/bjz/gl-rs/tree/master/khronos_api)
 
 The Khronos XML API Registry, exposed as byte string constants.
 

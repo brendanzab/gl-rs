@@ -8,7 +8,7 @@ An OpenGL function pointer loader for the Rust Programming Language.
 
 ```toml
 [dependencies]
-gl = "0.5.2"
+gl = "0.6.0"
 ```
 
 ## Basic usage
@@ -64,6 +64,10 @@ if gl::Viewport::is_loaded() {
 ```
 
 ## Changelog
+
+### v0.6.0
+
+- Upgrade to `gl_generator` v0.5.0
 
 ### v0.5.2
 
