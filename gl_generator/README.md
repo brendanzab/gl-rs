@@ -19,7 +19,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [build-dependencies]
-gl_generator = "0.4.2"
+gl_generator = "0.5.0"
 ```
 
 Under the `[package]` section, add:
@@ -129,7 +129,7 @@ also attempt to load `glGenFramebuffersEXT` as a fallback.
 
 ## Changelog
 
-### vX.X.X
+### v0.5.0
 
 - Rename `Ns` to `API`, and expose at the top level
 - Remove the need for clients to depend on the `khronos_api` crate by
