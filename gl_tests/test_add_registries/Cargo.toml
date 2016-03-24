@@ -1,0 +1,11 @@
+[package]
+# we don't include some metadata to avoid accidental publishes
+name = "test_add_registries"
+version = "0.0.0"
+build = "build.rs"
+
+[lib]
+path = "lib.rs"
+
+[build-dependencies]
+gl_generator = { path = "../../gl_generator" }

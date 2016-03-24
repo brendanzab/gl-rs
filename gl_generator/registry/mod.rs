@@ -1,4 +1,4 @@
-// Copyright 2015 Brendan Zabarauskas and the gl-rs developers
+// Copyright 2015-2016 Brendan Zabarauskas and the gl-rs developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 extern crate khronos_api;
 
 use std::borrow::Cow;
-use std::collections::BTreeSet;
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap, HashSet};
 use std::fmt;
+use std::hash::{Hash, Hasher};
 use std::io;
 use std::ops::Add;
 
@@ -57,6 +57,12 @@ pub struct Enum {
     pub ty: Cow<'static, str>,
 }
 
+impl Hash for Enum {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.ident.hash(state);
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Binding {
     pub ident: String,
@@ -72,6 +78,12 @@ pub struct Cmd {
     pub glx: Option<GlxOpcode>,
 }
 
+impl Hash for Cmd {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.proto.ident.hash(state);
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct GlxOpcode {
     pub opcode: String,
@@ -81,8 +93,8 @@ pub struct GlxOpcode {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Registry {
     pub api: Api,
-    pub enums: Vec<Enum>,
-    pub cmds: Vec<Cmd>,
+    pub enums: HashSet<Enum>,
+    pub cmds: HashSet<Cmd>,
     pub aliases: HashMap<String, Vec<String>>,
 }
 
