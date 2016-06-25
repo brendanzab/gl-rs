@@ -192,7 +192,7 @@ fn write_fn_mods<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
                 }}
 
                 #[allow(dead_code)]
-                pub fn load_with<F>(loadfn: F) where F: FnMut(&str) -> *const raw::c_void {{
+                pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const raw::c_void {{
                     unsafe {{
                         storage::{fnname} = FnPtr::new(metaloadfn(&mut loadfn, "{symbol}", {fallbacks}))
                     }}
