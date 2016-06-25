@@ -48,10 +48,10 @@ fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 /// Creates the metaloadfn function for fallbacks
 fn write_metaloadfn<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
-        fn metaloadfn<F>(mut loadfn: F,
-                         symbol: &str,
-                         fallbacks: &[&str]) -> *const __gl_imports::raw::c_void
-                         where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
+        #[inline(never)]
+        fn metaloadfn(mut loadfn: &mut FnMut(&str) -> *const __gl_imports::raw::c_void,
+                      symbol: &str,
+                      fallbacks: &[&str]) -> *const __gl_imports::raw::c_void {{
             let mut ptr = loadfn(symbol);
             if ptr.is_null() {{
                 for &sym in fallbacks {{
@@ -194,7 +194,7 @@ fn write_fn_mods<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
                 #[allow(dead_code)]
                 pub fn load_with<F>(loadfn: F) where F: FnMut(&str) -> *const raw::c_void {{
                     unsafe {{
-                        storage::{fnname} = FnPtr::new(metaloadfn(loadfn, "{symbol}", {fallbacks}))
+                        storage::{fnname} = FnPtr::new(metaloadfn(&mut loadfn, "{symbol}", {fallbacks}))
                     }}
                 }}
             }}
