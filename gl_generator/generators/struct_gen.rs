@@ -149,7 +149,11 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
             /// ~~~
             #[allow(dead_code, unused_variables)]
             pub fn load_with<F>(mut loadfn: F) -> {api} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
-                let mut metaloadfn = |symbol: &str, symbols: &[&str]| {{
+                #[inline(never)]
+                fn do_metaloadfn(loadfn: &mut FnMut(&str) -> *const __gl_imports::raw::c_void,
+                                 symbol: &str,
+                                 symbols: &[&str])
+                                 -> *const __gl_imports::raw::c_void {{
                     let mut ptr = loadfn(symbol);
                     if ptr.is_null() {{
                         for &sym in symbols {{
@@ -158,6 +162,9 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
                         }}
                     }}
                     ptr
+                }}
+                let mut metaloadfn = |symbol: &str, symbols: &[&str]| {{
+                    do_metaloadfn(&mut loadfn, symbol, symbols)
                 }};
                 {api} {{",
         api = super::gen_struct_name(registry.api)
