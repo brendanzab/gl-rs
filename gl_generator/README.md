@@ -51,6 +51,7 @@ fn main() {
 Then use it like this:
 
 ```rust
+#[allow(non_upper_case_globals)]
 mod gl {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }
