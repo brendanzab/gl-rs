@@ -146,6 +146,7 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: i
     try!(writeln!(dest,
         "mod storage {{
             #![allow(non_snake_case)]
+            #![allow(non_upper_case_globals)]
             use super::__gl_imports::raw;
             use super::FnPtr;"));
 
