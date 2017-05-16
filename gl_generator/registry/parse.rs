@@ -15,10 +15,8 @@
 extern crate khronos_api;
 
 use std::borrow::Cow;
-use std::collections::hash_map::Entry;
-use std::collections::BTreeSet;
-use std::collections::HashSet;
-use std::collections::HashMap;
+use std::collections::btree_map::Entry;
+use std::collections::{BTreeMap, BTreeSet};
 use std::io;
 use xml::attribute::OwnedAttribute;
 use xml::EventReader as XmlEventReader;
@@ -184,7 +182,7 @@ fn trim_cmd_prefix(ident: &str, api: Api) -> &str {
     }
 }
 
-fn merge_map(a: &mut HashMap<String, Vec<String>>, b: HashMap<String, Vec<String>>) {
+fn merge_map(a: &mut BTreeMap<String, Vec<String>>, b: BTreeMap<String, Vec<String>>) {
     for (k, v) in b {
         match a.entry(k) {
             Entry::Occupied(mut ent) => { ent.get_mut().extend(v); },
@@ -244,7 +242,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         let mut cmds = Vec::new();
         let mut features = Vec::new();
         let mut extensions = Vec::new();
-        let mut aliases = HashMap::new();
+        let mut aliases = BTreeMap::new();
 
         while let Some(event) = self.next() {
             match event {
@@ -291,8 +289,8 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
             }
         }
 
-        let mut desired_enums = HashSet::new();
-        let mut desired_cmds = HashSet::new();
+        let mut desired_enums = BTreeSet::new();
+        let mut desired_cmds = BTreeSet::new();
 
         // find the features we want
         let mut found_feature = false;
@@ -356,7 +354,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
             api: filter.api,
             enums: enums.into_iter().filter(is_desired_enum).collect(),
             cmds: cmds.into_iter().filter(is_desired_cmd).collect(),
-            aliases: if filter.fallbacks == Fallbacks::None { HashMap::new() } else { aliases },
+            aliases: if filter.fallbacks == Fallbacks::None { BTreeMap::new() } else { aliases },
         }
     }
 
@@ -475,9 +473,9 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         make_enum(ident, ty, value, alias)
     }
 
-    fn consume_cmds(&mut self, api: Api) -> (Vec<Cmd>, HashMap<String, Vec<String>>) {
+    fn consume_cmds(&mut self, api: Api) -> (Vec<Cmd>, BTreeMap<String, Vec<String>>) {
         let mut cmds = Vec::new();
-        let mut aliases: HashMap<String, Vec<String>> = HashMap::new();
+        let mut aliases: BTreeMap<String, Vec<String>> = BTreeMap::new();
         loop {
             match self.next().unwrap() {
                 // add command definition
