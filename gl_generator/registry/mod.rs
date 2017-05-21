@@ -15,7 +15,7 @@
 extern crate khronos_api;
 
 use std::borrow::Cow;
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::io;
@@ -48,7 +48,7 @@ pub enum Fallbacks { All, None }
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Profile { Core, Compatibility }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Enum {
     pub ident: String,
     pub value: String,
@@ -63,13 +63,13 @@ impl Hash for Enum {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Binding {
     pub ident: String,
     pub ty: Cow<'static, str>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Cmd {
     pub proto: Binding,
     pub params: Vec<Binding>,
@@ -84,7 +84,7 @@ impl Hash for Cmd {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GlxOpcode {
     pub opcode: String,
     pub name: Option<String>,
@@ -93,9 +93,9 @@ pub struct GlxOpcode {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Registry {
     pub api: Api,
-    pub enums: HashSet<Enum>,
-    pub cmds: HashSet<Cmd>,
-    pub aliases: HashMap<String, Vec<String>>,
+    pub enums: BTreeSet<Enum>,
+    pub cmds: BTreeSet<Cmd>,
+    pub aliases: BTreeMap<String, Vec<String>>,
 }
 
 impl Registry {
