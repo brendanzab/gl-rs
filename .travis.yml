@@ -1,6 +1,12 @@
 language: rust
 
-sudo: false
+rust:
+  - nightly
+  - beta
+  - stable
+
+cache: cargo
 
 script:
-  - ./bin/cargo test
+  - cargo build --all
+  - cargo test --all

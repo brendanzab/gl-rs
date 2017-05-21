@@ -1,8 +1,8 @@
 [package]
-# we don't include some metadata to avoid accidental publishes
-name = "test_with_extensions"
+name = "test_symbols"
 version = "0.0.0"
 build = "build.rs"
+publish = false
 
 [lib]
 path = "lib.rs"
