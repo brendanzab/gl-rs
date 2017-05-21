@@ -28,7 +28,7 @@
 //! You can load the function pointers into their respective function pointers
 //! using the `load_with` function. You must supply a loader function from your
 //! context library, This is how it would look using [glfw-rs]
-//! (https://github.com/bjz/glfw-rs):
+//! (https://github.com/brendanzab/glfw-rs):
 //!
 //! ~~~ignore
 //! // the supplied function must be of the type:

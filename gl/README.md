@@ -1,7 +1,7 @@
 # gl-rs
 
 [![Version](https://img.shields.io/crates/v/gl.svg)](https://crates.io/crates/gl)
-[![License](https://img.shields.io/crates/l/gl.svg)](https://github.com/bjz/gl-rs/blob/master/LICENSE)
+[![License](https://img.shields.io/crates/l/gl.svg)](https://github.com/brendanzab/gl-rs/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/crates/d/gl.svg)](https://crates.io/crates/gl)
 
 An OpenGL function pointer loader for the Rust Programming Language.
@@ -24,7 +24,7 @@ use gl::types::*;
 You must load the function pointers into their respective function pointers
 using the `load_with` function. You must supply a loader function from your
 context library, This is how it would look using [glfw-rs]
-(https://github.com/bjz/glfw-rs):
+(https://github.com/brendanzab/glfw-rs):
 
 ```rust
 // the supplied function must be of the type:

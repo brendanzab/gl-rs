@@ -8,13 +8,13 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 description = "OpenGL bindings"
 license = "Apache-2.0"
 build = "build.rs"
-
-homepage = "https://github.com/bjz/gl-rs/gl/"
-repository = "https://github.com/bjz/gl-rs/"
+documentation = "https://docs.rs/gl"
+homepage = "https://github.com/brendanzab/gl-rs/gl/"
+repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 
 [build-dependencies]
 gl_generator = { version = "0.5.2", path = "../gl_generator" }
 
 [dev-dependencies]
-glutin = "0.4"
+glutin = "0.7"

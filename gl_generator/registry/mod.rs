@@ -26,12 +26,20 @@ use Generator;
 mod parse;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Api { Gl, Glx, Wgl, Egl, GlCore, Gles1, Gles2 }
+pub enum Api {
+    Gl,
+    Glx,
+    Wgl,
+    Egl,
+    GlCore,
+    Gles1,
+    Gles2,
+}
 
 impl fmt::Display for Api {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Api::Gl  => write!(fmt, "gl"),
+            Api::Gl => write!(fmt, "gl"),
             Api::Glx => write!(fmt, "glx"),
             Api::Wgl => write!(fmt, "wgl"),
             Api::Egl => write!(fmt, "egl"),
@@ -43,10 +51,16 @@ impl fmt::Display for Api {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Fallbacks { All, None }
+pub enum Fallbacks {
+    All,
+    None,
+}
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Profile { Core, Compatibility }
+pub enum Profile {
+    Core,
+    Compatibility,
+}
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Enum {
@@ -99,11 +113,18 @@ pub struct Registry {
 }
 
 impl Registry {
-    pub fn new<'a, Exts>(api: Api, version: (u8, u8), profile: Profile, fallbacks: Fallbacks, extensions: Exts) -> Registry where
-        Exts: AsRef<[&'a str]>,
+    pub fn new<'a, Exts>(api: Api,
+                         version: (u8, u8),
+                         profile: Profile,
+                         fallbacks: Fallbacks,
+                         extensions: Exts)
+                         -> Registry
+        where Exts: AsRef<[&'a str]>
     {
         let (major, minor) = version;
-        let extensions = extensions.as_ref().iter()
+        let extensions = extensions
+            .as_ref()
+            .iter()
             .map(<&str>::to_string)
             .collect();
 
@@ -125,9 +146,9 @@ impl Registry {
         parse::from_xml(src, filter)
     }
 
-    pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()> where
-        G: Generator,
-        W: io::Write,
+    pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()>
+        where G: Generator,
+              W: io::Write
     {
         generator.write(&self, output)
     }
