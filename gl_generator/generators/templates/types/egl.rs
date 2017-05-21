@@ -13,7 +13,7 @@ pub type NativePixmapType = super::NativePixmapType;
 pub type NativeWindowType = super::NativeWindowType;
 
 // EGL alises
-pub type Bool = EGLBoolean;  // TODO: not sure
+pub type Bool = EGLBoolean; // TODO: not sure
 pub type EGLBoolean = super::__gl_imports::raw::c_uint;
 pub type EGLenum = super::__gl_imports::raw::c_uint;
 pub type EGLAttribKHR = isize;
@@ -40,8 +40,16 @@ pub type EGLStreamKHR = *const super::__gl_imports::raw::c_void;
 pub type EGLuint64KHR = khronos_uint64_t;
 pub type EGLNativeFileDescriptorKHR = super::__gl_imports::raw::c_int;
 pub type EGLsizeiANDROID = khronos_ssize_t;
-pub type EGLSetBlobFuncANDROID = extern "system" fn(*const super::__gl_imports::raw::c_void, EGLsizeiANDROID, *const super::__gl_imports::raw::c_void, EGLsizeiANDROID) -> ();
-pub type EGLGetBlobFuncANDROID = extern "system" fn(*const super::__gl_imports::raw::c_void, EGLsizeiANDROID, *mut super::__gl_imports::raw::c_void, EGLsizeiANDROID) -> EGLsizeiANDROID;
+pub type EGLSetBlobFuncANDROID = extern "system" fn(*const super::__gl_imports::raw::c_void,
+                                                    EGLsizeiANDROID,
+                                                    *const super::__gl_imports::raw::c_void,
+                                                    EGLsizeiANDROID)
+                                                    -> ();
+pub type EGLGetBlobFuncANDROID = extern "system" fn(*const super::__gl_imports::raw::c_void,
+                                                    EGLsizeiANDROID,
+                                                    *mut super::__gl_imports::raw::c_void,
+                                                    EGLsizeiANDROID)
+                                                    -> EGLsizeiANDROID;
 
 #[repr(C)]
 pub struct EGLClientPixmapHI {
