@@ -9,8 +9,8 @@ description = "OpenGL bindings"
 license = "Apache-2.0"
 build = "build.rs"
 
-homepage = "https://github.com/bjz/gl-rs/gl/"
-repository = "https://github.com/bjz/gl-rs/"
+homepage = "https://github.com/brendanzab/gl-rs/gl/"
+repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 
 [build-dependencies]

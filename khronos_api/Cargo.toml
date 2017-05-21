@@ -11,8 +11,8 @@ authors = [
 description = "The Khronos XML API Registry, exposed as byte string constants."
 license = "Apache-2.0"
 
-homepage = "https://github.com/bjz/gl-rs/khronos_api/"
-repository = "https://github.com/bjz/gl-rs/"
+homepage = "https://github.com/brendanzab/gl-rs/khronos_api/"
+repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 
 keywords = ["opengl", "khronos"]

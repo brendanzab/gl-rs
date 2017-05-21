@@ -9,8 +9,8 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 description = "Code generators for creating bindings to the Khronos OpenGL APIs."
 license = "Apache-2.0"
 
-homepage = "https://github.com/bjz/gl-rs/gl_generator/"
-repository = "https://github.com/bjz/gl-rs/"
+homepage = "https://github.com/brendanzab/gl-rs/gl_generator/"
+repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 
 [lib]
