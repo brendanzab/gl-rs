@@ -1,15 +1,23 @@
 // platform-specific aliases are unknown
 // IMPORTANT: these are alises to the same level of the bindings
 // the values must be defined by the user
+#[allow(dead_code)]
 pub type khronos_utime_nanoseconds_t = super::khronos_utime_nanoseconds_t;
+#[allow(dead_code)]
 pub type khronos_uint64_t = super::khronos_uint64_t;
+#[allow(dead_code)]
 pub type khronos_ssize_t = super::khronos_ssize_t;
 pub type EGLNativeDisplayType = super::EGLNativeDisplayType;
+#[allow(dead_code)]
 pub type EGLNativePixmapType = super::EGLNativePixmapType;
+#[allow(dead_code)]
 pub type EGLNativeWindowType = super::EGLNativeWindowType;
 pub type EGLint = super::EGLint;
+#[allow(dead_code)]
 pub type NativeDisplayType = super::NativeDisplayType;
+#[allow(dead_code)]
 pub type NativePixmapType = super::NativePixmapType;
+#[allow(dead_code)]
 pub type NativeWindowType = super::NativeWindowType;
 
 // EGL alises
