@@ -264,7 +264,7 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 
     for c in &registry.cmds {
         try!(writeln!(dest,
-                      "{cmd_name}::load_with(|s| loadfn(s));",
+                      "{cmd_name}::load_with(&mut loadfn);",
                       cmd_name = &c.proto.ident[..]));
     }
 
