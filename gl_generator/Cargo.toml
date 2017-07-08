@@ -1,6 +1,6 @@
 [package]
 name = "gl_generator"
-version = "0.5.4"
+version = "0.5.5"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Corey Richardson",
         "Arseny Kapoulkine"
