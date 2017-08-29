@@ -155,6 +155,18 @@ fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<Str
             } else {
                 panic!("Unexpected value format: {}", value)
             }
+        } else if value.starts_with("EGL_CAST(") && value.ends_with(")") {
+            // Handling "SpecialNumbers" in the egl.xml file
+            // The values for these enums has the form `'EGL_CAST(' type ',' expr ')'`.
+            let working = &value[9..value.len() - 1];
+            if let Some((i, _)) = working.match_indices(",").next() {
+                let ty = working[..i].to_string();
+                let value = working[i + 1..].to_string();
+
+                (Cow::Owned(ty), value, true)
+            } else {
+                panic!("Unexpected value format: {}", value)
+            }
         } else {
             let ty = match ty {
                 Some(ref ty) if ty == "u" => "GLuint",
@@ -979,6 +991,11 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "GLeglClientBufferEXT" => "types::GLeglClientBufferEXT",
         "GLint " => "types::GLint",
         "GLVULKANPROCNV" => "type::GLVULKANPROCNV",
+        "EGLDEBUGPROCKHR" => "type::EGLDEBUGPROCKHR",
+        "EGLObjectKHR" => "type::EGLObjectKHR",
+        "EGLLabelKHR" => "type::EGLLabelKHR",
+        "EGLnsecsANDROID" => "type::EGLnsecsANDROID",
+        "EGLBoolean *" => "*mut type::EGLBoolean",
 
         // failure
         _ => panic!("Type conversion not implemented for `{}`", ty.as_ref()),
@@ -1044,6 +1061,17 @@ mod tests {
                                      Some("BAR".to_string()));
             assert_eq!(e.ident, "FOO");
             assert_eq!((&*e.ty, &*e.value), ("EGLint", "(-1)"));
+            assert_eq!(e.alias, Some("BAR".to_string()));
+        }
+
+        #[test]
+        fn test_cast_egl() {
+            let e = parse::make_enum("FOO".to_string(),
+                                     None,
+                                     "EGL_CAST(EGLint,-1)".to_string(),
+                                     Some("BAR".to_string()));
+            assert_eq!(e.ident, "FOO");
+            assert_eq!((&*e.ty, &*e.value), ("EGLint", "-1"));
             assert_eq!(e.alias, Some("BAR".to_string()));
         }
 
