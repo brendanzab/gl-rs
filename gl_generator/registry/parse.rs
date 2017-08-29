@@ -92,6 +92,7 @@ fn api_from_str(src: &str) -> Result<Api, ()> {
         "glcore" => Ok(Api::GlCore),
         "gles1" => Ok(Api::Gles1),
         "gles2" => Ok(Api::Gles2),
+        "glsc2" => Ok(Api::Glsc2),
         _ => Err(()),
     }
 }
@@ -130,7 +131,7 @@ fn trim_str<'a>(s: &'a str, trim: &str) -> &'a str {
 
 fn trim_enum_prefix(ident: &str, api: Api) -> String {
     let ident = match api {
-        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "GL_"),
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 | Api::Glsc2 => trim_str(ident, "GL_"),
         Api::Glx => trim_str(ident, "GLX_"),
         Api::Wgl => trim_str(ident, "WGL_"),
         Api::Egl => trim_str(ident, "EGL_"),
@@ -178,7 +179,7 @@ fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<Str
 
 fn trim_cmd_prefix(ident: &str, api: Api) -> &str {
     match api {
-        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 => trim_str(ident, "gl"),
+        Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 | Api::Glsc2 => trim_str(ident, "gl"),
         Api::Glx => trim_str(ident, "glX"),
         Api::Wgl => trim_str(ident, "wgl"),
         Api::Egl => trim_str(ident, "egl"),
@@ -974,6 +975,10 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLTimeKHR *" => "*mut types::EGLTimeKHR",
         "EGLOutputPortEXT *" => "*mut types::EGLOutputPortEXT",
         "EGLuint64KHR *" => "*mut types::EGLuint64KHR",
+
+        "GLeglClientBufferEXT" => "types::GLeglClientBufferEXT",
+        "GLint " => "types::GLint",
+        "GLVULKANPROCNV" => "type::GLVULKANPROCNV",
 
         // failure
         _ => panic!("Type conversion not implemented for `{}`", ty.as_ref()),
