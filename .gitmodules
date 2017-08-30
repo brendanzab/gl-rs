@@ -1,3 +1,6 @@
 [submodule "khronos_api/api"]
 	path = khronos_api/api
-	url = https://github.com/capnm/Khronos_XML_API
+	url = https://github.com/KhronosGroup/OpenGL-Registry.git
+[submodule "khronos_api/api_egl"]
+	path = khronos_api/api_egl
+	url = https://github.com/KhronosGroup/EGL-Registry.git
