@@ -711,7 +711,7 @@ impl FromXml for String {
 
 /// Converts a C style type definition to the Rust equivalent
 pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
-    let ty = match ty.as_ref() {
+    let ty = match ty.as_ref().trim() {
         // gl.xml types
         "GLDEBUGPROC" => "types::GLDEBUGPROC",
         "GLDEBUGPROCAMD" => "types::GLDEBUGPROCAMD",
@@ -746,7 +746,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "GLuint64EXT" => "types::GLuint64EXT",
         "GLushort" => "types::GLushort",
         "GLvdpauSurfaceNV" => "types::GLvdpauSurfaceNV",
-        "void " => "()",
+        "void" => "()",
         "GLboolean *" => "*mut types::GLboolean",
         "GLchar *" => "*mut types::GLchar",
         "GLcharARB *" => "*mut types::GLcharARB",
@@ -837,11 +837,11 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "Window" => "types::Window",
         "__GLXextFuncPtr" => "types::__GLXextFuncPtr",
         "const GLXContext" => "const types::GLXContext",
-        "float " => "__gl_imports::raw::c_float",
-        "int " => "__gl_imports::raw::c_int",
+        "float" => "__gl_imports::raw::c_float",
+        "int" => "__gl_imports::raw::c_int",
         "int64_t" => "i64",
-        "unsigned int " => "__gl_imports::raw::c_uint",
-        "unsigned long " => "__gl_imports::raw::c_ulong",
+        "unsigned int" => "__gl_imports::raw::c_uint",
+        "unsigned long" => "__gl_imports::raw::c_ulong",
         // "void "                     => "()",
         "DMparams *" => "*mut types::DMparams",
         "Display *" => "*mut types::Display",
@@ -989,12 +989,12 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLuint64KHR *" => "*mut types::EGLuint64KHR",
 
         "GLeglClientBufferEXT" => "types::GLeglClientBufferEXT",
-        "GLint " => "types::GLint",
         "GLVULKANPROCNV" => "type::GLVULKANPROCNV",
         "EGLDEBUGPROCKHR" => "type::EGLDEBUGPROCKHR",
         "EGLObjectKHR" => "type::EGLObjectKHR",
         "EGLLabelKHR" => "type::EGLLabelKHR",
         "EGLnsecsANDROID" => "type::EGLnsecsANDROID",
+        "EGLnsecsANDROID *" => "*mut type::EGLnsecsANDROID",
         "EGLBoolean *" => "*mut type::EGLBoolean",
 
         // failure
