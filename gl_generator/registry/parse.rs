@@ -939,6 +939,8 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLint" => "types::EGLint",
         "EGLint *" => "*mut types::EGLint",
         "const EGLint *" => "*const types::EGLint",
+        // TODO: not future proof, hacky workaround
+        " const EGLint *" => "*const types::EGLint",
         "NativeDisplayType" => "types::NativeDisplayType",
         "NativePixmapType" => "types::NativePixmapType",
         "NativeWindowType" => "types::NativeWindowType",
@@ -995,6 +997,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLObjectKHR" => "type::EGLObjectKHR",
         "EGLLabelKHR" => "type::EGLLabelKHR",
         "EGLnsecsANDROID" => "type::EGLnsecsANDROID",
+        "EGLnsecsANDROID *" => "*mut type::EGLnsecsANDROID",
         "EGLBoolean *" => "*mut type::EGLBoolean",
 
         // failure
