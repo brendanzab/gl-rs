@@ -22,4 +22,5 @@ include = [
   "/api_egl/api/**/*.xml",
 ]
 
-keywords = ["opengl", "khronos"]
+categories = ["rendering::graphics-api"]
+keywords = ["gl", "egl", "opengl", "khronos"]

@@ -12,6 +12,8 @@ documentation = "https://docs.rs/gl"
 homepage = "https://github.com/brendanzab/gl-rs/gl/"
 repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
+categories = ["api-bindings", "rendering::graphics-api"]
+keywords = ["gl", "egl", "opengl", "khronos"]
 
 [build-dependencies]
 gl_generator = { version = "0.5.4", path = "../gl_generator" }
