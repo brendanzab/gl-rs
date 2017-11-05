@@ -14,4 +14,12 @@ homepage = "https://github.com/brendanzab/gl-rs/khronos_api/"
 repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 
+include = [
+  "/README.md",
+  "/src/**/*",
+  "/Cargo.toml",
+  "/api/xml/**/*.xml",
+  "/api_egl/api/**/*.xml",
+]
+
 keywords = ["opengl", "khronos"]
