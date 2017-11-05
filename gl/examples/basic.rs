@@ -16,25 +16,36 @@ extern crate gl;
 extern crate glutin;
 
 fn main() {
-    let window = glutin::Window::new().unwrap();
+    use glutin::GlContext;
+
+    let mut events_loop = glutin::EventsLoop::new();
+    let window = glutin::WindowBuilder::new();
+    let context = glutin::ContextBuilder::new();
+    let gl_window = glutin::GlWindow::new(window, context, &events_loop).unwrap();
 
     // It is essential to make the context current before calling `gl::load_with`.
-    unsafe { window.make_current() }.unwrap();
+    unsafe { gl_window.make_current().unwrap() };
 
     // Load the OpenGL function pointers
     // TODO: `as *const _` will not be needed once glutin is updated to the latest gl version
-    gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
+    gl::load_with(|symbol| gl_window.get_proc_address(symbol) as *const _);
 
-    for event in window.wait_events() {
+    events_loop.run_forever(|event| {
+        use glutin::{ControlFlow, Event, WindowEvent};
+
+        if let Event::WindowEvent { event, .. } = event {
+            if let WindowEvent::Closed = event {
+                return ControlFlow::Break;
+            }
+        }
+
         unsafe {
             gl::ClearColor(0.3, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
         }
 
-        window.swap_buffers().unwrap();
+        gl_window.swap_buffers().unwrap();
 
-        if let glutin::Event::Closed = event {
-            break;
-        }
-    }
+        ControlFlow::Continue
+    });
 }

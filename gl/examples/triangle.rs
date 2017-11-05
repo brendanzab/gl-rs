@@ -25,17 +25,21 @@ use std::ffi::CString;
 static VERTEX_DATA: [GLfloat; 6] = [0.0, 0.5, 0.5, -0.5, -0.5, -0.5];
 
 // Shader sources
-static VS_SRC: &'static str = "#version 150\n\
-    in vec2 position;\n\
-    void main() {\n\
-       gl_Position = vec4(position, 0.0, 1.0);\n\
-    }";
+static VS_SRC: &'static str = "
+#version 150
+in vec2 position;
 
-static FS_SRC: &'static str = "#version 150\n\
-    out vec4 out_color;\n\
-    void main() {\n\
-       out_color = vec4(1.0, 1.0, 1.0, 1.0);\n\
-    }";
+void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
+}";
+
+static FS_SRC: &'static str = "
+#version 150
+out vec4 out_color;
+
+void main() {
+    out_color = vec4(1.0, 1.0, 1.0, 1.0);
+}";
 
 fn compile_shader(src: &str, ty: GLenum) -> GLuint {
     let shader;
@@ -56,14 +60,18 @@ fn compile_shader(src: &str, ty: GLenum) -> GLuint {
             gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
             let mut buf = Vec::with_capacity(len as usize);
             buf.set_len((len as usize) - 1); // subtract 1 to skip the trailing null character
-            gl::GetShaderInfoLog(shader,
-                                 len,
-                                 ptr::null_mut(),
-                                 buf.as_mut_ptr() as *mut GLchar);
-            panic!("{}",
-                   str::from_utf8(&buf)
-                       .ok()
-                       .expect("ShaderInfoLog not valid utf8"));
+            gl::GetShaderInfoLog(
+                shader,
+                len,
+                ptr::null_mut(),
+                buf.as_mut_ptr() as *mut GLchar,
+            );
+            panic!(
+                "{}",
+                str::from_utf8(&buf)
+                    .ok()
+                    .expect("ShaderInfoLog not valid utf8")
+            );
         }
     }
     shader
@@ -85,28 +93,37 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint {
             gl::GetProgramiv(program, gl::INFO_LOG_LENGTH, &mut len);
             let mut buf = Vec::with_capacity(len as usize);
             buf.set_len((len as usize) - 1); // subtract 1 to skip the trailing null character
-            gl::GetProgramInfoLog(program,
-                                  len,
-                                  ptr::null_mut(),
-                                  buf.as_mut_ptr() as *mut GLchar);
-            panic!("{}",
-                   str::from_utf8(&buf)
-                       .ok()
-                       .expect("ProgramInfoLog not valid utf8"));
+            gl::GetProgramInfoLog(
+                program,
+                len,
+                ptr::null_mut(),
+                buf.as_mut_ptr() as *mut GLchar,
+            );
+            panic!(
+                "{}",
+                str::from_utf8(&buf)
+                    .ok()
+                    .expect("ProgramInfoLog not valid utf8")
+            );
         }
         program
     }
 }
 
 fn main() {
-    let window = glutin::Window::new().unwrap();
+    use glutin::GlContext;
+
+    let mut events_loop = glutin::EventsLoop::new();
+    let window = glutin::WindowBuilder::new();
+    let context = glutin::ContextBuilder::new();
+    let gl_window = glutin::GlWindow::new(window, context, &events_loop).unwrap();
 
     // It is essential to make the context current before calling `gl::load_with`.
-    unsafe { window.make_current() }.unwrap();
+    unsafe { gl_window.make_current() }.unwrap();
 
     // Load the OpenGL function pointers
     // TODO: `as *const _` will not be needed once glutin is updated to the latest gl version
-    gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
+    gl::load_with(|symbol| gl_window.get_proc_address(symbol) as *const _);
 
     // Create GLSL shaders
     let vs = compile_shader(VS_SRC, gl::VERTEX_SHADER);
@@ -124,10 +141,12 @@ fn main() {
         // Create a Vertex Buffer Object and copy the vertex data to it
         gl::GenBuffers(1, &mut vbo);
         gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-        gl::BufferData(gl::ARRAY_BUFFER,
-                       (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-                       mem::transmute(&VERTEX_DATA[0]),
-                       gl::STATIC_DRAW);
+        gl::BufferData(
+            gl::ARRAY_BUFFER,
+            (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+            mem::transmute(&VERTEX_DATA[0]),
+            gl::STATIC_DRAW,
+        );
 
         // Use shader program
         gl::UseProgram(program);
@@ -136,15 +155,25 @@ fn main() {
         // Specify the layout of the vertex data
         let pos_attr = gl::GetAttribLocation(program, CString::new("position").unwrap().as_ptr());
         gl::EnableVertexAttribArray(pos_attr as GLuint);
-        gl::VertexAttribPointer(pos_attr as GLuint,
-                                2,
-                                gl::FLOAT,
-                                gl::FALSE as GLboolean,
-                                0,
-                                ptr::null());
+        gl::VertexAttribPointer(
+            pos_attr as GLuint,
+            2,
+            gl::FLOAT,
+            gl::FALSE as GLboolean,
+            0,
+            ptr::null(),
+        );
     }
 
-    for event in window.wait_events() {
+    events_loop.run_forever(|event| {
+        use glutin::{ControlFlow, Event, WindowEvent};
+
+        if let Event::WindowEvent { event, .. } = event {
+            if let WindowEvent::Closed = event {
+                return ControlFlow::Break;
+            }
+        }
+
         unsafe {
             // Clear the screen to black
             gl::ClearColor(0.3, 0.3, 0.3, 1.0);
@@ -154,12 +183,10 @@ fn main() {
             gl::DrawArrays(gl::TRIANGLES, 0, 3);
         }
 
-        window.swap_buffers().unwrap();
+        gl_window.swap_buffers().unwrap();
 
-        if let glutin::Event::Closed = event {
-            break;
-        }
-    }
+        ControlFlow::Continue
+    });
 
     // Cleanup
     unsafe {
