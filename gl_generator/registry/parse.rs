@@ -189,6 +189,47 @@ fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<Str
     }
 }
 
+fn make_egl_enum(ident: String, ty: Option<String>, value: String, alias: Option<String>) -> Enum {
+    let (ty, value, cast) = {
+        if value.starts_with("EGL_CAST(") && value.ends_with(")") {
+            // Handling "SpecialNumbers" in the egl.xml file
+            // The values for these enums has the form `'EGL_CAST(' type ',' expr ')'`.
+            let working = &value[9..value.len() - 1];
+            if let Some((i, _)) = working.match_indices(",").next() {
+                let ty = working[..i].to_string();
+                let value = working[i + 1..].to_string();
+
+                (Cow::Owned(ty), value, true)
+            } else {
+                panic!("Unexpected value format: {}", value)
+            }
+        } else {
+            match value.chars().next() {
+                Some('-') | Some('0' ... '9') => (),
+                _ => panic!("Unexpected value format: {}", value),
+            }
+
+            let ty = match ty {
+                Some(ref ty) if ty == "ull" => "EGLuint64KHR",
+                Some(ty) => panic!("Unhandled enum type: {}", ty),
+                None if value.starts_with('-') => "EGLint",
+                None if ident == "TRUE" || ident == "FALSE" => "EGLBoolean",
+                None => "EGLenum",
+            };
+            (Cow::Borrowed(ty), value, false)
+        }
+    };
+
+    Enum {
+        ident: ident,
+        value: value,
+        cast: cast,
+        alias: alias,
+        ty: ty,
+    }
+}
+
+
 fn trim_cmd_prefix(ident: &str, api: Api) -> &str {
     match api {
         Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 | Api::Glsc2 => trim_str(ident, "gl"),
@@ -503,7 +544,10 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         let ty = get_attribute(&attributes, "type");
         self.consume_end_element("enum");
 
-        make_enum(ident, ty, value, alias)
+        match api {
+            Api::Egl => make_egl_enum(ident, ty, value, alias),
+            _ => make_enum(ident, ty, value, alias)
+        }
     }
 
     fn consume_cmds(&mut self, api: Api) -> (Vec<Cmd>, BTreeMap<String, Vec<String>>) {
