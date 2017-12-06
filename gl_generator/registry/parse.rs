@@ -155,18 +155,6 @@ fn make_enum(ident: String, ty: Option<String>, value: String, alias: Option<Str
             } else {
                 panic!("Unexpected value format: {}", value)
             }
-        } else if value.starts_with("EGL_CAST(") && value.ends_with(")") {
-            // Handling "SpecialNumbers" in the egl.xml file
-            // The values for these enums has the form `'EGL_CAST(' type ',' expr ')'`.
-            let working = &value[9..value.len() - 1];
-            if let Some((i, _)) = working.match_indices(",").next() {
-                let ty = working[..i].to_string();
-                let value = working[i + 1..].to_string();
-
-                (Cow::Owned(ty), value, true)
-            } else {
-                panic!("Unexpected value format: {}", value)
-            }
         } else {
             let ty = match ty {
                 Some(ref ty) if ty == "u" => "GLuint",
