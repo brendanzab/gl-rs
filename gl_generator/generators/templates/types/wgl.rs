@@ -26,8 +26,8 @@ pub type HGLRC = *const super::__gl_imports::raw::c_void;
 pub type INT = super::__gl_imports::raw::c_int;
 pub type PVOID = *const super::__gl_imports::raw::c_void;
 pub type LPVOID = *const super::__gl_imports::raw::c_void;
-pub enum __proc_fn {}
-pub type PROC = *mut __proc_fn;
+pub enum __PROC_fn {}
+pub type PROC = *mut __PROC_fn;
 
 #[repr(C)]
 pub struct RECT {
