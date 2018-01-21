@@ -8,5 +8,6 @@ members = [
     "tests/test_symbols",
     "tests/test_unstable_api",
     "tests/test_with_extensions",
+    "tests/test_parse_idl",
     "khronos_api",
 ]

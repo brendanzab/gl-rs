@@ -1,0 +1,17 @@
+[package]
+name = "test_parse_idl"
+version = "0.0.0"
+build = "build.rs"
+publish = false
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+# stdweb = "0.3.0"
+stdweb = { path = "../../../stdweb" }
+serde = "1.0.0"
+serde_derive = "1.0.0"
+
+[build-dependencies]
+gl_generator = { path = "../../gl_generator", features = ["webgl"] }

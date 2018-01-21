@@ -68,8 +68,12 @@ extern crate xml;
 pub mod generators;
 #[cfg(not(feature = "unstable_generator_utils"))]
 mod generators;
+#[cfg(feature = "webgl")]
+mod webgl_generators;
 
 mod registry;
+#[cfg(feature = "webgl")]
+mod webgl_registry;
 
 pub use generators::Generator;
 pub use generators::debug_struct_gen::DebugStructGenerator;
@@ -79,3 +83,10 @@ pub use generators::static_struct_gen::StaticStructGenerator;
 pub use generators::struct_gen::StructGenerator;
 
 pub use registry::*;
+
+#[cfg(feature = "webgl")]
+pub mod webgl {
+    pub use webgl_generators::stdweb_gen::StdwebGenerator;
+
+    pub use webgl_registry::*;
+}
