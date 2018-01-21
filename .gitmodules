@@ -4,3 +4,6 @@
 [submodule "khronos_api/api_egl"]
 	path = khronos_api/api_egl
 	url = https://github.com/KhronosGroup/EGL-Registry.git
+[submodule "khronos_api/api_webgl"]
+	path = khronos_api/api_webgl
+	url = https://github.com/KhronosGroup/WebGL.git
