@@ -25,3 +25,9 @@ pub const WGL_XML: &'static [u8] = include_bytes!("../api/xml/wgl.xml");
 
 /// The contents of [`glx.xml`](https://github.com/KhronosGroup/OpenGL-Registry/blob/master/xml/glx.xml)
 pub const GLX_XML: &'static [u8] = include_bytes!("../api/xml/glx.xml");
+
+/// The contents of [`webgl.idl`](https://github.com/KhronosGroup/WebGL/blob/master/specs/latest/1.0/webgl.idl)
+pub const WEBGL_IDL: &'static [u8] = include_bytes!("../api_webgl/specs/latest/1.0/webgl.idl");
+
+/// The contents of [`webgl2.idl`](https://github.com/KhronosGroup/WebGL/blob/master/specs/latest/2.0/webgl2.idl)
+pub const WEBGL2_IDL: &'static [u8] = include_bytes!("../api_webgl/specs/latest/2.0/webgl2.idl");

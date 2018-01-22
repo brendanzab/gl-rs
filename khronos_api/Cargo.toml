@@ -20,6 +20,7 @@ include = [
   "/Cargo.toml",
   "/api/xml/**/*.xml",
   "/api_egl/api/**/*.xml",
+  "/api_webgl/specs/latest/**/*.idl",
 ]
 
 categories = ["rendering::graphics-api"]
