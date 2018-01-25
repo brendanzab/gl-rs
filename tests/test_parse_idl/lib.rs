@@ -11,5 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#[macro_use]
+extern crate stdweb as _stdweb;
+#[macro_use]
+extern crate serde_derive as _serde_derive;
 
 include!(concat!(env!("OUT_DIR"), "/test_parse_idl.rs"));

@@ -8,11 +8,7 @@ pub struct StdwebGenerator;
 fn write_header<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
 // {registry:?}
-
-#[macro_use]
 extern crate stdweb;
-#[macro_use]
-extern crate serde_derive;
 extern crate serde;
 
 use self::stdweb::{{Reference, Value}};
@@ -167,7 +163,7 @@ impl FromReference for {name} {{
     fn from_reference(reference: Reference) -> Option<Self> {{
         if {{
             __js_raw_asm!(
-                "return (Module.STDWEB.acquire_js_reference( $0 ) instanceof \"{name}\") | 0;",
+                "return (Module.STDWEB.acquire_js_reference( $0 ) instanceof {name}) | 0;",
                 reference.as_raw()
             ) == 1
         }} {{
