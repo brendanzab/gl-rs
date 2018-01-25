@@ -18,6 +18,7 @@ extern crate serde;
 use self::stdweb::{{Reference, Value}};
 use self::stdweb::private::*;
 use self::stdweb::unstable::*;
+use self::stdweb::web::RenderingContext;
 
 type ConversionError = <Reference as TryFrom<Value>>::Error;
 type HTMLCanvasElement = stdweb::web::html_element::CanvasElement;
@@ -250,6 +251,19 @@ impl {name} {{
     writeln!(dest, r#"
 }}
     "#)?;
+
+    if let Some(rendering_context) = interface.rendering_context {
+        writeln!(dest, r#"impl RenderingContext for {name} {{
+    type Error = ConversionError;
+    fn from_canvas(canvas: &HTMLCanvasElement) -> Result<Self, ConversionError> {{
+        js!(
+            return @{{canvas}}.getContext("{rendering_context}");
+        ).try_into()
+    }}
+}}
+        "#, name=name, rendering_context=rendering_context)?;
+    }
+
     Ok(())
 }
 

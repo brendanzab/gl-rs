@@ -17,6 +17,10 @@ const RESERVED_WORDS: &'static [&'static str] = &[
     "while", "abstract", "alignof", "become", "box", "do", "final", "macro", "offsetof",
     "override", "priv", "proc", "pure", "sizeof", "typeof", "unsized", "virtual", "yield"
 ];
+const RENDERING_CONTEXTS: &'static [(&'static str, &'static str)] = &[
+    ("webgl",  "WebGLRenderingContext"),
+    ("webgl2", "WebGL2RenderingContext")
+];
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Api {
@@ -118,6 +122,7 @@ pub struct Interface {
     pub mixins: BTreeSet<String>,
     pub members: BTreeMap<String, Member>,
     pub is_hidden: bool,
+    pub rendering_context: Option<&'static str>,
 }
 
 #[derive(Debug)]
@@ -376,12 +381,22 @@ impl Registry {
             self.load_interface_member(m)
         }).collect();
 
-        self.interfaces.insert(interface.name, Interface {
+        let mut result = Interface {
             inherits: interface.inherits,
             mixins: BTreeSet::new(),
             members,
-            is_hidden: false
-        });
+            is_hidden: false,
+            rendering_context: None,
+        };
+
+        for &(context_id, context_interface) in RENDERING_CONTEXTS {
+            if context_interface == interface.name {
+                result.rendering_context = Some(context_id);
+                break;
+            }
+        }
+
+        self.interfaces.insert(interface.name, result);
     }
 
     fn load_includes(&mut self, includes: ast::Includes) {
