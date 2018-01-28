@@ -494,16 +494,23 @@ __js_serializable_boilerplate!(() ({name}) ());
 impl {name} {{
     "#, name=name)?;
 
-    for (name, member) in interface.collect_members(registry, &VisitOptions::default()) {
-        match member {
-            &Member::Const(ref const_) => {
-                write_const(name, const_, registry, dest)?;
-            },
-            &Member::Attribute(ref attribute) => {
-                write_attribute(name, attribute, registry, dest)?;
-            },
-            &Member::Operation(ref operation) => {
-                write_operation(name, operation, registry, dest)?;
+    for (name, members) in interface.collect_members(registry, &VisitOptions::default()) {
+        for (index, member) in members.into_iter().enumerate() {
+            let rust_name = if index > 0 {
+                format!("{}_{}", name, index)
+            } else {
+                name.into()
+            };
+            match member {
+                &Member::Const(ref const_) => {
+                    write_const(&rust_name, const_, registry, dest)?;
+                },
+                &Member::Attribute(ref attribute) => {
+                    write_attribute(&rust_name, attribute, registry, dest)?;
+                },
+                &Member::Operation(ref operation) => {
+                    write_operation(&rust_name, operation, registry, dest)?;
+                }
             }
         }
     }

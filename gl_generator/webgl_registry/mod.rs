@@ -46,7 +46,7 @@ impl fmt::Display for Api {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Type {
     pub name: String,
     pub optional: bool
@@ -119,13 +119,13 @@ impl TypeKind {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Const {
     pub type_: Type,
     pub value: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq)]
 pub struct Argument {
     pub name: String,
     pub optional: bool,
@@ -133,20 +133,26 @@ pub struct Argument {
     pub variadic: bool,
 }
 
-#[derive(Debug)]
+impl PartialEq for Argument {
+    fn eq(&self, other: &Self) -> bool {
+        self.type_ == other.type_
+    }
+}
+
+#[derive(Debug, PartialEq, Eq)]
 pub struct Operation {
     pub args: Vec<Argument>,
     pub return_type: Option<Type>
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Attribute {
     pub type_: Type,
     pub setter: bool,
     pub getter: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Member {
     Const(Const),
     Operation(Operation),
@@ -157,7 +163,7 @@ pub enum Member {
 pub struct Interface {
     pub inherits: Option<String>,
     pub mixins: BTreeSet<String>,
-    pub members: BTreeMap<String, Member>,
+    pub members: BTreeMap<String, Vec<Member>>,
     pub is_hidden: bool,
     pub rendering_context: Option<&'static str>,
 }
@@ -234,21 +240,38 @@ impl Dictionary {
     }
 }
 
+fn multimap_insert<K: Ord, V: PartialEq>(m: &mut BTreeMap<K, Vec<V>>, key: K, value: V) {
+    let v = m.entry(key).or_insert_with(Vec::new);
+    if !v.contains(&value) {
+        v.push(value);
+    }
+}
+
+fn multimap_append<K: Ord + Clone, V: PartialEq>(m: &mut BTreeMap<K, Vec<V>>, other: BTreeMap<K, Vec<V>>) {
+    for (k, v) in other {
+        for value in v {
+            multimap_insert(m, k.clone(), value);
+        }
+    }
+}
+
 impl Interface {
-    pub fn collect_members<'a>(&'a self, registry: &'a Registry, options: &VisitOptions) -> BTreeMap<&'a str, &'a Member> {
+    pub fn collect_members<'a>(&'a self, registry: &'a Registry, options: &VisitOptions) -> BTreeMap<&'a str, Vec<&'a Member>> {
         let mut members = BTreeMap::new();
 
         // Mixins
         for mixin_name in &self.mixins {
             let mixin = registry.mixins.get(mixin_name).expect(mixin_name);
             if options.visit_mixins {
-                members.append(&mut mixin.collect_members(registry, options));
+                multimap_append(&mut members, mixin.collect_members(registry, options));
             }
         }
 
         // Members
-        for (name, member) in &self.members {
-            members.insert(name, member);
+        for (name, ms) in &self.members {
+            for member in ms {
+                multimap_insert(&mut members, &**name, member);
+            }
         }
 
         members
@@ -257,16 +280,18 @@ impl Interface {
 
 #[derive(Debug)]
 pub struct Mixin {
-    members: BTreeMap<String, Member>,
+    members: BTreeMap<String, Vec<Member>>,
 }
 
 impl Mixin {
-    pub fn collect_members<'a>(&'a self, _registry: &'a Registry, _options: &VisitOptions) -> BTreeMap<&'a str, &'a Member> {
+    pub fn collect_members<'a>(&'a self, _registry: &'a Registry, _options: &VisitOptions) -> BTreeMap<&'a str, Vec<&'a Member>> {
         let mut members = BTreeMap::new();
 
         // Members
-        for (name, member) in &self.members {
-            members.insert(&**name, member);
+        for (name, ms) in &self.members {
+            for member in ms {
+                multimap_insert(&mut members, &**name, member);
+            }
         }
 
         members
@@ -402,9 +427,12 @@ impl Registry {
     }
 
     fn load_mixin(&mut self, mixin: ast::NonPartialMixin) {
-        let members = mixin.members.into_iter().flat_map(|m| {
+        let mut members = BTreeMap::new();
+        for (name, member) in mixin.members.into_iter().flat_map(|m| {
             self.load_mixin_member(m)
-        }).collect();
+        }) {
+            multimap_insert(&mut members, name, member);
+        }
 
         self.mixins.insert(mixin.name, Mixin { members });
     }
@@ -420,9 +448,12 @@ impl Registry {
     }
 
     fn load_interface(&mut self, interface: ast::NonPartialInterface) {
-        let members = interface.members.into_iter().flat_map(|m| {
+        let mut members = BTreeMap::new();
+        for (name, member) in interface.members.into_iter().flat_map(|m| {
             self.load_interface_member(m)
-        }).collect();
+        }) {
+            multimap_insert(&mut members, name, member);
+        }
 
         let mut result = Interface {
             inherits: interface.inherits,
