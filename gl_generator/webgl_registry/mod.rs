@@ -48,21 +48,15 @@ impl fmt::Display for Api {
 
 #[derive(Debug, Clone)]
 pub struct Type {
-    pub owned: String,
-    pub borrowed: String,
+    pub name: String,
     pub optional: bool
 }
 
 impl Type {
     fn optional(&self) -> Self {
-        if self.optional {
-            self.clone()
-        } else {
-            Type {
-                owned: format!("Option<{}>", self.owned),
-                borrowed: format!("Option<{}>", self.borrowed),
-                optional: true
-            }
+        Type {
+            name: self.name.clone(),
+            optional: true
         }
     }
 }
@@ -70,9 +64,56 @@ impl Type {
 impl<'a> From<&'a str> for Type {
     fn from(s: &'a str) -> Type {
         Type {
-            owned: s.into(),
-            borrowed: s.into(),
+            name: s.into(),
             optional: false
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum Primitive {
+    Bool, I8, U8, I16, U16, I32, U32, I64, U64, F32, F64,
+}
+
+impl Primitive {
+    pub fn name(self) -> &'static str {
+        use self::Primitive::*;
+        match self {
+            Bool => "bool",
+            I8 => "i8", U8 => "u8",
+            I16 => "i16", U16 => "u16",
+            I32 => "i32", U32 => "u32",
+            I64 => "i64", U64 => "u64",
+            F32 => "f32", F64 => "f64",
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum TypeKind {
+    Primitive(Primitive),
+    String,
+    ArrayBuffer,
+    ArrayBufferView,
+    BufferSource,
+    CanvasElement,
+    TypedArray(Primitive),
+    Sequence(Type),
+    Dictionary,
+    Interface,
+    Enum,
+    Typedef(Type),
+    Any,
+    Object,
+}
+
+impl TypeKind {
+    pub fn flatten<'a>(&'a self, registry: &'a Registry) -> &'a TypeKind {
+        match self {
+            &TypeKind::Typedef(ref t) if !t.optional => {
+                registry.resolve_type(&t.name)
+            },
+            other => other
         }
     }
 }
@@ -102,11 +143,6 @@ pub struct Attribute {
     pub type_: Type,
     pub setter: bool,
     pub getter: bool,
-}
-
-#[derive(Debug)]
-pub struct Typedef {
-    pub type_: Type,
 }
 
 #[derive(Debug)]
@@ -240,9 +276,9 @@ impl Mixin {
 pub struct Registry {
     pub mixins: BTreeMap<String, Mixin>,
     pub interfaces: BTreeMap<String, Interface>,
-    pub typedefs: BTreeMap<String, Typedef>,
     pub dictionaries: BTreeMap<String, Dictionary>,
     pub enums: BTreeMap<String, Enum>,
+    pub types: BTreeMap<String, TypeKind>,
 }
 
 impl Registry {
@@ -267,6 +303,10 @@ impl Registry {
         result
     }
 
+    pub fn resolve_type(&self, name: &str) -> &TypeKind {
+        self.types.get(name).expect(name)
+    }
+
     pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()>
         where G: Generator,
               W: io::Write
@@ -274,30 +314,32 @@ impl Registry {
         generator.write(&self, output)
     }
 
-    fn load_const(&self, const_: ast::Const) -> Option<(String, Member)> {
+    fn load_const(&mut self, const_: ast::Const) -> Option<(String, Member)> {
         use self::ast::{ConstType, ConstValue};
 
-        let mut inner_type = match const_.type_ {
-            ConstType::Boolean => "bool".into(),
-            ConstType::Byte => "i8".into(),
-            ConstType::Octet => "u8".into(),
-            ConstType::RestrictedDouble | ConstType::UnrestrictedDouble => "f64".into(),
-            ConstType::RestrictedFloat | ConstType::UnrestrictedFloat => "f32".into(),
-            ConstType::SignedLong => "i32".into(),
-            ConstType::UnsignedLong => "u32".into(),
-            ConstType::SignedLongLong => "i32".into(),
-            ConstType::UnsignedLongLong => "u32".into(),
-            ConstType::SignedShort => "i16".into(),
-            ConstType::UnsignedShort => "u16".into(),
-            ConstType::Identifier(s) => s,
+        let type_ = ast::Type {
+            extended_attributes: Vec::new(),
+            kind: match const_.type_ {
+                ConstType::Boolean => ast::TypeKind::Boolean,
+                ConstType::Byte => ast::TypeKind::Byte,
+                ConstType::Octet => ast::TypeKind::Octet,
+                ConstType::RestrictedDouble => ast::TypeKind::RestrictedDouble,
+                ConstType::UnrestrictedDouble => ast::TypeKind::UnrestrictedDouble,
+                ConstType::RestrictedFloat => ast::TypeKind::RestrictedFloat,
+                ConstType::UnrestrictedFloat => ast::TypeKind::UnrestrictedFloat,
+                ConstType::SignedLong => ast::TypeKind::SignedLong,
+                ConstType::UnsignedLong => ast::TypeKind::UnsignedLong,
+                ConstType::SignedLongLong => ast::TypeKind::SignedLongLong,
+                ConstType::UnsignedLongLong => ast::TypeKind::UnsignedLongLong,
+                ConstType::SignedShort => ast::TypeKind::SignedShort,
+                ConstType::UnsignedShort => ast::TypeKind::UnsignedShort,
+                ConstType::Identifier(s) => ast::TypeKind::Identifier(s),
+            },
+            nullable: const_.nullable
         };
 
-        if const_.nullable {
-            inner_type = format!("Option<{}>", inner_type);
-        }
-
         Some((const_.name, Member::Const(Const {
-            type_: (*inner_type).into(),
+            type_: self.load_type(type_),
             value: match const_.value {
                 ConstValue::BooleanLiteral(b) => format!("{:?}", b),
                 ConstValue::FloatLiteral(v) => format!("{:?}", v),
@@ -307,7 +349,7 @@ impl Registry {
         })))
     }
 
-    fn load_attribute(&self, attribute: ast::Attribute) -> Option<(String, Member)> {
+    fn load_attribute(&mut self, attribute: ast::Attribute) -> Option<(String, Member)> {
         use self::ast::Attribute::*;
         match attribute {
             Regular(a) => {
@@ -322,7 +364,7 @@ impl Registry {
         }
     }
 
-    fn load_argument(&self, argument: ast::Argument) -> Argument {
+    fn load_argument(&mut self, argument: ast::Argument) -> Argument {
         let type_ = self.load_type(*argument.type_);
         Argument {
             name: argument.name,
@@ -332,7 +374,7 @@ impl Registry {
         }
     }
 
-    fn load_operation(&self, operation: ast::Operation) -> Option<(String, Member)> {
+    fn load_operation(&mut self, operation: ast::Operation) -> Option<(String, Member)> {
         use self::ast::Operation::*;
         use self::ast::ReturnType;
         match operation {
@@ -349,7 +391,7 @@ impl Registry {
         }
     }
 
-    fn load_mixin_member(&self, member: ast::MixinMember) -> Option<(String, Member)> {
+    fn load_mixin_member(&mut self, member: ast::MixinMember) -> Option<(String, Member)> {
         use self::ast::MixinMember::*;
         match member {
             Const(c) => self.load_const(c),
@@ -366,7 +408,7 @@ impl Registry {
         self.mixins.insert(mixin.name, Mixin { members });
     }
 
-    fn load_interface_member(&self, member: ast::InterfaceMember) -> Option<(String, Member)> {
+    fn load_interface_member(&mut self, member: ast::InterfaceMember) -> Option<(String, Member)> {
         use self::ast::InterfaceMember::*;
         match member {
             Const(c) => self.load_const(c),
@@ -396,6 +438,7 @@ impl Registry {
             }
         }
 
+        self.load_type_kind(&interface.name, TypeKind::Interface);
         self.interfaces.insert(interface.name, result);
     }
 
@@ -405,52 +448,78 @@ impl Registry {
         }
     }
 
-    fn load_type(&self, t: ast::Type) -> Type {
-        use self::ast::TypeKind;
-        fn obj_type(s: &str) -> Type {
-            Type { owned: s.into(), borrowed: format!("&{}", s), optional: s == "Value" }
+    // Load a type kind into the registry under a given name, and return
+    // a reference to it.
+    fn load_type_kind(&mut self, name: &str, type_kind: TypeKind) -> Type {
+        if !self.types.contains_key(name) {
+            self.types.insert(name.into(), type_kind);
         }
+        name.into()
+    }
 
-        let mut type_ = match t.kind {
-            TypeKind::Any => obj_type("Value"),
-            TypeKind::ArrayBuffer => obj_type("ArrayBuffer"),
-            TypeKind::Boolean => "bool".into(),
-            TypeKind::Byte => "i8".into(),
-            TypeKind::ByteString => Type {
-                owned: "Vec<u8>".into(), borrowed: "&[u8]".into(), optional: false
-            },
-            TypeKind::DOMString | TypeKind::USVString => Type {
-                owned: "String".into(), borrowed: "&str".into(), optional: false
-            },
-            TypeKind::Float32Array => obj_type("Float32Array"),
-            TypeKind::Float64Array => obj_type("Float64Array"),
-            TypeKind::Identifier(s) => (*s).into(),
-            TypeKind::Int16Array => obj_type("Int16Array"),
-            TypeKind::Int32Array => obj_type("Int32Array"),
-            TypeKind::Int8Array => obj_type("Int8Array"),
-            TypeKind::Octet => "u8".into(),
-            TypeKind::Object => obj_type("Reference"),
-            TypeKind::RestrictedDouble | TypeKind::UnrestrictedDouble => "f64".into(),
-            TypeKind::RestrictedFloat | TypeKind::UnrestrictedFloat => "f32".into(),
-            TypeKind::Sequence(inner) => {
-                let t = self.load_type(*inner);
-                Type {
-                    owned: format!("Vec<{}>", t.owned),
-                    borrowed: format!("&[{}]", t.borrowed),
-                    optional: false
-                }
-            },
-            TypeKind::SignedLong => "i32".into(),
-            TypeKind::SignedLongLong => "i32".into(),
-            TypeKind::SignedShort => "i16".into(),
-            TypeKind::Uint16Array => obj_type("Uint16Array"),
-            TypeKind::Uint32Array => obj_type("Uint32Array"),
-            TypeKind::Uint8Array => obj_type("Uint8Array"),
-            TypeKind::UnsignedLong => "u32".into(),
-            TypeKind::UnsignedLongLong => "u32".into(),
-            TypeKind::UnsignedShort => "u16".into(),
-            _ => obj_type("Value")
+    // Convert an AST type kind into a type kind the generator can understand
+    fn load_type_inner(&mut self, kind: ast::TypeKind) -> Type {
+        use self::ast::TypeKind::*;
+
+        let name = match kind {
+            FrozenArray(_) => "FrozenArray".into(),
+            Promise(_) => "Promise".into(),
+            Record(_, _) => "Record".into(),
+            Sequence(_) => "Sequence".into(),
+            Union(_) => "Union".into(),
+            ref other => format!("{:?}", other),
         };
+
+        let type_kind = match kind {
+            // Primitives
+            Boolean => TypeKind::Primitive(Primitive::Bool),
+            Byte => TypeKind::Primitive(Primitive::I8),
+            Octet => TypeKind::Primitive(Primitive::U8),
+            SignedShort => TypeKind::Primitive(Primitive::I16),
+            UnsignedShort => TypeKind::Primitive(Primitive::U16),
+            SignedLong => TypeKind::Primitive(Primitive::I32),
+            UnsignedLong => TypeKind::Primitive(Primitive::U32),
+            SignedLongLong => TypeKind::Primitive(Primitive::I64),
+            UnsignedLongLong => TypeKind::Primitive(Primitive::U64),
+            RestrictedFloat | UnrestrictedFloat => TypeKind::Primitive(Primitive::F32),
+            RestrictedDouble | UnrestrictedDouble => TypeKind::Primitive(Primitive::F64),
+
+            // Strings
+            DOMString | USVString => TypeKind::String,
+            ByteString => unimplemented!(),
+
+            // TypedArrays
+            Int8Array => TypeKind::TypedArray(Primitive::I8),
+            Uint8Array => TypeKind::TypedArray(Primitive::U8),
+            Int16Array => TypeKind::TypedArray(Primitive::I16),
+            Uint16Array => TypeKind::TypedArray(Primitive::U16),
+            Int32Array => TypeKind::TypedArray(Primitive::I32),
+            Uint32Array => TypeKind::TypedArray(Primitive::U32),
+            Float32Array => TypeKind::TypedArray(Primitive::F32),
+            Float64Array => TypeKind::TypedArray(Primitive::F64),
+
+            // Sequence
+            Sequence(inner) => TypeKind::Sequence(self.load_type(*inner)),
+
+            // Identifier
+            Identifier(s) => match &*s {
+                "BufferSource" => TypeKind::BufferSource,
+                "HTMLCanvasElement" => TypeKind::CanvasElement,
+                "ArrayBufferView" => TypeKind::ArrayBufferView,
+                other => { return other.into(); }
+            },
+
+            // Misc
+            ArrayBuffer => TypeKind::ArrayBuffer,
+            Object => TypeKind::Object,
+            _ => TypeKind::Any,
+        };
+        self.load_type_kind(&name, type_kind)
+    }
+
+    // Convert an AST type into a type the generator can understand
+    fn load_type(&mut self, t: ast::Type) -> Type {
+        let mut type_ = self.load_type_inner(t.kind);
         if t.nullable {
             type_ = type_.optional();
         }
@@ -459,12 +528,10 @@ impl Registry {
 
     fn load_typedef(&mut self, typedef: ast::Typedef) {
         let type_ = self.load_type(*typedef.type_);
-        self.typedefs.insert(typedef.name, Typedef {
-            type_,
-        });
+        self.load_type_kind(&typedef.name, TypeKind::Typedef(type_));
     }
 
-    fn load_field(&self, field: ast::DictionaryMember) -> Option<(String, Field)> {
+    fn load_field(&mut self, field: ast::DictionaryMember) -> Option<(String, Field)> {
         let mut type_ = self.load_type(*field.type_);
         if !field.required {
             type_ = type_.optional();
@@ -479,6 +546,7 @@ impl Registry {
             self.load_field(m)
         }).collect();
 
+        self.load_type_kind(&dictionary.name, TypeKind::Dictionary);
         self.dictionaries.insert(dictionary.name, Dictionary {
             inherits: dictionary.inherits,
             fields,
@@ -488,6 +556,7 @@ impl Registry {
 
     fn load_enum(&mut self, enum_: ast::Enum) {
         let variants = enum_.variants.into_iter().collect();
+        self.load_type_kind(&enum_.name, TypeKind::Enum);
         self.enums.insert(enum_.name, Enum { variants });
     }
 
