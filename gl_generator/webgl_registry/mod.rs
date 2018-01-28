@@ -99,6 +99,7 @@ pub enum TypeKind {
     CanvasElement,
     TypedArray(Primitive),
     Sequence(Type),
+    Union(Vec<Type>),
     Dictionary,
     Interface,
     Enum,
@@ -461,14 +462,7 @@ impl Registry {
     fn load_type_inner(&mut self, kind: ast::TypeKind) -> Type {
         use self::ast::TypeKind::*;
 
-        let name = match kind {
-            FrozenArray(_) => "FrozenArray".into(),
-            Promise(_) => "Promise".into(),
-            Record(_, _) => "Record".into(),
-            Sequence(_) => "Sequence".into(),
-            Union(_) => "Union".into(),
-            ref other => format!("{:?}", other),
-        };
+        let name = format!("{:?}", kind);
 
         let type_kind = match kind {
             // Primitives
@@ -507,6 +501,17 @@ impl Registry {
                 "HTMLCanvasElement" => TypeKind::CanvasElement,
                 "ArrayBufferView" => TypeKind::ArrayBufferView,
                 other => { return other.into(); }
+            },
+
+            // Composite
+            Union(inners) => {
+                if inners.len() <= 2 {
+                    TypeKind::Union(inners.into_iter().map(|inner| {
+                        self.load_type(*inner)
+                    }).collect())
+                } else {
+                    TypeKind::Any
+                }
             },
 
             // Misc

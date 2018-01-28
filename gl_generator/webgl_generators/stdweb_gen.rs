@@ -63,7 +63,7 @@ impl ArgWrapper {
     fn wrap(&self, arg: &str) -> String {
         match self {
             &ArgWrapper::None => arg.into(),
-            &ArgWrapper::AsTypedArray => format!("{}.as_typed_array()", arg),
+            &ArgWrapper::AsTypedArray => format!("unsafe {{ {}.as_typed_array() }}", arg),
             &ArgWrapper::Optional(ref inner) => format!("{}.map(|inner| {})", arg, inner.wrap("inner")),
             &ArgWrapper::Sequence(ref inner) => format!("{}.iter().map(|inner| {}).collect::<Vec<_>>()", arg, inner.wrap("inner")),
             &ArgWrapper::DoubleCast => format!("({} as f64)", arg),
@@ -114,6 +114,18 @@ fn process_arg_type_kind(name: &str, type_kind: &TypeKind, registry: &Registry, 
                 },
                 optional: false
             }
+        },
+        &TypeKind::Union(ref ts) => {
+            let t = ts.iter().filter_map(|t| {
+                let t_kind = registry.resolve_type(&t.name);
+                match t_kind {
+                    &TypeKind::TypedArray(_) => Some(t),
+                    &TypeKind::Sequence(_) => None,
+                    _ => panic!("Union support is limited!")
+                }
+            }).next().expect("Union did not contain a TypedArray");
+
+            process_arg_type(t, registry, gc)
         },
         &TypeKind::Dictionary | &TypeKind::Interface => ProcessedArg::simple(format!("&{}", name)),
         &TypeKind::Enum => ProcessedArg::simple(name),
@@ -185,6 +197,18 @@ fn process_result_type_kind(name: &str, type_kind: &TypeKind, registry: &Registr
             let inner = process_result_type(t, registry);
             ProcessedResult::simple(format!("Vec<{}>", inner.type_))
         },
+        &TypeKind::Union(ref ts) => {
+            let t = ts.iter().filter_map(|t| {
+                let t_kind = registry.resolve_type(&t.name);
+                match t_kind {
+                    &TypeKind::TypedArray(_) => Some(t),
+                    &TypeKind::Sequence(_) => None,
+                    _ => panic!("Union support is limited!")
+                }
+            }).next().expect("Union did not contain a TypedArray");
+
+            process_result_type(t, registry)
+        },
         &TypeKind::Dictionary | &TypeKind::Interface | &TypeKind::Enum => ProcessedResult::simple(name),
         &TypeKind::Typedef(ref t) => {
             let inner = process_result_type(t, registry);
@@ -228,7 +252,7 @@ fn custom_error(s: &str) -> ConversionError {{
     stdweb::serde::ConversionError::custom(s).into()
 }}
 
-trait AsTypedArray<'a, T> {{
+pub trait AsTypedArray<'a, T> {{
     type Result: JsSerializable;
 
     unsafe fn as_typed_array(self) -> Self::Result;
