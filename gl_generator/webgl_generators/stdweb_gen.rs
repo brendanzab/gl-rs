@@ -496,20 +496,17 @@ impl {name} {{
 
     for (name, members) in interface.collect_members(registry, &VisitOptions::default()) {
         for (index, member) in members.into_iter().enumerate() {
-            let rust_name = if index > 0 {
-                format!("{}_{}", name, index)
-            } else {
-                name.into()
-            };
             match member {
                 &Member::Const(ref const_) => {
-                    write_const(&rust_name, const_, registry, dest)?;
+                    assert!(index == 0);
+                    write_const(&name, const_, registry, dest)?;
                 },
                 &Member::Attribute(ref attribute) => {
-                    write_attribute(&rust_name, attribute, registry, dest)?;
+                    assert!(index == 0);
+                    write_attribute(&name, attribute, registry, dest)?;
                 },
                 &Member::Operation(ref operation) => {
-                    write_operation(&rust_name, operation, registry, dest)?;
+                    write_operation(&name, index, operation, registry, dest)?;
                 }
             }
         }
@@ -581,7 +578,12 @@ fn write_attribute<W>(name: &str, attribute: &Attribute, registry: &Registry, de
     Ok(())
 }
 
-fn write_operation<W>(name: &str, operation: &Operation, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
+fn write_operation<W>(name: &str, index: usize, operation: &Operation, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
+    let mut rust_name = unreserve(snake(name));
+    if index > 0 {
+        rust_name = format!("{}_{}", rust_name, index);
+    }
+
     let mut gc = GenericContext::new();
 
     struct OperationArg {
@@ -610,7 +612,7 @@ fn write_operation<W>(name: &str, operation: &Operation, registry: &Registry, de
     pub fn {name}{gargs}(&self, {args}) -> {return_type}{gwhere} {{
         {expr}
     }}"#,
-        name=unreserve(snake(name)),
+        name=rust_name,
         gargs=gc.args(),
         args=rust_args,
         return_type=result_type.type_,
@@ -623,7 +625,7 @@ fn write_operation<W>(name: &str, operation: &Operation, registry: &Registry, de
     pub fn {name}{gargs}(&self, {args}){gwhere} {{
         js!( @{{self}}.{raw_name}({js_args}); );
     }}"#,
-        name=unreserve(snake(name)),
+        name=rust_name,
         raw_name=name,
         gargs=gc.args(),
         args=rust_args,
