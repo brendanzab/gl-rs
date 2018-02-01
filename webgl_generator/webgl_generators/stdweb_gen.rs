@@ -240,8 +240,16 @@ extern crate stdweb;
 extern crate serde;
 
 use self::stdweb::{{Reference, Value, UnsafeTypedArray}};
-use self::stdweb::private::*;
-use self::stdweb::unstable::*;
+use self::stdweb::private::{{
+    JsSerializable,
+    FromReferenceUnchecked,
+    FromReference,
+    PreallocatedArena,
+    SerializedValue,
+}};
+use self::stdweb::unstable::{{
+    TryFrom, TryInto, Void
+}};
 use self::stdweb::web::{{RenderingContext, TypedArray, ArrayBuffer}};
 use self::stdweb::web::html_element::CanvasElement;
 
