@@ -1,4 +1,4 @@
-// Copyright 2015 Brendan Zabarauskas and the gl-rs developers
+// Copyright 2016 Brendan Zabarauskas and the gl-rs developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(unused_parens)]
+extern crate webgl_generator;
 
-#[macro_use]
-extern crate stdweb as _stdweb;
-#[macro_use]
-extern crate serde_derive as _serde_derive;
+use webgl_generator::*;
+use std::env;
+use std::fs::File;
+use std::path::*;
 
-include!(concat!(env!("OUT_DIR"), "/test_parse_idl.rs"));
+fn main() {
+    let dest = env::var("OUT_DIR").unwrap();
+    let mut file = File::create(&Path::new(&dest).join("test_webgl_stdweb.rs")).unwrap();
+
+    Registry::new(Api::WebGl2)
+        .write_bindings(StdwebGenerator, &mut file)
+        .unwrap();
+}

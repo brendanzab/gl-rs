@@ -1,5 +1,5 @@
 [package]
-name = "test_parse_idl"
+name = "test_webgl_stdweb"
 version = "0.0.0"
 build = "build.rs"
 publish = false
@@ -14,4 +14,4 @@ serde = "1.0.0"
 serde_derive = "1.0.0"
 
 [build-dependencies]
-gl_generator = { path = "../../gl_generator", features = ["webgl"] }
+webgl_generator = { path = "../../webgl_generator" }

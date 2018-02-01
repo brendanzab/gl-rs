@@ -89,9 +89,9 @@ fn process_arg_type_kind(name: &str, type_kind: &TypeKind, registry: &Registry, 
     match flat_kind {
         &TypeKind::Primitive(ref p) => {
             match p {
-                &Primitive::I64 => ProcessedArg { type_: "i64".into(), wrapper: ArgWrapper::DoubleCast, optional: false },
-                &Primitive::U64 => ProcessedArg { type_: "u64".into(), wrapper: ArgWrapper::DoubleCast, optional: false },
-                other => ProcessedArg::simple(other.name())
+                &Primitive::I64 => ProcessedArg { type_: name.into(), wrapper: ArgWrapper::DoubleCast, optional: false },
+                &Primitive::U64 => ProcessedArg { type_: name.into(), wrapper: ArgWrapper::DoubleCast, optional: false },
+                _ => ProcessedArg::simple(name)
             }
         },
         &TypeKind::String => ProcessedArg::simple("&str"),

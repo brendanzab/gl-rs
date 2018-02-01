@@ -2,12 +2,13 @@
 members = [
     "gl",
     "gl_generator",
+    "webgl_generator",
     "tests/test_add_registries",
     "tests/test_gen_symbols",
     "tests/test_no_warnings",
     "tests/test_symbols",
     "tests/test_unstable_api",
     "tests/test_with_extensions",
-    "tests/test_parse_idl",
+    "tests/test_webgl_stdweb",
     "khronos_api",
 ]

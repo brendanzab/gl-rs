@@ -21,11 +21,8 @@ path = "lib.rs"
 
 [features]
 unstable_generator_utils = []
-webgl = ["webidl", "heck"]
 
 [dependencies]
 khronos_api = { version = "2.1.0", path = "../khronos_api" }
 log = "0.4.1"
 xml-rs = "0.7.0"
-webidl = { version = "0.4.1", optional = true }
-heck = { version = "0.3.0", optional = true }
