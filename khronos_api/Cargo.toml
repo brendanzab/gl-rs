@@ -14,6 +14,8 @@ homepage = "https://github.com/brendanzab/gl-rs/khronos_api/"
 repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 
+# Only include what we need here. The git submodules are quite large, and would
+# exceed the maximimum crate size if we didn't do this
 include = [
   "/README.md",
   "/src/**/*",
