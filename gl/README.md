@@ -24,11 +24,11 @@ use gl::types::*;
 You must load the function pointers into their respective function pointers
 using the `load_with` function. You must supply a loader function from your
 context library, This is how it would look using [glfw-rs]
-(https://github.com/brendanzab/glfw-rs):
+(https://github.com/PistonDevelopers/glfw-rs):
 
 ```rust
 // the supplied function must be of the type:
-// `&fn(symbol: &str) -> Option<extern "C" fn()>`
+// `&fn(symbol: &'static str) -> *const std::os::raw::c_void`
 // `window` is a glfw::Window
 gl::load_with(|s| window.get_proc_address(s));
 

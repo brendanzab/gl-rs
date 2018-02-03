@@ -51,11 +51,8 @@ khronos_api = "1.0.0"
 
 ## Compiling from source
 
-`khronos_api` uses a git submodule. You will need to initialize it before building:
+`khronos_api` makes use of git submodules. You will need to initialize these before building:
 
 ```sh
 git submodule update --init
 ```
-
-A batch cargo script is provided at `bin/cargo`. [See the script](https://github.com/brendanzab/gl-rs/blob/master/bin/cargo)
-for some example usages.

@@ -14,6 +14,9 @@
 
 //! This crates contains the sources of the official OpenGL repository.
 
+// NOTE: if any new files are added to here, ensue they are also covered
+// in the `include` section of the `Cargo.toml`.
+
 /// The contents of [`gl.xml`](https://github.com/KhronosGroup/OpenGL-Registry/blob/master/xml/gl.xml)
 pub const GL_XML: &'static [u8] = include_bytes!("../api/xml/gl.xml");
 
