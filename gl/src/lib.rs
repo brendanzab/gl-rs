@@ -32,7 +32,7 @@
 //!
 //! ~~~ignore
 //! // the supplied function must be of the type:
-//! // `&fn(symbol: &str) -> Option<extern "C" fn()>`
+//! // `&fn(symbol: &'static str) -> *const std::os::raw::c_void`
 //! gl::load_with(|s| glfw.get_proc_address(s));
 //!
 //! // loading a specific function pointer
