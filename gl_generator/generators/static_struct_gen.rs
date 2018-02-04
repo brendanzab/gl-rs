@@ -96,7 +96,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
         "impl {api} {{
             /// Stub function.
             #[allow(dead_code)]
-            pub fn load_with<F>(mut _loadfn: F) -> {api} where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
+            pub fn load_with<F>(mut _loadfn: F) -> {api} where F: FnMut(&'static str) -> *const __gl_imports::raw::c_void {{
                 {api}
             }}",
         api = super::gen_struct_name(registry.api),
