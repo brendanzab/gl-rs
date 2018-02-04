@@ -19,6 +19,7 @@ The following constants are provided:
 - `GLX_XML`: the contents of [`glx.xml`](https://cvs.khronos.org/svn/repos/ogl/trunk/doc/registry/public/api/glx.xml)
 - `WEBGL_IDL`: the contents of [`webgl.idl`](https://raw.githubusercontent.com/KhronosGroup/WebGL/master/specs/latest/1.0/webgl.idl)
 - `WEBGL2_IDL`: the contents of [`webgl2.idl`](https://raw.githubusercontent.com/KhronosGroup/WebGL/master/specs/latest/2.0/webgl2.idl)
+- `WEBGL_EXT_XML`: the contents of the WebGL extension XML files
 
 ## Changelog
 
