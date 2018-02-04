@@ -13,10 +13,12 @@
 // limitations under the License.
 
 #![allow(unused_parens, non_camel_case_types)]
+#![crate_name = "webgl_stdweb"]
+#![crate_type = "lib"]
 
 #[macro_use]
 extern crate stdweb as _stdweb;
 #[macro_use]
 extern crate serde_derive as _serde_derive;
 
-include!(concat!(env!("OUT_DIR"), "/test_webgl_stdweb.rs"));
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));

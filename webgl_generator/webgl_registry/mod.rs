@@ -1,6 +1,8 @@
 extern crate webidl;
 extern crate heck;
 extern crate khronos_api;
+extern crate serde_xml_rs;
+extern crate regex;
 
 use std::{str, fmt, io};
 use std::collections::{BTreeMap, BTreeSet};
@@ -26,6 +28,49 @@ const RENDERING_CONTEXTS: &'static [(&'static str, &'static str)] = &[
 pub enum Api {
     WebGl,
     WebGl2,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename = "extension")]
+struct ExtensionIDL {
+    pub name: String,
+    pub idl: String,
+}
+
+pub enum Exts<'a> {
+    Include(&'a [&'a str]),
+    Exclude(&'a [&'a str]),
+}
+
+impl<'a> Exts<'a> {
+    pub const NONE: Exts<'a> = Exts::Include(&[]);
+    pub const ALL: Exts<'a> = Exts::Exclude(&[]);
+
+    fn enumerate(&self) -> Vec<ExtensionIDL> {
+        use self::serde_xml_rs::deserialize;
+        use self::regex::{Regex, RegexBuilder};
+
+        // The Khronos IDL files are... not quite right, so let's fix them up!
+        let enum_regex = Regex::new("([(, ])enum\\b").unwrap();
+        let missing_semicolon_regex = RegexBuilder::new("^}$").multi_line(true).build().unwrap();
+        let shared_callback_regex = Regex::new("\\bAcquireResourcesCallback\\b").unwrap();
+
+        let mut result = Vec::new();
+        for &ext_xml in khronos_api::WEBGL_EXT_XML {
+            let mut ext: ExtensionIDL = deserialize(ext_xml).unwrap();
+            if match self {
+                &Exts::Include(names) => names.contains(&&*ext.name),
+                &Exts::Exclude(names) => !names.contains(&&*ext.name)
+            } {
+                ext.idl = enum_regex.replace_all(&ext.idl, "${1}GLenum").into();
+                ext.idl = missing_semicolon_regex.replace_all(&ext.idl, "};").into();
+                ext.idl = shared_callback_regex.replace_all(&ext.idl, "AcquireSharedResourcesCallback").into();
+                result.push(ext);
+            }
+        }
+
+        result
+    }
 }
 
 impl Api {
@@ -106,6 +151,7 @@ pub enum TypeKind {
     Typedef(Type),
     Any,
     Object,
+    Callback(Vec<Argument>, Option<Type>),
 }
 
 impl TypeKind {
@@ -119,13 +165,13 @@ impl TypeKind {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Const {
     pub type_: Type,
     pub value: String,
 }
 
-#[derive(Debug, Eq)]
+#[derive(Debug, Eq, Clone)]
 pub struct Argument {
     pub name: String,
     pub optional: bool,
@@ -139,32 +185,33 @@ impl PartialEq for Argument {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Operation {
     pub args: Vec<Argument>,
     pub return_type: Option<Type>
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Attribute {
     pub type_: Type,
     pub setter: bool,
     pub getter: bool,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Member {
     Const(Const),
     Operation(Operation),
     Attribute(Attribute),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Interface {
     pub inherits: Option<String>,
     pub mixins: BTreeSet<String>,
     pub members: BTreeMap<String, Vec<Member>>,
     pub is_hidden: bool,
+    pub has_class: bool,
     pub rendering_context: Option<&'static str>,
 }
 
@@ -305,15 +352,31 @@ pub struct Registry {
     pub dictionaries: BTreeMap<String, Dictionary>,
     pub enums: BTreeMap<String, Enum>,
     pub types: BTreeMap<String, TypeKind>,
+    pub extensions: BTreeSet<String>,
 }
 
 impl Registry {
-    pub fn new(api: Api) -> Registry {
+    pub fn new(api: Api, exts: Exts) -> Registry {
         let mut result = Registry::default();
 
         for idl_const in api.idl_consts() {
             for def in parse_defs(idl_const) {
                 result.load_definition(def);
+            }
+        }
+
+        for ext in exts.enumerate() {
+            result.extensions.insert(ext.name);
+            for def in parse_defs(ext.idl.as_bytes()) {
+                result.load_definition(def);
+            }
+        }
+
+        for name in RENDERING_CONTEXTS.into_iter().rev() {
+            if let Some(mut iface) = result.interfaces.get(name.1).cloned() {
+                iface.rendering_context = None;
+                result.interfaces.insert("GLContext".into(), iface);
+                break;
             }
         }
 
@@ -448,6 +511,18 @@ impl Registry {
     }
 
     fn load_interface(&mut self, interface: ast::NonPartialInterface) {
+        fn has_attr(attrs: &Vec<Box<ast::ExtendedAttribute>>, name: &str) -> bool {
+            use self::ast::ExtendedAttribute::*;
+            for attr in attrs {
+                if let NoArguments(ref other) = **attr {
+                    if let &ast::Other::Identifier(ref n) = other {
+                        return n == name;
+                    }
+                }
+            }
+            false
+        }
+
         let mut members = BTreeMap::new();
         for (name, member) in interface.members.into_iter().flat_map(|m| {
             self.load_interface_member(m)
@@ -460,6 +535,7 @@ impl Registry {
             mixins: BTreeSet::new(),
             members,
             is_hidden: false,
+            has_class: !has_attr(&interface.extended_attributes, "NoInterfaceObject"),
             rendering_context: None,
         };
 
@@ -493,7 +569,7 @@ impl Registry {
     fn load_type_inner(&mut self, kind: ast::TypeKind) -> Type {
         use self::ast::TypeKind::*;
 
-        let name = format!("{:?}", kind);
+        let mut name = format!("{:?}", kind);
 
         let type_kind = match kind {
             // Primitives
@@ -550,6 +626,11 @@ impl Registry {
             Object => TypeKind::Object,
             _ => TypeKind::Any,
         };
+
+        if let TypeKind::Primitive(ref p) = type_kind {
+            name = p.name().into();
+        }
+
         self.load_type_kind(&name, type_kind)
     }
 
@@ -596,6 +677,16 @@ impl Registry {
         self.enums.insert(enum_.name, Enum { variants });
     }
 
+    fn load_callback(&mut self, callback: ast::Callback) {
+        use self::ast::ReturnType;
+        let args = callback.arguments.into_iter().map(|a| self.load_argument(a)).collect();
+        let return_type = match callback.return_type {
+            ReturnType::NonVoid(t) => Some(self.load_type(*t)),
+            ReturnType::Void => None,
+        };
+        self.load_type_kind(&callback.name, TypeKind::Callback(args, return_type));
+    }
+
     fn load_definition(&mut self, def: ast::Definition) {
         use self::ast::Definition::*;
         match def {
@@ -605,6 +696,7 @@ impl Registry {
             Typedef(t) => self.load_typedef(t),
             Dictionary(ast::Dictionary::NonPartial(d)) => self.load_dictionary(d),
             Enum(e) => self.load_enum(e),
+            Callback(c) => self.load_callback(c),
             _ => {}
         }
     }

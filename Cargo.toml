@@ -2,6 +2,7 @@
 members = [
     "gl",
     "gl_generator",
+    "webgl",
     "webgl_generator",
     "tests/test_add_registries",
     "tests/test_gen_symbols",

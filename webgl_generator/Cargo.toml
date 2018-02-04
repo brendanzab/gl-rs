@@ -21,3 +21,7 @@ path = "lib.rs"
 khronos_api = { version = "2.0.0", path = "../khronos_api" }
 webidl = { version = "0.4.1" }
 heck = { version = "0.3.0" }
+serde-xml-rs = "0.2.1"
+serde_derive = "1.0"
+serde = "1.0"
+regex = "0.2.5"

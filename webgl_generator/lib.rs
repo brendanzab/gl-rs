@@ -43,6 +43,8 @@
 //! include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
 //! ```
 //!
+#[macro_use]
+extern crate serde_derive;
 
 mod webgl_generators;
 mod webgl_registry;

@@ -57,6 +57,7 @@ enum ArgWrapper {
     Optional(Box<ArgWrapper>),
     Sequence(Box<ArgWrapper>),
     DoubleCast,
+    Once,
 }
 
 impl ArgWrapper {
@@ -67,6 +68,7 @@ impl ArgWrapper {
             &ArgWrapper::Optional(ref inner) => format!("{}.map(|inner| {})", arg, inner.wrap("inner")),
             &ArgWrapper::Sequence(ref inner) => format!("{}.iter().map(|inner| {}).collect::<Vec<_>>()", arg, inner.wrap("inner")),
             &ArgWrapper::DoubleCast => format!("({} as f64)", arg),
+            &ArgWrapper::Once => format!("Once({})", arg),
         }
     }
 }
@@ -139,6 +141,11 @@ fn process_arg_type_kind(name: &str, type_kind: &TypeKind, registry: &Registry, 
             let gp = gc.arg("T");
             gc.constrain(format!("{}: JsSerializable", gp));
             ProcessedArg::simple(gp)
+        },
+        &TypeKind::Callback(ref _args, ref _return_type) => {
+            let gp = gc.arg("F");
+            gc.constrain(format!("{}: FnOnce() + 'static", gp));
+            ProcessedArg { type_: gp, wrapper: ArgWrapper::Once, optional: false }
         }
     }
 }
@@ -218,7 +225,8 @@ fn process_result_type_kind(name: &str, type_kind: &TypeKind, registry: &Registr
                 optional: inner.optional
             }
         },
-        &TypeKind::Any | &TypeKind::Object => ProcessedResult::simple("Value")
+        &TypeKind::Any | &TypeKind::Object => ProcessedResult::simple("Value"),
+        &TypeKind::Callback(ref _args, ref _return_type) => unimplemented!()
     }
 }
 
@@ -239,7 +247,7 @@ fn write_header<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
 extern crate stdweb;
 extern crate serde;
 
-use self::stdweb::{{Reference, Value, UnsafeTypedArray}};
+use self::stdweb::{{Reference, Value, UnsafeTypedArray, Once}};
 use self::stdweb::private::{{
     JsSerializable,
     FromReferenceUnchecked,
@@ -264,6 +272,10 @@ pub trait AsTypedArray<'a, T> {{
     type Result: JsSerializable;
 
     unsafe fn as_typed_array(self) -> Self::Result;
+}}
+
+pub trait Extension: TryFrom<Value> {{
+    const NAME: &'static str;
 }}
 
 macro_rules! define_array {{
@@ -303,6 +315,7 @@ impl super::Generator for StdwebGenerator {
         write_enums(registry, dest)?;
         write_dictionaries(registry, dest)?;
         write_interfaces(registry, dest)?;
+        write_extensions(registry, dest)?;
         Ok(())
     }
 }
@@ -420,6 +433,14 @@ fn write_interface<W>(name: &str, interface: &Interface, registry: &Registry, de
         return Ok(());
     }
 
+    let instance_check = if name == "GLContext" {
+        "return [WebGLRenderingContext, WebGL2RenderingContext].includes(Module.STDWEB.acquire_js_reference( $0 ).constructor) | 0;".into()
+    } else if interface.has_class {
+        format!("return (Module.STDWEB.acquire_js_reference( $0 ) instanceof {}) | 0;", name)
+    } else {
+        format!("return (Module.STDWEB.acquire_js_reference( $0 ).constructor.name == {:?}) | 0;", name)
+    };
+
     write!(dest, r#"
 #[derive(Debug, Clone)]
 pub struct {name}(Reference);
@@ -435,7 +456,7 @@ impl FromReference for {name} {{
     fn from_reference(reference: Reference) -> Option<Self> {{
         if {{
             __js_raw_asm!(
-                "return (Module.STDWEB.acquire_js_reference( $0 ) instanceof {name}) | 0;",
+                {instance_check:?},
                 reference.as_raw()
             ) == 1
         }} {{
@@ -500,7 +521,7 @@ impl JsSerializable for {name} {{
 __js_serializable_boilerplate!(() ({name}) ());
 
 impl {name} {{
-    "#, name=name)?;
+    "#, name=name, instance_check=instance_check)?;
 
     for (name, members) in interface.collect_members(registry, &VisitOptions::default()) {
         for (index, member) in members.into_iter().enumerate() {
@@ -586,7 +607,20 @@ fn write_attribute<W>(name: &str, attribute: &Attribute, registry: &Registry, de
     Ok(())
 }
 
+fn write_get_extension<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
+    write!(dest, r#"
+
+    pub fn get_extension<E: Extension>(&self) -> Option<E> {{
+        (js! {{ return @{{self}}.getExtension({{E::NAME}}); }} ).try_into().ok()
+    }}"#)
+}
+
 fn write_operation<W>(name: &str, index: usize, operation: &Operation, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
+    match name {
+        "getExtension" => return write_get_extension(dest),
+        _ => {}
+    }
+
     let mut rust_name = unreserve(snake(name));
     if index > 0 {
         rust_name = format!("{}_{}", rust_name, index);
@@ -642,4 +676,19 @@ fn write_operation<W>(name: &str, index: usize, operation: &Operation, registry:
         )?;
     }
     Ok(())
+}
+
+fn write_extensions<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
+    for name in &registry.extensions {
+        write_extension(name, registry, dest)?;
+    }
+    Ok(())
+}
+
+fn write_extension<W>(name: &str, _registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
+    writeln!(dest, r#"
+impl Extension for {name} {{
+    const NAME: &'static str = "{name}";
+}}"#,
+    name=name)
 }
