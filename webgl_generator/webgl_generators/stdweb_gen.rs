@@ -442,7 +442,7 @@ fn write_interface<W>(name: &str, interface: &Interface, registry: &Registry, de
     };
 
     write!(dest, r#"
-#[derive(Debug, Clone)]
+{doc_comment}#[derive(Debug, Clone)]
 pub struct {name}(Reference);
 
 impl FromReferenceUnchecked for {name} {{
@@ -521,7 +521,7 @@ impl JsSerializable for {name} {{
 __js_serializable_boilerplate!(() ({name}) ());
 
 impl {name} {{
-    "#, name=name, instance_check=instance_check)?;
+    "#, name=name, instance_check=instance_check, doc_comment=interface.doc_comment)?;
 
     for (name, members) in interface.collect_members(registry, &VisitOptions::default()) {
         for (index, member) in members.into_iter().enumerate() {
@@ -651,7 +651,7 @@ fn write_operation<W>(name: &str, index: usize, operation: &Operation, registry:
 
         write!(dest, r#"
 
-    pub fn {name}{gargs}(&self, {args}) -> {return_type}{gwhere} {{
+    {doc_comment}pub fn {name}{gargs}(&self, {args}) -> {return_type}{gwhere} {{
         {expr}
     }}"#,
         name=rust_name,
@@ -659,12 +659,13 @@ fn write_operation<W>(name: &str, index: usize, operation: &Operation, registry:
         args=rust_args,
         return_type=result_type.type_,
         gwhere=gc.constraints(),
-        expr=expr
+        expr=expr,
+        doc_comment=operation.doc_comment
         )?;
     } else {
         write!(dest, r#"
 
-    pub fn {name}{gargs}(&self, {args}){gwhere} {{
+    {doc_comment}pub fn {name}{gargs}(&self, {args}){gwhere} {{
         js!( @{{self}}.{raw_name}({js_args}); );
     }}"#,
         name=rust_name,
@@ -672,7 +673,8 @@ fn write_operation<W>(name: &str, index: usize, operation: &Operation, registry:
         gargs=gc.args(),
         args=rust_args,
         gwhere=gc.constraints(),
-        js_args=js_args
+        js_args=js_args,
+        doc_comment=operation.doc_comment
         )?;
     }
     Ok(())

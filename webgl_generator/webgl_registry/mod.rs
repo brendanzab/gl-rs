@@ -1,8 +1,9 @@
 extern crate webidl;
 extern crate heck;
 extern crate khronos_api;
-extern crate serde_xml_rs;
+extern crate xml;
 extern crate regex;
+extern crate html2runes;
 
 use std::{str, fmt, io};
 use std::collections::{BTreeMap, BTreeSet};
@@ -30,11 +31,12 @@ pub enum Api {
     WebGl2,
 }
 
-#[derive(Debug, Deserialize)]
-#[serde(rename = "extension")]
+#[derive(Debug)]
 struct ExtensionIDL {
     pub name: String,
     pub idl: String,
+    pub overview: String,
+    pub new_funs: BTreeMap<String, String>,
 }
 
 pub enum Exts<'a> {
@@ -42,12 +44,23 @@ pub enum Exts<'a> {
     Exclude(&'a [&'a str]),
 }
 
+fn convert_html_to_doc_comment(html: &str) -> String {
+    use self::regex::RegexBuilder;
+
+    // Create doc comments
+    let doc_comment_regex = RegexBuilder::new("^").multi_line(true).build().unwrap();
+
+    let md = html2runes::markdown::convert_string(html);
+    let mut doc = doc_comment_regex.replace_all(md.trim_right(), "/// ").into();
+    doc += "\n";
+    doc
+}
+
 impl<'a> Exts<'a> {
     pub const NONE: Exts<'a> = Exts::Include(&[]);
     pub const ALL: Exts<'a> = Exts::Exclude(&[]);
 
     fn enumerate(&self) -> Vec<ExtensionIDL> {
-        use self::serde_xml_rs::deserialize;
         use self::regex::{Regex, RegexBuilder};
 
         // The Khronos IDL files are... not quite right, so let's fix them up!
@@ -57,7 +70,26 @@ impl<'a> Exts<'a> {
 
         let mut result = Vec::new();
         for &ext_xml in khronos_api::WEBGL_EXT_XML {
-            let mut ext: ExtensionIDL = deserialize(ext_xml).unwrap();
+            let elem: xml::Element = str::from_utf8(ext_xml).unwrap().parse().unwrap();
+
+            let overview_html = format!("{}", elem.get_child("overview", None).unwrap());
+
+            let mut new_funs = BTreeMap::new();
+            for new_fun in elem.get_children("newfun", None) {
+                for f in new_fun.get_children("function", None) {
+                    let name = f.get_attribute("name", None).unwrap().into();
+                    let f_html = format!("{}", f);
+                    new_funs.insert(name, convert_html_to_doc_comment(&f_html));
+                }
+            }
+
+            let mut ext = ExtensionIDL {
+                name: elem.get_child("name", None).unwrap().content_str(),
+                idl: elem.get_child("idl", None).unwrap().content_str(),
+                overview: format!("/// Extension\n/// \n{}", convert_html_to_doc_comment(&overview_html)),
+                new_funs,
+            };
+
             if match self {
                 &Exts::Include(names) => names.contains(&&*ext.name),
                 &Exts::Exclude(names) => !names.contains(&&*ext.name)
@@ -188,7 +220,8 @@ impl PartialEq for Argument {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Operation {
     pub args: Vec<Argument>,
-    pub return_type: Option<Type>
+    pub return_type: Option<Type>,
+    pub doc_comment: String,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -213,6 +246,7 @@ pub struct Interface {
     pub is_hidden: bool,
     pub has_class: bool,
     pub rendering_context: Option<&'static str>,
+    pub doc_comment: String,
 }
 
 #[derive(Debug)]
@@ -366,9 +400,23 @@ impl Registry {
         }
 
         for ext in exts.enumerate() {
-            result.extensions.insert(ext.name);
+            result.extensions.insert(ext.name.clone());
             for def in parse_defs(ext.idl.as_bytes()) {
                 result.load_definition(def);
+            }
+
+            // Attach overview doc comment
+            let ext_iface = result.interfaces.get_mut(&ext.name).unwrap();
+            ext_iface.doc_comment = ext.overview;
+
+            // Attach individual function doc comments
+            for (name, new_fun) in ext.new_funs {
+                let members = ext_iface.members.get_mut(&name).unwrap();
+                for member in members {
+                    if let Member::Operation(ref mut op) = *member {
+                        op.doc_comment = new_fun.clone();
+                    }
+                }
             }
         }
 
@@ -473,7 +521,8 @@ impl Registry {
                     return_type: match o.return_type {
                         ReturnType::NonVoid(t) => Some(self.load_type(*t)),
                         ReturnType::Void => None,
-                    }
+                    },
+                    doc_comment: String::new(),
                 })))
             } else { None },
             _ => None
@@ -537,6 +586,7 @@ impl Registry {
             is_hidden: false,
             has_class: !has_attr(&interface.extended_attributes, "NoInterfaceObject"),
             rendering_context: None,
+            doc_comment: String::new(),
         };
 
         for &(context_id, context_interface) in RENDERING_CONTEXTS {
