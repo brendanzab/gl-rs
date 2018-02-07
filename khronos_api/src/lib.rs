@@ -34,3 +34,6 @@ pub const WEBGL_IDL: &'static [u8] = include_bytes!("../api_webgl/specs/latest/1
 
 /// The contents of [`webgl2.idl`](https://github.com/KhronosGroup/WebGL/blob/master/specs/latest/2.0/webgl2.idl)
 pub const WEBGL2_IDL: &'static [u8] = include_bytes!("../api_webgl/specs/latest/2.0/webgl2.idl");
+
+/// The contents of the WebGL extension XML files
+pub const WEBGL_EXT_XML: &'static [&'static [u8]] = include!(concat!(env!("OUT_DIR"), "/webgl_exts.rs"));

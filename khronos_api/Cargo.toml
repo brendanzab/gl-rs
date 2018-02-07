@@ -20,9 +20,11 @@ include = [
   "/README.md",
   "/src/**/*",
   "/Cargo.toml",
+  "/build.rs",
   "/api/xml/**/*.xml",
   "/api_egl/api/**/*.xml",
   "/api_webgl/specs/latest/**/*.idl",
+  "/api_webgl/extensions/**/extension.xml",
 ]
 
 categories = ["rendering::graphics-api"]
