@@ -139,7 +139,7 @@ fn process_arg_type_kind(name: &str, type_kind: &TypeKind, registry: &Registry, 
         },
         &TypeKind::Any | &TypeKind::Object => {
             let gp = gc.arg("T");
-            gc.constrain(format!("{}: JsSerializable", gp));
+            gc.constrain(format!("{}: JsSerialize", gp));
             ProcessedArg::simple(gp)
         },
         &TypeKind::Callback(ref _args, ref _return_type) => {
@@ -245,31 +245,16 @@ fn write_header<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W:
     writeln!(dest, r#"
 // {registry:?}
 extern crate stdweb;
-extern crate serde;
 
-use self::stdweb::{{Reference, Value, UnsafeTypedArray, Once}};
-use self::stdweb::private::{{
-    JsSerializable,
-    FromReferenceUnchecked,
-    FromReference,
-    PreallocatedArena,
-    SerializedValue,
-}};
-use self::stdweb::unstable::{{
-    TryFrom, TryInto, Void
-}};
+use self::stdweb::{{Reference, Value, UnsafeTypedArray, Once, JsSerialize, InstanceOf}};
+use self::stdweb::unstable::{{TryFrom, TryInto}};
 use self::stdweb::web::{{RenderingContext, TypedArray, ArrayBuffer}};
 use self::stdweb::web::html_element::CanvasElement;
 
 type ConversionError = <Reference as TryFrom<Value>>::Error;
 
-fn custom_error(s: &str) -> ConversionError {{
-    use self::serde::ser::Error;
-    stdweb::serde::ConversionError::custom(s).into()
-}}
-
 pub trait AsTypedArray<'a, T> {{
-    type Result: JsSerializable;
+    type Result: JsSerialize;
 
     unsafe fn as_typed_array(self) -> Self::Result;
 }}
@@ -433,95 +418,22 @@ fn write_interface<W>(name: &str, interface: &Interface, registry: &Registry, de
         return Ok(());
     }
 
-    let instance_check = if name == "GLContext" {
-        "return [WebGLRenderingContext, WebGL2RenderingContext].includes(Module.STDWEB.acquire_js_reference( $0 ).constructor) | 0;".into()
+    let mut attrs = String::new();
+    let custom_instance_check = if name == "GLContext" {
+        Some("return [WebGLRenderingContext, WebGL2RenderingContext].includes(Module.STDWEB.acquire_js_reference( $0 ).constructor) | 0;".into())
     } else if interface.has_class {
-        format!("return (Module.STDWEB.acquire_js_reference( $0 ) instanceof {}) | 0;", name)
+        attrs += &format!("#[reference(instance_of = {:?})]\n", name);
+        None
     } else {
-        format!("return (Module.STDWEB.acquire_js_reference( $0 ).constructor.name == {:?}) | 0;", name)
+        Some(format!("return (Module.STDWEB.acquire_js_reference( $0 ).constructor.name == {:?}) | 0;", name))
     };
 
     write!(dest, r#"
-{doc_comment}#[derive(Debug, Clone)]
-pub struct {name}(Reference);
-
-impl FromReferenceUnchecked for {name} {{
-    unsafe fn from_reference_unchecked(reference: Reference) -> Self {{
-        {name}(reference)
-    }}
-}}
-
-impl FromReference for {name} {{
-    #[inline]
-    fn from_reference(reference: Reference) -> Option<Self> {{
-        if {{
-            __js_raw_asm!(
-                {instance_check:?},
-                reference.as_raw()
-            ) == 1
-        }} {{
-            Some({name}(reference))
-        }} else {{
-            None
-        }}
-    }}
-}}
-
-impl AsRef<Reference> for {name} {{
-    #[inline]
-    fn as_ref(&self) -> &Reference {{
-        &self.0
-    }}
-}}
-
-impl From<{name}> for Reference {{
-    #[inline]
-    fn from(value: {name}) -> Self {{
-        value.0
-    }}
-}}
-
-impl TryFrom<{name}> for Reference {{
-    type Error = Void;
-
-    #[inline]
-    fn try_from(value: {name}) -> Result<Self, Self::Error> {{
-        Ok(value.0)
-    }}
-}}
-
-impl<R: TryInto<Reference>> TryFrom<R> for {name}
-    where <R as TryInto<Reference>>::Error: Into<ConversionError>
-{{
-    type Error = ConversionError;
-
-    #[inline]
-    fn try_from(value: R) -> Result<Self, Self::Error> {{
-        value.try_into()
-            .map_err(|error| error.into())
-            .and_then(|reference: Reference| {{
-                reference.downcast()
-                    .ok_or_else(|| custom_error("reference is of a different type"))
-            }})
-    }}
-}}
-
-impl JsSerializable for {name} {{
-    #[inline]
-    fn into_js<'a>(&'a self, arena: &'a PreallocatedArena) -> SerializedValue<'a> {{
-        self.0.into_js(arena)
-    }}
-
-    #[inline]
-    fn memory_required(&self) -> usize {{
-        Reference::memory_required(&self.0)
-    }}
-}}
-
-__js_serializable_boilerplate!(() ({name}) ());
+{doc_comment}#[derive(Debug, Clone, ReferenceType)]
+{attrs}pub struct {name}(Reference);
 
 impl {name} {{
-    "#, name=name, instance_check=instance_check, doc_comment=interface.doc_comment)?;
+    "#, name=name, attrs=attrs, doc_comment=interface.doc_comment)?;
 
     for (name, members) in interface.collect_members(registry, &VisitOptions::default()) {
         for (index, member) in members.into_iter().enumerate() {
@@ -544,6 +456,20 @@ impl {name} {{
     writeln!(dest, r#"
 }}
     "#)?;
+
+    if let Some(instance_check) = custom_instance_check {
+        write!(dest, r#"
+impl InstanceOf for {name} {{
+    #[inline]
+    fn instance_of( reference: &Reference ) -> bool {{
+        __js_raw_asm!(
+            {instance_check:?},
+            reference.as_raw()
+        ) == 1
+    }}
+}}
+        "#, name=name, instance_check=instance_check)?;
+    }
 
     if let Some(rendering_context) = interface.rendering_context {
         writeln!(dest, r#"impl RenderingContext for {name} {{

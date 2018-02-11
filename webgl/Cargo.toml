@@ -18,6 +18,7 @@ keywords = ["webgl", "stdweb"]
 webgl_generator = { version = "0.1.0", path = "../webgl_generator" }
 
 [dependencies]
+stdweb-derive = { path = "../../stdweb/stdweb-derive" }
 stdweb = { path = "../../stdweb" }
 serde = "1.0.0"
 serde_derive = "1.0.0"
