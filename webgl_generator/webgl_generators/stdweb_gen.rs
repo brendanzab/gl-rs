@@ -420,12 +420,12 @@ fn write_interface<W>(name: &str, interface: &Interface, registry: &Registry, de
 
     let mut attrs = String::new();
     let custom_instance_check = if name == "GLContext" {
-        Some("return [WebGLRenderingContext, WebGL2RenderingContext].includes(Module.STDWEB.acquire_js_reference( $0 ).constructor) | 0;".into())
+        Some("[WebGLRenderingContext, WebGL2RenderingContext].includes( @{{reference}}.constructor )".into())
     } else if interface.has_class {
         attrs += &format!("#[reference(instance_of = {:?})]\n", name);
         None
     } else {
-        Some(format!("return (Module.STDWEB.acquire_js_reference( $0 ).constructor.name == {:?}) | 0;", name))
+        Some(format!("@{{reference}}.constructor.name == {:?}", name))
     };
 
     write!(dest, r#"
@@ -462,10 +462,9 @@ impl {name} {{
 impl InstanceOf for {name} {{
     #[inline]
     fn instance_of( reference: &Reference ) -> bool {{
-        __js_raw_asm!(
-            {instance_check:?},
-            reference.as_raw()
-        ) == 1
+        js!(
+            return {instance_check};
+        ).try_into().unwrap()
     }}
 }}
         "#, name=name, instance_check=instance_check)?;
@@ -505,10 +504,10 @@ fn write_attribute<W>(name: &str, attribute: &Attribute, registry: &Registry, de
         );
 
         write!(dest, r#"
+
     pub fn {name}(&self) -> {type_} {{
         {expr}
-    }}
-        "#,
+    }}"#,
         name=unreserve(snake(name)),
         type_=result_type.type_,
         expr=expr
@@ -518,10 +517,10 @@ fn write_attribute<W>(name: &str, attribute: &Attribute, registry: &Registry, de
         let mut gc = GenericContext::new();
         let arg_type = process_arg_type(&attribute.type_, registry, &mut gc);
         write!(dest, r#"
+
     pub fn set_{name}{gargs}(&self, value: {type_}){gwhere} {{
         js!( @{{self}}.{raw_name} = @{{{value}}}; );
-    }}
-        "#,
+    }}"#,
         name=snake(name),
         raw_name=name,
         type_=arg_type.type_,

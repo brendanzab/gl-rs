@@ -7,6 +7,7 @@ extern crate html2runes;
 
 use std::{str, fmt, io};
 use std::collections::{BTreeMap, BTreeSet};
+use std::collections::btree_map::Entry;
 
 use self::webidl::ast;
 use webgl_generators::Generator;
@@ -597,7 +598,12 @@ impl Registry {
         }
 
         self.load_type_kind(&interface.name, TypeKind::Interface);
-        self.interfaces.insert(interface.name, result);
+        match self.interfaces.entry(interface.name) {
+            Entry::Vacant(v) => { v.insert(result); },
+            Entry::Occupied(o) => {
+                assert!(result.members.is_empty(), "Duplicate interface: {}", o.key());
+            }
+        }
     }
 
     fn load_includes(&mut self, includes: ast::Includes) {
@@ -699,10 +705,8 @@ impl Registry {
     }
 
     fn load_field(&mut self, field: ast::DictionaryMember) -> Option<(String, Field)> {
-        let mut type_ = self.load_type(*field.type_);
-        if !field.required {
-            type_ = type_.optional();
-        }
+        let type_ = self.load_type(*field.type_);
+
         Some((field.name, Field {
             type_
         }))
@@ -714,11 +718,24 @@ impl Registry {
         }).collect();
 
         self.load_type_kind(&dictionary.name, TypeKind::Dictionary);
-        self.dictionaries.insert(dictionary.name, Dictionary {
-            inherits: dictionary.inherits,
-            fields,
-            is_hidden: false,
-        });
+        match self.dictionaries.entry(dictionary.name) {
+            Entry::Vacant(v) => {
+                v.insert(Dictionary {
+                    inherits: dictionary.inherits,
+                    fields,
+                    is_hidden: false,
+                });
+            },
+            Entry::Occupied(mut o) => {
+                // Dictionary is being extended, so make these fields all optional
+                for (k, mut field) in fields {
+                    field.type_.optional = true;
+                    if o.get_mut().fields.insert(k.clone(), field).is_some() {
+                        panic!("Duplicate field: {}.{}", o.key(), k);
+                    }
+                }
+            }
+        }
     }
 
     fn load_enum(&mut self, enum_: ast::Enum) {
