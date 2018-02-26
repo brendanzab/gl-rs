@@ -15,34 +15,7 @@
 //! A WebGL bindings generator. It defines a function named `generate_bindings` which can be
 //! used to generate all constants and functions of a given OpenGL version.
 //!
-//! # Example
-//!
-//! In `build.rs`:
-//!
-//! ```no_run
-//! extern crate webgl_generator;
-//!
-//! use webgl_generator::{Registry, Api, Profile, Fallbacks, StdwebGenerator};
-//! use std::env;
-//! use std::fs::File;
-//! use std::path::Path;
-//!
-//! fn main() {
-//!     let dest = env::var("OUT_DIR").unwrap();
-//!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
-//!
-//!     Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
-//!         .write_bindings(StdwebGenerator, &mut file)
-//!         .unwrap();
-//! }
-//! ```
-//!
-//! In your project:
-//!
-//! ```ignore
-//! include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
-//! ```
-//!
+//! See the `webgl` crate for an example of use.
 
 mod webgl_generators;
 mod webgl_registry;
