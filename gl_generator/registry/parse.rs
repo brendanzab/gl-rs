@@ -1021,13 +1021,13 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLuint64KHR *" => "*mut types::EGLuint64KHR",
 
         "GLeglClientBufferEXT" => "types::GLeglClientBufferEXT",
-        "GLVULKANPROCNV" => "type::GLVULKANPROCNV",
-        "EGLDEBUGPROCKHR" => "type::EGLDEBUGPROCKHR",
-        "EGLObjectKHR" => "type::EGLObjectKHR",
-        "EGLLabelKHR" => "type::EGLLabelKHR",
-        "EGLnsecsANDROID" => "type::EGLnsecsANDROID",
-        "EGLnsecsANDROID *" => "*mut type::EGLnsecsANDROID",
-        "EGLBoolean *" => "*mut type::EGLBoolean",
+        "GLVULKANPROCNV" => "types::GLVULKANPROCNV",
+        "EGLDEBUGPROCKHR" => "types::EGLDEBUGPROCKHR",
+        "EGLObjectKHR" => "types::EGLObjectKHR",
+        "EGLLabelKHR" => "types::EGLLabelKHR",
+        "EGLnsecsANDROID" => "types::EGLnsecsANDROID",
+        "EGLnsecsANDROID *" => "*mut types::EGLnsecsANDROID",
+        "EGLBoolean *" => "*mut types::EGLBoolean",
 
         // failure
         _ => panic!("Type conversion not implemented for `{}`", ty.as_ref()),
