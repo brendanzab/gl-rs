@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! A WebGL bindings generator. It defines a function named `generate_bindings` which can be
-//! used to generate all constants and functions of a given OpenGL version.
+//! A WebGL bindings generator. It defines a function named `Registry::write_bindings` which can be
+//! used to generate all constants and functions of a given WebGL version.
 //!
 //! See the `webgl` crate for an example of use.
 extern crate heck;
