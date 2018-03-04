@@ -412,17 +412,17 @@ impl Registry {
         self.load_named_type(&typedef.name, NamedType::Typedef(type_));
     }
 
-    fn load_field(&mut self, field: ast::DictionaryMember) -> Option<(String, Field)> {
+    fn load_field(&mut self, field: ast::DictionaryMember) -> (String, Field) {
         let type_ = self.load_type(*field.type_);
 
-        Some((field.name, Field { type_ }))
+        (field.name, Field { type_ })
     }
 
     fn load_dictionary(&mut self, dictionary: ast::NonPartialDictionary) {
         let fields = dictionary
             .members
             .into_iter()
-            .flat_map(|m| self.load_field(m))
+            .map(|m| self.load_field(m))
             .collect();
 
         match self.types.entry(dictionary.name) {
