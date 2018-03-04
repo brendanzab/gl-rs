@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use utils::{multimap_insert, multimap_append};
-use super::{Type, Registry};
+use utils::{multimap_append, multimap_insert};
+use super::{Registry, Type};
 
 #[derive(Debug, Clone)]
 pub enum NamedType {
@@ -173,9 +173,7 @@ impl PartialEq for Argument {
 
 impl Default for VisitOptions {
     fn default() -> Self {
-        VisitOptions {
-            visit_mixins: true,
-        }
+        VisitOptions { visit_mixins: true }
     }
 }
 
@@ -185,7 +183,11 @@ impl Dictionary {
 
         // Inherits
         if let Some(inherit_name) = self.inherits.as_ref() {
-            let inherit = registry.types.get(inherit_name).and_then(NamedType::as_dictionary).expect(inherit_name);
+            let inherit = registry
+                .types
+                .get(inherit_name)
+                .and_then(NamedType::as_dictionary)
+                .expect(inherit_name);
             fields.append(&mut inherit.collect_fields(registry));
         }
 
@@ -199,12 +201,20 @@ impl Dictionary {
 }
 
 impl Interface {
-    pub fn collect_members<'a>(&'a self, registry: &'a Registry, options: &VisitOptions) -> BTreeMap<&'a str, Vec<&'a Member>> {
+    pub fn collect_members<'a>(
+        &'a self,
+        registry: &'a Registry,
+        options: &VisitOptions,
+    ) -> BTreeMap<&'a str, Vec<&'a Member>> {
         let mut members = BTreeMap::new();
 
         // Mixins
         for mixin_name in &self.mixins {
-            let mixin = registry.types.get(mixin_name).and_then(NamedType::as_mixin).expect(mixin_name);
+            let mixin = registry
+                .types
+                .get(mixin_name)
+                .and_then(NamedType::as_mixin)
+                .expect(mixin_name);
             if options.visit_mixins {
                 multimap_append(&mut members, mixin.collect_members(registry, options));
             }
@@ -222,7 +232,11 @@ impl Interface {
 }
 
 impl Mixin {
-    pub fn collect_members<'a>(&'a self, _registry: &'a Registry, _options: &VisitOptions) -> BTreeMap<&'a str, Vec<&'a Member>> {
+    pub fn collect_members<'a>(
+        &'a self,
+        _registry: &'a Registry,
+        _options: &VisitOptions,
+    ) -> BTreeMap<&'a str, Vec<&'a Member>> {
         let mut members = BTreeMap::new();
 
         // Members

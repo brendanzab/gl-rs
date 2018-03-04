@@ -1,4 +1,4 @@
-use std::{str, fmt};
+use std::{fmt, str};
 use std::collections::BTreeMap;
 
 use khronos_api;
@@ -13,11 +13,10 @@ mod types;
 mod named;
 mod registry;
 
-
 const HIDDEN_NAMES: &'static [&'static str] = &["WebGLObject", "WebGLContextEventInit"];
 const RENDERING_CONTEXTS: &'static [(&'static str, &'static str)] = &[
-    ("webgl",  "WebGLRenderingContext"),
-    ("webgl2", "WebGL2RenderingContext")
+    ("webgl", "WebGLRenderingContext"),
+    ("webgl2", "WebGL2RenderingContext"),
 ];
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -70,17 +69,22 @@ impl<'a> Exts<'a> {
             let mut ext = ExtensionIDL {
                 name: elem.get_child("name", None).unwrap().content_str(),
                 idl: elem.get_child("idl", None).unwrap().content_str(),
-                overview: format!("/// Extension\n/// \n{}", convert_html_to_doc_comment(&overview_html)),
+                overview: format!(
+                    "/// Extension\n/// \n{}",
+                    convert_html_to_doc_comment(&overview_html)
+                ),
                 new_funs,
             };
 
             if match self {
                 &Exts::Include(names) => names.contains(&&*ext.name),
-                &Exts::Exclude(names) => !names.contains(&&*ext.name)
+                &Exts::Exclude(names) => !names.contains(&&*ext.name),
             } {
                 ext.idl = enum_regex.replace_all(&ext.idl, "${1}GLenum").into();
                 ext.idl = missing_semicolon_regex.replace_all(&ext.idl, "};").into();
-                ext.idl = shared_callback_regex.replace_all(&ext.idl, "AcquireSharedResourcesCallback").into();
+                ext.idl = shared_callback_regex
+                    .replace_all(&ext.idl, "AcquireSharedResourcesCallback")
+                    .into();
                 result.push(ext);
             }
         }

@@ -20,10 +20,15 @@ pub mod gl {
 
 pub fn compile_test_symbols_exist() {
     unsafe {
-    	gl::Clear(gl::COLOR_BUFFER_BIT);
-    	let _: raw::c_uint = gl::CreateProgram();
-    	gl::CompileShader(5);
-        gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER, std::ptr::null_mut());
+        gl::Clear(gl::COLOR_BUFFER_BIT);
+        let _: raw::c_uint = gl::CreateProgram();
+        gl::CompileShader(5);
+        gl::GetActiveUniformBlockiv(
+            0,
+            0,
+            gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
+            std::ptr::null_mut(),
+        );
     }
 }
 
@@ -33,7 +38,7 @@ fn test_fallback_works() {
         match name {
             "glGenFramebuffers" => 0 as *const raw::c_void,
             "glGenFramebuffersEXT" => 42 as *const raw::c_void,
-            name => panic!("test tried to load {} unexpectedly!", name)
+            name => panic!("test tried to load {} unexpectedly!", name),
         }
     };
 

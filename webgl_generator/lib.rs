@@ -16,12 +16,12 @@
 //! used to generate all constants and functions of a given OpenGL version.
 //!
 //! See the `webgl` crate for an example of use.
-extern crate webidl;
 extern crate heck;
-extern crate khronos_api;
-extern crate xml;
-extern crate regex;
 extern crate html2runes;
+extern crate khronos_api;
+extern crate regex;
+extern crate webidl;
+extern crate xml;
 
 mod utils;
 mod webgl_generators;

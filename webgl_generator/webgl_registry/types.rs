@@ -1,4 +1,4 @@
-use super::{Registry, NamedType};
+use super::{NamedType, Registry};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Type {
@@ -6,14 +6,24 @@ pub struct Type {
     /// Optional types are the default in WebIDL, so we give this a special
     /// place in the `Type` reference. It's also convenient to be able to
     /// "squash" optional flags to avoid `Option<Option<T>>`.
-    pub optional: bool
+    pub optional: bool,
 }
 
 /// The different kinds of primitive types supported by WebIDL
 /// These are named according to their equivalents in rust.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Primitive {
-    Bool, I8, U8, I16, U16, I32, U32, I64, U64, F32, F64,
+    Bool,
+    I8,
+    U8,
+    I16,
+    U16,
+    I32,
+    U32,
+    I64,
+    U64,
+    F32,
+    F64,
 }
 
 /// The definition of a type
@@ -48,7 +58,7 @@ impl Type {
     pub fn optional(&self) -> Self {
         Type {
             kind: self.kind.clone(),
-            optional: true
+            optional: true,
         }
     }
 }
@@ -58,7 +68,7 @@ impl<'a> From<&'a str> for Type {
     fn from(s: &'a str) -> Type {
         Type {
             kind: TypeKind::Named(s.into()),
-            optional: false
+            optional: false,
         }
     }
 }
@@ -69,11 +79,16 @@ impl Primitive {
         use self::Primitive::*;
         match self {
             Bool => "bool",
-            I8 => "i8", U8 => "u8",
-            I16 => "i16", U16 => "u16",
-            I32 => "i32", U32 => "u32",
-            I64 => "i64", U64 => "u64",
-            F32 => "f32", F64 => "f64",
+            I8 => "i8",
+            U8 => "u8",
+            I16 => "i16",
+            U16 => "u16",
+            I32 => "i32",
+            U32 => "u32",
+            I64 => "i64",
+            U64 => "u64",
+            F32 => "f32",
+            F64 => "f64",
         }
     }
 }
@@ -91,9 +106,8 @@ impl TypeKind {
                     }
                 }
                 (Some(s.as_str()), self)
-            },
-            _ => (None, self)
+            }
+            _ => (None, self),
         }
-        
     }
 }

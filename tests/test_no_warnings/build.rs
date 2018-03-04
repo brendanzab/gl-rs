@@ -216,10 +216,11 @@ fn main() {
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
-    writeln!(&mut file,
-             "mod egl_static_struct {{ {}",
-             build_egl_symbols())
-            .unwrap();
+    writeln!(
+        &mut file,
+        "mod egl_static_struct {{ {}",
+        build_egl_symbols()
+    ).unwrap();
     egl_registry
         .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();

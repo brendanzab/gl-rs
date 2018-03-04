@@ -7,14 +7,10 @@ use webidl::ast;
 use utils::{multimap_insert, parse_defs};
 use webgl_generators::Generator;
 
-use super::types::{TypeKind, Type, Primitive};
-use super::named::{
-    Mixin, Interface, Dictionary, Enum, Member, Const, Attribute,
-    Argument, Operation, Field, NamedType, Callback
-};
-use super::{
-    Api, Exts, RENDERING_CONTEXTS, HIDDEN_NAMES,
-};
+use super::types::{Primitive, Type, TypeKind};
+use super::named::{Argument, Attribute, Callback, Const, Dictionary, Enum, Field, Interface,
+                   Member, Mixin, NamedType, Operation};
+use super::{Api, Exts, HIDDEN_NAMES, RENDERING_CONTEXTS};
 
 #[derive(Debug, Default)]
 pub struct Registry {
@@ -25,7 +21,7 @@ pub struct Registry {
 /// Helper for iterating over specific kinds of named type
 pub struct TypeIter<'a, T: 'a, F: FnMut(&'a NamedType) -> Option<&'a T>> {
     inner: btree_map::Iter<'a, String, NamedType>,
-    f: F
+    f: F,
 }
 
 impl<'a, T: 'a, F: FnMut(&'a NamedType) -> Option<&'a T>> Iterator for TypeIter<'a, T, F> {
@@ -66,7 +62,11 @@ impl Registry {
             }
 
             // Attach overview doc comment
-            let ext_iface = result.types.get_mut(&ext.name).and_then(NamedType::as_interface_mut).expect(&ext.name);
+            let ext_iface = result
+                .types
+                .get_mut(&ext.name)
+                .and_then(NamedType::as_interface_mut)
+                .expect(&ext.name);
             ext_iface.doc_comment = ext.overview;
 
             // Attach individual function doc comments
@@ -85,17 +85,27 @@ impl Registry {
         for name in RENDERING_CONTEXTS.into_iter().rev() {
             if let Some(NamedType::Interface(mut iface)) = result.types.get(name.1).cloned() {
                 iface.rendering_context = None;
-                result.types.insert("GLContext".into(), NamedType::Interface(iface));
+                result
+                    .types
+                    .insert("GLContext".into(), NamedType::Interface(iface));
                 break;
             }
         }
 
         // Hide types that are listed in our "hidden names" array
         for &hidden_name in HIDDEN_NAMES {
-            if let Some(interface) = result.types.get_mut(hidden_name).and_then(NamedType::as_interface_mut) {
+            if let Some(interface) = result
+                .types
+                .get_mut(hidden_name)
+                .and_then(NamedType::as_interface_mut)
+            {
                 interface.is_hidden = true;
             }
-            if let Some(dictionary) = result.types.get_mut(hidden_name).and_then(NamedType::as_dictionary_mut) {
+            if let Some(dictionary) = result
+                .types
+                .get_mut(hidden_name)
+                .and_then(NamedType::as_dictionary_mut)
+            {
                 dictionary.is_hidden = true;
             }
         }
@@ -105,10 +115,13 @@ impl Registry {
     }
 
     /// Iterator over types matched by a filtering function
-    pub fn iter_types<'a, T, F: FnMut(&'a NamedType) -> Option<&'a T>>(&'a self, f: F) -> TypeIter<'a, T, F> {
+    pub fn iter_types<'a, T, F: FnMut(&'a NamedType) -> Option<&'a T>>(
+        &'a self,
+        f: F,
+    ) -> TypeIter<'a, T, F> {
         TypeIter {
             inner: self.types.iter(),
-            f
+            f,
         }
     }
 
@@ -120,8 +133,9 @@ impl Registry {
     /// Use the specified generator to generate bindings from this registry
     /// and write them to a stream.
     pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()>
-        where G: Generator,
-              W: io::Write
+    where
+        G: Generator,
+        W: io::Write,
     {
         generator.write(&self, output)
     }
@@ -147,18 +161,21 @@ impl Registry {
                 ConstType::UnsignedShort => ast::TypeKind::UnsignedShort,
                 ConstType::Identifier(s) => ast::TypeKind::Identifier(s),
             },
-            nullable: const_.nullable
+            nullable: const_.nullable,
         };
 
-        Some((const_.name, Member::Const(Const {
-            type_: self.load_type(type_),
-            value: match const_.value {
-                ConstValue::BooleanLiteral(b) => format!("{:?}", b),
-                ConstValue::FloatLiteral(v) => format!("{:?}", v),
-                ConstValue::IntegerLiteral(v) => format!("{:?}", v),
-                ConstValue::Null => "None".into(),
-            }
-        })))
+        Some((
+            const_.name,
+            Member::Const(Const {
+                type_: self.load_type(type_),
+                value: match const_.value {
+                    ConstValue::BooleanLiteral(b) => format!("{:?}", b),
+                    ConstValue::FloatLiteral(v) => format!("{:?}", v),
+                    ConstValue::IntegerLiteral(v) => format!("{:?}", v),
+                    ConstValue::Null => "None".into(),
+                },
+            }),
+        ))
     }
 
     fn load_attribute(&mut self, attribute: ast::Attribute) -> Option<(String, Member)> {
@@ -166,13 +183,16 @@ impl Registry {
         match attribute {
             Regular(a) => {
                 let type_ = self.load_type(*a.type_);
-                Some((a.name, Member::Attribute(Attribute {
-                    type_,
-                    setter: !a.read_only,
-                    getter: !a.inherits,
-                })))
-            },
-            _ => None
+                Some((
+                    a.name,
+                    Member::Attribute(Attribute {
+                        type_,
+                        setter: !a.read_only,
+                        getter: !a.inherits,
+                    }),
+                ))
+            }
+            _ => None,
         }
     }
 
@@ -191,16 +211,24 @@ impl Registry {
         use self::ast::ReturnType;
         match operation {
             Regular(o) => if let Some(name) = o.name {
-                Some((name, Member::Operation(Operation {
-                    args: o.arguments.into_iter().map(|a| self.load_argument(a)).collect(),
-                    return_type: match o.return_type {
-                        ReturnType::NonVoid(t) => Some(self.load_type(*t)),
-                        ReturnType::Void => None,
-                    },
-                    doc_comment: String::new(),
-                })))
-            } else { None },
-            _ => None
+                Some((
+                    name,
+                    Member::Operation(Operation {
+                        args: o.arguments
+                            .into_iter()
+                            .map(|a| self.load_argument(a))
+                            .collect(),
+                        return_type: match o.return_type {
+                            ReturnType::NonVoid(t) => Some(self.load_type(*t)),
+                            ReturnType::Void => None,
+                        },
+                        doc_comment: String::new(),
+                    }),
+                ))
+            } else {
+                None
+            },
+            _ => None,
         }
     }
 
@@ -215,9 +243,11 @@ impl Registry {
 
     fn load_mixin(&mut self, mixin: ast::NonPartialMixin) {
         let mut members = BTreeMap::new();
-        for (name, member) in mixin.members.into_iter().flat_map(|m| {
-            self.load_mixin_member(m)
-        }) {
+        for (name, member) in mixin
+            .members
+            .into_iter()
+            .flat_map(|m| self.load_mixin_member(m))
+        {
             multimap_insert(&mut members, name, member);
         }
 
@@ -230,7 +260,7 @@ impl Registry {
             Const(c) => self.load_const(c),
             Attribute(a) => self.load_attribute(a),
             Operation(o) => self.load_operation(o),
-            _ => None
+            _ => None,
         }
     }
 
@@ -248,9 +278,11 @@ impl Registry {
         }
 
         let mut members = BTreeMap::new();
-        for (name, member) in interface.members.into_iter().flat_map(|m| {
-            self.load_interface_member(m)
-        }) {
+        for (name, member) in interface
+            .members
+            .into_iter()
+            .flat_map(|m| self.load_interface_member(m))
+        {
             multimap_insert(&mut members, name, member);
         }
 
@@ -272,15 +304,24 @@ impl Registry {
         }
 
         match self.types.entry(interface.name) {
-            Entry::Vacant(v) => { v.insert(NamedType::Interface(result)); },
+            Entry::Vacant(v) => {
+                v.insert(NamedType::Interface(result));
+            }
             Entry::Occupied(o) => {
-                assert!(result.members.is_empty(), "Duplicate interface: {}", o.key());
+                assert!(
+                    result.members.is_empty(),
+                    "Duplicate interface: {}",
+                    o.key()
+                );
             }
         }
     }
 
     fn load_includes(&mut self, includes: ast::Includes) {
-        if let Some(interface) = self.types.get_mut(&includes.includer).and_then(NamedType::as_interface_mut) {
+        if let Some(interface) = self.types
+            .get_mut(&includes.includer)
+            .and_then(NamedType::as_interface_mut)
+        {
             interface.mixins.insert(includes.includee);
         }
     }
@@ -334,19 +375,22 @@ impl Registry {
                 "BufferSource" => TypeKind::BufferSource,
                 "HTMLCanvasElement" => TypeKind::CanvasElement,
                 "ArrayBufferView" => TypeKind::ArrayBufferView,
-                other => TypeKind::Named(other.into())
+                other => TypeKind::Named(other.into()),
             },
 
             // Composite
             Union(inners) => {
                 if inners.len() <= 2 {
-                    TypeKind::Union(inners.into_iter().map(|inner| {
-                        self.load_type(*inner)
-                    }).collect())
+                    TypeKind::Union(
+                        inners
+                            .into_iter()
+                            .map(|inner| self.load_type(*inner))
+                            .collect(),
+                    )
                 } else {
                     TypeKind::Any
                 }
-            },
+            }
 
             // Misc
             ArrayBuffer => TypeKind::ArrayBuffer,
@@ -359,7 +403,7 @@ impl Registry {
     fn load_type(&mut self, t: ast::Type) -> Type {
         Type {
             kind: self.load_type_kind(t.kind),
-            optional: t.nullable
+            optional: t.nullable,
         }
     }
 
@@ -371,15 +415,15 @@ impl Registry {
     fn load_field(&mut self, field: ast::DictionaryMember) -> Option<(String, Field)> {
         let type_ = self.load_type(*field.type_);
 
-        Some((field.name, Field {
-            type_
-        }))
+        Some((field.name, Field { type_ }))
     }
 
     fn load_dictionary(&mut self, dictionary: ast::NonPartialDictionary) {
-        let fields = dictionary.members.into_iter().flat_map(|m| {
-            self.load_field(m)
-        }).collect();
+        let fields = dictionary
+            .members
+            .into_iter()
+            .flat_map(|m| self.load_field(m))
+            .collect();
 
         match self.types.entry(dictionary.name) {
             Entry::Vacant(v) => {
@@ -388,7 +432,7 @@ impl Registry {
                     fields,
                     is_hidden: false,
                 }));
-            },
+            }
             Entry::Occupied(mut o) => {
                 let key = o.key().clone();
                 let d = o.get_mut().as_dictionary_mut().unwrap();
@@ -410,12 +454,19 @@ impl Registry {
 
     fn load_callback(&mut self, callback: ast::Callback) {
         use self::ast::ReturnType;
-        let args = callback.arguments.into_iter().map(|a| self.load_argument(a)).collect();
+        let args = callback
+            .arguments
+            .into_iter()
+            .map(|a| self.load_argument(a))
+            .collect();
         let return_type = match callback.return_type {
             ReturnType::NonVoid(t) => Some(self.load_type(*t)),
             ReturnType::Void => None,
         };
-        self.load_named_type(&callback.name, NamedType::Callback(Callback {args, return_type}));
+        self.load_named_type(
+            &callback.name,
+            NamedType::Callback(Callback { args, return_type }),
+        );
     }
 
     fn load_definition(&mut self, def: ast::Definition) {
