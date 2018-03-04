@@ -1,6 +1,7 @@
 use std::io;
 use std::collections::BTreeSet;
 
+use utils::*;
 use webgl_registry::*;
 
 #[allow(missing_copy_implementations)]
@@ -86,14 +87,14 @@ impl ProcessedArg {
     }
 }
 
-fn process_arg_type_kind(name: &str, type_kind: &TypeKind, registry: &Registry, gc: &mut GenericContext) -> ProcessedArg {
-    let flat_kind = type_kind.flatten(registry);
+fn process_arg_type_kind(type_kind: &TypeKind, registry: &Registry, gc: &mut GenericContext) -> ProcessedArg {
+    let (name, flat_kind) = type_kind.flatten(registry);
     match flat_kind {
         &TypeKind::Primitive(ref p) => {
             match p {
-                &Primitive::I64 => ProcessedArg { type_: name.into(), wrapper: ArgWrapper::DoubleCast, optional: false },
-                &Primitive::U64 => ProcessedArg { type_: name.into(), wrapper: ArgWrapper::DoubleCast, optional: false },
-                _ => ProcessedArg::simple(name)
+                &Primitive::I64 => ProcessedArg { type_: name.unwrap().into(), wrapper: ArgWrapper::DoubleCast, optional: false },
+                &Primitive::U64 => ProcessedArg { type_: name.unwrap().into(), wrapper: ArgWrapper::DoubleCast, optional: false },
+                _ => ProcessedArg::simple(name.unwrap())
             }
         },
         &TypeKind::String => ProcessedArg::simple("&str"),
@@ -119,40 +120,43 @@ fn process_arg_type_kind(name: &str, type_kind: &TypeKind, registry: &Registry, 
         },
         &TypeKind::Union(ref ts) => {
             let t = ts.iter().filter_map(|t| {
-                let t_kind = registry.resolve_type(&t.name);
-                match t_kind {
-                    &TypeKind::TypedArray(_) => Some(t),
-                    &TypeKind::Sequence(_) => None,
+                match t.kind {
+                    TypeKind::TypedArray(_) => Some(t),
+                    TypeKind::Sequence(_) => None,
                     _ => panic!("Union support is limited!")
                 }
             }).next().expect("Union did not contain a TypedArray");
 
             process_arg_type(t, registry, gc)
         },
-        &TypeKind::Dictionary | &TypeKind::Interface => ProcessedArg::simple(format!("&{}", name)),
-        &TypeKind::Enum => ProcessedArg::simple(name),
-        &TypeKind::Typedef(ref t) => {
-            // We have to "look through" the typedef, as the correct parameter
-            // type is not representable using the alias.
-            assert!(t.optional);
-            process_arg_type(t, registry, gc)
+        &TypeKind::Named(ref actual_name) => {
+            match registry.resolve_type(actual_name) {
+                &NamedType::Dictionary(_) | &NamedType::Interface(_) => ProcessedArg::simple(format!("&{}", name.unwrap())),
+                &NamedType::Enum(_) => ProcessedArg::simple(name.unwrap()),
+                &NamedType::Typedef(ref t) => {
+                    // We have to "look through" the typedef, as the correct parameter
+                    // type is not representable using the alias.
+                    assert!(t.optional);
+                    process_arg_type(t, registry, gc)
+                },
+                &NamedType::Callback(_) => {
+                    let gp = gc.arg("F");
+                    gc.constrain(format!("{}: FnOnce() + 'static", gp));
+                    ProcessedArg { type_: gp, wrapper: ArgWrapper::Once, optional: false }
+                },
+                &NamedType::Mixin(_) => panic!("Mixins are not usable as types!")
+            }
         },
         &TypeKind::Any | &TypeKind::Object => {
             let gp = gc.arg("T");
             gc.constrain(format!("{}: JsSerialize", gp));
             ProcessedArg::simple(gp)
-        },
-        &TypeKind::Callback(ref _args, ref _return_type) => {
-            let gp = gc.arg("F");
-            gc.constrain(format!("{}: FnOnce() + 'static", gp));
-            ProcessedArg { type_: gp, wrapper: ArgWrapper::Once, optional: false }
         }
     }
 }
 
 fn process_arg_type(type_: &Type, registry: &Registry, gc: &mut GenericContext) -> ProcessedArg {
-    let type_kind = registry.resolve_type(&type_.name);
-    let mut result = process_arg_type_kind(&type_.name, &type_kind, registry, gc);
+    let mut result = process_arg_type_kind(&type_.kind, registry, gc);
     if type_.optional && !result.optional {
         result.type_ = format!("Option<{}>", result.type_);
         result.wrapper = match result.wrapper {
@@ -192,7 +196,7 @@ impl ProcessedResult {
     }
 }
 
-fn process_result_type_kind(name: &str, type_kind: &TypeKind, registry: &Registry) -> ProcessedResult {
+fn process_result_type_kind(type_kind: &TypeKind, registry: &Registry) -> ProcessedResult {
     match type_kind {
         &TypeKind::Primitive(ref p) => ProcessedResult::simple(p.name()),
         &TypeKind::String => ProcessedResult::simple("String"),
@@ -206,33 +210,38 @@ fn process_result_type_kind(name: &str, type_kind: &TypeKind, registry: &Registr
         },
         &TypeKind::Union(ref ts) => {
             let t = ts.iter().filter_map(|t| {
-                let t_kind = registry.resolve_type(&t.name);
-                match t_kind {
-                    &TypeKind::TypedArray(_) => Some(t),
-                    &TypeKind::Sequence(_) => None,
+                match t.kind {
+                    TypeKind::TypedArray(_) => Some(t),
+                    TypeKind::Sequence(_) => None,
                     _ => panic!("Union support is limited!")
                 }
             }).next().expect("Union did not contain a TypedArray");
 
             process_result_type(t, registry)
         },
-        &TypeKind::Dictionary | &TypeKind::Interface | &TypeKind::Enum => ProcessedResult::simple(name),
-        &TypeKind::Typedef(ref t) => {
-            let inner = process_result_type(t, registry);
-            ProcessedResult {
-                type_: name.into(),
-                wrapper: inner.wrapper.clone(),
-                optional: inner.optional
+        &TypeKind::Named(ref name) => {
+            match registry.resolve_type(name) {
+                &NamedType::Dictionary(_) | &NamedType::Interface(_) | &NamedType::Enum(_) => {
+                    ProcessedResult::simple(name.as_str())
+                },
+                &NamedType::Typedef(ref t) => {
+                    let inner = process_result_type(t, registry);
+                    ProcessedResult {
+                        type_: name.clone(),
+                        wrapper: inner.wrapper.clone(),
+                        optional: inner.optional
+                    }
+                },
+                &NamedType::Callback(_) => unimplemented!(),
+                &NamedType::Mixin(_) => panic!("Mixins are not usable as types!")
             }
         },
         &TypeKind::Any | &TypeKind::Object => ProcessedResult::simple("Value"),
-        &TypeKind::Callback(ref _args, ref _return_type) => unimplemented!()
     }
 }
 
 fn process_result_type(type_: &Type, registry: &Registry) -> ProcessedResult {
-    let type_kind = registry.resolve_type(&type_.name);
-    let mut result = process_result_type_kind(&type_.name, type_kind, registry);
+    let mut result = process_result_type_kind(&type_.kind, registry);
     if type_.optional && !result.optional {
         result.type_ = format!("Option<{}>", result.type_);
         result.wrapper = ResultWrapper::Ok;
@@ -306,13 +315,8 @@ impl super::Generator for StdwebGenerator {
 }
 
 fn write_typedefs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for (name, type_kind) in &registry.types {
-        match type_kind {
-            &TypeKind::Typedef(ref t) => {
-                write_typedef(name, t, registry, dest)?;
-            },
-            _ => {}
-        }
+    for (name, t) in registry.iter_types(NamedType::as_typedef) {
+        write_typedef(name, t, registry, dest)?;
     }
     Ok(())
 }
@@ -326,7 +330,7 @@ fn write_typedef<W>(name: &str, type_: &Type, registry: &Registry, dest: &mut W)
 }
 
 fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for (name, enum_) in &registry.enums {
+    for (name, enum_) in registry.iter_types(NamedType::as_enum) {
         write_enum(name, enum_, registry, dest)?;
     }
     Ok(())
@@ -355,7 +359,7 @@ js_serializable!({name});
 }
 
 fn write_dictionaries<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for (name, dictionary) in &registry.dictionaries {
+    for (name, dictionary) in registry.iter_types(NamedType::as_dictionary) {
         write_dictionary(name, dictionary, registry, dest)?;
     }
     Ok(())
@@ -407,7 +411,7 @@ fn write_field<W>(name: &str, field: &Field, registry: &Registry, dest: &mut W) 
 }
 
 fn write_interfaces<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    for (name, interface) in &registry.interfaces {
+    for (name, interface) in registry.iter_types(NamedType::as_interface) {
         write_interface(name, interface, registry, dest)?;
     }
     Ok(())
