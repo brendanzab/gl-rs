@@ -30,10 +30,10 @@ context library, This is how it would look using [glfw-rs]
 // the supplied function must be of the type:
 // `&fn(symbol: &'static str) -> *const std::os::raw::c_void`
 // `window` is a glfw::Window
-gl::load_with(|s| window.get_proc_address(s));
+gl::load_with(|s| window.get_proc_address(s) as *const _);
 
 // loading a specific function pointer
-gl::Viewport::load_with(|s| window.get_proc_address(s));
+gl::Viewport::load_with(|s| window.get_proc_address(s) as *const _);
 ```
 
 Calling a function that has not been loaded will result in a failure like:
