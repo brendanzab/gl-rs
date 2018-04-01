@@ -17,31 +17,31 @@ pub mod gl {
 }
 
 pub fn compile_test_symbols_exist() {
-        let _ = gl::DebugMessageControlARB;
-        let _ = gl::DebugMessageInsertARB;
-        let _ = gl::DebugMessageCallbackARB;
-        let _ = gl::GetDebugMessageLogARB;
+    let _ = gl::DebugMessageControlARB;
+    let _ = gl::DebugMessageInsertARB;
+    let _ = gl::DebugMessageCallbackARB;
+    let _ = gl::GetDebugMessageLogARB;
 
-        assert_eq!(gl::DEBUG_OUTPUT_SYNCHRONOUS_ARB,                      0x8242);
-        assert_eq!(gl::MAX_DEBUG_MESSAGE_LENGTH_ARB,                      0x9143);
-        assert_eq!(gl::MAX_DEBUG_LOGGED_MESSAGES_ARB,                     0x9144);
-        assert_eq!(gl::DEBUG_LOGGED_MESSAGES_ARB,                         0x9145);
-        assert_eq!(gl::DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ARB,              0x8243);
-        assert_eq!(gl::DEBUG_CALLBACK_FUNCTION_ARB,                       0x8244);
-        assert_eq!(gl::DEBUG_CALLBACK_USER_PARAM_ARB,                     0x8245);
-        assert_eq!(gl::DEBUG_SOURCE_API_ARB,                              0x8246);
-        assert_eq!(gl::DEBUG_SOURCE_WINDOW_SYSTEM_ARB,                    0x8247);
-        assert_eq!(gl::DEBUG_SOURCE_SHADER_COMPILER_ARB,                  0x8248);
-        assert_eq!(gl::DEBUG_SOURCE_THIRD_PARTY_ARB,                      0x8249);
-        assert_eq!(gl::DEBUG_SOURCE_APPLICATION_ARB,                      0x824A);
-        assert_eq!(gl::DEBUG_SOURCE_OTHER_ARB,                            0x824B);
-        assert_eq!(gl::DEBUG_TYPE_ERROR_ARB,                              0x824C);
-        assert_eq!(gl::DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB,                0x824D);
-        assert_eq!(gl::DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB,                 0x824E);
-        assert_eq!(gl::DEBUG_TYPE_PORTABILITY_ARB,                        0x824F);
-        assert_eq!(gl::DEBUG_TYPE_PERFORMANCE_ARB,                        0x8250);
-        assert_eq!(gl::DEBUG_TYPE_OTHER_ARB,                              0x8251);
-        assert_eq!(gl::DEBUG_SEVERITY_HIGH_ARB,                           0x9146);
-        assert_eq!(gl::DEBUG_SEVERITY_MEDIUM_ARB,                         0x9147);
-        assert_eq!(gl::DEBUG_SEVERITY_LOW_ARB,                            0x9148);
+    assert_eq!(gl::DEBUG_OUTPUT_SYNCHRONOUS_ARB, 0x8242);
+    assert_eq!(gl::MAX_DEBUG_MESSAGE_LENGTH_ARB, 0x9143);
+    assert_eq!(gl::MAX_DEBUG_LOGGED_MESSAGES_ARB, 0x9144);
+    assert_eq!(gl::DEBUG_LOGGED_MESSAGES_ARB, 0x9145);
+    assert_eq!(gl::DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ARB, 0x8243);
+    assert_eq!(gl::DEBUG_CALLBACK_FUNCTION_ARB, 0x8244);
+    assert_eq!(gl::DEBUG_CALLBACK_USER_PARAM_ARB, 0x8245);
+    assert_eq!(gl::DEBUG_SOURCE_API_ARB, 0x8246);
+    assert_eq!(gl::DEBUG_SOURCE_WINDOW_SYSTEM_ARB, 0x8247);
+    assert_eq!(gl::DEBUG_SOURCE_SHADER_COMPILER_ARB, 0x8248);
+    assert_eq!(gl::DEBUG_SOURCE_THIRD_PARTY_ARB, 0x8249);
+    assert_eq!(gl::DEBUG_SOURCE_APPLICATION_ARB, 0x824A);
+    assert_eq!(gl::DEBUG_SOURCE_OTHER_ARB, 0x824B);
+    assert_eq!(gl::DEBUG_TYPE_ERROR_ARB, 0x824C);
+    assert_eq!(gl::DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB, 0x824D);
+    assert_eq!(gl::DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB, 0x824E);
+    assert_eq!(gl::DEBUG_TYPE_PORTABILITY_ARB, 0x824F);
+    assert_eq!(gl::DEBUG_TYPE_PERFORMANCE_ARB, 0x8250);
+    assert_eq!(gl::DEBUG_TYPE_OTHER_ARB, 0x8251);
+    assert_eq!(gl::DEBUG_SEVERITY_HIGH_ARB, 0x9146);
+    assert_eq!(gl::DEBUG_SEVERITY_MEDIUM_ARB, 0x9147);
+    assert_eq!(gl::DEBUG_SEVERITY_LOW_ARB, 0x9148);
 }

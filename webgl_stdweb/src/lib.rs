@@ -12,18 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate gl_generator;
+#![allow(unused_parens, non_camel_case_types)]
+#![crate_name = "webgl_stdweb"]
+#![crate_type = "lib"]
 
-use gl_generator::{Api, Fallbacks, GlobalGenerator, Profile, Registry};
-use std::env;
-use std::fs::File;
-use std::path::Path;
+#[macro_use]
+extern crate serde_derive as _serde_derive;
+#[macro_use]
+extern crate stdweb as _stdweb;
+#[macro_use]
+extern crate stdweb_derive as _stdweb_derive;
 
-fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let mut file = File::create(&Path::new(&out_dir).join("bindings.rs")).unwrap();
-
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
-        .unwrap();
-}
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));

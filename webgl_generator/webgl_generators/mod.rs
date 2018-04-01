@@ -12,18 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate gl_generator;
+use std::io;
 
-use gl_generator::{Api, Fallbacks, GlobalGenerator, Profile, Registry};
-use std::env;
-use std::fs::File;
-use std::path::Path;
+use webgl_registry::Registry;
 
-fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let mut file = File::create(&Path::new(&out_dir).join("bindings.rs")).unwrap();
+pub mod stdweb_gen;
 
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
-        .unwrap();
+/// Trait for a webgl bindings generator.
+pub trait Generator {
+    /// Builds the WebGL bindings.
+    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
+    where
+        W: io::Write;
 }

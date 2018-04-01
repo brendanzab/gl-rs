@@ -1,0 +1,17 @@
+[package]
+name = "test_webgl_stdweb"
+version = "0.0.0"
+build = "build.rs"
+publish = false
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+stdweb = "0.4.0"
+stdweb-derive = "0.4.0"
+serde = "1.0.0"
+serde_derive = "1.0.0"
+
+[build-dependencies]
+webgl_generator = { path = "../../webgl_generator" }

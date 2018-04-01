@@ -1,4 +1,4 @@
-// Copyright 2015 Brendan Zabarauskas and the gl-rs developers
+// Copyright 2016 Brendan Zabarauskas and the gl-rs developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate gl_generator;
+extern crate webgl_generator;
 
-use gl_generator::{Api, Fallbacks, GlobalGenerator, Profile, Registry};
+use webgl_generator::*;
 use std::env;
 use std::fs::File;
-use std::path::Path;
+use std::path::*;
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let mut file = File::create(&Path::new(&out_dir).join("bindings.rs")).unwrap();
+    let dest = env::var("OUT_DIR").unwrap();
+    let mut file = File::create(&Path::new(&dest).join("test_webgl_stdweb.rs")).unwrap();
 
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::WebGl2, Exts::ALL)
+        .write_bindings(StdwebGenerator, &mut file)
         .unwrap();
 }

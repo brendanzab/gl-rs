@@ -22,7 +22,7 @@ use xml::attribute::OwnedAttribute;
 use xml::EventReader as XmlEventReader;
 use xml::reader::XmlEvent;
 
-use {Fallbacks, Api, Profile};
+use {Api, Fallbacks, Profile};
 use registry::{Binding, Cmd, Enum, GlxOpcode, Registry};
 
 pub fn from_xml<R: io::Read>(src: R, filter: Filter) -> Registry {
@@ -41,8 +41,9 @@ struct Attribute {
 
 impl Attribute {
     fn new<Key, Value>(key: Key, value: Value) -> Attribute
-        where Key: ToString,
-              Value: ToString
+    where
+        Key: ToString,
+        Value: ToString,
     {
         Attribute {
             key: key.to_string(),
@@ -69,7 +70,9 @@ impl ParseEvent {
         match event {
             XmlEvent::StartDocument { .. } => None,
             XmlEvent::EndDocument => None,
-            XmlEvent::StartElement { name, attributes, .. } => {
+            XmlEvent::StartElement {
+                name, attributes, ..
+            } => {
                 let attributes = attributes.into_iter().map(Attribute::from).collect();
                 Some(ParseEvent::Start(name.local_name, attributes))
             }
@@ -193,7 +196,7 @@ fn make_egl_enum(ident: String, ty: Option<String>, value: String, alias: Option
             }
         } else {
             match value.chars().next() {
-                Some('-') | Some('0' ... '9') => (),
+                Some('-') | Some('0'...'9') => (),
                 _ => panic!("Unexpected value format: {}", value),
             }
 
@@ -216,7 +219,6 @@ fn make_egl_enum(ident: String, ty: Option<String>, value: String, alias: Option
         ty: ty,
     }
 }
-
 
 fn trim_cmd_prefix(ident: &str, api: Api) -> &str {
     match api {
@@ -318,17 +320,15 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                     features.push(Feature::convert(&mut self, &attributes));
                 }
 
-                ParseEvent::Start(ref name, _) if name == "extensions" => {
-                    loop {
-                        match self.next().unwrap() {
-                            ParseEvent::Start(ref name, ref attributes) if name == "extension" => {
-                                extensions.push(Extension::convert(&mut self, &attributes));
-                            }
-                            ParseEvent::End(ref name) if name == "extensions" => break,
-                            event => panic!("Unexpected message {:?}", event),
+                ParseEvent::Start(ref name, _) if name == "extensions" => loop {
+                    match self.next().unwrap() {
+                        ParseEvent::Start(ref name, ref attributes) if name == "extension" => {
+                            extensions.push(Extension::convert(&mut self, &attributes));
                         }
+                        ParseEvent::End(ref name) if name == "extensions" => break,
+                        event => panic!("Unexpected message {:?}", event),
                     }
-                }
+                },
 
                 // finished building the registry
                 ParseEvent::End(ref name) if name == "registry" => break,
@@ -376,9 +376,10 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         for extension in &extensions {
             if filter.extensions.contains(&extension.name) {
                 if !extension.supported.contains(&filter.api) {
-                    panic!("Requested {}, which doesn't support the {} API",
-                           extension.name,
-                           filter.api);
+                    panic!(
+                        "Requested {}, which doesn't support the {} API",
+                        extension.name, filter.api
+                    );
                 }
                 for require in &extension.requires {
                     desired_enums.extend(require.enums.iter().map(|x| x.clone()));
@@ -388,17 +389,17 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         }
 
         let is_desired_enum = |e: &Enum| {
-            desired_enums.contains(&("GL_".to_string() + &e.ident)) ||
-            desired_enums.contains(&("WGL_".to_string() + &e.ident)) ||
-            desired_enums.contains(&("GLX_".to_string() + &e.ident)) ||
-            desired_enums.contains(&("EGL_".to_string() + &e.ident))
+            desired_enums.contains(&("GL_".to_string() + &e.ident))
+                || desired_enums.contains(&("WGL_".to_string() + &e.ident))
+                || desired_enums.contains(&("GLX_".to_string() + &e.ident))
+                || desired_enums.contains(&("EGL_".to_string() + &e.ident))
         };
 
         let is_desired_cmd = |c: &Cmd| {
-            desired_cmds.contains(&("gl".to_string() + &c.proto.ident)) ||
-            desired_cmds.contains(&("wgl".to_string() + &c.proto.ident)) ||
-            desired_cmds.contains(&("glX".to_string() + &c.proto.ident)) ||
-            desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
+            desired_cmds.contains(&("gl".to_string() + &c.proto.ident))
+                || desired_cmds.contains(&("wgl".to_string() + &c.proto.ident))
+                || desired_cmds.contains(&("glX".to_string() + &c.proto.ident))
+                || desired_cmds.contains(&("egl".to_string() + &c.proto.ident))
         };
 
         Registry {
@@ -449,11 +450,12 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         }
     }
 
-    fn consume_two<'a, T: FromXml, U: FromXml>(&mut self,
-                                               one: &'a str,
-                                               two: &'a str,
-                                               end: &'a str)
-                                               -> (Vec<T>, Vec<U>) {
+    fn consume_two<'a, T: FromXml, U: FromXml>(
+        &mut self,
+        one: &'a str,
+        two: &'a str,
+        end: &'a str,
+    ) -> (Vec<T>, Vec<U>) {
         debug!("consume_two: looking for {} and {} until {}", one, two, end);
 
         let mut ones = Vec::new();
@@ -534,7 +536,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
 
         match api {
             Api::Egl => make_egl_enum(ident, ty, value, alias),
-            _ => make_enum(ident, ty, value, alias)
+            _ => make_enum(ident, ty, value, alias),
         }
     }
 
@@ -593,9 +595,9 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                 }
                 ParseEvent::Start(ref name, ref attributes) if name == "glx" => {
                     glx = Some(GlxOpcode {
-                                   opcode: get_attribute(&attributes, "opcode").unwrap(),
-                                   name: get_attribute(&attributes, "name"),
-                               });
+                        opcode: get_attribute(&attributes, "opcode").unwrap(),
+                        name: get_attribute(&attributes, "name"),
+                    });
                     self.consume_end_element("glx");
                 }
                 ParseEvent::End(ref name) if name == "command" => break,
@@ -645,7 +647,11 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
     }
 }
 
-impl<T> Parse for T where T: Sized + Iterator<Item = ParseEvent> {}
+impl<T> Parse for T
+where
+    T: Sized + Iterator<Item = ParseEvent>,
+{
+}
 
 fn get_attribute(attribs: &[Attribute], key: &str) -> Option<String> {
     attribs
@@ -988,7 +994,9 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLDisplay" => "types::EGLDisplay",
         "EGLSurface" => "types::EGLSurface",
         "EGLClientBuffer" => "types::EGLClientBuffer",
-        "__eglMustCastToProperFunctionPointerType" => "types::__eglMustCastToProperFunctionPointerType",
+        "__eglMustCastToProperFunctionPointerType" => {
+            "types::__eglMustCastToProperFunctionPointerType"
+        }
         "EGLImageKHR" => "types::EGLImageKHR",
         "EGLImage" => "types::EGLImage",
         "EGLOutputLayerEXT" => "types::EGLOutputLayerEXT",
@@ -1076,10 +1084,12 @@ mod tests {
 
         #[test]
         fn test_cast_0() {
-            let e = parse::make_enum("FOO".to_string(),
-                                     None,
-                                     "((EGLint)-1)".to_string(),
-                                     Some("BAR".to_string()));
+            let e = parse::make_enum(
+                "FOO".to_string(),
+                None,
+                "((EGLint)-1)".to_string(),
+                Some("BAR".to_string()),
+            );
             assert_eq!(e.ident, "FOO");
             assert_eq!((&*e.ty, &*e.value), ("EGLint", "-1"));
             assert_eq!(e.alias, Some("BAR".to_string()));
@@ -1087,10 +1097,12 @@ mod tests {
 
         #[test]
         fn test_cast_1() {
-            let e = parse::make_enum("FOO".to_string(),
-                                     None,
-                                     "((EGLint)(-1))".to_string(),
-                                     Some("BAR".to_string()));
+            let e = parse::make_enum(
+                "FOO".to_string(),
+                None,
+                "((EGLint)(-1))".to_string(),
+                Some("BAR".to_string()),
+            );
             assert_eq!(e.ident, "FOO");
             assert_eq!((&*e.ty, &*e.value), ("EGLint", "(-1)"));
             assert_eq!(e.alias, Some("BAR".to_string()));
@@ -1098,10 +1110,12 @@ mod tests {
 
         #[test]
         fn test_no_type() {
-            let e = parse::make_enum("FOO".to_string(),
-                                     None,
-                                     "value".to_string(),
-                                     Some("BAR".to_string()));
+            let e = parse::make_enum(
+                "FOO".to_string(),
+                None,
+                "value".to_string(),
+                Some("BAR".to_string()),
+            );
             assert_eq!(e.ident, "FOO");
             assert_eq!(e.value, "value");
             assert_eq!(e.alias, Some("BAR".to_string()));
@@ -1111,29 +1125,35 @@ mod tests {
 
         #[test]
         fn test_u() {
-            let e = parse::make_enum("FOO".to_string(),
-                                     Some("u".to_string()),
-                                     String::new(),
-                                     None);
+            let e = parse::make_enum(
+                "FOO".to_string(),
+                Some("u".to_string()),
+                String::new(),
+                None,
+            );
             assert_eq!(e.ty, "GLuint");
         }
 
         #[test]
         fn test_ull() {
-            let e = parse::make_enum("FOO".to_string(),
-                                     Some("ull".to_string()),
-                                     String::new(),
-                                     None);
+            let e = parse::make_enum(
+                "FOO".to_string(),
+                Some("ull".to_string()),
+                String::new(),
+                None,
+            );
             assert_eq!(e.ty, "GLuint64");
         }
 
         #[test]
         #[should_panic]
         fn test_unknown_type() {
-            parse::make_enum("FOO".to_string(),
-                             Some("blargh".to_string()),
-                             String::new(),
-                             None);
+            parse::make_enum(
+                "FOO".to_string(),
+                Some("blargh".to_string()),
+                String::new(),
+                None,
+            );
         }
 
         #[test]
@@ -1160,10 +1180,12 @@ mod tests {
 
         #[test]
         fn test_cast_egl() {
-            let e = parse::make_egl_enum("FOO".to_string(),
-                                     None,
-                                     "EGL_CAST(EGLint,-1)".to_string(),
-                                     Some("BAR".to_string()));
+            let e = parse::make_egl_enum(
+                "FOO".to_string(),
+                None,
+                "EGL_CAST(EGLint,-1)".to_string(),
+                Some("BAR".to_string()),
+            );
             assert_eq!(e.ident, "FOO");
             assert_eq!((&*e.ty, &*e.value), ("EGLint", "-1"));
             assert_eq!(e.alias, Some("BAR".to_string()));
@@ -1183,47 +1205,42 @@ mod tests {
 
         #[test]
         fn test_ull() {
-            let e = parse::make_egl_enum("FOO".to_string(),
-                                     Some("ull".to_string()),
-                                     "1234".to_string(),
-                                     None);
+            let e = parse::make_egl_enum(
+                "FOO".to_string(),
+                Some("ull".to_string()),
+                "1234".to_string(),
+                None,
+            );
             assert_eq!(e.ty, "EGLuint64KHR");
         }
 
         #[test]
         fn test_negative_value() {
-            let e = parse::make_egl_enum("FOO".to_string(),
-                                     None,
-                                     "-1".to_string(),
-                                     None);
+            let e = parse::make_egl_enum("FOO".to_string(), None, "-1".to_string(), None);
             assert_eq!(e.ty, "EGLint");
         }
 
         #[test]
         #[should_panic]
         fn test_unknown_type() {
-            parse::make_egl_enum("FOO".to_string(),
-                             Some("blargh".to_string()),
-                             String::new(),
-                             None);
+            parse::make_egl_enum(
+                "FOO".to_string(),
+                Some("blargh".to_string()),
+                String::new(),
+                None,
+            );
         }
 
         #[test]
         #[should_panic]
         fn test_unknown_value() {
-            parse::make_egl_enum("FOO".to_string(),
-                             None,
-                             "a".to_string(),
-                             None);
+            parse::make_egl_enum("FOO".to_string(), None, "a".to_string(), None);
         }
 
         #[test]
         #[should_panic]
         fn test_empty_value() {
-            parse::make_egl_enum("FOO".to_string(),
-                             None,
-                             String::new(),
-                             None);
+            parse::make_egl_enum("FOO".to_string(), None, String::new(), None);
         }
     }
 
@@ -1241,19 +1258,27 @@ mod tests {
             fn test_start_event() {
                 let given = XmlEvent::StartElement {
                     name: OwnedName::local("element"),
-                    attributes: vec![OwnedAttribute::new(OwnedName::local("attr1"), "val1"),
-                                     OwnedAttribute::new(OwnedName::local("attr2"), "val2")],
+                    attributes: vec![
+                        OwnedAttribute::new(OwnedName::local("attr1"), "val1"),
+                        OwnedAttribute::new(OwnedName::local("attr2"), "val2"),
+                    ],
                     namespace: Namespace::empty(),
                 };
-                let expected = ParseEvent::Start("element".to_string(),
-                                                 vec![Attribute::new("attr1", "val1"),
-                                                      Attribute::new("attr2", "val2")]);
+                let expected = ParseEvent::Start(
+                    "element".to_string(),
+                    vec![
+                        Attribute::new("attr1", "val1"),
+                        Attribute::new("attr2", "val2"),
+                    ],
+                );
                 assert_eq!(ParseEvent::from_xml(given), Some(expected));
             }
 
             #[test]
             fn test_end_element() {
-                let given = XmlEvent::EndElement { name: OwnedName::local("element") };
+                let given = XmlEvent::EndElement {
+                    name: OwnedName::local("element"),
+                };
                 let expected = ParseEvent::End("element".to_string());
                 assert_eq!(ParseEvent::from_xml(given), Some(expected));
             }

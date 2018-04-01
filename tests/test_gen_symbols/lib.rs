@@ -21,7 +21,12 @@ pub fn compile_test_gl() {
         gl::Clear(gl::COLOR_BUFFER_BIT);
         let _: raw::c_uint = gl::CreateProgram();
         gl::CompileShader(5);
-        gl::GetActiveUniformBlockiv(0, 0, gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER, std::ptr::null_mut());
+        gl::GetActiveUniformBlockiv(
+            0,
+            0,
+            gl::UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER,
+            std::ptr::null_mut(),
+        );
 
         let _: *mut raw::c_void = gl::MapBuffer(0, 0);
     }
@@ -51,11 +56,15 @@ pub fn compile_test_wgl() {
 pub fn compile_test_egl() {
     unsafe {
         let _ = [
-            egl::SURFACE_TYPE, egl::WINDOW_BIT,
-            egl::BLUE_SIZE, 8,
-            egl::GREEN_SIZE, 8,
-            egl::RED_SIZE, 8,
-            egl::NONE
+            egl::SURFACE_TYPE,
+            egl::WINDOW_BIT,
+            egl::BLUE_SIZE,
+            8,
+            egl::GREEN_SIZE,
+            8,
+            egl::RED_SIZE,
+            8,
+            egl::NONE,
         ];
 
         let _ = egl::GetDisplay(egl::DEFAULT_DISPLAY);

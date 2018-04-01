@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use Api;
-use registry::{Enum, Registry, Cmd};
+use registry::{Cmd, Enum, Registry};
 use std::io;
 
 pub mod debug_struct_gen;
@@ -27,7 +27,9 @@ pub mod static_struct_gen;
 /// See https://github.com/brendanzab/gl-rs/tree/master/gl_generator#generator-types
 pub trait Generator {
     /// Builds the GL bindings.
-    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write;
+    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
+    where
+        W: io::Write;
 }
 
 pub fn gen_struct_name(api: Api) -> &'static str {
@@ -45,7 +47,8 @@ pub fn gen_struct_name(api: Api) -> &'static str {
 
 /// This function generates a `const name: type = value;` item.
 pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()>
-    where W: io::Write
+where
+    W: io::Write,
 {
     writeln!(dest,
         "#[allow(dead_code, non_upper_case_globals)] pub const {ident}: {types_prefix}{ty} = {value}{cast_suffix};",
@@ -65,7 +68,8 @@ pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Res
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the
 /// things that we can't obtain from the XML files.
 pub fn gen_types<W>(api: Api, dest: &mut W) -> io::Result<()>
-    where W: io::Write
+where
+    W: io::Write,
 {
     if let Api::Egl = api {
         try!(writeln!(dest, "{}", include_str!("templates/types/egl.rs")));
