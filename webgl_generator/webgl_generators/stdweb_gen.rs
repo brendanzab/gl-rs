@@ -687,7 +687,7 @@ where
             r#"
 
     pub fn set_{name}{gargs}(&self, value: {type_}){gwhere} {{
-        js!( @{{self}}.{raw_name} = @{{{value}}}; );
+        js!( @(no_return) @{{self}}.{raw_name} = @{{{value}}}; );
     }}"#,
             name = snake(name),
             raw_name = name,
@@ -793,7 +793,7 @@ where
             r#"
 
     {doc_comment}pub fn {name}{gargs}(&self, {args}){gwhere} {{
-        js!( @{{self}}.{raw_name}({js_args}); );
+        js!( @(no_return) @{{self}}.{raw_name}({js_args}); );
     }}"#,
             name = rust_name,
             raw_name = name,
