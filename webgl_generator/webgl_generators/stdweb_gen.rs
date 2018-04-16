@@ -69,6 +69,7 @@ impl GenericContext {
 enum ArgWrapper {
     None,
     AsTypedArray,
+    AsArrayBufferView,
     Optional(Box<ArgWrapper>),
     Sequence(Box<ArgWrapper>),
     DoubleCast,
@@ -80,6 +81,7 @@ impl ArgWrapper {
         match self {
             &ArgWrapper::None => arg.into(),
             &ArgWrapper::AsTypedArray => format!("unsafe {{ {}.as_typed_array() }}", arg),
+            &ArgWrapper::AsArrayBufferView => format!("unsafe {{ {}.as_array_buffer_view() }}", arg),
             &ArgWrapper::Optional(ref inner) => {
                 format!("{}.map(|inner| {})", arg, inner.wrap("inner"))
             }
@@ -132,7 +134,7 @@ fn process_arg_type_kind(
             _ => ProcessedArg::simple(name.unwrap()),
         },
         &TypeKind::String => ProcessedArg::simple("&str"),
-        &TypeKind::ArrayBuffer | &TypeKind::ArrayBufferView => ProcessedArg::simple("&ArrayBuffer"),
+        &TypeKind::ArrayBuffer => ProcessedArg::simple("&ArrayBuffer"),
         &TypeKind::BufferSource => ProcessedArg::simple("&ArrayBuffer"),
         &TypeKind::CanvasElement => ProcessedArg::simple("&CanvasElement"),
         &TypeKind::TypedArray(ref p) => {
@@ -144,7 +146,17 @@ fn process_arg_type_kind(
                 wrapper: ArgWrapper::AsTypedArray,
                 optional: false,
             }
-        }
+        },
+        &TypeKind::ArrayBufferView => {
+            let lt = gc.arg("'a");
+            let gp = gc.arg("T");
+            gc.constrain(format!("{}: AsArrayBufferView<{}>", gp, lt));
+            ProcessedArg {
+                type_: gp,
+                wrapper: ArgWrapper::AsArrayBufferView,
+                optional: false,
+            }
+        },
         &TypeKind::Sequence(ref t) => {
             let inner = process_arg_type(t, registry, gc);
             ProcessedArg {
@@ -325,6 +337,12 @@ pub trait AsTypedArray<'a, T> {{
     unsafe fn as_typed_array(self) -> Self::Result;
 }}
 
+pub trait AsArrayBufferView<'a> {{
+    type Result: JsSerialize;
+
+    unsafe fn as_array_buffer_view(self) -> Self::Result;
+}}
+
 pub trait Extension: TryFrom<Value> {{
     const NAME: &'static str;
 }}
@@ -341,6 +359,18 @@ macro_rules! define_array {{
             type Result = UnsafeTypedArray<'a, $elem>;
 
             unsafe fn as_typed_array(self) -> Self::Result {{ UnsafeTypedArray::new(self) }}
+        }}
+
+        impl<'a> AsArrayBufferView<'a> for &'a TypedArray<$elem> {{
+            type Result = Self;
+
+            unsafe fn as_array_buffer_view(self) -> Self::Result {{ self }}
+        }}
+
+        impl<'a> AsArrayBufferView<'a> for &'a [$elem] {{
+            type Result = UnsafeTypedArray<'a, $elem>;
+
+            unsafe fn as_array_buffer_view(self) -> Self::Result {{ UnsafeTypedArray::new(self) }}
         }}
     }}
 }}
