@@ -128,8 +128,6 @@ impl Registry {
             }
         }
 
-        println!("{:?}", result);
-
         // Done!
         result
     }
