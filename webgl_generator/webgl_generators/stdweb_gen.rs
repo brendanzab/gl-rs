@@ -739,7 +739,7 @@ where
         r#"
 
     pub fn get_extension<E: Extension>(&self) -> Option<E> {{
-        (js! {{ return @{{self}}.getExtension({{E::NAME}}); }} ).try_into().ok()
+        (js! {{ return @{{self}}.getExtension(@{{E::NAME}}); }} ).try_into().ok()
     }}"#
     )
 }
