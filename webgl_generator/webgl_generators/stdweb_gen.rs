@@ -586,7 +586,7 @@ where
         attrs += &format!("#[reference(instance_of = {:?})]\n", name);
         None
     } else {
-        Some(format!("@{{reference}}.constructor.name == {:?}", name))
+        Some("true".to_owned())
     };
 
     write!(
