@@ -67,6 +67,10 @@ impl Registry {
 
         // Next find all requested extensions
         for ext in exts.enumerate() {
+            if api < ext.min_api {
+                continue;
+            }
+
             // Make a note that we included this extension
             result.extensions.insert(ext.name.clone());
 

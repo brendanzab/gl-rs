@@ -15,10 +15,16 @@
 #![allow(unused_parens, non_camel_case_types)]
 
 #[macro_use]
-extern crate serde_derive as _serde_derive;
+extern crate serde_derive;
 #[macro_use]
-extern crate stdweb as _stdweb;
+extern crate stdweb;
 #[macro_use]
-extern crate stdweb_derive as _stdweb_derive;
+extern crate stdweb_derive;
 
-include!(concat!(env!("OUT_DIR"), "/test_webgl_stdweb.rs"));
+mod webgl {
+    include!(concat!(env!("OUT_DIR"), "/test_webgl_stdweb.rs"));
+}
+
+mod webgl2 {
+    include!(concat!(env!("OUT_DIR"), "/test_webgl2_stdweb.rs"));
+}

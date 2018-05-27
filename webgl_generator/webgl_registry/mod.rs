@@ -33,7 +33,7 @@ const RENDERING_CONTEXTS: &'static [(&'static str, &'static str)] = &[
     ("webgl2", "WebGL2RenderingContext"),
 ];
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Api {
     WebGl,
     WebGl2,
@@ -45,6 +45,7 @@ struct ExtensionIDL {
     pub idl: String,
     pub overview: String,
     pub new_funs: BTreeMap<String, String>,
+    pub min_api: Api,
 }
 
 pub enum Exts<'a> {
@@ -80,6 +81,9 @@ impl<'a> Exts<'a> {
                 }
             }
 
+            let dependencies = elem.get_child("depends", None).unwrap();
+            let api_dep = dependencies.get_child("api", None).unwrap();
+
             let mut ext = ExtensionIDL {
                 name: elem.get_child("name", None).unwrap().content_str(),
                 idl: elem.get_child("idl", None).unwrap().content_str(),
@@ -88,6 +92,11 @@ impl<'a> Exts<'a> {
                     convert_html_to_doc_comment(&overview_html)
                 ),
                 new_funs,
+                min_api: match api_dep.get_attribute("version", None).unwrap() {
+                    "1.0" => Api::WebGl,
+                    "2.0" => Api::WebGl2,
+                    other => panic!("Unknown API version: {}", other)
+                }
             };
 
             if match self {
