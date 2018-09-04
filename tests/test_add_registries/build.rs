@@ -18,13 +18,14 @@ use gl_generator::*;
 use std::env;
 use std::fs::File;
 use std::path::*;
+use std::collections::BTreeMap;
 
 fn main() {
     let dest = env::var("OUT_DIR").unwrap();
     let mut file = File::create(&Path::new(&dest).join("test_add_registries.rs")).unwrap();
 
-    let registry0 = Registry::new(Api::Gl, (3, 2), Profile::Core, Fallbacks::All, []);
-    let registry1 = Registry::new(Api::Gl, (3, 2), Profile::Core, Fallbacks::All, []);
+    let registry0 = Registry::new(Api::Gl, (3, 2), Profile::Core, Fallbacks::All, [], BTreeMap::new());
+    let registry1 = Registry::new(Api::Gl, (3, 2), Profile::Core, Fallbacks::All, [], BTreeMap::new());
 
     (registry0 + registry1)
         .write_bindings(GlobalGenerator, &mut file)

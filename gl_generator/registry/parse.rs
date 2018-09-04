@@ -229,7 +229,7 @@ fn trim_cmd_prefix(ident: &str, api: Api) -> &str {
     }
 }
 
-fn merge_map(a: &mut BTreeMap<String, Vec<String>>, b: BTreeMap<String, Vec<String>>) {
+pub(crate) fn merge_map(a: &mut BTreeMap<String, Vec<String>>, b: BTreeMap<String, Vec<String>>) {
     for (k, v) in b {
         match a.entry(k) {
             Entry::Occupied(mut ent) => {

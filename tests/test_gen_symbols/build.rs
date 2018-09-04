@@ -19,37 +19,38 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::*;
+use std::collections::BTreeMap;
 
 fn main() {
     let dest = env::var("OUT_DIR").unwrap();
     let mut file = File::create(&Path::new(&dest).join("test_gen_symbols.rs")).unwrap();
 
     writeln!(&mut file, "mod gl {{").unwrap();
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
+    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [], BTreeMap::new())
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles {{").unwrap();
-    Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::All, [])
+    Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::All, [], BTreeMap::new())
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx {{").unwrap();
-    Registry::new(Api::Glx, (1, 4), Profile::Core, Fallbacks::All, [])
+    Registry::new(Api::Glx, (1, 4), Profile::Core, Fallbacks::All, [], BTreeMap::new())
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl {{").unwrap();
-    Registry::new(Api::Wgl, (1, 0), Profile::Core, Fallbacks::All, [])
+    Registry::new(Api::Wgl, (1, 0), Profile::Core, Fallbacks::All, [], BTreeMap::new())
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl {{ {}", build_egl_symbols()).unwrap();
-    Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::All, [])
+    Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::All, [], BTreeMap::new())
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();

@@ -19,6 +19,7 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::*;
+use std::collections::BTreeMap;
 
 fn main() {
     let dest = env::var("OUT_DIR").unwrap();
@@ -26,7 +27,7 @@ fn main() {
 
     // Gl
 
-    let gl_registry = Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, []);
+    let gl_registry = Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [], BTreeMap::new());
 
     writeln!(&mut file, "mod gl_global {{").unwrap();
     gl_registry
@@ -60,7 +61,7 @@ fn main() {
 
     // Glx
 
-    let glx_registry = Registry::new(Api::Glx, (1, 4), Profile::Core, Fallbacks::All, []);
+    let glx_registry = Registry::new(Api::Glx, (1, 4), Profile::Core, Fallbacks::All, [], BTreeMap::new());
 
     writeln!(&mut file, "mod glx_global {{").unwrap();
     glx_registry
@@ -94,7 +95,7 @@ fn main() {
 
     // Wgl
 
-    let wgl_registry = Registry::new(Api::Wgl, (1, 0), Profile::Core, Fallbacks::All, []);
+    let wgl_registry = Registry::new(Api::Wgl, (1, 0), Profile::Core, Fallbacks::All, [], BTreeMap::new());
 
     writeln!(&mut file, "mod wgl_global {{").unwrap();
     wgl_registry
@@ -128,7 +129,7 @@ fn main() {
 
     // Gles1
 
-    let gles1_registry = Registry::new(Api::Gles1, (1, 1), Profile::Core, Fallbacks::All, []);
+    let gles1_registry = Registry::new(Api::Gles1, (1, 1), Profile::Core, Fallbacks::All, [], BTreeMap::new());
 
     writeln!(&mut file, "mod gles1_global {{").unwrap();
     gles1_registry
@@ -162,7 +163,7 @@ fn main() {
 
     // Gles2
 
-    let gles2_registry = Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::All, []);
+    let gles2_registry = Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::All, [], BTreeMap::new());
 
     writeln!(&mut file, "mod gles2_global {{").unwrap();
     gles2_registry
@@ -196,7 +197,7 @@ fn main() {
 
     // Egl
 
-    let egl_registry = Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::All, []);
+    let egl_registry = Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::All, [], BTreeMap::new());
 
     writeln!(&mut file, "mod egl_global {{ {}", build_egl_symbols()).unwrap();
     egl_registry

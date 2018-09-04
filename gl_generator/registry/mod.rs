@@ -121,6 +121,7 @@ impl Registry {
         profile: Profile,
         fallbacks: Fallbacks,
         extensions: Exts,
+        additional_function_fallbacks: BTreeMap<String, Vec<String>>,
     ) -> Registry
     where
         Exts: AsRef<[&'a str]>,
@@ -143,7 +144,9 @@ impl Registry {
             Api::Egl => khronos_api::EGL_XML,
         };
 
-        parse::from_xml(src, filter)
+        let mut ret = parse::from_xml(src, filter);
+        parse::merge_map(&mut ret.aliases, additional_function_fallbacks);
+        ret
     }
 
     pub fn write_bindings<W, G>(&self, generator: G, output: &mut W) -> io::Result<()>
