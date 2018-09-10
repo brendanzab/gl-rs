@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{fmt, str};
 use std::collections::BTreeMap;
+use std::{fmt, str};
 
 use khronos_api;
 
 use utils::convert_html_to_doc_comment;
 
-pub use self::types::*;
 pub use self::named::*;
 pub use self::registry::*;
+pub use self::types::*;
 
-mod types;
 mod named;
 mod registry;
+mod types;
 
 const HIDDEN_NAMES: &'static [&'static str] = &["WebGLObject", "WebGLContextEventInit"];
 const RENDERING_CONTEXTS: &'static [(&'static str, &'static str)] = &[
@@ -95,8 +95,8 @@ impl<'a> Exts<'a> {
                 min_api: match api_dep.get_attribute("version", None).unwrap() {
                     "1.0" => Api::WebGl,
                     "2.0" => Api::WebGl2,
-                    other => panic!("Unknown API version: {}", other)
-                }
+                    other => panic!("Unknown API version: {}", other),
+                },
             };
 
             if match self {

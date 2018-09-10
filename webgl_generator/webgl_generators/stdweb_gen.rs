@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::io;
 use std::collections::BTreeSet;
+use std::io;
 
 use utils::*;
 use webgl_registry::*;
@@ -81,10 +81,12 @@ impl ArgWrapper {
         match self {
             &ArgWrapper::None => arg.into(),
             &ArgWrapper::AsTypedArray => format!("unsafe {{ {}.as_typed_array() }}", arg),
-            &ArgWrapper::AsArrayBufferView => format!("unsafe {{ {}.as_array_buffer_view() }}", arg),
+            &ArgWrapper::AsArrayBufferView => {
+                format!("unsafe {{ {}.as_array_buffer_view() }}", arg)
+            },
             &ArgWrapper::Optional(ref inner) => {
                 format!("{}.map(|inner| {})", arg, inner.wrap("inner"))
-            }
+            },
             &ArgWrapper::Sequence(ref inner) => format!(
                 "{}.iter().map(|inner| {}).collect::<Vec<_>>()",
                 arg,
@@ -167,31 +169,31 @@ fn process_arg_type_kind(
                 },
                 optional: false,
             }
-        }
+        },
         &TypeKind::Union(ref ts) => {
-            let t = ts.iter()
+            let t = ts
+                .iter()
                 .filter_map(|t| match t.kind {
                     TypeKind::TypedArray(_) => Some(t),
                     TypeKind::Sequence(_) => None,
                     _ => panic!("Union support is limited!"),
-                })
-                .next()
+                }).next()
                 .expect("Union did not contain a TypedArray");
 
             process_arg_type(t, registry, gc)
-        }
+        },
         &TypeKind::Named(ref actual_name) => {
             match registry.resolve_type(actual_name) {
                 &NamedType::Dictionary(_) | &NamedType::Interface(_) => {
                     ProcessedArg::simple(format!("&{}", name.unwrap()))
-                }
+                },
                 &NamedType::Enum(_) => ProcessedArg::simple(name.unwrap()),
                 &NamedType::Typedef(ref t) => {
                     // We have to "look through" the typedef, as the correct parameter
                     // type is not representable using the alias.
                     assert!(t.optional);
                     process_arg_type(t, registry, gc)
-                }
+                },
                 &NamedType::Callback(_) => {
                     let gp = gc.arg("F");
                     gc.constrain(format!("{}: FnOnce() + 'static", gp));
@@ -200,15 +202,15 @@ fn process_arg_type_kind(
                         wrapper: ArgWrapper::Once,
                         optional: false,
                     }
-                }
+                },
                 &NamedType::Mixin(_) => panic!("Mixins are not usable as types!"),
             }
-        }
+        },
         &TypeKind::Any | &TypeKind::Object => {
             let gp = gc.arg("T");
             gc.constrain(format!("{}: JsSerialize", gp));
             ProcessedArg::simple(gp)
-        }
+        },
     }
 }
 
@@ -263,32 +265,32 @@ fn process_result_type_kind(type_kind: &TypeKind, registry: &Registry) -> Proces
         &TypeKind::String => ProcessedResult::simple("String"),
         &TypeKind::ArrayBuffer | &TypeKind::ArrayBufferView => {
             ProcessedResult::simple("ArrayBuffer")
-        }
+        },
         &TypeKind::BufferSource => unimplemented!("BufferSource not supported in output"),
         &TypeKind::CanvasElement => ProcessedResult::simple("CanvasElement"),
         &TypeKind::TypedArray(ref p) => {
             ProcessedResult::simple(format!("TypedArray<{}>", p.name()))
-        }
+        },
         &TypeKind::Sequence(ref t) => {
             let inner = process_result_type(t, registry);
             ProcessedResult::simple(format!("Vec<{}>", inner.type_))
-        }
+        },
         &TypeKind::Union(ref ts) => {
-            let t = ts.iter()
+            let t = ts
+                .iter()
                 .filter_map(|t| match t.kind {
                     TypeKind::TypedArray(_) => Some(t),
                     TypeKind::Sequence(_) => None,
                     _ => panic!("Union support is limited!"),
-                })
-                .next()
+                }).next()
                 .expect("Union did not contain a TypedArray");
 
             process_result_type(t, registry)
-        }
+        },
         &TypeKind::Named(ref name) => match registry.resolve_type(name) {
             &NamedType::Dictionary(_) | &NamedType::Interface(_) | &NamedType::Enum(_) => {
                 ProcessedResult::simple(name.as_str())
-            }
+            },
             &NamedType::Typedef(ref t) => {
                 let inner = process_result_type(t, registry);
                 ProcessedResult {
@@ -296,7 +298,7 @@ fn process_result_type_kind(type_kind: &TypeKind, registry: &Registry) -> Proces
                     wrapper: inner.wrapper.clone(),
                     optional: inner.optional,
                 }
-            }
+            },
             &NamedType::Callback(_) => unimplemented!(),
             &NamedType::Mixin(_) => panic!("Mixins are not usable as types!"),
         },
@@ -383,7 +385,7 @@ define_array!(i32);
 define_array!(u32);
 define_array!(f32);
 define_array!(f64);
-    "#,
+"#,
         registry = registry
     )?;
     Ok(())
@@ -600,7 +602,7 @@ where
 {attrs}pub struct {name}(Reference);
 
 impl {name} {{
-    "#,
+"#,
         name = name,
         attrs = attrs,
         doc_comment = interface.doc_comment
@@ -612,14 +614,14 @@ impl {name} {{
                 &Member::Const(ref const_) => {
                     assert!(index == 0);
                     write_const(&name, const_, registry, dest)?;
-                }
+                },
                 &Member::Attribute(ref attribute) => {
                     assert!(index == 0);
                     write_attribute(&name, attribute, registry, dest)?;
-                }
+                },
                 &Member::Operation(ref operation) => {
                     write_operation(&name, index, operation, registry, dest)?;
-                }
+                },
             }
         }
     }
@@ -628,7 +630,7 @@ impl {name} {{
         dest,
         r#"
 }}
-    "#
+"#
     )?;
 
     if let Some((param_name, instance_check)) = custom_instance_check {
@@ -643,7 +645,7 @@ impl InstanceOf for {name} {{
         ).try_into().unwrap()
     }}
 }}
-        "#,
+"#,
             param_name = param_name,
             name = name,
             instance_check = instance_check
@@ -661,7 +663,7 @@ impl InstanceOf for {name} {{
         ).try_into()
     }}
 }}
-        "#,
+"#,
             name = name,
             rendering_context = rendering_context
         )?;
@@ -761,7 +763,7 @@ where
 {
     match name {
         "getExtension" => return write_get_extension(dest),
-        _ => {}
+        _ => {},
     }
 
     let mut rust_name = unreserve(snake(name));
@@ -787,14 +789,15 @@ where
                 processed.wrapper.wrap(&unreserve(snake(&a.name)))
             );
             OperationArg { arg, js_arg }
-        })
-        .collect();
+        }).collect();
 
-    let rust_args = args.iter()
+    let rust_args = args
+        .iter()
         .map(|a| a.arg.clone())
         .collect::<Vec<_>>()
         .join(", ");
-    let js_args = args.iter()
+    let js_args = args
+        .iter()
         .map(|a| a.js_arg.clone())
         .collect::<Vec<_>>()
         .join(", ");

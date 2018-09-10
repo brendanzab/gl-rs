@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use Api;
 use registry::{Cmd, Enum, Registry};
 use std::io;
+use Api;
 
 pub mod debug_struct_gen;
 pub mod global_gen;
 pub mod static_gen;
-pub mod struct_gen;
 pub mod static_struct_gen;
+pub mod struct_gen;
 
 /// Trait for a bindings generator.
 ///
@@ -81,7 +81,7 @@ where
     match api {
         Api::Glx => try!(writeln!(dest, "{}", include_str!("templates/types/glx.rs"))),
         Api::Wgl => try!(writeln!(dest, "{}", include_str!("templates/types/wgl.rs"))),
-        _ => {}
+        _ => {},
     }
 
     Ok(())
@@ -102,8 +102,7 @@ pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<Str
             } else {
                 panic!()
             }
-        })
-        .collect()
+        }).collect()
 }
 
 /// Generates the native symbol name of a `Cmd`.

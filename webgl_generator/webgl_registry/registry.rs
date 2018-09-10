@@ -12,18 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::io;
-use std::collections::{BTreeMap, BTreeSet};
 use std::collections::btree_map::{self, Entry};
+use std::collections::{BTreeMap, BTreeSet};
+use std::io;
 
 use webidl::ast;
 
 use utils::{multimap_insert, parse_defs};
 use webgl_generators::Generator;
 
+use super::named::{
+    Argument, Attribute, Callback, Const, Dictionary, Enum, Field, Interface, Member, Mixin,
+    NamedType, Operation,
+};
 use super::types::{Primitive, Type, TypeKind};
-use super::named::{Argument, Attribute, Callback, Const, Dictionary, Enum, Field, Interface,
-                   Member, Mixin, NamedType, Operation};
 use super::{Api, Exts, HIDDEN_NAMES, RENDERING_CONTEXTS};
 
 #[derive(Debug, Default)]
@@ -209,7 +211,7 @@ impl Registry {
                         getter: !a.inherits,
                     }),
                 ))
-            }
+            },
             _ => None,
         }
     }
@@ -232,7 +234,8 @@ impl Registry {
                 Some((
                     name,
                     Member::Operation(Operation {
-                        args: o.arguments
+                        args: o
+                            .arguments
                             .into_iter()
                             .map(|a| self.load_argument(a))
                             .collect(),
@@ -324,19 +327,20 @@ impl Registry {
         match self.types.entry(interface.name) {
             Entry::Vacant(v) => {
                 v.insert(NamedType::Interface(result));
-            }
+            },
             Entry::Occupied(o) => {
                 assert!(
                     result.members.is_empty(),
                     "Duplicate interface: {}",
                     o.key()
                 );
-            }
+            },
         }
     }
 
     fn load_includes(&mut self, includes: ast::Includes) {
-        if let Some(interface) = self.types
+        if let Some(interface) = self
+            .types
             .get_mut(&includes.includer)
             .and_then(NamedType::as_interface_mut)
         {
@@ -408,7 +412,7 @@ impl Registry {
                 } else {
                     TypeKind::Any
                 }
-            }
+            },
 
             // Misc
             ArrayBuffer => TypeKind::ArrayBuffer,
@@ -450,7 +454,7 @@ impl Registry {
                     fields,
                     is_hidden: false,
                 }));
-            }
+            },
             Entry::Occupied(mut o) => {
                 let key = o.key().clone();
                 let d = o.get_mut().as_dictionary_mut().unwrap();
@@ -461,7 +465,7 @@ impl Registry {
                         panic!("Duplicate field: {}.{}", key, k);
                     }
                 }
-            }
+            },
         }
     }
 
@@ -497,7 +501,7 @@ impl Registry {
             Dictionary(ast::Dictionary::NonPartial(d)) => self.load_dictionary(d),
             Enum(e) => self.load_enum(e),
             Callback(c) => self.load_callback(c),
-            _ => {}
+            _ => {},
         }
     }
 }

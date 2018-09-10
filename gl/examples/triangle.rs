@@ -16,10 +16,10 @@ extern crate gl;
 extern crate glutin;
 
 use gl::types::*;
+use std::ffi::CString;
 use std::mem;
 use std::ptr;
 use std::str;
-use std::ffi::CString;
 
 // Vertex data
 static VERTEX_DATA: [GLfloat; 6] = [0.0, 0.5, 0.5, -0.5, -0.5, -0.5];

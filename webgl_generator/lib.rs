@@ -27,7 +27,7 @@ mod utils;
 mod webgl_generators;
 mod webgl_registry;
 
-pub use webgl_generators::Generator;
 pub use webgl_generators::stdweb_gen::StdwebGenerator;
+pub use webgl_generators::Generator;
 
 pub use webgl_registry::*;

@@ -213,7 +213,8 @@ where
             name = cmd.proto.ident,
             symbol = super::gen_symbol_name(registry.api, &cmd.proto.ident),
             fallbacks = match registry.aliases.get(&cmd.proto.ident) {
-                Some(fbs) => fbs.iter()
+                Some(fbs) => fbs
+                    .iter()
                     .map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name)))
                     .collect::<Vec<_>>()
                     .join(", "),
@@ -246,8 +247,7 @@ where
                     format!(", \"<callback>\"")
                 } else {
                     format!(", {}", name)
-                })
-                .collect::<Vec<_>>()
+                }).collect::<Vec<_>>()
                 .concat()
         );
 
