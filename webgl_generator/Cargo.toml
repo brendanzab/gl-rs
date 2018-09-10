@@ -1,6 +1,6 @@
 [package]
 name = "webgl_generator"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
     "Diggory Blake",
 ]
@@ -18,7 +18,7 @@ name = "webgl_generator"
 path = "lib.rs"
 
 [dependencies]
-khronos_api = { version = "2.2.0", path = "../khronos_api" }
+khronos_api = { version = "3.0.0", path = "../khronos_api" }
 webidl = { version = "0.8" }
 heck = { version = "0.3" }
 RustyXML = "0.1"
