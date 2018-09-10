@@ -581,12 +581,16 @@ where
 
     let mut attrs = String::new();
     let custom_instance_check = if name == "GLContext" {
-        Some("[WebGLRenderingContext, WebGL2RenderingContext].includes( @{{reference}}.constructor )".into())
+        Some((
+            "reference",
+            "[WebGLRenderingContext, WebGL2RenderingContext].includes(@{{reference}}.constructor)"
+                .into(),
+        ))
     } else if interface.has_class {
         attrs += &format!("#[reference(instance_of = {:?})]\n", name);
         None
     } else {
-        Some("true".to_owned())
+        Some(("_reference", "true".to_owned()))
     };
 
     write!(
@@ -627,19 +631,20 @@ impl {name} {{
     "#
     )?;
 
-    if let Some(instance_check) = custom_instance_check {
+    if let Some((param_name, instance_check)) = custom_instance_check {
         write!(
             dest,
             r#"
 impl InstanceOf for {name} {{
     #[inline]
-    fn instance_of( reference: &Reference ) -> bool {{
+    fn instance_of({param_name}: &Reference) -> bool {{
         js!(
             return {instance_check};
         ).try_into().unwrap()
     }}
 }}
         "#,
+            param_name = param_name,
             name = name,
             instance_check = instance_check
         )?;
