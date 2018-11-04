@@ -213,11 +213,12 @@ where
     for c in &registry.cmds {
         let fallbacks = match registry.aliases.get(&c.proto.ident) {
             Some(v) => {
-                let names = v.iter()
+                let names = v
+                    .iter()
                     .map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name[..])))
                     .collect::<Vec<_>>();
                 format!("&[{}]", names.join(", "))
-            }
+            },
             None => "&[]".to_string(),
         };
         let fnname = &c.proto.ident[..];

@@ -19,11 +19,11 @@ use std::collections::btree_map::Entry;
 use std::collections::{BTreeMap, BTreeSet};
 use std::io;
 use xml::attribute::OwnedAttribute;
-use xml::EventReader as XmlEventReader;
 use xml::reader::XmlEvent;
+use xml::EventReader as XmlEventReader;
 
-use {Api, Fallbacks, Profile};
 use registry::{Binding, Cmd, Enum, GlxOpcode, Registry};
+use {Api, Fallbacks, Profile};
 
 pub fn from_xml<R: io::Read>(src: R, filter: Filter) -> Registry {
     XmlEventReader::new(src)
@@ -75,7 +75,7 @@ impl ParseEvent {
             } => {
                 let attributes = attributes.into_iter().map(Attribute::from).collect();
                 Some(ParseEvent::Start(name.local_name, attributes))
-            }
+            },
             XmlEvent::EndElement { name } => Some(ParseEvent::End(name.local_name)),
             XmlEvent::Characters(chars) => Some(ParseEvent::Text(chars)),
             XmlEvent::ProcessingInstruction { .. } => None,
@@ -86,16 +86,17 @@ impl ParseEvent {
     }
 }
 
-fn api_from_str(src: &str) -> Result<Api, ()> {
+fn api_from_str(src: &str) -> Result<Option<Api>, ()> {
     match src {
-        "gl" => Ok(Api::Gl),
-        "glx" => Ok(Api::Glx),
-        "wgl" => Ok(Api::Wgl),
-        "egl" => Ok(Api::Egl),
-        "glcore" => Ok(Api::GlCore),
-        "gles1" => Ok(Api::Gles1),
-        "gles2" => Ok(Api::Gles2),
-        "glsc2" => Ok(Api::Glsc2),
+        "gl" => Ok(Some(Api::Gl)),
+        "glx" => Ok(Some(Api::Glx)),
+        "wgl" => Ok(Some(Api::Wgl)),
+        "egl" => Ok(Some(Api::Egl)),
+        "glcore" => Ok(Some(Api::GlCore)),
+        "gles1" => Ok(Some(Api::Gles1)),
+        "gles2" => Ok(Some(Api::Gles2)),
+        "glsc2" => Ok(Some(Api::Glsc2)),
+        "disabled" => Ok(None),
         _ => Err(()),
     }
 }
@@ -234,10 +235,10 @@ fn merge_map(a: &mut BTreeMap<String, Vec<String>>, b: BTreeMap<String, Vec<Stri
         match a.entry(k) {
             Entry::Occupied(mut ent) => {
                 ent.get_mut().extend(v);
-            }
+            },
             Entry::Vacant(ent) => {
                 ent.insert(v);
-            }
+            },
         }
     }
 }
@@ -306,25 +307,25 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                 // add enum namespace
                 ParseEvent::Start(ref name, _) if name == "enums" => {
                     enums.extend(self.consume_enums(filter.api));
-                }
+                },
 
                 // add command namespace
                 ParseEvent::Start(ref name, _) if name == "commands" => {
                     let (new_cmds, new_aliases) = self.consume_cmds(filter.api);
                     cmds.extend(new_cmds);
                     merge_map(&mut aliases, new_aliases);
-                }
+                },
 
                 ParseEvent::Start(ref name, ref attributes) if name == "feature" => {
                     debug!("Parsing feature: {:?}", attributes);
                     features.push(Feature::convert(&mut self, &attributes));
-                }
+                },
 
                 ParseEvent::Start(ref name, _) if name == "extensions" => loop {
                     match self.next().unwrap() {
                         ParseEvent::Start(ref name, ref attributes) if name == "extension" => {
                             extensions.push(Extension::convert(&mut self, &attributes));
-                        }
+                        },
                         ParseEvent::End(ref name) if name == "extensions" => break,
                         event => panic!("Unexpected message {:?}", event),
                     }
@@ -429,7 +430,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                 } else {
                     panic!("Expected <{}>, found: <{}>", expected_name, name)
                 }
-            }
+            },
             event => panic!("Expected <{}>, found: {:?}", expected_name, event),
         }
     }
@@ -445,7 +446,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         loop {
             match self.next().unwrap() {
                 ParseEvent::End(ref name) if expected_name == name => break,
-                _ => {}
+                _ => {},
             }
         }
     }
@@ -482,7 +483,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                     } else {
                         panic!("Unexpected element: <{:?} {:?}>", n, &attributes);
                     }
-                }
+                },
                 ParseEvent::End(ref name) => {
                     debug!("Found end element </{:?}>", name);
 
@@ -499,7 +500,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                     } else {
                         panic!("Unexpected end element {:?}", name);
                     }
-                }
+                },
                 event => panic!("Unexpected message {:?}", event),
             }
         }
@@ -510,13 +511,13 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
         loop {
             match self.next().unwrap() {
                 // ignores
-                ParseEvent::Text(_) => {}
+                ParseEvent::Text(_) => {},
                 ParseEvent::Start(ref name, _) if name == "unused" => self.skip_to_end("unused"),
 
                 // add enum definition
                 ParseEvent::Start(ref name, ref attributes) if name == "enum" => {
                     enums.push(self.consume_enum(api, attributes));
-                }
+                },
 
                 // finished building the namespace
                 ParseEvent::End(ref name) if name == "enums" => break,
@@ -552,14 +553,14 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                         match aliases.entry(v.clone()) {
                             Entry::Occupied(mut ent) => {
                                 ent.get_mut().push(new.proto.ident.clone());
-                            }
+                            },
                             Entry::Vacant(ent) => {
                                 ent.insert(vec![new.proto.ident.clone()]);
-                            }
+                            },
                         }
                     }
                     cmds.push(new);
-                }
+                },
                 // finished building the namespace
                 ParseEvent::End(ref name) if name == "commands" => break,
                 // error handling
@@ -583,23 +584,23 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
             match self.next().unwrap() {
                 ParseEvent::Start(ref name, _) if name == "param" => {
                     params.push(self.consume_binding("param"));
-                }
+                },
                 ParseEvent::Start(ref name, ref attributes) if name == "alias" => {
                     alias = get_attribute(&attributes, "name");
                     alias = alias.map(|t| trim_cmd_prefix(&t, api).to_string());
                     self.consume_end_element("alias");
-                }
+                },
                 ParseEvent::Start(ref name, ref attributes) if name == "vecequiv" => {
                     vecequiv = get_attribute(&attributes, "vecequiv");
                     self.consume_end_element("vecequiv");
-                }
+                },
                 ParseEvent::Start(ref name, ref attributes) if name == "glx" => {
                     glx = Some(GlxOpcode {
                         opcode: get_attribute(&attributes, "opcode").unwrap(),
                         name: get_attribute(&attributes, "name"),
                     });
                     self.consume_end_element("glx");
-                }
+                },
                 ParseEvent::End(ref name) if name == "command" => break,
                 event => panic!("Expected </command>, found: {:?}", event),
             }
@@ -647,11 +648,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
     }
 }
 
-impl<T> Parse for T
-where
-    T: Sized + Iterator<Item = ParseEvent>,
-{
-}
+impl<T> Parse for T where T: Sized + Iterator<Item = ParseEvent> {}
 
 fn get_attribute(attribs: &[Attribute], key: &str) -> Option<String> {
     attribs
@@ -694,7 +691,7 @@ impl FromXml for Feature {
     fn convert<P: Parse>(parser: &mut P, a: &[Attribute]) -> Feature {
         debug!("Doing a FromXml on Feature");
         let api = get_attribute(a, "api").unwrap();
-        let api = api_from_str(&api).unwrap();
+        let api = api_from_str(&api).unwrap().unwrap();
         let name = get_attribute(a, "name").unwrap();
         let number = get_attribute(a, "number").unwrap();
 
@@ -719,15 +716,16 @@ impl FromXml for Extension {
         let supported = get_attribute(a, "supported")
             .unwrap()
             .split('|')
-            .map(api_from_str)
-            .map(Result::unwrap)
+            .filter_map(|api| {
+                api_from_str(api).unwrap_or_else(|()| panic!("unsupported API `{}`", api))
+            })
             .collect::<Vec<_>>();
         let mut require = Vec::new();
         loop {
             match parser.next().unwrap() {
                 ParseEvent::Start(ref name, ref attributes) if name == "require" => {
                     require.push(FromXml::convert(parser, &attributes));
-                }
+                },
                 ParseEvent::End(ref name) if name == "extension" => break,
                 event => panic!("Unexpected message {:?}", event),
             }
@@ -819,6 +817,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "const GLfloat *" => "*const types::GLfloat",
         "const GLhalfNV *" => "*const types::GLhalfNV",
         "const GLint *" => "*const types::GLint",
+        "const GLint*" => "*const types::GLint",
         "const GLint64 *" => "*const types::GLint64",
         "const GLint64EXT *" => "*const types::GLint64EXT",
         "const GLintptr *" => "*const types::GLintptr",
@@ -996,7 +995,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLClientBuffer" => "types::EGLClientBuffer",
         "__eglMustCastToProperFunctionPointerType" => {
             "types::__eglMustCastToProperFunctionPointerType"
-        }
+        },
         "EGLImageKHR" => "types::EGLImageKHR",
         "EGLImage" => "types::EGLImage",
         "EGLOutputLayerEXT" => "types::EGLOutputLayerEXT",
@@ -1027,6 +1026,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLTimeKHR *" => "*mut types::EGLTimeKHR",
         "EGLOutputPortEXT *" => "*mut types::EGLOutputPortEXT",
         "EGLuint64KHR *" => "*mut types::EGLuint64KHR",
+        "const struct AHardwareBuffer *" => "*const __gl_imports::raw::c_void", // humm
 
         "GLeglClientBufferEXT" => "types::GLeglClientBufferEXT",
         "GLVULKANPROCNV" => "types::GLVULKANPROCNV",

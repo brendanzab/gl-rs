@@ -16,10 +16,10 @@ extern crate gl;
 extern crate glutin;
 
 use gl::types::*;
+use std::ffi::CString;
 use std::mem;
 use std::ptr;
 use std::str;
-use std::ffi::CString;
 
 // Vertex data
 static VERTEX_DATA: [GLfloat; 6] = [0.0, 0.5, 0.5, -0.5, -0.5, -0.5];
@@ -169,7 +169,7 @@ fn main() {
         use glutin::{ControlFlow, Event, WindowEvent};
 
         if let Event::WindowEvent { event, .. } = event {
-            if let WindowEvent::Closed = event {
+            if let WindowEvent::CloseRequested = event {
                 return ControlFlow::Break;
             }
         }

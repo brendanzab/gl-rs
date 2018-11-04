@@ -120,7 +120,7 @@ impl TypeKind {
                     }
                 }
                 (Some(s.as_str()), self)
-            }
+            },
             _ => (None, self),
         }
     }

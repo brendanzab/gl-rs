@@ -8,5 +8,5 @@ rust:
 cache: cargo
 
 script:
-  - cargo build --all
-  - cargo test --all
+  - travis_wait cargo build --all
+  - travis_wait cargo test --all

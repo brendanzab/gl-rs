@@ -30,8 +30,20 @@ fn main() {
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
-    writeln!(&mut file, "mod gles {{").unwrap();
+    writeln!(&mut file, "mod gles1 {{").unwrap();
+    Registry::new(Api::Gles1, (1, 1), Profile::Core, Fallbacks::All, [])
+        .write_bindings(GlobalGenerator, &mut file)
+        .unwrap();
+    writeln!(&mut file, "}}").unwrap();
+
+    writeln!(&mut file, "mod gles2 {{").unwrap();
     Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::All, [])
+        .write_bindings(GlobalGenerator, &mut file)
+        .unwrap();
+    writeln!(&mut file, "}}").unwrap();
+
+    writeln!(&mut file, "mod glsc2 {{").unwrap();
+    Registry::new(Api::Glsc2, (3, 1), Profile::Core, Fallbacks::All, [])
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();

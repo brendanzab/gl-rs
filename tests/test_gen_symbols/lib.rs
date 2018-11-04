@@ -32,11 +32,23 @@ pub fn compile_test_gl() {
     }
 }
 
-pub fn compile_test_gles() {
+pub fn compile_test_gles1() {
     unsafe {
-        gles::Clear(gles::COLOR_BUFFER_BIT);
-        let _: raw::c_uint = gles::CreateProgram();
-        gles::CompileShader(5);
+        gles1::Clear(gles1::COLOR_BUFFER_BIT);
+    }
+}
+
+pub fn compile_test_gles2() {
+    unsafe {
+        gles2::Clear(gles2::COLOR_BUFFER_BIT);
+        let _: raw::c_uint = gles2::CreateProgram();
+        gles2::CompileShader(5);
+    }
+}
+
+pub fn compile_test_glsc2() {
+    unsafe {
+        glsc2::Clear(glsc2::COLOR_BUFFER_BIT);
     }
 }
 

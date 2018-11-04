@@ -34,7 +34,7 @@ fn main() {
         use glutin::{ControlFlow, Event, WindowEvent};
 
         if let Event::WindowEvent { event, .. } = event {
-            if let WindowEvent::Closed = event {
+            if let WindowEvent::CloseRequested = event {
                 return ControlFlow::Break;
             }
         }

@@ -26,8 +26,8 @@ pub fn multimap_append<K: Ord + Clone, V: PartialEq>(
 /// Best-effort attempt to render HTML into a doc-comment which can
 /// be placed in the generated code.
 pub fn convert_html_to_doc_comment(html: &str) -> String {
-    use regex::RegexBuilder;
     use html2runes;
+    use regex::RegexBuilder;
 
     // Create doc comments
     let doc_comment_regex = RegexBuilder::new("^").multi_line(true).build().unwrap();
@@ -80,6 +80,5 @@ pub fn camel(name: &str) -> String {
 pub fn parse_defs(src: &[u8]) -> Vec<ast::Definition> {
     let src = str::from_utf8(src).expect("IDL contained invalid UTF-8");
 
-    let parser = webidl::Parser::new();
-    parser.parse_string(src).expect("Failed to parse IDL")
+    webidl::parse_string(src).expect("Failed to parse IDL")
 }

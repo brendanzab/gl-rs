@@ -1,6 +1,6 @@
 [package]
 name = "gl"
-version = "0.10.0"
+version = "0.11.0"
 authors = [
     "Brendan Zabarauskas <bjzaba@yahoo.com.au>",
     "Corey Richardson",
@@ -10,14 +10,14 @@ description = "OpenGL bindings"
 license = "Apache-2.0"
 build = "build.rs"
 documentation = "https://docs.rs/gl"
-homepage = "https://github.com/brendanzab/gl-rs/gl/"
+homepage = "https://github.com/brendanzab/gl-rs/"
 repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 categories = ["api-bindings", "rendering::graphics-api"]
 keywords = ["gl", "egl", "opengl", "khronos"]
 
 [build-dependencies]
-gl_generator = { version = "0.9.0", path = "../gl_generator" }
+gl_generator = { version = "0.10.0", path = "../gl_generator" }
 
 [dev-dependencies]
-glutin = "0.10.0"
+glutin = "0.18.0"

@@ -220,7 +220,8 @@ fn main() {
         &mut file,
         "mod egl_static_struct {{ {}",
         build_egl_symbols()
-    ).unwrap();
+    )
+    .unwrap();
     egl_registry
         .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
