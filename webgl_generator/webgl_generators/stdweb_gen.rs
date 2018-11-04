@@ -177,7 +177,8 @@ fn process_arg_type_kind(
                     TypeKind::TypedArray(_) => Some(t),
                     TypeKind::Sequence(_) => None,
                     _ => panic!("Union support is limited!"),
-                }).next()
+                })
+                .next()
                 .expect("Union did not contain a TypedArray");
 
             process_arg_type(t, registry, gc)
@@ -282,7 +283,8 @@ fn process_result_type_kind(type_kind: &TypeKind, registry: &Registry) -> Proces
                     TypeKind::TypedArray(_) => Some(t),
                     TypeKind::Sequence(_) => None,
                     _ => panic!("Union support is limited!"),
-                }).next()
+                })
+                .next()
                 .expect("Union did not contain a TypedArray");
 
             process_result_type(t, registry)
@@ -326,7 +328,7 @@ where
 // {registry:?}
 extern crate stdweb;
 
-use self::stdweb::{{Reference, Value, UnsafeTypedArray, Once, JsSerialize, InstanceOf}};
+use self::stdweb::{{Reference, Value, UnsafeTypedArray, JsSerialize, InstanceOf}};
 use self::stdweb::unstable::{{TryFrom, TryInto}};
 use self::stdweb::web::{{RenderingContext, TypedArray, ArrayBuffer}};
 use self::stdweb::web::html_element::CanvasElement;
@@ -789,7 +791,8 @@ where
                 processed.wrapper.wrap(&unreserve(snake(&a.name)))
             );
             OperationArg { arg, js_arg }
-        }).collect();
+        })
+        .collect();
 
     let rust_args = args
         .iter()

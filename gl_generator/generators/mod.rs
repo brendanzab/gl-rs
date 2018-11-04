@@ -102,7 +102,8 @@ pub fn gen_parameters(cmd: &Cmd, with_idents: bool, with_types: bool) -> Vec<Str
             } else {
                 panic!()
             }
-        }).collect()
+        })
+        .collect()
 }
 
 /// Generates the native symbol name of a `Cmd`.

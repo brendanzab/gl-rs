@@ -86,16 +86,17 @@ impl ParseEvent {
     }
 }
 
-fn api_from_str(src: &str) -> Result<Api, ()> {
+fn api_from_str(src: &str) -> Result<Option<Api>, ()> {
     match src {
-        "gl" => Ok(Api::Gl),
-        "glx" => Ok(Api::Glx),
-        "wgl" => Ok(Api::Wgl),
-        "egl" => Ok(Api::Egl),
-        "glcore" => Ok(Api::GlCore),
-        "gles1" => Ok(Api::Gles1),
-        "gles2" => Ok(Api::Gles2),
-        "glsc2" => Ok(Api::Glsc2),
+        "gl" => Ok(Some(Api::Gl)),
+        "glx" => Ok(Some(Api::Glx)),
+        "wgl" => Ok(Some(Api::Wgl)),
+        "egl" => Ok(Some(Api::Egl)),
+        "glcore" => Ok(Some(Api::GlCore)),
+        "gles1" => Ok(Some(Api::Gles1)),
+        "gles2" => Ok(Some(Api::Gles2)),
+        "glsc2" => Ok(Some(Api::Glsc2)),
+        "disabled" => Ok(None),
         _ => Err(()),
     }
 }
@@ -690,7 +691,7 @@ impl FromXml for Feature {
     fn convert<P: Parse>(parser: &mut P, a: &[Attribute]) -> Feature {
         debug!("Doing a FromXml on Feature");
         let api = get_attribute(a, "api").unwrap();
-        let api = api_from_str(&api).unwrap();
+        let api = api_from_str(&api).unwrap().unwrap();
         let name = get_attribute(a, "name").unwrap();
         let number = get_attribute(a, "number").unwrap();
 
@@ -715,8 +716,9 @@ impl FromXml for Extension {
         let supported = get_attribute(a, "supported")
             .unwrap()
             .split('|')
-            .map(api_from_str)
-            .map(Result::unwrap)
+            .filter_map(|api| {
+                api_from_str(api).unwrap_or_else(|()| panic!("unsupported API `{}`", api))
+            })
             .collect::<Vec<_>>();
         let mut require = Vec::new();
         loop {
@@ -815,6 +817,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "const GLfloat *" => "*const types::GLfloat",
         "const GLhalfNV *" => "*const types::GLhalfNV",
         "const GLint *" => "*const types::GLint",
+        "const GLint*" => "*const types::GLint",
         "const GLint64 *" => "*const types::GLint64",
         "const GLint64EXT *" => "*const types::GLint64EXT",
         "const GLintptr *" => "*const types::GLintptr",
@@ -1023,6 +1026,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLTimeKHR *" => "*mut types::EGLTimeKHR",
         "EGLOutputPortEXT *" => "*mut types::EGLOutputPortEXT",
         "EGLuint64KHR *" => "*mut types::EGLuint64KHR",
+        "const struct AHardwareBuffer *" => "*const __gl_imports::raw::c_void", // humm
 
         "GLeglClientBufferEXT" => "types::GLeglClientBufferEXT",
         "GLVULKANPROCNV" => "types::GLVULKANPROCNV",
