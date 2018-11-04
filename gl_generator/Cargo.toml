@@ -23,6 +23,6 @@ path = "lib.rs"
 unstable_generator_utils = []
 
 [dependencies]
-khronos_api = { version = "2.1.0", path = "../khronos_api" }
-log = "0.4.1"
-xml-rs = "0.8.0"
+khronos_api = { version = "2.2.0", path = "../khronos_api" }
+log = "0.4"
+xml-rs = "0.8"

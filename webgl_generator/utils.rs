@@ -80,6 +80,5 @@ pub fn camel(name: &str) -> String {
 pub fn parse_defs(src: &[u8]) -> Vec<ast::Definition> {
     let src = str::from_utf8(src).expect("IDL contained invalid UTF-8");
 
-    let parser = webidl::Parser::new();
-    parser.parse_string(src).expect("Failed to parse IDL")
+    webidl::parse_string(src).expect("Failed to parse IDL")
 }

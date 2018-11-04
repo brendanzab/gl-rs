@@ -191,7 +191,8 @@ impl Registry {
                 value: match const_.value {
                     ConstValue::BooleanLiteral(b) => format!("{:?}", b),
                     ConstValue::FloatLiteral(v) => format!("{:?}", v),
-                    ConstValue::IntegerLiteral(v) => format!("{:?}", v),
+                    ConstValue::SignedIntegerLiteral(v) => format!("{:?}", v),
+                    ConstValue::UnsignedIntegerLiteral(v) => format!("{:?}", v),
                     ConstValue::Null => "None".into(),
                 },
             }),
@@ -230,24 +231,26 @@ impl Registry {
         use self::ast::Operation::*;
         use self::ast::ReturnType;
         match operation {
-            Regular(o) => if let Some(name) = o.name {
-                Some((
-                    name,
-                    Member::Operation(Operation {
-                        args: o
-                            .arguments
-                            .into_iter()
-                            .map(|a| self.load_argument(a))
-                            .collect(),
-                        return_type: match o.return_type {
-                            ReturnType::NonVoid(t) => Some(self.load_type(*t)),
-                            ReturnType::Void => None,
-                        },
-                        doc_comment: String::new(),
-                    }),
-                ))
-            } else {
-                None
+            Regular(o) => {
+                if let Some(name) = o.name {
+                    Some((
+                        name,
+                        Member::Operation(Operation {
+                            args: o
+                                .arguments
+                                .into_iter()
+                                .map(|a| self.load_argument(a))
+                                .collect(),
+                            return_type: match o.return_type {
+                                ReturnType::NonVoid(t) => Some(self.load_type(*t)),
+                                ReturnType::Void => None,
+                            },
+                            doc_comment: String::new(),
+                        }),
+                    ))
+                } else {
+                    None
+                }
             },
             _ => None,
         }
