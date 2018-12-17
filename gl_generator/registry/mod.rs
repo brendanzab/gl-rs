@@ -83,6 +83,14 @@ impl Hash for Enum {
 pub struct Binding {
     pub ident: String,
     pub ty: Cow<'static, str>,
+    pub group: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Group {
+    pub ident: String,
+    pub enums_type: Option<String>,
+    pub enums: Vec<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -112,6 +120,7 @@ pub struct Registry {
     pub enums: BTreeSet<Enum>,
     pub cmds: BTreeSet<Cmd>,
     pub aliases: BTreeMap<String, Vec<String>>,
+    pub groups: BTreeMap<String, Group>,
 }
 
 impl Registry {
