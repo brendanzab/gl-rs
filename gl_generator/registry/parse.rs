@@ -25,12 +25,16 @@ use xml::EventReader as XmlEventReader;
 use registry::{Binding, Cmd, Enum, GlxOpcode, Group, Registry};
 use {Api, Fallbacks, Profile};
 
-pub fn from_xml<R: io::Read>(src: R, filter: Filter) -> Registry {
+pub fn from_xml<R: io::Read>(
+    src: R,
+    filter: &Filter,
+    require_feature: bool,
+) -> Registry {
     XmlEventReader::new(src)
         .into_iter()
         .map(Result::unwrap)
         .filter_map(ParseEvent::from_xml)
-        .parse(filter)
+        .parse(filter, require_feature)
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -287,7 +291,7 @@ pub struct Filter {
 }
 
 trait Parse: Sized + Iterator<Item = ParseEvent> {
-    fn parse(mut self, filter: Filter) -> Registry {
+    fn parse(mut self, filter: &Filter, require_feature: bool) -> Registry {
         self.consume_start_element("registry");
 
         let mut enums = Vec::new();
@@ -380,7 +384,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
             }
         }
 
-        if !found_feature {
+        if !found_feature && require_feature {
             panic!("Did not find version {} in the registry", filter.version);
         }
 
@@ -833,6 +837,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "void" => "()",
         "GLboolean *" => "*mut types::GLboolean",
         "GLchar *" => "*mut types::GLchar",
+        "const GLchar*" => "*const types::GLchar",
         "GLcharARB *" => "*mut types::GLcharARB",
         "GLdouble *" => "*mut types::GLdouble",
         "GLenum *" => "*mut types::GLenum",
@@ -870,6 +875,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "const GLint64EXT *" => "*const types::GLint64EXT",
         "const GLintptr *" => "*const types::GLintptr",
         "const GLshort *" => "*const types::GLshort",
+        "const GLsizei*" |
         "const GLsizei *" => "*const types::GLsizei",
         "const GLsizeiptr *" => "*const types::GLsizeiptr",
         "const GLubyte *" => "*const types::GLubyte",
@@ -879,6 +885,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "const GLushort *" => "*const types::GLushort",
         "const GLvdpauSurfaceNV *" => "*const types::GLvdpauSurfaceNV",
         "const GLvoid *" => "*const types::GLvoid",
+        "const void*" |
         "const void *" => "*const __gl_imports::raw::c_void",
         "const void **" => "*const *const __gl_imports::raw::c_void",
         "const void *const*" => "*const *const __gl_imports::raw::c_void",
