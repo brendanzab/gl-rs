@@ -7,3 +7,6 @@
 [submodule "khronos_api/api_webgl"]
 	path = khronos_api/api_webgl
 	url = https://github.com/KhronosGroup/WebGL.git
+[submodule "khronos_api/api_angle"]
+	path = khronos_api/api_angle
+	url = https://github.com/google/angle.git
