@@ -19,7 +19,7 @@ path = "lib.rs"
 
 [dependencies]
 khronos_api = { version = "3.0.0", path = "../khronos_api" }
-webidl = { version = "0.8" }
+webidl = { version = "0.9" }
 heck = { version = "0.3" }
 RustyXML = "0.1"
 html2runes = "1.0"
