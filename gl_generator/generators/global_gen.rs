@@ -63,7 +63,7 @@ where
         dest,
         r#"
         #[inline(never)]
-        fn metaloadfn(loadfn: &mut FnMut(&'static str) -> *const __gl_imports::raw::c_void,
+        fn metaloadfn(loadfn: &mut dyn FnMut(&'static str) -> *const __gl_imports::raw::c_void,
                       symbol: &'static str,
                       fallbacks: &[&'static str]) -> *const __gl_imports::raw::c_void {{
             let mut ptr = loadfn(symbol);
