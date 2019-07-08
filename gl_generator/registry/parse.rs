@@ -201,7 +201,7 @@ fn make_egl_enum(ident: String, ty: Option<String>, value: String, alias: Option
             }
         } else {
             match value.chars().next() {
-                Some('-') | Some('0'...'9') => (),
+                Some('-') | Some('0'..='9') => (),
                 _ => panic!("Unexpected value format: {}", value),
             }
 
