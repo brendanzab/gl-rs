@@ -59,7 +59,6 @@ impl<'a> Exts<'a> {
 
     fn enumerate(&self) -> Vec<ExtensionIDL> {
         use regex::{Regex, RegexBuilder};
-        use xml;
 
         // The Khronos IDL files are... not quite right, so let's fix them up!
         let enum_regex = Regex::new("([(, ])enum\\b").unwrap();

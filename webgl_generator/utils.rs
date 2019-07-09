@@ -26,7 +26,6 @@ pub fn multimap_append<K: Ord + Clone, V: PartialEq>(
 /// Best-effort attempt to render HTML into a doc-comment which can
 /// be placed in the generated code.
 pub fn convert_html_to_doc_comment(html: &str) -> String {
-    use html2runes;
     use regex::RegexBuilder;
 
     // Create doc comments
