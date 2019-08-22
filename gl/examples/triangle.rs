@@ -111,15 +111,14 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint {
 }
 
 fn main() {
-    use glutin::GlContext;
-
     let mut events_loop = glutin::EventsLoop::new();
     let window = glutin::WindowBuilder::new();
-    let context = glutin::ContextBuilder::new();
-    let gl_window = glutin::GlWindow::new(window, context, &events_loop).unwrap();
+    let gl_window = glutin::ContextBuilder::new()
+        .build_windowed(window, &events_loop)
+        .unwrap();
 
     // It is essential to make the context current before calling `gl::load_with`.
-    unsafe { gl_window.make_current() }.unwrap();
+    let gl_window = unsafe { gl_window.make_current() }.unwrap();
 
     // Load the OpenGL function pointers
     // TODO: `as *const _` will not be needed once glutin is updated to the latest gl version
