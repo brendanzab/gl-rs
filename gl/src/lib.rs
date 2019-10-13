@@ -25,24 +25,26 @@
 //! # }
 //! ~~~
 //!
-//! You can load the function pointers into their respective function pointers
+//! You must load the function pointers into their respective function pointers
 //! using the `load_with` function. You must supply a loader function from your
-//! context library, This is how it would look using [glfw-rs]
-//! (https://github.com/PistonDevelopers/glfw-rs):
+//! context library. This is how it would look using [glfw-rs](https://github.com/PistonDevelopers/glfw-rs):
 //!
 //! ~~~ignore
 //! // the supplied function must be of the type:
 //! // `&fn(symbol: &'static str) -> *const std::os::raw::c_void`
-//! gl::load_with(|s| glfw.get_proc_address(s));
+//! // `window` is a glfw::Window
+//! gl::load_with(|s| window.get_proc_address(s) as *const _);
 //!
 //! // loading a specific function pointer
-//! gl::Viewport::load_with(|s| glfw.get_proc_address(s));
+//! gl::Viewport::load_with(|s| window.get_proc_address(s) as *const _);
 //! ~~~
 //!
 //! Calling a function that has not been loaded will result in a failure like:
-//! `panic!("gl::Viewport was not loaded")`, which aviods a segfault. This feature
+//! `panic!("gl::Viewport was not loaded")`, which avoids a segfault. This feature
 //! does not cause any run time overhead because the failing functions are
 //! assigned only when `load_with` is called.
+//!
+//! All OpenGL function calls are `unsafe`.
 //!
 //! ~~~no_run
 //! # #![allow(path_statement)]
@@ -53,11 +55,6 @@
 //!
 //! // calling a function
 //! unsafe { gl::DrawArrays(gl::TRIANGLES, 0, 3) };
-//!
-//! // functions that take pointers are unsafe
-//! # let shader = 0;
-//! # let c_str: *const i8 = std::ptr::null();
-//! unsafe { gl::ShaderSource(shader, 1, &c_str, std::ptr::null()) };
 //! # }
 //! ~~~
 //!

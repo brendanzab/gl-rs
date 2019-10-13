@@ -17,3 +17,8 @@ See `tests/test_webgl_stdweb` for an example of how to use these generators.
 The stdweb generator is currently the only supported webgl generator. This generator
 uses `stdweb` to bind the relevant javascript APIs, and integrates with the `stdweb`
 `RenderingContext` trait.
+
+```toml
+[build-dependencies]
+webgl_generator = "0.2.0"
+```

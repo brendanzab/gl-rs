@@ -22,7 +22,7 @@
 //! ```no_run
 //! extern crate gl_generator;
 //!
-//! use gl_generator::{Registry, Api, Profile, Fallbacks, GlobalGenerator};
+//! use gl_generator::{Api, Fallbacks, GlobalGenerator, Profile, Registry};
 //! use std::env;
 //! use std::fs::File;
 //! use std::path::Path;

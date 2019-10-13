@@ -20,7 +20,7 @@ An OpenGL function pointer loader for the Rust Programming Language.
 
 ```toml
 [dependencies]
-gl = "0.6.0"
+gl = "0.14.0"
 ```
 
 ### gl_generator
@@ -33,7 +33,7 @@ Code generators for creating bindings to the Khronos OpenGL APIs.
 
 ```toml
 [build-dependencies]
-gl_generator = "0.5.0"
+gl_generator = "0.14.0"
 ```
 
 ### khronos_api
@@ -46,13 +46,39 @@ The Khronos XML API Registry, exposed as byte string constants.
 
 ```toml
 [build-dependencies]
-khronos_api = "1.0.0"
+khronos_api = "3.1.0"
 ```
 
-## Compiling from source
+#### Compiling from source
 
 `khronos_api` makes use of git submodules. You will need to initialize these before building:
 
 ```sh
 git submodule update --init
+```
+
+### webgl_generator
+
+[![Version](https://img.shields.io/crates/v/webgl_generator.svg)](https://crates.io/crates/webgl_generator) [![License](https://img.shields.io/crates/l/webgl_generator.svg)](https://github.com/brendanzab/gl-rs/blob/master/LICENSE) [![Downloads](https://img.shields.io/crates/d/webgl_generator.svg)](https://crates.io/crates/webgl_generator)
+
+[README](https://github.com/brendanzab/gl-rs/tree/master/webgl_generator)
+
+Code generators for creating bindings to the WebGL APIs.
+
+```toml
+[build-dependencies]
+webgl_generator = "0.2.0"
+```
+
+### webgl-stdweb
+
+[![Version](https://img.shields.io/crates/v/webgl_stdweb.svg)](https://crates.io/crates/webgl_stdweb) [![License](https://img.shields.io/crates/l/webgl_stdweb.svg)](https://github.com/brendanzab/gl-rs/blob/master/LICENSE) [![Downloads](https://img.shields.io/crates/d/webgl_stdweb.svg)](https://crates.io/crates/webgl_stdweb)
+
+[README](https://github.com/brendanzab/gl-rs/tree/master/webgl_stdweb)
+
+WebGL bindings using stdweb
+
+```toml
+[build-dependencies]
+webgl_stdweb = "0.3.0"
 ```
