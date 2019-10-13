@@ -247,7 +247,8 @@ where
                     format!(", \"<callback>\"")
                 } else {
                     format!(", {}", name)
-                }).collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>()
                 .concat()
         );
 
