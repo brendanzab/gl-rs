@@ -424,7 +424,7 @@ where
 {
     writeln!(
         dest,
-        r#"pub type {name} = {type_};"#,
+        r#"#[allow(dead_code)] pub type {name} = {type_};"#,
         name = name,
         type_ = process_result_type(type_, registry).type_
     )?;
