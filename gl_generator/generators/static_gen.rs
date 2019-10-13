@@ -23,10 +23,10 @@ impl super::Generator for StaticGenerator {
     where
         W: io::Write,
     {
-        try!(write_header(dest));
-        try!(write_type_aliases(registry, dest));
-        try!(write_enums(registry, dest));
-        try!(write_fns(registry, dest));
+        write_header(dest)?;
+        write_type_aliases(registry, dest)?;
+        write_enums(registry, dest)?;
+        write_fns(registry, dest)?;
         Ok(())
     }
 }
@@ -55,15 +55,15 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(
+    writeln!(
         dest,
         r#"
         pub mod types {{
             #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
     "#
-    ));
+    )?;
 
-    try!(super::gen_types(registry.api, dest));
+    super::gen_types(registry.api, dest)?;
 
     writeln!(
         dest,
@@ -79,7 +79,7 @@ where
     W: io::Write,
 {
     for enm in &registry.enums {
-        try!(super::gen_enum_item(enm, "types::", dest));
+        super::gen_enum_item(enm, "types::", dest)?;
     }
 
     Ok(())
@@ -92,15 +92,15 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(
+    writeln!(
         dest,
         "
         #[allow(non_snake_case, unused_variables, dead_code)]
         extern \"system\" {{"
-    ));
+    )?;
 
     for cmd in &registry.cmds {
-        try!(writeln!(
+        writeln!(
             dest,
             "#[link_name=\"{symbol}\"]
             pub fn {name}({params}) -> {return_suffix};",
@@ -108,7 +108,7 @@ where
             name = cmd.proto.ident,
             params = super::gen_parameters(cmd, true, true).join(", "),
             return_suffix = cmd.proto.ty,
-        ));
+        )?;
     }
 
     writeln!(dest, "}}")

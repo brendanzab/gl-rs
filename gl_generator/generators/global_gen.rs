@@ -23,16 +23,16 @@ impl super::Generator for GlobalGenerator {
     where
         W: io::Write,
     {
-        try!(write_header(dest));
-        try!(write_metaloadfn(dest));
-        try!(write_type_aliases(registry, dest));
-        try!(write_enums(registry, dest));
-        try!(write_fns(registry, dest));
-        try!(write_fnptr_struct_def(dest));
-        try!(write_ptrs(registry, dest));
-        try!(write_fn_mods(registry, dest));
-        try!(write_panicking_fns(registry, dest));
-        try!(write_load_fn(registry, dest));
+        write_header(dest)?;
+        write_metaloadfn(dest)?;
+        write_type_aliases(registry, dest)?;
+        write_enums(registry, dest)?;
+        write_fns(registry, dest)?;
+        write_fnptr_struct_def(dest)?;
+        write_ptrs(registry, dest)?;
+        write_fn_mods(registry, dest)?;
+        write_panicking_fns(registry, dest)?;
+        write_load_fn(registry, dest)?;
         Ok(())
     }
 }
@@ -86,15 +86,15 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(
+    writeln!(
         dest,
         r#"
         pub mod types {{
             #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
     "#
-    ));
+    )?;
 
-    try!(super::gen_types(registry.api, dest));
+    super::gen_types(registry.api, dest)?;
 
     writeln!(
         dest,
@@ -110,7 +110,7 @@ where
     W: io::Write,
 {
     for enm in &registry.enums {
-        try!(super::gen_enum_item(enm, "types::", dest));
+        super::gen_enum_item(enm, "types::", dest)?;
     }
 
     Ok(())
@@ -126,10 +126,10 @@ where
 {
     for cmd in &registry.cmds {
         if let Some(v) = registry.aliases.get(&cmd.proto.ident) {
-            try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
+            writeln!(dest, "/// Fallbacks: {}", v.join(", "))?;
         }
 
-        try!(writeln!(dest,
+        writeln!(dest,
             "#[allow(non_snake_case, unused_variables, dead_code)] #[inline]
             pub unsafe fn {name}({params}) -> {return_suffix} {{ \
                 __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
@@ -140,7 +140,7 @@ where
             typed_params = super::gen_parameters(cmd, false, true).join(", "),
             return_suffix = cmd.proto.ty,
             idents = super::gen_parameters(cmd, true, false).join(", "),
-        ));
+        )?;
     }
 
     Ok(())
@@ -179,24 +179,24 @@ fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(
+    writeln!(
         dest,
         "mod storage {{
             #![allow(non_snake_case)]
             #![allow(non_upper_case_globals)]
             use super::__gl_imports::raw;
             use super::FnPtr;"
-    ));
+    )?;
 
     for c in &registry.cmds {
-        try!(writeln!(
+        writeln!(
             dest,
             "pub static mut {name}: FnPtr = FnPtr {{
                 f: super::missing_fn_panic as *const raw::c_void,
                 is_loaded: false
             }};",
             name = c.proto.ident
-        ));
+        )?;
     }
 
     writeln!(dest, "}}")
@@ -225,7 +225,9 @@ where
         let symbol = super::gen_symbol_name(registry.api, &c.proto.ident[..]);
         let symbol = &symbol[..];
 
-        try!(writeln!(dest, r##"
+        writeln!(
+            dest,
+            r##"
             #[allow(non_snake_case)]
             pub mod {fnname} {{
                 use super::{{storage, metaloadfn}};
@@ -245,7 +247,11 @@ where
                     }}
                 }}
             }}
-        "##, fnname = fnname, fallbacks = fallbacks, symbol = symbol));
+        "##,
+            fnname = fnname,
+            fallbacks = fallbacks,
+            symbol = symbol
+        )?;
     }
 
     Ok(())
@@ -276,7 +282,7 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(dest,
+    writeln!(dest,
                   "
         /// Load each OpenGL symbol using a custom load function. This allows for the
         /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
@@ -287,14 +293,14 @@ where
         pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const __gl_imports::raw::c_void {{
             #[inline(never)]
             fn inner(loadfn: &mut dyn FnMut(&'static str) -> *const __gl_imports::raw::c_void) {{
-    "));
+    ")?;
 
     for c in &registry.cmds {
-        try!(writeln!(
+        writeln!(
             dest,
             "{cmd_name}::load_with(&mut *loadfn);",
             cmd_name = &c.proto.ident[..]
-        ));
+        )?;
     }
 
     writeln!(
