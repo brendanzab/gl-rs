@@ -24,7 +24,7 @@ fn main() {
     let mut file = File::create(&Path::new(&dest).join("test_symbols.rs")).unwrap();
     let extensions = ["GL_ARB_debug_output"];
 
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, extensions)
+    Registry::new(Api::Gl, (4, 6), Profile::Core, Fallbacks::All, extensions)
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
 }
