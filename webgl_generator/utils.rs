@@ -32,9 +32,7 @@ pub fn convert_html_to_doc_comment(html: &str) -> String {
     let doc_comment_regex = RegexBuilder::new("^").multi_line(true).build().unwrap();
 
     let md = html2runes::markdown::convert_string(html);
-    let mut doc = doc_comment_regex
-        .replace_all(md.trim_right(), "/// ")
-        .into();
+    let mut doc = doc_comment_regex.replace_all(md.trim_end(), "/// ").into();
     doc += "\n";
     doc
 }
