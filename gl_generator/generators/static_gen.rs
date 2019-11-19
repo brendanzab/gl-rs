@@ -15,10 +15,8 @@
 use crate::registry::Registry;
 use std::io;
 
-#[deprecated(since = "0.15.0")]
 pub struct StaticGenerator;
 
-#[allow(deprecated)]
 impl super::Generator for StaticGenerator {
     fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
     where

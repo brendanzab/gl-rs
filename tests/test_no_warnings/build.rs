@@ -48,7 +48,7 @@ fn main() {
 
     writeln!(&mut file, "mod gl_static_struct {{").unwrap();
     gl_registry
-        .write_bindings(StaticStructGenerator::default(), &mut file)
+        .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
@@ -82,7 +82,7 @@ fn main() {
 
     writeln!(&mut file, "mod glx_static_struct {{").unwrap();
     glx_registry
-        .write_bindings(StaticStructGenerator::default(), &mut file)
+        .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
@@ -116,7 +116,7 @@ fn main() {
 
     writeln!(&mut file, "mod wgl_static_struct {{").unwrap();
     wgl_registry
-        .write_bindings(StaticStructGenerator::default(), &mut file)
+        .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
@@ -150,7 +150,7 @@ fn main() {
 
     writeln!(&mut file, "mod gles1_static_struct {{").unwrap();
     gles1_registry
-        .write_bindings(StaticStructGenerator::default(), &mut file)
+        .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
@@ -184,7 +184,7 @@ fn main() {
 
     writeln!(&mut file, "mod gles2_static_struct {{").unwrap();
     gles2_registry
-        .write_bindings(StaticStructGenerator::default(), &mut file)
+        .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
@@ -223,7 +223,7 @@ fn main() {
     )
     .unwrap();
     egl_registry
-        .write_bindings(StaticStructGenerator::default(), &mut file)
+        .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 

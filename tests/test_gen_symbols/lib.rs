@@ -14,7 +14,9 @@
 
 use std::os::raw;
 
-include!(concat!(env!("OUT_DIR"), "/test_gen_symbols.rs"));
+mod my_gl{
+  include!(concat!(env!("OUT_DIR"), "/test_gen_symbols.rs"));
+}
 
 pub fn compile_test_gl() {
     unsafe {
