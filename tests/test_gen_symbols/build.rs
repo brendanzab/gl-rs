@@ -25,44 +25,44 @@ fn main() {
     let mut file = File::create(&Path::new(&dest).join("test_gen_symbols.rs")).unwrap();
 
     writeln!(&mut file, "mod gl {{").unwrap();
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::Yes, [])
+        .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1 {{").unwrap();
-    Registry::new(Api::Gles1, (1, 1), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::Gles1, (1, 1), Profile::Core, Fallbacks::Yes, [])
+        .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2 {{").unwrap();
-    Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::Yes, [])
+        .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glsc2 {{").unwrap();
-    Registry::new(Api::Glsc2, (3, 1), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::Glsc2, (3, 1), Profile::Core, Fallbacks::Yes, [])
+        .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx {{").unwrap();
-    Registry::new(Api::Glx, (1, 4), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::Glx, (1, 4), Profile::Core, Fallbacks::Yes, [])
+        .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl {{").unwrap();
-    Registry::new(Api::Wgl, (1, 0), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::Wgl, (1, 0), Profile::Core, Fallbacks::Yes, [])
+        .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl {{ {}", build_egl_symbols()).unwrap();
-    Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::All, [])
-        .write_bindings(GlobalGenerator, &mut file)
+    Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::Yes, [])
+        .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
 }

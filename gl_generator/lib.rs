@@ -35,8 +35,10 @@ mod generators;
 
 mod registry;
 
+#[allow(deprecated)]
 pub use generators::{
-  global_gen::GlobalGenerator, struct_gen::StructGenerator,
+    global_gen::GlobalGenerator, static_gen::StaticGenerator,
+    static_struct_gen::StaticStructGenerator, struct_gen::StructGenerator,
 };
 
 pub use registry::*;
