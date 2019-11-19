@@ -1,147 +1,87 @@
-// Copyright 2015 Brendan Zabarauskas and the gl-rs developers
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-use registry::Registry;
+use crate::registry::{Api, Registry};
 use std::io;
 
-#[allow(missing_copy_implementations)]
-pub struct StructGenerator;
+#[derive(Debug)]
+pub struct StructGenerator {
+  /// If `true`, the bindings will import a `trace!` macro from the parent
+  /// module and invoke it with the name of the function about to be called
+  /// before actually calling each GL function.
+  pub trace: bool,
+  /// If `true`, the bindings will import an `error!` macro from the parent
+  /// module and, when `debug_assertions` are configured for the build, will
+  /// check after each GL call if there was an error. If an error is detected,
+  /// the `error!` macro will be invoked with a format string and args to
+  /// format.
+  pub debug_assert_error_check: bool,
+}
 
 impl super::Generator for StructGenerator {
-    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
-    where
-        W: io::Write,
-    {
-        try!(write_header(dest));
-        try!(write_type_aliases(registry, dest));
-        try!(write_enums(registry, dest));
-        try!(write_fnptr_struct_def(dest));
-        try!(write_panicking_fns(registry, dest));
-        try!(write_struct(registry, dest));
-        try!(write_impl(registry, dest));
-        Ok(())
-    }
-}
-
-/// Creates a `__gl_imports` module which contains all the external symbols that we need for the
-///  bindings.
-fn write_header<W>(dest: &mut W) -> io::Result<()>
-where
+  fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
+  where
     W: io::Write,
-{
-    writeln!(
-        dest,
-        r#"
-        mod __gl_imports {{
-            pub use std::mem;
-            pub use std::marker::Send;
-            pub use std::os::raw;
-        }}
-    "#
-    )
-}
-
-/// Creates a `types` module which contains all the type aliases.
-///
-/// See also `generators::gen_types`.
-fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
-    try!(writeln!(
-        dest,
-        r#"
-        pub mod types {{
-            #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
-    "#
-    ));
-
-    try!(super::gen_types(registry.api, dest));
-
-    writeln!(dest, "}}")
-}
-
-/// Creates all the `<enum>` elements at the root of the bindings.
-fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
-    for enm in &registry.enums {
-        try!(super::gen_enum_item(enm, "types::", dest));
-    }
-
+  {
+    write_header(registry, dest, self)?;
+    super::write_type_aliases(registry, dest)?;
+    super::write_enums(registry, dest)?;
+    write_struct(registry, dest)?;
+    write_impl(registry, dest, self.trace, self.debug_assert_error_check)?;
     Ok(())
+  }
 }
 
-/// Creates a `FnPtr` structure which contains the store for a single binding.
-fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()>
+fn write_header<W>(
+  registry: &Registry,
+  dest: &mut W,
+  gen: &StructGenerator,
+) -> io::Result<()>
 where
-    W: io::Write,
+  W: io::Write,
 {
-    writeln!(
-        dest,
-        "
-        #[allow(dead_code, missing_copy_implementations)]
-        #[derive(Clone)]
-        pub struct FnPtr {{
-            /// The function pointer that will be used when calling the function.
-            f: *const __gl_imports::raw::c_void,
-            /// True if the pointer points to a real function, false if points to a `panic!` fn.
-            is_loaded: bool,
-        }}
-
-        impl FnPtr {{
-            /// Creates a `FnPtr` from a load attempt.
-            fn new(ptr: *const __gl_imports::raw::c_void) -> FnPtr {{
-                if ptr.is_null() {{
-                    FnPtr {{
-                        f: missing_fn_panic as *const __gl_imports::raw::c_void,
-                        is_loaded: false
-                    }}
-                }} else {{
-                    FnPtr {{ f: ptr, is_loaded: true }}
-                }}
-            }}
-
-            /// Returns `true` if the function has been successfully loaded.
-            ///
-            /// If it returns `false`, calling the corresponding function will fail.
-            #[inline]
-            #[allow(dead_code)]
-            pub fn is_loaded(&self) -> bool {{
-                self.is_loaded
-            }}
-        }}
-    "
-    )
-}
-
-/// Creates a `panicking` module which contains one function per GL command.
-///
-/// These functions are the mocks that are called if the real function could not be loaded.
-fn write_panicking_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
-    writeln!(
-        dest,
-        "#[inline(never)]
-        fn missing_fn_panic() -> ! {{
-            panic!(\"{api} function was not loaded\")
-        }}",
-        api = registry.api
-    )
+  writeln!(dest, "#![allow(bad_style)]")?;
+  writeln!(dest, "#![allow(clippy::unreadable_literal)]")?;
+  writeln!(dest, "#![allow(clippy::missing_safety_doc)]")?;
+  writeln!(dest, "#![allow(clippy::too_many_arguments)]")?;
+  writeln!(dest, "#![allow(clippy::many_single_char_names)]")?;
+  writeln!(dest, "#![allow(clippy::let_unit_value)]")?;
+  writeln!(dest, "#![allow(clippy::let_and_return)]")?;
+  writeln!(dest)?;
+  writeln!(dest, "//! `phosphorus` auto-generated GL bindings file.")?;
+  writeln!(dest, "//! * API: {}", registry.api())?;
+  writeln!(dest, "//! * Version: {:?}", registry.version())?;
+  writeln!(dest, "//! * Fallbacks: {:?}", registry.fallbacks())?;
+  writeln!(dest, "//! * Extensions: {:?}", registry.extensions())?;
+  writeln!(dest, "//! * Generator Style: {:?}", gen)?;
+  writeln!(dest)?;
+  if gen.trace {
+    writeln!(dest, "use super::trace;")?;
+  }
+  if gen.debug_assert_error_check {
+    writeln!(dest, "use super::error;")?;
+  }
+  writeln!(dest, "use core::ffi::c_void;")?;
+  writeln!(dest, "use core::ptr::NonNull;")?;
+  writeln!(dest, "use core::mem::transmute;")?;
+  writeln!(dest, "#[cfg(not(windows))] pub use libc::{{
+    c_char, c_int, c_long, c_longlong, c_short, c_uint, c_ulong, c_ulonglong, c_ushort, c_float, c_double,
+  }};")?;
+  writeln!(
+    dest,
+    "#[cfg(windows)] pub type c_char = i8;
+    #[cfg(windows)] pub type c_schar = i8;
+    #[cfg(windows)] pub type c_uchar = u8;
+    #[cfg(windows)] pub type c_short = i16;
+    #[cfg(windows)] pub type c_ushort = u16;
+    #[cfg(windows)] pub type c_int = i32;
+    #[cfg(windows)] pub type c_uint = u32;
+    #[cfg(windows)] pub type c_long = i32;
+    #[cfg(windows)] pub type c_ulong = u32;
+    #[cfg(windows)] pub type c_longlong = i64;
+    #[cfg(windows)] pub type c_ulonglong = u64;
+    #[cfg(windows)] pub type c_float = f32;
+    #[cfg(windows)] pub type c_double = f64;"
+  )?;
+  writeln!(dest, "type OptVoidPtr = Option<NonNull<c_void>>;")?;
+  Ok(())
 }
 
 /// Creates a structure which stores all the `FnPtr` of the bindings.
@@ -149,108 +89,188 @@ where
 /// The name of the struct corresponds to the namespace.
 fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
-    W: io::Write,
+  W: io::Write,
 {
-    try!(writeln!(
-        dest,
-        "
-        #[allow(non_camel_case_types, non_snake_case, dead_code)]
+  writeln!(
+    dest,
+    "
         #[derive(Clone)]
         pub struct {api} {{",
-        api = super::gen_struct_name(registry.api)
-    ));
+    api = super::gen_struct_name(registry.api())
+  )?;
 
-    for cmd in &registry.cmds {
-        if let Some(v) = registry.aliases.get(&cmd.proto.ident) {
-            try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
+  for cmd in registry.cmds() {
+    // generate rustdoc link to the Kronos docs.
+    match registry.api() {
+      Api::Gl => {
+        writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl{name}.xhtml)",
+          name = cmd.proto.ident,
+        )?;
+      }
+      Api::Gles2 => {
+        if registry.version() == (2, 0) {
+          writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es2.0/html/gl{name}.xhtml)",
+            name = cmd.proto.ident,
+          )?;
+        } else if registry.version() == (3, 0) {
+          writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/gl{name}.xhtml)",
+            name = cmd.proto.ident,
+          )?;
+        } else if registry.version() == (3, 1) {
+          writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/gl{name}.xhtml)",
+            name = cmd.proto.ident,
+          )?;
+        } else if registry.version() == (3, 2) {
+          writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3/html/gl{name}.xhtml)",
+            name = cmd.proto.ident,
+          )?;
         }
-        try!(writeln!(dest, "pub {name}: FnPtr,", name = cmd.proto.ident));
+      }
+      // TODO: provide docs links for more types of API.
+      _ => (),
     }
-    try!(writeln!(dest, "_priv: ()"));
+    if let Some(v) = registry.aliases().get(&cmd.proto.ident) {
+      writeln!(dest, "/// Fallbacks: {}", v.join(", "))?;
+    }
+    writeln!(dest, "pub {name}: OptVoidPtr,", name = cmd.proto.ident)?;
+  }
+  writeln!(dest, "_priv: ()")?;
 
-    writeln!(dest, "}}")
+  writeln!(dest, "}}")
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
-fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
+fn write_impl<W>(
+  registry: &Registry,
+  dest: &mut W,
+  trace: bool,
+  debug_assert: bool,
+) -> io::Result<()>
 where
-    W: io::Write,
+  W: io::Write,
 {
-    try!(writeln!(dest,
-                  "impl {api} {{
-            /// Load each OpenGL symbol using a custom load function. This allows for the
-            /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
-            ///
-            /// ~~~ignore
-            /// let gl = Gl::load_with(|s| glfw.get_proc_address(s));
-            /// ~~~
-            #[allow(dead_code, unused_variables)]
-            pub fn load_with<F>(mut loadfn: F) -> {api} where F: FnMut(&'static str) -> *const __gl_imports::raw::c_void {{
-                #[inline(never)]
-                fn do_metaloadfn(loadfn: &mut dyn FnMut(&'static str) -> *const __gl_imports::raw::c_void,
-                                 symbol: &'static str,
-                                 symbols: &[&'static str])
-                                 -> *const __gl_imports::raw::c_void {{
-                    let mut ptr = loadfn(symbol);
-                    if ptr.is_null() {{
-                        for &sym in symbols {{
-                            ptr = loadfn(sym);
-                            if !ptr.is_null() {{ break; }}
-                        }}
-                    }}
-                    ptr
-                }}
-                let mut metaloadfn = |symbol: &'static str, symbols: &[&'static str]| {{
-                    do_metaloadfn(&mut loadfn, symbol, symbols)
-                }};
-                {api} {{",
-                  api = super::gen_struct_name(registry.api)));
+  writeln!(dest,"impl {api} {{
+    /// Load each OpenGL symbol using a provided loader function.
+    /// 
+    /// This allows for the use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
+    /// 
+    /// ```ignore
+    /// {api}::load_with(|ptr| SDL_GL_GetProcAddress(ptr));
+    /// ```
+    /// 
+    /// ## Safety
+    /// * This mostly trusts whatever the loader function says, so the loader must provide the correct pointer or a null pointer for each request.
+    pub fn load_with<F>(mut load_fn: F) -> {api} where F: FnMut(*const c_char) -> *const c_void {{
+      #[inline(never)]
+      fn do_meta_load_fn(loader: &mut dyn FnMut(*const c_char) -> *const c_void, names: &[&[u8]]) -> OptVoidPtr {{
+        fn ptr_ok(p: *const c_void) -> bool {{
+          !(p.is_null() || p as usize % core::mem::align_of::<usize>() == 0)
+        }}
+        for name in names.iter() {{
+          let p = loader(name.as_ptr() as *const c_char);
+          if ptr_ok(p) {{
+            return NonNull::new(p as *mut c_void);
+          }}
+        }}
+        None
+      }}
+      let mut meta_load_fn = |names: &[&[u8]]| {{
+        do_meta_load_fn(&mut load_fn, names)
+      }};
+      {api} {{",
+          api = super::gen_struct_name(registry.api()))?;
 
-    for cmd in &registry.cmds {
-        try!(writeln!(
-            dest,
-            "{name}: FnPtr::new(metaloadfn(\"{symbol}\", &[{fallbacks}])),",
-            name = cmd.proto.ident,
-            symbol = super::gen_symbol_name(registry.api, &cmd.proto.ident),
-            fallbacks = match registry.aliases.get(&cmd.proto.ident) {
-                Some(fbs) => fbs
-                    .iter()
-                    .map(|name| format!("\"{}\"", super::gen_symbol_name(registry.api, &name)))
-                    .collect::<Vec<_>>()
-                    .join(", "),
-                None => format!(""),
-            },
-        ))
-    }
-
-    try!(writeln!(dest, "_priv: ()"));
-
-    try!(writeln!(
-        dest,
-        "}}
-        }}"
-    ));
-
-    for cmd in &registry.cmds {
-        try!(writeln!(dest,
-            "#[allow(non_snake_case, unused_variables, dead_code)]
-            #[inline] pub unsafe fn {name}(&self, {params}) -> {return_suffix} {{ \
-                __gl_imports::mem::transmute::<_, extern \"system\" fn({typed_params}) -> {return_suffix}>\
-                    (self.{name}.f)({idents}) \
-            }}",
-            name = cmd.proto.ident,
-            params = super::gen_parameters(cmd, true, true).join(", "),
-            typed_params = super::gen_parameters(cmd, false, true).join(", "),
-            return_suffix = cmd.proto.ty,
-            idents = super::gen_parameters(cmd, true, false).join(", "),
-        ))
-    }
-
+  for cmd in registry.cmds() {
+    let fallbacks = match registry.aliases().get(&cmd.proto.ident) {
+      Some(v) => {
+        let names = v
+          .iter()
+          .map(|name| {
+            format!(
+              r#",b"{}\0""#,
+              super::gen_symbol_name(registry.api(), &name[..])
+            )
+          })
+          .collect::<Vec<_>>();
+        names.join(" ")
+      }
+      None => "".to_string(),
+    };
+    let symbol = super::gen_symbol_name(registry.api(), &cmd.proto.ident[..]);
     writeln!(
-        dest,
-        "}}
+      dest,
+      r#"  {name}: meta_load_fn(&[b"{symbol}\0" {fallbacks}]),"#,
+      name = cmd.proto.ident,
+      symbol = symbol,
+      fallbacks = fallbacks,
+    )?
+  }
 
-        unsafe impl __gl_imports::Send for {api} {{}}",
-        api = super::gen_struct_name(registry.api)
-    )
+  writeln!(dest, "_priv: ()")?;
+
+  writeln!(dest, "}} }}")?;
+
+  for cmd in registry.cmds() {
+    writeln!(
+      dest,
+      r#"#[inline] pub unsafe fn {name}(&self, {params}) {return_suffix} {{
+        {trace_msg}let p = self.{name}.expect("{name}");
+        let out = transmute::<
+          NonNull<c_void>,
+          extern "system" fn({typed_params}) {return_suffix}
+        >(p)({idents});
+        {debug_assert_error_check}out
+      }}"#,
+      trace_msg = if trace {
+        format!(
+          r#"trace!("{}");
+          "#,
+          cmd.proto.ident
+        )
+      } else {
+        String::new()
+      },
+      debug_assert_error_check =
+        if debug_assert && cmd.proto.ident != "GetError" {
+          let mut args = super::gen_parameters(cmd, true, false);
+          let params_fmt = core::iter::repeat("{:?}")
+            .take(args.len())
+            .collect::<Vec<_>>()
+            .join(", ");
+          args.push("err".to_string());
+          let params_args = args.join(", ");
+          format!(
+            r#"if cfg!(debug_assertions) {{
+          let err = self.GetError();
+          if err != NO_ERROR {{
+            error!("{name}({params_fmt}): {{}}", {params_args});
+          }}
+        }}
+        "#,
+            name = cmd.proto.ident,
+            params_fmt = params_fmt,
+            params_args = params_args,
+          )
+        } else {
+          String::new()
+        },
+      name = cmd.proto.ident,
+      params = super::gen_parameters(cmd, true, true).join(", "),
+      typed_params = super::gen_parameters(cmd, false, true).join(", "),
+      return_suffix = if cmd.proto.ty != "()" {
+        format!("-> {}", cmd.proto.ty)
+      } else {
+        String::new()
+      },
+      idents = super::gen_parameters(cmd, true, false).join(", "),
+    )?
+  }
+
+  writeln!(
+    dest,
+    "}}
+
+    unsafe impl Send for {api} {{}}",
+    api = super::gen_struct_name(registry.api())
+  )
 }

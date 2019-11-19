@@ -1,68 +1,32 @@
-// Copyright 2015 Brendan Zabarauskas and the gl-rs developers
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Based on the `gl_generator` crate, by Brendan Zabarauskas and the gl-rs
+// developers (2015). Used under Apache-2.0 license. All new content is also
+// available under the Apache-2.0 license.
 
-//! An OpenGL bindings generator. It defines a function named `generate_bindings` which can be
-//! used to generate all constants and functions of a given OpenGL version.
+//! This is a fork of [gl_generator](https://docs.rs/gl_generator).
 //!
-//! # Example
+//! Currently experimental.
 //!
-//! In `build.rs`:
+//! # Usage
 //!
-//! ```no_run
-//! extern crate gl_generator;
+//! First you create a [`Registry`], which describes the GL that you want to
+//! use.
 //!
-//! use gl_generator::{Registry, Api, Profile, Fallbacks, GlobalGenerator};
-//! use std::env;
-//! use std::fs::File;
-//! use std::path::Path;
+//! Next you call `write_bindings`, and specify the [`Generator`], which will
+//! determines how you will actually interact with the specified GL API:
 //!
-//! fn main() {
-//!     let dest = env::var("OUT_DIR").unwrap();
-//!     let mut file = File::create(&Path::new(&dest).join("gl_bindings.rs")).unwrap();
+//! * [`GlobalGenerator`]: Stores all loaded GL functions in `static mut` or
+//!   `AtomicPtr` variables. This allows GL functions to be accessed globally.
+//!   All functions are initially not loaded, and you must provide a loader
+//!   function which takes `*const c_char` null-terminated strings and produces
+//!   `*const c_void` function pointers. Depending on how you're accessing GL
+//!   this will be `wglGetProcAddress` or `SDL_GL_GetProcAddress` or similar.
+//! * [`StructGenerator`]: Similar to the above, but it stores all loaded GL
+//!   functions in a very large struct with one field per function pointer. This
+//!   allows you to potentially access more than one GL driver in the same
+//!   program, but is otherwise not very helpful.
 //!
-//!     Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
-//!         .write_bindings(GlobalGenerator, &mut file)
-//!         .unwrap();
-//! }
-//! ```
-//!
-//! In your project:
-//!
-//! ```ignore
-//! include!(concat!(env!("OUT_DIR"), "/gl_bindings.rs"));
-//! ```
-//!
-//! # About EGL
-//!
-//! When you generate bindings for EGL, the following platform-specific types must be declared
-//!  *at the same level where you include the bindings*:
-//!
-//! - `khronos_utime_nanoseconds_t`
-//! - `khronos_uint64_t`
-//! - `khronos_ssize_t`
-//! - `EGLNativeDisplayType`
-//! - `EGLNativePixmapType`
-//! - `EGLNativeWindowType`
-//! - `EGLint`
-//! - `NativeDisplayType`
-//! - `NativePixmapType`
-//! - `NativeWindowType`
-//!
-
-#[macro_use]
-extern crate log;
-extern crate xml;
+//! The resulting bindings will depend on `libc` on `not(windows)` systems for
+//! all of the C types, but are otherwise completely `no_std` friendly.
 
 #[cfg(feature = "unstable_generator_utils")]
 pub mod generators;
@@ -71,11 +35,8 @@ mod generators;
 
 mod registry;
 
-pub use generators::debug_struct_gen::DebugStructGenerator;
-pub use generators::global_gen::GlobalGenerator;
-pub use generators::static_gen::StaticGenerator;
-pub use generators::static_struct_gen::StaticStructGenerator;
-pub use generators::struct_gen::StructGenerator;
-pub use generators::Generator;
+pub use generators::{
+  global_gen::GlobalGenerator, struct_gen::StructGenerator,
+};
 
 pub use registry::*;
