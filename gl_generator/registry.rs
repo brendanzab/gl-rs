@@ -197,6 +197,29 @@ impl Registry {
         }
         tys
     }
+
+    pub fn get_docs_for_cmd(&self, cmd: &Cmd) -> String {
+        match self.api {
+        Api::Gl => {
+            format!("/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl{name}.xhtml)", name = cmd.proto.ident)
+        },
+        Api::Gles2 => {
+            if self.version() == (2, 0) {
+              format!("/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es2.0/html/gl{name}.xhtml)", name = cmd.proto.ident)
+            } else if self.version() == (3, 0) {
+              format!("/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/gl{name}.xhtml)", name = cmd.proto.ident)
+            } else if self.version() == (3, 1) {
+              format!("/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/gl{name}.xhtml)", name = cmd.proto.ident)
+            } else if self.version() == (3, 2) {
+              format!("/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3/html/gl{name}.xhtml)", name = cmd.proto.ident)
+            } else {
+              String::new()
+            }
+        },
+        // TODO: provide docs links for more types of API.
+        _ => String::new(),
+      }
+    }
 }
 
 impl Add for Registry {

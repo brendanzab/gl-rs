@@ -14,9 +14,7 @@ pub mod struct_gen;
 /// See https://github.com/brendanzab/gl-rs/tree/master/gl_generator#generator-types
 pub trait Generator {
     /// Builds the GL bindings.
-    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
-    where
-        W: io::Write;
+    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>;
 }
 
 pub fn gen_struct_name(api: Api) -> &'static str {
@@ -33,9 +31,7 @@ pub fn gen_struct_name(api: Api) -> &'static str {
 }
 
 /// This function generates a `const name: type = value;` item.
-pub fn gen_enum_item<W>(enm: &Enum, types_prefix: &str, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+pub fn gen_enum_item(enm: &Enum, types_prefix: &str, dest: &mut dyn io::Write) -> io::Result<()>
 {
     // TODO: remove the types_prefix thing? Seems silly, doesn't seem user
     // configurable.
@@ -62,9 +58,7 @@ where
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }`
 /// and contain all the things that we can't obtain from the XML files.
-pub fn gen_types<W>(api: Api, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+pub fn gen_types(api: Api, dest: &mut dyn io::Write) -> io::Result<()>
 {
     if let Api::Egl = api {
         writeln!(
@@ -126,9 +120,7 @@ pub fn gen_symbol_name(api: Api, cmd: &str) -> String {
 }
 
 /// Writes all types into their own sub-module.
-pub fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+pub fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(
         dest,
@@ -143,9 +135,7 @@ where
 }
 
 /// Writes all consts into their own sub-module.
-fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_enums(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(
         dest,

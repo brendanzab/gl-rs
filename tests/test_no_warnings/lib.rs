@@ -16,5 +16,5 @@
 #![deny(warnings)]
 
 mod my_gl {
-  include!(concat!(env!("OUT_DIR"), "/test_no_warnings.rs"));
+    include!(concat!(env!("OUT_DIR"), "/test_no_warnings.rs"));
 }

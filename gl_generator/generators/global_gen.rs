@@ -1,4 +1,4 @@
-use crate::registry::{Api, Registry};
+use crate::registry::Registry;
 use std::io;
 
 /// Allows GL to be used globally once loaded.
@@ -32,9 +32,7 @@ impl Default for GlobalGenerator {
 }
 
 impl super::Generator for GlobalGenerator {
-    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
-    where
-        W: io::Write,
+    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
     {
         write_header(registry, dest, self)?;
         write_meta_loader(dest)?;
@@ -56,9 +54,7 @@ impl super::Generator for GlobalGenerator {
 
 /// Creates a `__gl_imports` module which contains all the external symbols that
 /// we need for the bindings.
-fn write_header<W>(registry: &Registry, dest: &mut W, gen: &GlobalGenerator) -> io::Result<()>
-where
-    W: io::Write,
+fn write_header(registry: &Registry, dest: &mut dyn io::Write, gen: &GlobalGenerator) -> io::Result<()>
 {
     writeln!(dest, "#![allow(bad_style)]")?;
     writeln!(dest, "#![allow(clippy::unreadable_literal)]")?;
@@ -111,9 +107,7 @@ where
 }
 
 /// Creates the meta_loader function for fallbacks
-fn write_meta_loader<W>(dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_meta_loader(dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(
         dest,
@@ -141,15 +135,13 @@ where
 ///
 /// The function calls the corresponding function pointer stored in the
 /// `storage` module created  by `write_ptrs`.
-fn write_fns<W>(
+fn write_fns(
     registry: &Registry,
-    dest: &mut W,
+    dest: &mut dyn io::Write,
     trace: bool,
     debug_assert: bool,
     use_atomics: bool,
 ) -> io::Result<()>
-where
-    W: io::Write,
 {
     writeln!(
         dest,
@@ -159,35 +151,7 @@ where
     )?;
 
     for cmd in registry.cmds() {
-        // generate rustdoc link to the Kronos docs.
-        match registry.api() {
-            Api::Gl => {
-                writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl{name}.xhtml)",
-          name = cmd.proto.ident,
-        )?;
-            },
-            Api::Gles2 => {
-                if registry.version() == (2, 0) {
-                    writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es2.0/html/gl{name}.xhtml)",
-            name = cmd.proto.ident,
-          )?;
-                } else if registry.version() == (3, 0) {
-                    writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/gl{name}.xhtml)",
-            name = cmd.proto.ident,
-          )?;
-                } else if registry.version() == (3, 1) {
-                    writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/gl{name}.xhtml)",
-            name = cmd.proto.ident,
-          )?;
-                } else if registry.version() == (3, 2) {
-                    writeln!(dest, "/// See [gl{name}](https://www.khronos.org/registry/OpenGL-Refpages/es3/html/gl{name}.xhtml)",
-            name = cmd.proto.ident,
-          )?;
-                }
-            },
-            // TODO: provide docs links for more types of API.
-            _ => (),
-        }
+        writeln!(dest, "{}", registry.get_docs_for_cmd(cmd))?;
         if let Some(v) = registry.aliases().get(&cmd.proto.ident) {
             writeln!(dest, "/// ")?;
             writeln!(dest, "/// Fallbacks: {}", v.join(", "))?;
@@ -264,9 +228,7 @@ where
 
 /// Creates a `storage` module which contains a static `FnPtr` per GL command in
 /// the registry.
-fn write_ptrs<W>(registry: &Registry, dest: &mut W, use_atomics: bool) -> io::Result<()>
-where
-    W: io::Write,
+fn write_ptrs(registry: &Registry, dest: &mut dyn io::Write, use_atomics: bool) -> io::Result<()>
 {
     writeln!(
         dest,
@@ -297,9 +259,7 @@ where
 ///
 /// Each module contains `is_loaded` and `load_with` which interact with the
 /// `storage` module  created by `write_ptrs`.
-fn write_fn_mods<W>(registry: &Registry, dest: &mut W, use_atomics: bool) -> io::Result<()>
-where
-    W: io::Write,
+fn write_fn_mods(registry: &Registry, dest: &mut dyn io::Write, use_atomics: bool) -> io::Result<()>
 {
     for c in registry.cmds() {
         let fallbacks = match registry.aliases().get(&c.proto.ident) {
@@ -382,9 +342,7 @@ where
 /// Creates the `load_with` function.
 ///
 /// The function calls `load_with` in each module created by `write_fn_mods`.
-fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_load_fn(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(dest,
     "/// Load each OpenGL symbol using a provided loader function.

@@ -18,9 +18,7 @@ use std::io;
 pub struct StaticStructGenerator;
 
 impl super::Generator for StaticStructGenerator {
-    fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
-    where
-        W: io::Write,
+    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
     {
         write_header(dest)?;
         write_type_aliases(registry, dest)?;
@@ -34,9 +32,7 @@ impl super::Generator for StaticStructGenerator {
 
 /// Creates a `__gl_imports` module which contains all the external symbols that we need for the
 ///  bindings.
-fn write_header<W>(dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_header(dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(
         dest,
@@ -52,9 +48,7 @@ where
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_types`.
-fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(
         dest,
@@ -70,9 +64,7 @@ where
 }
 
 /// Creates all the `<enum>` elements at the root of the bindings.
-fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_enums(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     for enm in registry.enums() {
         super::gen_enum_item(enm, "types::", dest)?;
@@ -84,9 +76,7 @@ where
 /// Creates a stub structure.
 ///
 /// The name of the struct corresponds to the namespace.
-fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_struct(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(
         dest,
@@ -99,9 +89,7 @@ where
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
-fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_impl(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(dest,
         "impl {api} {{
@@ -136,9 +124,7 @@ where
 /// io::Writes all functions corresponding to the GL bindings.
 ///
 /// These are foreign functions, they don't have any content.
-fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
-where
-    W: io::Write,
+fn write_fns(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 {
     writeln!(
         dest,

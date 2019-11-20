@@ -24,5 +24,5 @@ extern crate stdweb as _stdweb;
 extern crate stdweb_derive as _stdweb_derive;
 
 mod my_gl {
-  include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }
