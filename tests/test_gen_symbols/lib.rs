@@ -56,14 +56,14 @@ pub fn compile_test_glsc2() {
 
 pub fn compile_test_glx() {
     unsafe {
-        let _ = glx::GetProcAddress(std::mem::uninitialized());
-        glx::SwapBuffers(std::mem::uninitialized(), std::mem::uninitialized());
+        let _ = glx::GetProcAddress(0);
+        glx::SwapBuffers(0, 0);
     }
 }
 
 pub fn compile_test_wgl() {
     unsafe {
-        let _: wgl::types::HGLRC = wgl::CreateContext(std::mem::uninitialized());
+        let _: wgl::types::HGLRC = wgl::CreateContext(0);
     }
 }
 
@@ -82,6 +82,6 @@ pub fn compile_test_egl() {
         ];
 
         let _ = egl::GetDisplay(egl::DEFAULT_DISPLAY);
-        egl::Terminate(std::mem::uninitialized());
+        egl::Terminate(0);
     }
 }
