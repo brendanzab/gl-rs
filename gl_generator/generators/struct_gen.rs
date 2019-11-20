@@ -20,26 +20,43 @@ pub struct StructGenerator {
     /// If `true`, the bindings will import a `trace!` macro from the parent
     /// module and invoke it with the name of the function about to be called
     /// before actually calling each GL function.
-    pub trace: bool,
+    trace: bool,
     /// If `true`, the bindings will import an `error!` macro from the parent
     /// module and, when `debug_assertions` are configured for the build, will
     /// check after each GL call if there was an error. If an error is detected,
     /// the `error!` macro will be invoked with a format string and args to
     /// format.
-    pub debug_assert_error_check: bool,
+    debug_assert_error_check: bool,
+    /// If set, will produce "inner attributes" in the source, so that the
+    /// source is suitable for use as a stand alone file.
+    inner_attributes: bool,
 }
 impl Default for StructGenerator {
     fn default() -> Self {
         Self {
-            trace: true,
-            debug_assert_error_check: true,
+            trace: false,
+            debug_assert_error_check: false,
+            inner_attributes: false,
         }
+    }
+}
+impl StructGenerator {
+    pub fn with_trace(mut self, trace: bool) -> Self {
+        self.trace = trace;
+        self
+    }
+    pub fn with_debug_assert_error_check(mut self, debug_assert_error_check: bool) -> Self {
+        self.debug_assert_error_check = debug_assert_error_check;
+        self
+    }
+    pub fn with_inner_attributes(mut self, inner_attributes: bool) -> Self {
+        self.inner_attributes = inner_attributes;
+        self
     }
 }
 
 impl super::Generator for StructGenerator {
-    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-    {
+    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
         write_header(registry, dest, self)?;
         super::write_type_aliases(registry, dest)?;
         super::write_enums(registry, dest)?;
@@ -49,22 +66,27 @@ impl super::Generator for StructGenerator {
     }
 }
 
-fn write_header(registry: &Registry, dest: &mut dyn io::Write, gen: &StructGenerator) -> io::Result<()>
-{
-    writeln!(dest, "#![allow(bad_style)]")?;
-    writeln!(dest, "#![allow(clippy::unreadable_literal)]")?;
-    writeln!(dest, "#![allow(clippy::missing_safety_doc)]")?;
-    writeln!(dest, "#![allow(clippy::too_many_arguments)]")?;
-    writeln!(dest, "#![allow(clippy::many_single_char_names)]")?;
-    writeln!(dest, "#![allow(clippy::let_unit_value)]")?;
-    writeln!(dest, "#![allow(clippy::let_and_return)]")?;
-    writeln!(dest)?;
-    writeln!(dest, "//! Auto-generated GL bindings file.")?;
-    writeln!(dest, "//! * API: {}", registry.api())?;
-    writeln!(dest, "//! * Version: {:?}", registry.version())?;
-    writeln!(dest, "//! * Fallbacks: {:?}", registry.fallbacks())?;
-    writeln!(dest, "//! * Extensions: {:?}", registry.extensions())?;
-    writeln!(dest, "//! * Generator Style: {:?}", gen)?;
+fn write_header(
+    registry: &Registry,
+    dest: &mut dyn io::Write,
+    gen: &StructGenerator,
+) -> io::Result<()> {
+    if gen.inner_attributes {
+        writeln!(dest, "#![allow(bad_style)]")?;
+        writeln!(dest, "#![allow(clippy::unreadable_literal)]")?;
+        writeln!(dest, "#![allow(clippy::missing_safety_doc)]")?;
+        writeln!(dest, "#![allow(clippy::too_many_arguments)]")?;
+        writeln!(dest, "#![allow(clippy::many_single_char_names)]")?;
+        writeln!(dest, "#![allow(clippy::let_unit_value)]")?;
+        writeln!(dest, "#![allow(clippy::let_and_return)]")?;
+        writeln!(dest)?;
+        writeln!(dest, "//! Auto-generated GL bindings file.")?;
+        writeln!(dest, "//! * API: {}", registry.api())?;
+        writeln!(dest, "//! * Version: {:?}", registry.version())?;
+        writeln!(dest, "//! * Fallbacks: {:?}", registry.fallbacks())?;
+        writeln!(dest, "//! * Extensions: {:?}", registry.extensions())?;
+        writeln!(dest, "//! * Generator Style: {:?}", gen)?;
+    }
     writeln!(dest)?;
     if gen.trace {
         writeln!(dest, "use super::trace;")?;
@@ -101,8 +123,7 @@ fn write_header(registry: &Registry, dest: &mut dyn io::Write, gen: &StructGener
 /// Creates a structure which stores all the `FnPtr` of the bindings.
 ///
 /// The name of the struct corresponds to the namespace.
-fn write_struct(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_struct(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         "
@@ -130,8 +151,7 @@ fn write_impl(
     dest: &mut dyn io::Write,
     trace: bool,
     debug_assert: bool,
-) -> io::Result<()>
-{
+) -> io::Result<()> {
     writeln!(dest,"impl {api} {{
     /// Load each OpenGL symbol using a provided loader function.
     /// 

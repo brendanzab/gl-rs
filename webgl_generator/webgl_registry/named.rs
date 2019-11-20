@@ -15,7 +15,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::{Registry, Type};
-use utils::{multimap_append, multimap_insert};
+use crate::utils::{multimap_append, multimap_insert};
 
 #[derive(Debug, Clone)]
 pub enum NamedType {

@@ -12,6 +12,7 @@ repository = "https://github.com/brendanzab/gl-rs/"
 readme = "README.md"
 categories = ["api-bindings", "rendering::graphics-api"]
 keywords = ["webgl"]
+edition = "2018"
 
 [lib]
 name = "webgl_generator"

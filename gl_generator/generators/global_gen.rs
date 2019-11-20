@@ -21,33 +21,54 @@ pub struct GlobalGenerator {
     /// If `true`, the bindings will import a `trace!` macro from the parent
     /// module and invoke it with the name of the function about to be called
     /// _before_ actually calling each GL function.
-    pub trace: bool,
+    trace: bool,
     /// If `true`, the bindings will import an `error!` macro from the parent
     /// module and, when `debug_assertions` are configured for the build, will
     /// check _after_ each GL call if there was an error. If an error is
     /// detected, the `error!` macro will be invoked with a format string and
     /// args to format.
-    pub debug_assert_error_check: bool,
+    debug_assert_error_check: bool,
     /// If `true` the bindings are stored in `AtomicPtr` values instead of
     /// `static mut` values. This makes it so that you can load GL from any
     /// thread, but there is a relaxed load when calling a function (which on
     /// `x86`/`x86_64` is "basically free", but on other systems it might not
     /// be).
-    pub use_atomics: bool,
+    use_atomics: bool,
+    /// If set, will produce "inner attributes" in the source, so that the
+    /// source is suitable for use as a stand alone file.
+    inner_attributes: bool,
 }
 impl Default for GlobalGenerator {
     fn default() -> Self {
         Self {
-            trace: true,
-            debug_assert_error_check: true,
+            trace: false,
+            debug_assert_error_check: false,
             use_atomics: true,
+            inner_attributes: false,
         }
+    }
+}
+impl GlobalGenerator {
+    pub fn with_trace(mut self, trace: bool) -> Self {
+        self.trace = trace;
+        self
+    }
+    pub fn with_debug_assert_error_check(mut self, debug_assert_error_check: bool) -> Self {
+        self.debug_assert_error_check = debug_assert_error_check;
+        self
+    }
+    pub fn with_use_atomics(mut self, use_atomics: bool) -> Self {
+        self.use_atomics = use_atomics;
+        self
+    }
+    pub fn with_inner_attributes(mut self, inner_attributes: bool) -> Self {
+        self.inner_attributes = inner_attributes;
+        self
     }
 }
 
 impl super::Generator for GlobalGenerator {
-    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-    {
+    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
         write_header(registry, dest, self)?;
         write_meta_loader(dest)?;
         super::write_type_aliases(registry, dest)?;
@@ -68,34 +89,40 @@ impl super::Generator for GlobalGenerator {
 
 /// Creates a `__gl_imports` module which contains all the external symbols that
 /// we need for the bindings.
-fn write_header(registry: &Registry, dest: &mut dyn io::Write, gen: &GlobalGenerator) -> io::Result<()>
-{
-    writeln!(dest, "#![allow(bad_style)]")?;
-    writeln!(dest, "#![allow(clippy::unreadable_literal)]")?;
-    writeln!(dest, "#![allow(clippy::missing_safety_doc)]")?;
-    writeln!(dest, "#![allow(clippy::too_many_arguments)]")?;
-    writeln!(dest, "#![allow(clippy::let_unit_value)]")?;
-    writeln!(dest, "#![allow(clippy::let_and_return)]")?;
-    writeln!(dest)?;
-    writeln!(dest, "//! Auto-generated GL bindings file.")?;
-    writeln!(dest, "//! * API: {}", registry.api())?;
-    writeln!(dest, "//! * Version: {:?}", registry.version())?;
-    writeln!(dest, "//! * Fallbacks: {:?}", registry.fallbacks())?;
-    writeln!(dest, "//! * Extensions: {:?}", registry.extensions())?;
-    writeln!(dest, "//! * Generator Style: {:?}", gen)?;
-    writeln!(dest)?;
+fn write_header(
+    registry: &Registry,
+    dest: &mut dyn io::Write,
+    gen: &GlobalGenerator,
+) -> io::Result<()> {
+    if gen.inner_attributes {
+        writeln!(dest, "#![allow(bad_style)]")?;
+        writeln!(dest, "#![allow(clippy::unreadable_literal)]")?;
+        writeln!(dest, "#![allow(clippy::missing_safety_doc)]")?;
+        writeln!(dest, "#![allow(clippy::too_many_arguments)]")?;
+        writeln!(dest, "#![allow(clippy::let_unit_value)]")?;
+        writeln!(dest, "#![allow(clippy::let_and_return)]")?;
+        writeln!(dest)?;
+        writeln!(dest, "//! Auto-generated GL bindings file.")?;
+        writeln!(dest, "//! * API: {}", registry.api())?;
+        writeln!(dest, "//! * Version: {:?}", registry.version())?;
+        writeln!(dest, "//! * Fallbacks: {:?}", registry.fallbacks())?;
+        writeln!(dest, "//! * Extensions: {:?}", registry.extensions())?;
+        writeln!(dest, "//! * Generator Style: {:?}", gen)?;
+        writeln!(dest)?;
+    }
     if gen.trace {
         writeln!(dest, "use super::trace;")?;
     }
     if gen.debug_assert_error_check {
         writeln!(dest, "use super::error;")?;
     }
-    writeln!(dest, "use core::ffi::c_void;")?;
+    writeln!(dest, "pub use core::ffi::c_void;")?;
     writeln!(dest, "use core::ptr::NonNull;")?;
     writeln!(dest, "use core::mem::transmute;")?;
     if gen.use_atomics {
         writeln!(dest, "use core::sync::atomic::AtomicPtr;")?;
         writeln!(dest, "use core::sync::atomic::Ordering;")?;
+        writeln!(dest, "use core::ptr::null_mut;")?;
     }
     writeln!(dest, "#[cfg(not(windows))] pub use libc::{{
     c_char, c_int, c_long, c_longlong, c_short, c_uint, c_ulong, c_ulonglong, c_ushort, c_float, c_double,
@@ -121,8 +148,7 @@ fn write_header(registry: &Registry, dest: &mut dyn io::Write, gen: &GlobalGener
 }
 
 /// Creates the meta_loader function for fallbacks
-fn write_meta_loader(dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_meta_loader(dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         r#"#[inline(never)]
@@ -155,8 +181,7 @@ fn write_fns(
     trace: bool,
     debug_assert: bool,
     use_atomics: bool,
-) -> io::Result<()>
-{
+) -> io::Result<()> {
     writeln!(
         dest,
         r#"pub use functions::*;
@@ -175,9 +200,9 @@ fn write_fns(
             dest,
             r#"#[inline]
       pub unsafe fn {name}({params}) {return_suffix} {{
-        {trace_msg}let p = {get_style};
+        {trace_msg}let p: *mut c_void = {get_style};
         let out = transmute::<
-          NonNull<c_void>,
+          *mut c_void,
           extern "system" fn({typed_params}) {return_suffix}
         >(p)({idents});
         {debug_assert_error_check}out
@@ -185,12 +210,12 @@ fn write_fns(
             name = cmd.proto.ident,
             get_style = if use_atomics {
                 format!(
-                    r#"{{ let p = storage::{name}.load(Ordering::Relaxed); if p.is_null() {{ panic!("{name}") }} p }}"#,
+                    r#"{{ let temp_p = storage::{name}.load(Ordering::Relaxed); if temp_p.is_null() {{ panic!("{name}") }} temp_p }}"#,
                     name = cmd.proto.ident
                 )
             } else {
                 format!(
-                    r#"storage::{name}.expect("{name}")"#,
+                    r#"storage::{name}.expect("{name}").as_ptr()"#,
                     name = cmd.proto.ident
                 )
             },
@@ -242,8 +267,7 @@ fn write_fns(
 
 /// Creates a `storage` module which contains a static `FnPtr` per GL command in
 /// the registry.
-fn write_ptrs(registry: &Registry, dest: &mut dyn io::Write, use_atomics: bool) -> io::Result<()>
-{
+fn write_ptrs(registry: &Registry, dest: &mut dyn io::Write, use_atomics: bool) -> io::Result<()> {
     writeln!(
         dest,
         "mod storage {{
@@ -273,8 +297,11 @@ fn write_ptrs(registry: &Registry, dest: &mut dyn io::Write, use_atomics: bool) 
 ///
 /// Each module contains `is_loaded` and `load_with` which interact with the
 /// `storage` module  created by `write_ptrs`.
-fn write_fn_mods(registry: &Registry, dest: &mut dyn io::Write, use_atomics: bool) -> io::Result<()>
-{
+fn write_fn_mods(
+    registry: &Registry,
+    dest: &mut dyn io::Write,
+    use_atomics: bool,
+) -> io::Result<()> {
     for c in registry.cmds() {
         let fallbacks = match registry.aliases().get(&c.proto.ident) {
             Some(v) => {
@@ -301,7 +328,7 @@ fn write_fn_mods(registry: &Registry, dest: &mut dyn io::Write, use_atomics: boo
           use super::*;
 
           #[inline]
-          pub fn is_loaded() -> bool {{
+          pub {ptr_access_safety} fn is_loaded() -> bool {{
             {load_check_op}
           }}
 
@@ -318,21 +345,26 @@ fn write_fn_mods(registry: &Registry, dest: &mut dyn io::Write, use_atomics: boo
           }}
         }}
       "#,
+      ptr_access_safety = if use_atomics {
+        ""
+      } else {
+        "unsafe"
+      },
             load_check_op = if use_atomics {
                 format!(
-                    "unsafe {{ !storage::{fn_name}.load(Order::Relaxed).is_null() }}",
+                    "!storage::{fn_name}.load(Ordering::Relaxed).is_null()",
                     fn_name = fn_name
                 )
             } else {
                 format!(
-                    "unsafe {{ storage::{fn_name}.is_some() }}",
+                    "storage::{fn_name}.is_some()",
                     fn_name = fn_name
                 )
             },
             loader_op = if use_atomics {
                 format!(
                     r#"if let Some(p) = meta_loader(&mut load_fn, &[b"{symbol}\0" {fallbacks}]) {{
-            storage::{fn_name}.store(p, Ordering::SeqCst);
+            storage::{fn_name}.store(p.as_ptr(), Ordering::SeqCst);
           }};"#,
                     fn_name = fn_name,
                     symbol = symbol,
@@ -356,8 +388,7 @@ fn write_fn_mods(registry: &Registry, dest: &mut dyn io::Write, use_atomics: boo
 /// Creates the `load_with` function.
 ///
 /// The function calls `load_with` in each module created by `write_fn_mods`.
-fn write_load_fn(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_load_fn(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(dest,
     "/// Load each OpenGL symbol using a provided loader function.
     /// 

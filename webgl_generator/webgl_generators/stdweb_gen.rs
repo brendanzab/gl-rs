@@ -15,8 +15,8 @@
 use std::collections::BTreeSet;
 use std::io;
 
-use utils::*;
-use webgl_registry::*;
+use crate::utils::*;
+use crate::webgl_registry::*;
 
 #[allow(missing_copy_implementations)]
 #[derive(Debug)]
@@ -326,12 +326,12 @@ where
         dest,
         r#"
 // {registry:?}
-extern crate stdweb;
 
-use self::stdweb::{{Reference, Value, UnsafeTypedArray, JsSerialize, InstanceOf}};
-use self::stdweb::unstable::{{TryFrom, TryInto}};
-use self::stdweb::web::{{RenderingContext, TypedArray, ArrayBuffer}};
-use self::stdweb::web::html_element::CanvasElement;
+use stdweb::{{Reference, Value, UnsafeTypedArray, JsSerialize, InstanceOf}};
+use stdweb_derive::ReferenceType;
+use stdweb::unstable::{{TryFrom, TryInto}};
+use stdweb::web::{{RenderingContext, TypedArray, ArrayBuffer}};
+use stdweb::web::html_element::CanvasElement;
 
 type ConversionError = <Reference as TryFrom<Value>>::Error;
 

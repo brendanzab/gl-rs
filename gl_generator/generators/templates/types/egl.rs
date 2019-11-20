@@ -1,16 +1,16 @@
 // platform-specific aliases are unknown
 // IMPORTANT: these are aliases to the same level of the bindings
 // the values must be defined by the user
-pub type khronos_utime_nanoseconds_t = super::khronos_utime_nanoseconds_t;
-pub type khronos_uint64_t = super::khronos_uint64_t;
-pub type khronos_ssize_t = super::khronos_ssize_t;
-pub type EGLNativeDisplayType = super::EGLNativeDisplayType;
-pub type EGLNativePixmapType = super::EGLNativePixmapType;
-pub type EGLNativeWindowType = super::EGLNativeWindowType;
-pub type EGLint = super::EGLint;
-pub type NativeDisplayType = super::NativeDisplayType;
-pub type NativePixmapType = super::NativePixmapType;
-pub type NativeWindowType = super::NativeWindowType;
+pub use super::khronos_utime_nanoseconds_t;
+pub use super::khronos_uint64_t;
+pub use super::khronos_ssize_t;
+pub use super::EGLNativeDisplayType;
+pub use super::EGLNativePixmapType;
+pub use super::EGLNativeWindowType;
+pub use super::EGLint;
+pub use super::NativeDisplayType;
+pub use super::NativePixmapType;
+pub use super::NativeWindowType;
 
 // EGL alises
 pub type Bool = EGLBoolean; // TODO: not sure

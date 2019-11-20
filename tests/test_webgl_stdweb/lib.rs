@@ -13,6 +13,12 @@
 // limitations under the License.
 
 #![allow(unused_parens, non_camel_case_types)]
+#![allow(bad_style)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::missing_safety_doc)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::let_unit_value)]
+#![allow(clippy::let_and_return)]
 
 #[macro_use]
 extern crate serde_derive;

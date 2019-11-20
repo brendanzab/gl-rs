@@ -18,8 +18,7 @@ use std::io;
 pub struct StaticStructGenerator;
 
 impl super::Generator for StaticStructGenerator {
-    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-    {
+    fn write(&self, registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
         write_header(dest)?;
         write_type_aliases(registry, dest)?;
         write_enums(registry, dest)?;
@@ -32,8 +31,7 @@ impl super::Generator for StaticStructGenerator {
 
 /// Creates a `__gl_imports` module which contains all the external symbols that we need for the
 ///  bindings.
-fn write_header(dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_header(dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         r#"
@@ -48,8 +46,7 @@ fn write_header(dest: &mut dyn io::Write) -> io::Result<()>
 /// Creates a `types` module which contains all the type aliases.
 ///
 /// See also `generators::gen_types`.
-fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         r#"
@@ -64,8 +61,7 @@ fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::Resu
 }
 
 /// Creates all the `<enum>` elements at the root of the bindings.
-fn write_enums(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_enums(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     for enm in registry.enums() {
         super::gen_enum_item(enm, "types::", dest)?;
     }
@@ -76,8 +72,7 @@ fn write_enums(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 /// Creates a stub structure.
 ///
 /// The name of the struct corresponds to the namespace.
-fn write_struct(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_struct(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         "
@@ -89,8 +84,7 @@ fn write_struct(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 }
 
 /// Creates the `impl` of the structure created by `write_struct`.
-fn write_impl(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_impl(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(dest,
         "impl {api} {{
             /// Stub function.
@@ -124,8 +118,7 @@ fn write_impl(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
 /// io::Writes all functions corresponding to the GL bindings.
 ///
 /// These are foreign functions, they don't have any content.
-fn write_fns(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_fns(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         "

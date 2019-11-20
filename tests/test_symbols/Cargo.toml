@@ -3,6 +3,7 @@ name = "test_symbols"
 version = "0.0.0"
 build = "build.rs"
 publish = false
+edition = "2018"
 
 [lib]
 path = "lib.rs"

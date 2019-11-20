@@ -45,8 +45,7 @@ pub fn gen_struct_name(api: Api) -> &'static str {
 }
 
 /// This function generates a `const name: type = value;` item.
-pub fn gen_enum_item(enm: &Enum, types_prefix: &str, dest: &mut dyn io::Write) -> io::Result<()>
-{
+pub fn gen_enum_item(enm: &Enum, types_prefix: &str, dest: &mut dyn io::Write) -> io::Result<()> {
     // TODO: remove the types_prefix thing? Seems silly, doesn't seem user
     // configurable.
     writeln!(
@@ -72,8 +71,7 @@ pub fn gen_enum_item(enm: &Enum, types_prefix: &str, dest: &mut dyn io::Write) -
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }`
 /// and contain all the things that we can't obtain from the XML files.
-pub fn gen_types(api: Api, dest: &mut dyn io::Write) -> io::Result<()>
-{
+pub fn gen_types(api: Api, dest: &mut dyn io::Write) -> io::Result<()> {
     if let Api::Egl = api {
         writeln!(
             dest,
@@ -134,8 +132,7 @@ pub fn gen_symbol_name(api: Api, cmd: &str) -> String {
 }
 
 /// Writes all types into their own sub-module.
-pub fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+pub fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         r#"pub use types::*;
@@ -149,8 +146,7 @@ pub fn write_type_aliases(registry: &Registry, dest: &mut dyn io::Write) -> io::
 }
 
 /// Writes all consts into their own sub-module.
-fn write_enums(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()>
-{
+fn write_enums(registry: &Registry, dest: &mut dyn io::Write) -> io::Result<()> {
     writeln!(
         dest,
         r#"pub use consts::*;

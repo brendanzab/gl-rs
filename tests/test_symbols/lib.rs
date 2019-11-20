@@ -11,7 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+#![allow(bad_style)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::missing_safety_doc)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::let_unit_value)]
+#![allow(clippy::let_and_return)]
 use std::os::raw;
 
 pub mod gl {
@@ -34,14 +39,15 @@ pub fn compile_test_symbols_exist() {
 
 #[test]
 fn test_fallback_works() {
-    fn loader(name: &str) -> *const raw::c_void {
-        match name {
+    fn loader(name: *const gl::c_char) -> *const raw::c_void {
+        let c_str = unsafe { std::ffi::CStr::from_ptr(name) };
+        match c_str.to_str().unwrap() {
             "glGenFramebuffers" => 0 as *const raw::c_void,
             "glGenFramebuffersEXT" => 42 as *const raw::c_void,
             name => panic!("test tried to load {} unexpectedly!", name),
         }
     };
 
-    gl::GenFramebuffers::load_with(loader);
+    unsafe { gl::GenFramebuffers::load_with(loader) };
     assert!(gl::GenFramebuffers::is_loaded());
 }

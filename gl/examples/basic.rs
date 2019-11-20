@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 extern crate gl;
 extern crate glutin;
 
@@ -26,8 +27,10 @@ fn main() {
     let gl_window = unsafe { gl_window.make_current().unwrap() };
 
     // Load the OpenGL function pointers
-    // TODO: `as *const _` will not be needed once glutin is updated to the latest gl version
-    gl::load_with(|symbol| gl_window.get_proc_address(symbol) as *const _);
+    unsafe { gl::load_with(|symbol| {
+      let c_str = std::ffi::CStr::from_ptr(symbol);
+      gl_window.get_proc_address(c_str.to_str().unwrap()) as *const gl::c_void
+    }) };
 
     events_loop.run_forever(|event| {
         use glutin::{ControlFlow, Event, WindowEvent};

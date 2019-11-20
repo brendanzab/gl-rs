@@ -11,7 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+#![allow(bad_style)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::missing_safety_doc)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::let_unit_value)]
+#![allow(clippy::let_and_return)]
 #![allow(unused_parens, non_camel_case_types)]
 #![crate_name = "webgl_stdweb"]
 #![crate_type = "lib"]

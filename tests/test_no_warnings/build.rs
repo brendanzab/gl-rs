@@ -29,33 +29,43 @@ fn main() {
     let gl_registry = Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::Yes, []);
 
     writeln!(&mut file, "mod gl_global {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gl_registry
         .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_static {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gl_registry
         .write_bindings(StaticGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gl_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_static_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gl_registry
         .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gl_debug_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gl_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Glx
@@ -63,33 +73,43 @@ fn main() {
     let glx_registry = Registry::new(Api::Glx, (1, 4), Profile::Core, Fallbacks::Yes, []);
 
     writeln!(&mut file, "mod glx_global {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     glx_registry
         .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_static {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     glx_registry
         .write_bindings(StaticGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     glx_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_static_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     glx_registry
         .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod glx_debug_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     glx_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Wgl
@@ -97,33 +117,43 @@ fn main() {
     let wgl_registry = Registry::new(Api::Wgl, (1, 0), Profile::Core, Fallbacks::Yes, []);
 
     writeln!(&mut file, "mod wgl_global {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     wgl_registry
         .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_static {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     wgl_registry
         .write_bindings(StaticGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     wgl_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_static_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     wgl_registry
         .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod wgl_debug_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     wgl_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Gles1
@@ -131,33 +161,43 @@ fn main() {
     let gles1_registry = Registry::new(Api::Gles1, (1, 1), Profile::Core, Fallbacks::Yes, []);
 
     writeln!(&mut file, "mod gles1_global {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles1_registry
         .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_static {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles1_registry
         .write_bindings(StaticGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles1_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_static_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles1_registry
         .write_bindings(StaticStructGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles1_debug_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles1_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Gles2
@@ -165,21 +205,27 @@ fn main() {
     let gles2_registry = Registry::new(Api::Gles2, (3, 1), Profile::Core, Fallbacks::Yes, []);
 
     writeln!(&mut file, "mod gles2_global {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles2_registry
         .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_static {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles2_registry
         .write_bindings(StaticGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles2_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_static_struct {{").unwrap();
@@ -189,9 +235,11 @@ fn main() {
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod gles2_debug_struct {{").unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     gles2_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     // Egl
@@ -199,21 +247,27 @@ fn main() {
     let egl_registry = Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::Yes, []);
 
     writeln!(&mut file, "mod egl_global {{ {}", build_egl_symbols()).unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     egl_registry
         .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl_static {{ {}", build_egl_symbols()).unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     egl_registry
         .write_bindings(StaticGenerator, &mut file)
         .unwrap();
     writeln!(&mut file, "}}").unwrap();
+    writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl_struct {{ {}", build_egl_symbols()).unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     egl_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(
@@ -228,9 +282,11 @@ fn main() {
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl_debug_struct {{ {}", build_egl_symbols()).unwrap();
+    writeln!(&mut file, "mod included_output {{").unwrap();
     egl_registry
         .write_bindings(StructGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 }
 

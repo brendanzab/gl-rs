@@ -14,7 +14,8 @@
 
 use std::io;
 
-use webgl_registry::Registry;
+
+use crate::webgl_registry::Registry;
 
 pub mod stdweb_gen;
 

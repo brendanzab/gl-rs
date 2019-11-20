@@ -16,10 +16,10 @@ use std::collections::btree_map::{self, Entry};
 use std::collections::{BTreeMap, BTreeSet};
 use std::io;
 
-use webidl::ast;
+use crate::webidl::ast;
 
-use utils::{multimap_insert, parse_defs};
-use webgl_generators::Generator;
+use crate::utils::{multimap_insert, parse_defs};
+use crate::webgl_generators::Generator;
 
 use super::named::{
     Argument, Attribute, Callback, Const, Dictionary, Enum, Field, Interface, Member, Mixin,

@@ -17,7 +17,7 @@ use std::{fmt, str};
 
 use khronos_api;
 
-use utils::convert_html_to_doc_comment;
+use crate::utils::convert_html_to_doc_comment;
 
 pub use self::named::*;
 pub use self::registry::*;

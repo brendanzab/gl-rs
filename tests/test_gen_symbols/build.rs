@@ -61,9 +61,11 @@ fn main() {
     writeln!(&mut file, "}}").unwrap();
 
     writeln!(&mut file, "mod egl {{ {}", build_egl_symbols()).unwrap();
+    writeln!(&mut file, "pub mod included_file {{").unwrap();
     Registry::new(Api::Egl, (1, 5), Profile::Core, Fallbacks::Yes, [])
         .write_bindings(GlobalGenerator::default(), &mut file)
         .unwrap();
+    writeln!(&mut file, "}}").unwrap();
     writeln!(&mut file, "}}").unwrap();
 }
 
