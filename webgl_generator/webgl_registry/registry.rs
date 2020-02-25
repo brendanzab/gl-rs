@@ -203,7 +203,7 @@ impl Registry {
         use self::ast::Attribute::*;
         match attribute {
             Regular(a) => {
-                let type_ = self.load_type(*a.type_);
+                let type_ = self.load_type(a.type_);
                 Some((
                     a.name,
                     Member::Attribute(Attribute {
@@ -218,7 +218,7 @@ impl Registry {
     }
 
     fn load_argument(&mut self, argument: ast::Argument) -> Argument {
-        let type_ = self.load_type(*argument.type_);
+        let type_ = self.load_type(argument.type_);
         Argument {
             name: argument.name,
             optional: argument.optional,
@@ -242,7 +242,7 @@ impl Registry {
                                 .map(|a| self.load_argument(a))
                                 .collect(),
                             return_type: match o.return_type {
-                                ReturnType::NonVoid(t) => Some(self.load_type(*t)),
+                                ReturnType::NonVoid(t) => Some(self.load_type(t)),
                                 ReturnType::Void => None,
                             },
                             doc_comment: String::new(),
@@ -289,10 +289,10 @@ impl Registry {
     }
 
     fn load_interface(&mut self, interface: ast::NonPartialInterface) {
-        fn has_attr(attrs: &Vec<Box<ast::ExtendedAttribute>>, name: &str) -> bool {
+        fn has_attr(attrs: &Vec<ast::ExtendedAttribute>, name: &str) -> bool {
             use self::ast::ExtendedAttribute::*;
             for attr in attrs {
-                if let NoArguments(ref other) = **attr {
+                if let NoArguments(ref other) = *attr {
                     if let &ast::Other::Identifier(ref n) = other {
                         return n == name;
                     }
@@ -409,7 +409,7 @@ impl Registry {
                     TypeKind::Union(
                         inners
                             .into_iter()
-                            .map(|inner| self.load_type(*inner))
+                            .map(|inner| self.load_type(inner))
                             .collect(),
                     )
                 } else {
@@ -433,12 +433,12 @@ impl Registry {
     }
 
     fn load_typedef(&mut self, typedef: ast::Typedef) {
-        let type_ = self.load_type(*typedef.type_);
+        let type_ = self.load_type(typedef.type_);
         self.load_named_type(&typedef.name, NamedType::Typedef(type_));
     }
 
     fn load_field(&mut self, field: ast::DictionaryMember) -> (String, Field) {
-        let type_ = self.load_type(*field.type_);
+        let type_ = self.load_type(field.type_);
 
         (field.name, Field { type_ })
     }
@@ -485,7 +485,7 @@ impl Registry {
             .map(|a| self.load_argument(a))
             .collect();
         let return_type = match callback.return_type {
-            ReturnType::NonVoid(t) => Some(self.load_type(*t)),
+            ReturnType::NonVoid(t) => Some(self.load_type(t)),
             ReturnType::Void => None,
         };
         self.load_named_type(

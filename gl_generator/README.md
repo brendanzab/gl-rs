@@ -10,16 +10,16 @@ Code generators for creating bindings to the Khronos OpenGL APIs.
 
 If you need a specific version of OpenGL, or you need a different API
 (OpenGL ES, EGL, WGL, GLX), or if you need certain extensions, you should use
-the `gl_generator` plugin instead.
+the `gl_generator` crate.
 
 See [gfx_gl](https://github.com/gfx-rs/gfx_gl) for an example of using a
-custom gfx-rs loader for a project.
+custom OpenGL loader for a project.
 
 Add this to your `Cargo.toml`:
 
 ```toml
 [build-dependencies]
-gl_generator = "0.5.0"
+gl_generator = "0.14.0"
 ```
 
 Under the `[package]` section, add:
@@ -33,7 +33,7 @@ Create a `build.rs` to pull your specific version/API:
 ```rust
 extern crate gl_generator;
 
-use gl_generator::{Registry, Api, Profile, Fallbacks, GlobalGenerator};
+use gl_generator::{Api, Fallbacks, GlobalGenerator, Profile, Registry};
 use std::env;
 use std::fs::File;
 use std::path::Path;
@@ -42,7 +42,7 @@ fn main() {
     let dest = env::var("OUT_DIR").unwrap();
     let mut file = File::create(&Path::new(&dest).join("bindings.rs")).unwrap();
 
-    Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, [])
+    Registry::new(Api::Gl, (4, 6), Profile::Core, Fallbacks::All, [])
         .write_bindings(GlobalGenerator, &mut file)
         .unwrap();
 }
@@ -59,7 +59,7 @@ mod gl {
 fn main() {
     let window = ...;
 
-    // Assuming `window` is GLFW: initialize, and make current
+    // Assuming `window` is a glfw::Window, made current
     gl::load_with(|s| window.get_proc_address(s) as *const _);
 }
 ```
@@ -71,8 +71,8 @@ The `build.rs` file will generate all the OpenGL functions in a file named,
 
 ### Global generator
 
-The global generator is the one used by default by the `gl` crate. See above
-for more details.
+The global generator is the one used by default by the `gl` crate. See the 
+[README](https://github.com/brendanzab/gl-rs/tree/master/gl) for more details.
 
 ### Struct generator
 
@@ -117,7 +117,7 @@ your `Cargo.toml`:
 
 ```toml
 [build-dependencies.gl_generator]
-version = "0.4.2"
+version = "0.14.0"
 features = ["unstable_generator_utils"]
 ```
 
@@ -126,40 +126,3 @@ features = ["unstable_generator_utils"]
 The global and struct generators will attempt to use fallbacks functions when
 they are available. For example, if `glGenFramebuffers` cannot be loaded it will
 also attempt to load `glGenFramebuffersEXT` as a fallback.
-
-## Changelog
-
-### v0.5.0
-
-- Rename `Ns` to `API`, and expose at the top level
-- Remove the need for clients to depend on the `khronos_api` crate by
-  determining the XML source based on the requested `API`
-- Use a `(u8, u8)` instead of a string for the target version number
-- Use a `Profile` enum instead of a string for the profile
-- Remove unused fields from `Registry`
-- Accept types satisfying `AsRef<[&str]>` for extension lists
-- Separate parsing and generation stages in API
-- Hide `registry::{Feature, Filter, Require, Remove, Extension}` types from the
-  public API
-- Move `registry::{Fallbacks, Api, Profile}` types to top level module
-- Remove `GlxOpcode::type` field
-- Make `ty` fields on `Enum` and `Binding` take `Cow<'static, str>`s to reduce
-  allocations
-
-### v0.4.2
-
-- Update crate metadata
-
-### v0.4.1
-
-- Upgrade `khronos_api` to v1.0.0
-
-### v0.4.0
-
-- Upgrade `xml-rs` to v0.2.2
-- Use `raw::c_void` for `GLvoid`
-- Remove `registry::{Group, EnumNs, CmdNs}`
-- Remove `groups` field from `registry::Registry`
-- Remove `is_safe` field from `registry::Cmd`
-- Remove `comment` field from `registry::{Require, Remove, GlxOpcode}`
-- Downgrade `khronos_api` to be a dev-dependency

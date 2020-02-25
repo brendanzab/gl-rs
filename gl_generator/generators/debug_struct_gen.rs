@@ -23,13 +23,13 @@ impl super::Generator for DebugStructGenerator {
     where
         W: io::Write,
     {
-        try!(write_header(dest));
-        try!(write_type_aliases(registry, dest));
-        try!(write_enums(registry, dest));
-        try!(write_fnptr_struct_def(dest));
-        try!(write_panicking_fns(registry, dest));
-        try!(write_struct(registry, dest));
-        try!(write_impl(registry, dest));
+        write_header(dest)?;
+        write_type_aliases(registry, dest)?;
+        write_enums(registry, dest)?;
+        write_fnptr_struct_def(dest)?;
+        write_panicking_fns(registry, dest)?;
+        write_struct(registry, dest)?;
+        write_impl(registry, dest)?;
         Ok(())
     }
 }
@@ -59,15 +59,15 @@ fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(
+    writeln!(
         dest,
         r#"
         pub mod types {{
             #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
     "#
-    ));
+    )?;
 
-    try!(super::gen_types(registry.api, dest));
+    super::gen_types(registry.api, dest)?;
 
     writeln!(dest, "}}")
 }
@@ -78,7 +78,7 @@ where
     W: io::Write,
 {
     for enm in &registry.enums {
-        try!(super::gen_enum_item(enm, "types::", dest));
+        super::gen_enum_item(enm, "types::", dest)?;
     }
 
     Ok(())
@@ -151,22 +151,22 @@ fn write_struct<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(
+    writeln!(
         dest,
         "
         #[allow(non_camel_case_types, non_snake_case, dead_code)]
         #[derive(Clone)]
         pub struct {api} {{",
         api = super::gen_struct_name(registry.api)
-    ));
+    )?;
 
     for cmd in &registry.cmds {
         if let Some(v) = registry.aliases.get(&cmd.proto.ident) {
-            try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
+            writeln!(dest, "/// Fallbacks: {}", v.join(", "))?;
         }
-        try!(writeln!(dest, "pub {name}: FnPtr,", name = cmd.proto.ident));
+        writeln!(dest, "pub {name}: FnPtr,", name = cmd.proto.ident)?;
     }
-    try!(writeln!(dest, "_priv: ()"));
+    writeln!(dest, "_priv: ()")?;
 
     writeln!(dest, "}}")
 }
@@ -176,7 +176,7 @@ fn write_impl<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    try!(writeln!(dest,
+    writeln!(dest,
                   "impl {api} {{
             /// Load each OpenGL symbol using a custom load function. This allows for the
             /// use of functions like `glfwGetProcAddress` or `SDL_GL_GetProcAddress`.
@@ -204,10 +204,10 @@ where
                     do_metaloadfn(&mut loadfn, symbol, symbols)
                 }};
                 {api} {{",
-                  api = super::gen_struct_name(registry.api)));
+                  api = super::gen_struct_name(registry.api))?;
 
     for cmd in &registry.cmds {
-        try!(writeln!(
+        writeln!(
             dest,
             "{name}: FnPtr::new(metaloadfn(\"{symbol}\", &[{fallbacks}])),",
             name = cmd.proto.ident,
@@ -220,15 +220,15 @@ where
                     .join(", "),
                 None => format!(""),
             },
-        ))
+        )?
     }
-    try!(writeln!(dest, "_priv: ()"));
+    writeln!(dest, "_priv: ()")?;
 
-    try!(writeln!(
+    writeln!(
         dest,
         "}}
         }}"
-    ));
+    )?;
 
     for cmd in &registry.cmds {
         let idents = super::gen_parameters(cmd, true, false);
@@ -247,11 +247,12 @@ where
                     format!(", \"<callback>\"")
                 } else {
                     format!(", {}", name)
-                }).collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>()
                 .concat()
         );
 
-        try!(writeln!(dest,
+        writeln!(dest,
                       "#[allow(non_snake_case, unused_variables, dead_code)]
             #[inline] pub unsafe fn {name}(&self, {params}) -> {return_suffix} {{ \
                 {println}
@@ -276,7 +277,7 @@ where
                     (self.GetError.f)() {{ 0 => (), r => println!("[OpenGL] ^ GL error triggered: {{}}", r) }}"#)
                       } else {
                           format!("")
-                      }))
+                      })?
     }
 
     writeln!(

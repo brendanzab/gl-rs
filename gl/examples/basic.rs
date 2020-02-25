@@ -16,35 +16,36 @@ extern crate gl;
 extern crate glutin;
 
 fn main() {
-    let mut events_loop = glutin::EventsLoop::new();
-    let window = glutin::WindowBuilder::new();
+    let event_loop = glutin::event_loop::EventLoop::new();
+    let window = glutin::window::WindowBuilder::new();
     let gl_window = glutin::ContextBuilder::new()
-        .build_windowed(window, &events_loop)
+        .build_windowed(window, &event_loop)
         .unwrap();
 
     // It is essential to make the context current before calling `gl::load_with`.
     let gl_window = unsafe { gl_window.make_current().unwrap() };
 
     // Load the OpenGL function pointers
-    // TODO: `as *const _` will not be needed once glutin is updated to the latest gl version
-    gl::load_with(|symbol| gl_window.get_proc_address(symbol) as *const _);
+    gl::load_with(|symbol| gl_window.get_proc_address(symbol));
 
-    events_loop.run_forever(|event| {
-        use glutin::{ControlFlow, Event, WindowEvent};
-
-        if let Event::WindowEvent { event, .. } = event {
-            if let WindowEvent::CloseRequested = event {
-                return ControlFlow::Break;
-            }
+    event_loop.run(move |event, _, control_flow| {
+        use glutin::event::{Event, WindowEvent};
+        use glutin::event_loop::ControlFlow;
+        *control_flow = ControlFlow::Wait;
+        match event {
+            Event::LoopDestroyed => return,
+            Event::WindowEvent { event, .. } => match event {
+                WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
+                _ => (),
+            },
+            Event::RedrawRequested(_) => {
+                unsafe {
+                    gl::ClearColor(0.3, 0.3, 0.3, 1.0);
+                    gl::Clear(gl::COLOR_BUFFER_BIT);
+                }
+                gl_window.swap_buffers().unwrap();
+            },
+            _ => (),
         }
-
-        unsafe {
-            gl::ClearColor(0.3, 0.3, 0.3, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
-        }
-
-        gl_window.swap_buffers().unwrap();
-
-        ControlFlow::Continue
     });
 }

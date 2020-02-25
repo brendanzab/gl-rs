@@ -26,7 +26,7 @@ fn main() {
 
     // Gl
 
-    let gl_registry = Registry::new(Api::Gl, (4, 5), Profile::Core, Fallbacks::All, []);
+    let gl_registry = Registry::new(Api::Gl, (4, 6), Profile::Core, Fallbacks::All, []);
 
     writeln!(&mut file, "mod gl_global {{").unwrap();
     gl_registry

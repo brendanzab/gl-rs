@@ -156,7 +156,11 @@ impl Registry {
         if filter.extensions.iter().any(|e| e.starts_with("GL_ANGLE_")) {
             registry += parse::from_xml(khronos_api::GL_ANGLE_EXT_XML, &filter, false);
         }
-        if filter.extensions.iter().any(|e| e.starts_with("EGL_ANGLE_")) {
+        if filter
+            .extensions
+            .iter()
+            .any(|e| e.starts_with("EGL_ANGLE_"))
+        {
             registry += parse::from_xml(khronos_api::EGL_ANGLE_EXT_XML, &filter, false);
         }
         registry

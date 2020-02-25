@@ -8,7 +8,7 @@ An OpenGL function pointer loader for the Rust Programming Language.
 
 ```toml
 [dependencies]
-gl = "0.6.0"
+gl = "0.14.0"
 ```
 
 ## Basic usage
@@ -23,8 +23,7 @@ use gl::types::*;
 
 You must load the function pointers into their respective function pointers
 using the `load_with` function. You must supply a loader function from your
-context library, This is how it would look using [glfw-rs]
-(https://github.com/PistonDevelopers/glfw-rs):
+context library. This is how it would look using [glfw-rs](https://github.com/PistonDevelopers/glfw-rs):
 
 ```rust
 // the supplied function must be of the type:
@@ -41,15 +40,14 @@ Calling a function that has not been loaded will result in a failure like:
 does not cause any run time overhead because the failing functions are
 assigned only when `load_with` is called.
 
+All OpenGL function calls are `unsafe`.
+
 ```rust
 // accessing an enum
-gl::RED_BITS;
+gl::TEXTURE_2D;
 
 // calling a function
-gl::DrawArrays(gl::TRIANGLES, 0, 3);
-
-// functions that take pointers are unsafe
-unsafe {  gl::ShaderSource(shader, 1, &c_str, std::ptr::null()) };
+unsafe { gl::DrawArrays(gl::TRIANGLES, 0, 3) };
 ```
 
 Each function pointer has an associated boolean value allowing you to
@@ -62,22 +60,3 @@ if gl::Viewport::is_loaded() {
     // do something...
 }
 ```
-
-## Changelog
-
-### v0.6.0
-
-- Upgrade to `gl_generator` v0.5.0
-
-### v0.5.2
-
-- Update crate metadata
-
-### v0.5.1
-
-- Upgrade `khronos_api` to v1.0.0
-
-### v0.5.0
-
-- Use `glutin` for examples
-- Use `raw::c_void` for `GLvoid`

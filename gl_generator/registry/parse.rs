@@ -25,11 +25,7 @@ use xml::EventReader as XmlEventReader;
 use registry::{Binding, Cmd, Enum, GlxOpcode, Group, Registry};
 use {Api, Fallbacks, Profile};
 
-pub fn from_xml<R: io::Read>(
-    src: R,
-    filter: &Filter,
-    require_feature: bool,
-) -> Registry {
+pub fn from_xml<R: io::Read>(src: R, filter: &Filter, require_feature: bool) -> Registry {
     XmlEventReader::new(src)
         .into_iter()
         .map(Result::unwrap)
@@ -565,7 +561,7 @@ trait Parse: Sized + Iterator<Item = ParseEvent> {
                     let group = Group {
                         ident: ident.clone(),
                         enums_type: None,
-                        enums: self.consume_group_enums(api)
+                        enums: self.consume_group_enums(api),
                     };
                     groups.insert(ident, group);
                 },
@@ -875,8 +871,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "const GLint64EXT *" => "*const types::GLint64EXT",
         "const GLintptr *" => "*const types::GLintptr",
         "const GLshort *" => "*const types::GLshort",
-        "const GLsizei*" |
-        "const GLsizei *" => "*const types::GLsizei",
+        "const GLsizei*" | "const GLsizei *" => "*const types::GLsizei",
         "const GLsizeiptr *" => "*const types::GLsizeiptr",
         "const GLubyte *" => "*const types::GLubyte",
         "const GLuint *" => "*const types::GLuint",
@@ -885,8 +880,7 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "const GLushort *" => "*const types::GLushort",
         "const GLvdpauSurfaceNV *" => "*const types::GLvdpauSurfaceNV",
         "const GLvoid *" => "*const types::GLvoid",
-        "const void*" |
-        "const void *" => "*const __gl_imports::raw::c_void",
+        "const void*" | "const void *" => "*const __gl_imports::raw::c_void",
         "const void **" => "*const *const __gl_imports::raw::c_void",
         "const void *const*" => "*const *const __gl_imports::raw::c_void",
         "const GLboolean **" => "*const *const types::GLboolean",
