@@ -180,7 +180,7 @@ fn main() {
                         gl::DeleteVertexArrays(1, &vao);
                     }
                     *control_flow = ControlFlow::Exit
-                }
+                },
                 _ => (),
             },
             Event::RedrawRequested(_) => {
@@ -192,7 +192,7 @@ fn main() {
                     gl::DrawArrays(gl::TRIANGLES, 0, 3);
                 }
                 gl_window.swap_buffers().unwrap();
-            }
+            },
             _ => (),
         }
     });

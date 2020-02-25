@@ -44,7 +44,7 @@ fn main() {
                     gl::Clear(gl::COLOR_BUFFER_BIT);
                 }
                 gl_window.swap_buffers().unwrap();
-            }
+            },
             _ => (),
         }
     });
