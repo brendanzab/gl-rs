@@ -38,9 +38,11 @@ fn main() {
     // The slice will have one entry for each WebGL extension. To find the
     // extensions we mirror the behaviour of the `api_webgl/extensions/find-exts`
     // shell script.
-    for entry in root.read_dir().unwrap() {
-        let entry = entry.unwrap();
-        let path = entry.path();
+    let mut paths: Vec<_> = root.read_dir().unwrap().map(|e| e.unwrap().path()).collect();
+    // Sort the list of paths in order for the webgl_exts.rs file to be created
+    // deterministically.
+    paths.sort();
+    for path in paths {
         let ext_name = path.file_name().unwrap().to_str().unwrap();
 
         // Each item which is a directory, and is not named `template`, may be
