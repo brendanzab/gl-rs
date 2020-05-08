@@ -25,6 +25,8 @@ use Generator;
 
 mod parse;
 
+const BYTE_ORDER_MARK: &'static [u8] = &[0xef, 0xbb, 0xbf];
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Api {
     Gl,
@@ -145,11 +147,17 @@ impl Registry {
             profile,
         };
 
-        let src = match api {
+        let src_raw = match api {
             Api::Gl | Api::GlCore | Api::Gles1 | Api::Gles2 | Api::Glsc2 => khronos_api::GL_XML,
             Api::Glx => khronos_api::GLX_XML,
             Api::Wgl => khronos_api::WGL_XML,
             Api::Egl => khronos_api::EGL_XML,
+        };
+
+        let src = if &src_raw[..BYTE_ORDER_MARK.len()] == BYTE_ORDER_MARK {
+            &src_raw[BYTE_ORDER_MARK.len()..]
+        } else {
+            src_raw
         };
 
         let mut registry = parse::from_xml(src, &filter, true);

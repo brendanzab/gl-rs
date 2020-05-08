@@ -1077,6 +1077,10 @@ pub fn to_rust_ty<T: AsRef<str>>(ty: T) -> Cow<'static, str> {
         "EGLOutputPortEXT *" => "*mut types::EGLOutputPortEXT",
         "EGLuint64KHR *" => "*mut types::EGLuint64KHR",
         "const struct AHardwareBuffer *" => "*const __gl_imports::raw::c_void", // humm
+        "char *" => "*const __gl_imports::raw::c_char",
+        "struct wl_buffer *" => "*const __gl_imports::raw::c_void",
+        "struct wl_display *" => "*const __gl_imports::raw::c_void",
+        "struct wl_resource *" => "*const __gl_imports::raw::c_void",
 
         "GLeglClientBufferEXT" => "types::GLeglClientBufferEXT",
         "GLVULKANPROCNV" => "types::GLVULKANPROCNV",
