@@ -156,6 +156,7 @@ where
         "
         #[allow(non_camel_case_types, non_snake_case, dead_code)]
         #[derive(Clone)]
+        #[non_exhaustive]
         pub struct {api} {{",
         api = super::gen_struct_name(registry.api)
     )?;
@@ -166,7 +167,6 @@ where
         }
         writeln!(dest, "pub {name}: FnPtr,", name = cmd.proto.ident)?;
     }
-    writeln!(dest, "_priv: ()")?;
 
     writeln!(dest, "}}")
 }
@@ -222,7 +222,6 @@ where
             },
         )?
     }
-    writeln!(dest, "_priv: ()")?;
 
     writeln!(
         dest,
