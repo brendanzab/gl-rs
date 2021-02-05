@@ -43,13 +43,16 @@ where
     writeln!(
         dest,
         r#"
-        mod __gl_imports {{
-            pub use std::mem;
-            pub use std::marker::Send;
-            pub use std::os::raw;
-        }}
+        pub mod __gl_imports {{
     "#
-    )
+    )?;
+
+    super::write_cty_aliases(dest)?;
+
+    writeln!(dest, r#"
+         pub use core::mem;
+         pub use core::marker::Send;
+    }}"#)
 }
 
 /// Creates a `types` module which contains all the type aliases.
@@ -96,17 +99,17 @@ where
         #[derive(Clone)]
         pub struct FnPtr {{
             /// The function pointer that will be used when calling the function.
-            f: *const __gl_imports::raw::c_void,
+            f: *const __gl_imports::c_void,
             /// True if the pointer points to a real function, false if points to a `panic!` fn.
             is_loaded: bool,
         }}
 
         impl FnPtr {{
             /// Creates a `FnPtr` from a load attempt.
-            fn new(ptr: *const __gl_imports::raw::c_void) -> FnPtr {{
+            fn new(ptr: *const __gl_imports::c_void) -> FnPtr {{
                 if ptr.is_null() {{
                     FnPtr {{
-                        f: missing_fn_panic as *const __gl_imports::raw::c_void,
+                        f: missing_fn_panic as *const __gl_imports::c_void,
                         is_loaded: false
                     }}
                 }} else {{
@@ -185,12 +188,12 @@ where
             /// let gl = Gl::load_with(|s| glfw.get_proc_address(s));
             /// ~~~
             #[allow(dead_code, unused_variables)]
-            pub fn load_with<F>(mut loadfn: F) -> {api} where F: FnMut(&'static str) -> *const __gl_imports::raw::c_void {{
+            pub fn load_with<F>(mut loadfn: F) -> {api} where F: FnMut(&'static str) -> *const __gl_imports::c_void {{
                 #[inline(never)]
-                fn do_metaloadfn(loadfn: &mut dyn FnMut(&'static str) -> *const __gl_imports::raw::c_void,
+                fn do_metaloadfn(loadfn: &mut dyn FnMut(&'static str) -> *const __gl_imports::c_void,
                                  symbol: &'static str,
                                  symbols: &[&'static str])
-                                 -> *const __gl_imports::raw::c_void {{
+                                 -> *const __gl_imports::c_void {{
                     let mut ptr = loadfn(symbol);
                     if ptr.is_null() {{
                         for &sym in symbols {{
