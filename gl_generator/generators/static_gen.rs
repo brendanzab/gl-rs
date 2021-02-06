@@ -40,12 +40,15 @@ where
     writeln!(
         dest,
         r#"
-        mod __gl_imports {{
-            pub use std::mem;
-            pub use std::os::raw;
-        }}
+        pub mod __gl_imports {{
     "#
-    )
+    )?;
+
+    super::write_cty_aliases(dest)?;
+
+    writeln!(dest, r#"
+         pub use core::mem;
+    }}"#)
 }
 
 /// Creates a `types` module which contains all the type aliases.

@@ -63,6 +63,16 @@ where
     )
 }
 
+/// Generate a "cty" module with C type definitions in order
+/// to be no_std compatible
+fn write_cty_aliases<W>(dest: &mut W) -> io::Result<()>
+where
+    W: io::Write,
+{
+    writeln!(dest, "{}", include_str!("templates/types/cty.rs"))?;
+    Ok(())
+}
+
 /// Generates all the type aliases for a namespace.
 ///
 /// Aliases are either `pub type = ...` or `#[repr(C)] pub struct ... { ... }` and contain all the

@@ -20,7 +20,7 @@ An OpenGL function pointer loader for the Rust Programming Language.
 
 ```toml
 [dependencies]
-gl = "0.14.0"
+gl = "0.15.0"
 ```
 
 ### gl_generator
@@ -33,7 +33,7 @@ Code generators for creating bindings to the Khronos OpenGL APIs.
 
 ```toml
 [build-dependencies]
-gl_generator = "0.14.0"
+gl_generator = "0.15.0"
 ```
 
 ### khronos_api

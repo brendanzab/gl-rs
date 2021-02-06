@@ -8,7 +8,7 @@ An OpenGL function pointer loader for the Rust Programming Language.
 
 ```toml
 [dependencies]
-gl = "0.14.0"
+gl = "0.15.0"
 ```
 
 ## Basic usage
