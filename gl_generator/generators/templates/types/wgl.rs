@@ -1,9 +1,9 @@
 // From WinNT.h
 
-pub type CHAR = super::__gl_imports::c_char;
+pub type CHAR = super::__gl_imports::c_uchar;
 pub type HANDLE = PVOID;
 pub type LONG = super::__gl_imports::c_long;
-pub type LPCSTR = *const super::__gl_imports::c_char;
+pub type LPCSTR = *const super::__gl_imports::c_uchar;
 pub type VOID = ();
 // #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
 pub type HPBUFFERARB = *const super::__gl_imports::c_void;

@@ -93,13 +93,13 @@ pub struct GLXBufferClobberEventSGIX {
 
 #[repr(C)]
 pub struct GLXHyperpipeNetworkSGIX {
-    pub pipeName: [super::__gl_imports::c_char; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+    pub pipeName: [super::__gl_imports::c_uchar; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
     pub networkId: super::__gl_imports::c_int,
 }
 
 #[repr(C)]
 pub struct GLXHyperpipeConfigSGIX {
-    pub pipeName: [super::__gl_imports::c_char; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+    pub pipeName: [super::__gl_imports::c_uchar; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
     pub channel: super::__gl_imports::c_int,
     pub participationType: super::__gl_imports::c_uint,
     pub timeSlice: super::__gl_imports::c_int,
@@ -107,7 +107,7 @@ pub struct GLXHyperpipeConfigSGIX {
 
 #[repr(C)]
 pub struct GLXPipeRect {
-    pub pipeName: [super::__gl_imports::c_char; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+    pub pipeName: [super::__gl_imports::c_uchar; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
     pub srcXOrigin: super::__gl_imports::c_int,
     pub srcYOrigin: super::__gl_imports::c_int,
     pub srcWidth: super::__gl_imports::c_int,
@@ -120,7 +120,7 @@ pub struct GLXPipeRect {
 
 #[repr(C)]
 pub struct GLXPipeRectLimits {
-    pub pipeName: [super::__gl_imports::c_char; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
+    pub pipeName: [super::__gl_imports::c_uchar; 80], // Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX]
     pub XOrigin: super::__gl_imports::c_int,
     pub YOrigin: super::__gl_imports::c_int,
     pub maxHeight: super::__gl_imports::c_int,
