@@ -19,7 +19,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [build-dependencies]
-gl_generator = "0.14.0"
+gl_generator = "0.15.0"
 ```
 
 Under the `[package]` section, add:
@@ -71,7 +71,7 @@ The `build.rs` file will generate all the OpenGL functions in a file named,
 
 ### Global generator
 
-The global generator is the one used by default by the `gl` crate. See the 
+The global generator is the one used by default by the `gl` crate. See the
 [README](https://github.com/brendanzab/gl-rs/tree/master/gl) for more details.
 
 ### Struct generator
