@@ -29,7 +29,12 @@ fn main() {
     // The absolute path is needed, because we don't know where the output
     // directory will be, and `include_bytes!(..)` resolves paths relative to the
     // containing file.
-    let root = env::current_dir().unwrap().join("api_webgl/extensions");
+    let manifest_path = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let root_base = Path::new(&manifest_path);
+    let root = match root_base.join("khronos_api/api_webgl/extensions").exists() {
+        true => root_base.join("khronos_api/api_webgl/extensions"),
+        false => root_base.join("api_webgl/extensions"),
+    };
 
     // Generate a slice literal, looking like this:
     // `&[&*include_bytes!(..), &*include_bytes!(..), ..]`
@@ -38,7 +43,11 @@ fn main() {
     // The slice will have one entry for each WebGL extension. To find the
     // extensions we mirror the behaviour of the `api_webgl/extensions/find-exts`
     // shell script.
-    let mut paths: Vec<_> = root.read_dir().unwrap().map(|e| e.unwrap().path()).collect();
+    let mut paths: Vec<_> = root
+        .read_dir()
+        .unwrap()
+        .map(|e| e.unwrap().path())
+        .collect();
     // Sort the list of paths in order for the webgl_exts.rs file to be created
     // deterministically.
     paths.sort();
@@ -52,8 +61,10 @@ fn main() {
             // really is an extension.
             let ext_path = path.join("extension.xml");
             if ext_path.is_file() {
-                // Include the XML file, making sure to use an absolute path.
-                writeln!(file, "&*include_bytes!({:?}),", ext_path.to_str().unwrap()).unwrap();
+                // Fix absolute path for bazel build
+                let abs_out_path = ext_path.canonicalize().unwrap();
+                let abs_out_path = abs_out_path.to_str().unwrap();
+                writeln!(file, "&*include_bytes!({:?}),", abs_out_path).unwrap();
             }
         }
     }
